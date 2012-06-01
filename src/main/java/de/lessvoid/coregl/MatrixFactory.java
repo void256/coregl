@@ -4,7 +4,7 @@ package de.lessvoid.coregl;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class MatrixFactory {
-  public Matrix4f createProjection(final float width, final float height) {
+  public static Matrix4f createProjection(final float width, final float height) {
     float left = 0;
     float right = width;
     float top = 0;
@@ -22,4 +22,5 @@ public class MatrixFactory {
     projection.m33 = 1;
     return projection;
   }
+
 }
