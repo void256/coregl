@@ -1,39 +1,48 @@
 package de.lessvoid.coregl;
 
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
-import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 
 public class VBO {
-  public static final int VERTEX_INDEX = 0;
-
   private int id;
-  private int vao;
-  private int type;
+  private int usage;
   private FloatBuffer buffer;
 
-  public VBO(final int type, final float[] vertices, final int stride, final int ... componentSize) {
-    this.type = type;
+  public static VBO createStatic(final float[] data) {
+    return new VBO(GL_STATIC_DRAW, data);
+  }
 
-    buffer = BufferUtils.createFloatBuffer(vertices.length);
-    buffer.put(vertices);
+  public static VBO createDynamic(final float[] data) {
+    return new VBO(GL_DYNAMIC_DRAW, data);
+  }
+
+  private VBO(final int usageType, final float[] data) {
+    usage = usageType;
+
+    buffer = BufferUtils.createFloatBuffer(data.length);
+    buffer.put(data);
     buffer.rewind();
-    init(buffer, stride, componentSize);
+
+    id = glGenBuffers();
+    CheckGL.checkGLError("glGenBuffers");
+
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+    CheckGL.checkGLError("glBindBuffer");
+  
+    glBufferData(GL_ARRAY_BUFFER, buffer, usage);
+    CheckGL.checkGLError("glBufferData");
   }
 
   public FloatBuffer getBuffer() {
@@ -46,49 +55,11 @@ public class VBO {
 
     buffer.rewind();
 
-    glBufferData(GL_ARRAY_BUFFER, buffer, type);
+    glBufferData(GL_ARRAY_BUFFER, buffer, usage);
     CheckGL.checkGLError("glBufferData");
-  }
-
-  private void init(final FloatBuffer buffer, final int stride, final int[] componentSize) {
-    vao = glGenVertexArrays();
-    CheckGL.checkGLError("glGenVertexArrays");
-
-    glBindVertexArray(vao);
-    CheckGL.checkGLError("glBindVertexArray");
-
-      id = glGenBuffers();
-      CheckGL.checkGLError("glGenBuffers");
-
-      glBindBuffer(GL_ARRAY_BUFFER, id);
-      CheckGL.checkGLError("glBindBuffer");
-    
-        glBufferData(GL_ARRAY_BUFFER, buffer, type);
-        CheckGL.checkGLError("glBufferData");
-
-      int offset = 0;
-      for (int i = 0; i < componentSize.length; i++) {
-        glVertexAttribPointer(i, componentSize[i], GL_FLOAT, false, stride * 4, offset);
-        glEnableVertexAttribArray(i);
-        CheckGL.checkGLError("glVertexAttribPointer (" + i + ", " + componentSize[i] + "," + stride + ")");
-
-        offset += componentSize[i] * 4;
-      }
-
-    glBindVertexArray(0);
-    CheckGL.checkGLError("glBindVertexArray(0)");
   }
 
   public void delete() {
     glDeleteBuffers(id);
-    glDeleteVertexArrays(vao);
-  }
-
-  public void render() {
-    glBindVertexArray(vao);
-    CheckGL.checkGLError("glBindVertexArray");
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    CheckGL.checkGLError("glDrawArrays");
   }
 }
