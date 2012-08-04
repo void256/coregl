@@ -13,7 +13,12 @@ public class CheckGL {
     int error = glGetError();
     while (error != GL_NO_ERROR) {
       String glerrmsg = GLU.gluErrorString(error);
-      log.warning("OpenGL Error: (" + error + ") " + glerrmsg + " {" + message + "}");
+      StringBuffer stacktrace = new StringBuffer();
+      for (StackTraceElement e : Thread.currentThread().getStackTrace()) {
+        stacktrace.append(e.toString());
+        stacktrace.append("\n");
+      }
+      log.warning("OpenGL Error: (" + error + ") " + glerrmsg + " {" + message + "} " + stacktrace.toString());
       error = glGetError();
     }
   }
