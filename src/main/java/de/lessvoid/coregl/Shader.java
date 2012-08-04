@@ -40,6 +40,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Hashtable;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.lwjgl.BufferUtils;
@@ -48,6 +49,7 @@ import org.lwjgl.util.vector.Matrix4f;
 public class Shader {
   private static Logger log = Logger.getLogger(Shader.class.getName());
   private int program;
+  private String loggingPrefix = "N/A";
   private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
   private FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
   private String[] attrib = new String[0];
@@ -64,67 +66,77 @@ public class Shader {
     prepareShader(fragmentShaderId, fragmentShader);
 
     program = glCreateProgram();
-    CheckGL.checkGLError("glCreateProgram");
+    checkGL("glCreateProgram");
+
+    initLoggingPrefix(vertexShader, fragmentShader);
 
     glAttachShader(program, vertexShaderId);
-    CheckGL.checkGLError("glAttachShader (vertexShaderId)");
+    checkGL("glAttachShader (vertexShaderId)");
 
     glAttachShader(program, fragmentShaderId);
-    CheckGL.checkGLError("glAttachShader (fragmentShaderId)");
+    checkGL("glAttachShader (fragmentShaderId)");
 
     for (int i=0; i<attrib.length; i++) {
       glBindAttribLocation(program, i, attrib[i]);
-      CheckGL.checkGLError("glBindAttribLocation (" + attrib[i] + ")");
+      checkGL("glBindAttribLocation (" + attrib[i] + ")");
     }
 
     glLinkProgram(program);
-    CheckGL.checkGLError("glLinkProgram");
+    checkGL("glLinkProgram");
 
     if (glGetProgram(program, GL_LINK_STATUS) != GL_TRUE) {
       System.out.println("link error: " + glGetProgramInfoLog(program, 1024));
-      CheckGL.checkGLError("glGetProgramInfoLog");
+      checkGL("glGetProgramInfoLog");
     }
-    CheckGL.checkGLError("glGetProgram");
+    checkGL("glGetProgram");
+  }
+
+  private void checkGL(final String message) {
+    CheckGL.checkGLError(loggingPrefix + message);
+  }
+
+  private void initLoggingPrefix(final String vertexShader, final String fragmentShader) {
+    loggingPrefix = "[" + program + "] {\"" + vertexShader + "\", \"" + fragmentShader + "\"} ";
   }
 
   public void setUniform(final String name, final float value) {
     glUniform1f(getLocation(name), value);
-    CheckGL.checkGLError("glUniform1f");
+    checkGL("glUniform1f");
   }
 
   public void setUniform(final String name, final float v1, final float v2) {
     glUniform2f(getLocation(name), v1, v2);
-    CheckGL.checkGLError("glUniform2f");
+    checkGL("glUniform2f");
   }
 
   public void setUniform(final String name, final float v1, final float v2, final float v3) {
     glUniform3f(getLocation(name), v1, v2, v3);
-    CheckGL.checkGLError("glUniform3f");
+    checkGL("glUniform3f");
   }
 
   public void setUniform(final String name, final float x, final float y, final float z, final float w) {
     glUniform4f(getLocation(name), x, y, z, w);
-    CheckGL.checkGLError("glUniform4f");
+    checkGL("glUniform4f");
   }
 
   public void setUniform(final String name, final int v1) {
     glUniform1i(getLocation(name), v1);
-    CheckGL.checkGLError("glUniform1i");
+    checkGL("glUniform1i");
   }
 
   public void setUniform(final String name, final int v1, final int v2) {
     glUniform2i(getLocation(name), v1, v2);
-    CheckGL.checkGLError("glUniform2i");
+    checkGL("glUniform2i");
   }
 
   public void setUniform(final String name, final int v1, final int v2, final int v3) {
     glUniform3i(getLocation(name), v1, v2, v3);
-    CheckGL.checkGLError("glUniform3i");
+    checkGL("glUniform3i");
   }
 
   public void setUniform(final String name, final int v1, final int v2, final int v3, final int v4) {
     glUniform4i(getLocation(name), v1, v2, v3, v4);
-    CheckGL.checkGLError("glUniform4i");
+    checkGL("glUniform4i");
   }
 
   public void setUniform(final String name, final Matrix4f matrix) {
@@ -132,7 +144,7 @@ public class Shader {
     matrix.store(matBuffer);
     matBuffer.rewind();
     glUniformMatrix4(getLocation(name), false, matBuffer);
-    CheckGL.checkGLError("glUniformMatrix4");
+    checkGL("glUniformMatrix4");
   }
 
   public void setUniform(final String name, final float[] kernelValues) {
@@ -140,18 +152,18 @@ public class Shader {
     buffer.put(kernelValues);
     buffer.rewind();
     glUniform1(getLocation(name), buffer);
-    CheckGL.checkGLError("glUniform1");
+    checkGL("glUniform1");
   }
 
   public int getAttribLocation(final String name) {
     int result = glGetAttribLocation(program, name);
-    CheckGL.checkGLError("glGetAttribLocation");
+    checkGL("glGetAttribLocation");
     return result;
   }
 
   public void bindAttribLocation(final String name, final int index) {
     glBindAttribLocation(program, index, name);
-    CheckGL.checkGLError("glBindAttribLocation");
+    checkGL("glBindAttribLocation");
   }
 
   private int registerParameter(final String name) {
@@ -170,7 +182,7 @@ public class Shader {
 
   public void activate() {
     glUseProgram(program);
-    CheckGL.checkGLError("glUseProgram");
+    checkGL("glUseProgram");
   }
 
   private int getUniform(final String uniformName) {
@@ -181,38 +193,39 @@ public class Shader {
       name.put((byte)0x00);
       name.rewind();
       int result = glGetUniformLocation(program, name);
-      CheckGL.checkGLError("glGetUniformLocation for [" + uniformName + "] failed");
+      checkGL("glGetUniformLocation for [" + uniformName + "] failed");
+      log.info(loggingPrefix + "glUniformLocation for [" + uniformName + "] = [" + result + "]");
       return result;
     } catch (UnsupportedEncodingException e) {
-      log.warning(e.getMessage());
+      log.log(Level.WARNING, loggingPrefix + e.getMessage(), e);
       return -1;
     }
   }
 
   private void prepareShader(final int shaderId, final String filename) {
     glShaderSource(shaderId, loadShader(filename));
-    CheckGL.checkGLError("glShaderSource");
+    checkGL("glShaderSource");
 
     glCompileShader(shaderId);
-    CheckGL.checkGLError("glCompileShader");
+    checkGL("glCompileShader");
 
     if (glGetShader(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
       System.out.println("compile error: " + glGetShaderInfoLog(shaderId, 1024));
     }
 
     printLogInfo(shaderId);
-    CheckGL.checkGLError(filename);
+    checkGL(filename);
   }
 
   private int createVertexShader() {
     int shaderId = glCreateShader(GL_VERTEX_SHADER);
-    CheckGL.checkGLError("glCreateShader(GL_VERTEX_SHADER)");
+    checkGL("glCreateShader(GL_VERTEX_SHADER)");
     return shaderId;
   }
 
   private int createFragmentShader() {
     int fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
-    CheckGL.checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
+    checkGL("glCreateShader(GL_FRAGMENT_SHADER)");
     return fragmentId;
   }
 
@@ -264,7 +277,7 @@ public class Shader {
     ByteBuffer infoLog = BufferUtils.createByteBuffer(2048);
     IntBuffer lengthBuffer = BufferUtils.createIntBuffer(1);
     glGetShaderInfoLog(obj, lengthBuffer, infoLog);
-    CheckGL.checkGLError("glGetShaderInfoLog");
+    checkGL("glGetShaderInfoLog");
 
     byte[] infoBytes = new byte[lengthBuffer.get()];
     infoLog.get(infoBytes);
@@ -272,10 +285,10 @@ public class Shader {
       return;
     }
     try {
-      log.info("Info log:\n" + new String(infoBytes, "ISO-8859-1"));
+      log.info(loggingPrefix + "Info log:\n" + new String(infoBytes, "ISO-8859-1"));
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }
-    CheckGL.checkGLError("printLogInfo");
+    checkGL("printLogInfo");
   }
 }
