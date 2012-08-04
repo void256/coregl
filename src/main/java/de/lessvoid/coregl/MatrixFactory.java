@@ -41,5 +41,4 @@ public class MatrixFactory {
     projection.m23 = -1;
     return projection;
   }
-
 }
