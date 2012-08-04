@@ -43,4 +43,6 @@
       </plugin>
     </plugins>
   </build>
+  <description>simple utility methods to make life with OpenGL core profile simpler</description>
+  <name>LWJGL OpenGL core utililities</name>
 </project>
