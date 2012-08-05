@@ -3,7 +3,18 @@ package de.lessvoid.coregl;
 
 import org.lwjgl.util.vector.Matrix4f;
 
+/**
+ * Creates LWJGL Matrix4j instances for projection- and orthographic  projection.
+ * @author void
+ */
 public class MatrixFactory {
+
+  /**
+   * Create orthographic projection Matrix4f.
+   * @param width width
+   * @param height height
+   * @return new Matrix4j
+   */
   public static Matrix4f createOrtho(final float width, final float height) {
     float left = 0;
     float right = width;
@@ -23,13 +34,19 @@ public class MatrixFactory {
     return projection;
   }
 
-  public static Matrix4f createProjection(final float width, final float height) {
+  /**
+   * Create perspective projection Matrix4f.
+   * @param width width
+   * @param height height
+   * @param zNear z near value (for example 1)
+   * @param zFar z far value (for example 10000)
+   * @return new perspective projection matrix
+   */
+  public static Matrix4f createProjection(final float width, final float height, final float zNear, final float zFar) {
     float left = 0;
     float right = width;
     float top = 0;
     float bottom = height;
-    float zNear = 1;
-    float zFar = 10000;
 
     Matrix4f projection = new Matrix4f();
     projection.m00 = 2 * zNear / (right-left);

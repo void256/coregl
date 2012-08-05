@@ -46,16 +46,20 @@ import java.util.logging.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 
+/**
+ * Helper class that represents
+ * @author void
+ */
 public class Shader {
   private static Logger log = Logger.getLogger(Shader.class.getName());
   private int program;
   private String loggingPrefix = "N/A";
   private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
   private FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
-  private String[] attrib = new String[0];
+  private final String[] attributes;
 
   public Shader(final String ... names) {
-    attrib = names;
+    attributes = names;
   }
 
   public void compile(final String vertexShader, final String fragmentShader) {
@@ -76,9 +80,9 @@ public class Shader {
     glAttachShader(program, fragmentShaderId);
     checkGL("glAttachShader (fragmentShaderId)");
 
-    for (int i=0; i<attrib.length; i++) {
-      glBindAttribLocation(program, i, attrib[i]);
-      checkGL("glBindAttribLocation (" + attrib[i] + ")");
+    for (int i=0; i<attributes.length; i++) {
+      glBindAttribLocation(program, i, attributes[i]);
+      checkGL("glBindAttribLocation (" + attributes[i] + ")");
     }
 
     glLinkProgram(program);
@@ -89,14 +93,6 @@ public class Shader {
       checkGL("glGetProgramInfoLog");
     }
     checkGL("glGetProgram");
-  }
-
-  private void checkGL(final String message) {
-    CheckGL.checkGLError(loggingPrefix + message);
-  }
-
-  private void initLoggingPrefix(final String vertexShader, final String fragmentShader) {
-    loggingPrefix = "[" + program + "] {\"" + vertexShader + "\", \"" + fragmentShader + "\"} ";
   }
 
   public void setUniform(final String name, final float value) {
@@ -166,6 +162,11 @@ public class Shader {
     checkGL("glBindAttribLocation");
   }
 
+  public void activate() {
+    glUseProgram(program);
+    checkGL("glUseProgram");
+  }
+
   private int registerParameter(final String name) {
     int location = getUniform(name);
     parameter.put(name, location);
@@ -178,11 +179,6 @@ public class Shader {
       return registerParameter(name);
     }
     return value;
-  }
-
-  public void activate() {
-    glUseProgram(program);
-    checkGL("glUseProgram");
   }
 
   private int getUniform(final String uniformName) {
@@ -290,5 +286,13 @@ public class Shader {
       throw new RuntimeException(e);
     }
     checkGL("printLogInfo");
+  }
+
+  private void checkGL(final String message) {
+    CheckGL.checkGLError(loggingPrefix + message);
+  }
+
+  private void initLoggingPrefix(final String vertexShader, final String fragmentShader) {
+    loggingPrefix = "[" + program + "] {\"" + vertexShader + "\", \"" + fragmentShader + "\"} ";
   }
 }

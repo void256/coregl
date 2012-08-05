@@ -27,18 +27,61 @@ import java.nio.ByteBuffer;
 
 import org.lwjgl.opengl.Display;
 
+/**
+ * Helper class to use render to texture. This will take care of all the necessary setup. You can enable rendering to
+ * the texture with the on() method and off() to disable rendering to the texture. When you later want to use this
+ * texture you call bindTexture().
+ *
+ * @author void
+ */
 public class RenderToTexture {
   private int fbo;
   private int texture;
   private int width;
   private int height;
 
+  /**
+   * Generate a new RenderToTexture buffer.
+   * @param width width
+   * @param height height
+   */
   public RenderToTexture(final int width, final int height) {
     this.width = width;
     this.height = height;
     initialize();
   }
-  
+
+  /**
+   * Enable this RenderToTexture object as the framebuffer target.
+   */
+  public void on() {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    glViewport(0, 0, width, height);
+  }
+
+  /**
+   * Disable rendering to this RenderToTexture object.
+   */
+  public void off() {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
+  }
+
+  /**
+   * Bind this texture as a source for rendering.
+   */
+  public void bindTexture() {
+    glBindTexture(GL_TEXTURE_2D, texture);
+  }
+
+  /**
+   * Destroy all resources for this RenderToTexture.
+   */
+  public void destroy() {
+    glDeleteTextures(texture);
+    glDeleteFramebuffers(fbo);
+  }
+
   private void initialize() {
     fbo = glGenFramebuffers();
     CheckGL.checkGLError("glGenFramebuffers");
@@ -74,24 +117,5 @@ public class RenderToTexture {
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
       System.out.println("FBO STATUS CHECK FAILED WITH: " + fboStatus);
     }
-  }
-
-  public void on() {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-    glViewport(0, 0, width, height);
-  }
-
-  public void off() {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
-  }
-
-  public void bindTexture() {
-    glBindTexture(GL_TEXTURE_2D, texture);
-  }
-
-  public void destroy() {
-    glDeleteTextures(texture);
-    glDeleteFramebuffers(fbo);
   }
 }

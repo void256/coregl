@@ -24,6 +24,21 @@ public class TBO {
     init(data);
   }
 
+  public void bind() {
+    glBindTexture(GL_TEXTURE_BUFFER, texture);
+  }
+
+  public void dispose() {
+    glBindBuffer(GL_TEXTURE_BUFFER, tbo);
+    CheckGL.checkGLError("glBindBuffer");
+
+    glDeleteBuffers(tbo);
+    CheckGL.checkGLError("glDeleteBuffers");
+
+    glDeleteTextures(texture);
+    CheckGL.checkGLError("glDeleteTextures");
+  }
+
   private void init(final float[] data) {
     tbo = glGenBuffers();
     CheckGL.checkGLError("glGenBuffers");
@@ -44,20 +59,5 @@ public class TBO {
 
     glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, tbo);
     CheckGL.checkGLError("glTexBuffer");
-  }  
-
-  public void bind() {
-    glBindTexture(GL_TEXTURE_BUFFER, texture);
-  }
-
-  public void dispose() {
-    glBindBuffer(GL_TEXTURE_BUFFER, tbo);
-    CheckGL.checkGLError("glBindBuffer");
-
-    glDeleteBuffers(tbo);
-    CheckGL.checkGLError("glDeleteBuffers");
-
-    glDeleteTextures(texture);
-    CheckGL.checkGLError("glDeleteTextures");
   }
 }
