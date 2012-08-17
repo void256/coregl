@@ -13,20 +13,20 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 
-public class VBO {
+public class CoreVBO {
   private int id;
   private int usage;
   private FloatBuffer buffer;
 
-  public static VBO createStatic(final float[] data) {
-    return new VBO(GL_STATIC_DRAW, data);
+  public static CoreVBO createStatic(final float[] data) {
+    return new CoreVBO(GL_STATIC_DRAW, data);
   }
 
-  public static VBO createDynamic(final float[] data) {
-    return new VBO(GL_DYNAMIC_DRAW, data);
+  public static CoreVBO createDynamic(final float[] data) {
+    return new CoreVBO(GL_DYNAMIC_DRAW, data);
   }
 
-  private VBO(final int usageType, final float[] data) {
+  private CoreVBO(final int usageType, final float[] data) {
     usage = usageType;
 
     buffer = BufferUtils.createFloatBuffer(data.length);
@@ -34,13 +34,13 @@ public class VBO {
     buffer.rewind();
 
     id = glGenBuffers();
-    CheckGL.checkGLError("glGenBuffers");
+    CoreCheckGL.checkGLError("glGenBuffers");
 
     glBindBuffer(GL_ARRAY_BUFFER, id);
-    CheckGL.checkGLError("glBindBuffer");
+    CoreCheckGL.checkGLError("glBindBuffer");
   
     glBufferData(GL_ARRAY_BUFFER, buffer, usage);
-    CheckGL.checkGLError("glBufferData");
+    CoreCheckGL.checkGLError("glBufferData");
   }
 
   public FloatBuffer getBuffer() {
@@ -49,12 +49,12 @@ public class VBO {
 
   public void update() {
     glBindBuffer(GL_ARRAY_BUFFER, id);
-    CheckGL.checkGLError("glBindBuffer");
+    CoreCheckGL.checkGLError("glBindBuffer");
 
     buffer.rewind();
 
     glBufferData(GL_ARRAY_BUFFER, buffer, usage);
-    CheckGL.checkGLError("glBufferData");
+    CoreCheckGL.checkGLError("glBufferData");
   }
 
   public void delete() {

@@ -9,21 +9,21 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class VA {
+public class CoreVA {
   private int vao;
 
-  public VA() {
+  public CoreVA() {
     init();
   }
 
   public void bind() {
     glBindVertexArray(vao);
-    CheckGL.checkGLError("glBindVertexArray");
+    CoreCheckGL.checkGLError("glBindVertexArray");
   }
 
   public void unbind() {
     glBindVertexArray(0);
-    CheckGL.checkGLError("glBindVertexArray(0)");
+    CoreCheckGL.checkGLError("glBindVertexArray(0)");
   }
 
   public void delete() {
@@ -32,19 +32,19 @@ public class VA {
 
   private void init() {
     vao = glGenVertexArrays();
-    CheckGL.checkGLError("glGenVertexArrays");
+    CoreCheckGL.checkGLError("glGenVertexArrays");
   }
 
   public void enableVertexAttributef(final int index, final int size, final int stride, final int offset) {
     glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
     glEnableVertexAttribArray(index);
-    CheckGL.checkGLError("glVertexAttribPointer (" + index + ")");
+    CoreCheckGL.checkGLError("glVertexAttribPointer (" + index + ")");
   }
 
   public void enableVertexAttributeDivisorf(final int index, final int size, final int stride, final int offset, final int divisor) {
     glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
     glVertexAttribDivisorARB(index, divisor);
     glEnableVertexAttribArray(index);
-    CheckGL.checkGLError("glVertexAttribPointer (" + index + ")");
+    CoreCheckGL.checkGLError("glVertexAttribPointer (" + index + ")");
   }
 }

@@ -34,25 +34,25 @@ import org.lwjgl.opengl.Display;
  *
  * @author void
  */
-public class RenderToTexture {
+public class CoreRenderToTexture {
   private int fbo;
   private int texture;
   private int width;
   private int height;
 
   /**
-   * Generate a new RenderToTexture buffer.
+   * Generate a new CoreRenderToTexture buffer.
    * @param width width
    * @param height height
    */
-  public RenderToTexture(final int width, final int height) {
+  public CoreRenderToTexture(final int width, final int height) {
     this.width = width;
     this.height = height;
     initialize();
   }
 
   /**
-   * Enable this RenderToTexture object as the framebuffer target.
+   * Enable this CoreRenderToTexture object as the framebuffer target.
    */
   public void on() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -60,7 +60,7 @@ public class RenderToTexture {
   }
 
   /**
-   * Disable rendering to this RenderToTexture object.
+   * Disable rendering to this CoreRenderToTexture object.
    */
   public void off() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -75,7 +75,7 @@ public class RenderToTexture {
   }
 
   /**
-   * Destroy all resources for this RenderToTexture.
+   * Destroy all resources for this CoreRenderToTexture.
    */
   public void destroy() {
     glDeleteTextures(texture);
@@ -84,27 +84,27 @@ public class RenderToTexture {
 
   private void initialize() {
     fbo = glGenFramebuffers();
-    CheckGL.checkGLError("glGenFramebuffers");
+    CoreCheckGL.checkGLError("glGenFramebuffers");
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-    CheckGL.checkGLError("glBindFramebuffer");
+    CoreCheckGL.checkGLError("glBindFramebuffer");
 
     texture = glGenTextures();
-    CheckGL.checkGLError("glGenTextures");
+    CoreCheckGL.checkGLError("glGenTextures");
 
     glBindTexture(GL_TEXTURE_2D, texture);
-    CheckGL.checkGLError("glBindTexture");
+    CoreCheckGL.checkGLError("glBindTexture");
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) null);
-    CheckGL.checkGLError("glTexImage2D");
+    CoreCheckGL.checkGLError("glTexImage2D");
 
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-    CheckGL.checkGLError("glFramebufferTexture");
+    CoreCheckGL.checkGLError("glFramebufferTexture");
 
     glDrawBuffer(GL_COLOR_ATTACHMENT0);
-    CheckGL.checkGLError("glDrawBuffer");
+    CoreCheckGL.checkGLError("glDrawBuffer");
 
     glBindTexture(GL_TEXTURE_2D, 0);
     checkFramebufferStatus();

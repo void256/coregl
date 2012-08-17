@@ -50,15 +50,15 @@ import org.lwjgl.util.vector.Matrix4f;
  * Helper class that represents
  * @author void
  */
-public class Shader {
-  private static Logger log = Logger.getLogger(Shader.class.getName());
+public class CoreShader {
+  private static Logger log = Logger.getLogger(CoreShader.class.getName());
   private int program;
   private String loggingPrefix = "N/A";
   private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
   private FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
   private final String[] attributes;
 
-  public Shader(final String ... names) {
+  public CoreShader(final String ... names) {
     attributes = names;
   }
 
@@ -289,7 +289,7 @@ public class Shader {
   }
 
   private void checkGL(final String message) {
-    CheckGL.checkGLError(loggingPrefix + message);
+    CoreCheckGL.checkGLError(loggingPrefix + message);
   }
 
   private void initLoggingPrefix(final String vertexShader, final String fragmentShader) {

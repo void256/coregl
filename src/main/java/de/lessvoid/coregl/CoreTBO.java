@@ -16,11 +16,11 @@ import java.nio.FloatBuffer;
 
 import org.lwjgl.BufferUtils;
 
-public class TBO {
+public class CoreTBO {
   private int tbo;
   private int texture;
 
-  public TBO(final float[] data) {
+  public CoreTBO(final float[] data) {
     init(data);
   }
 
@@ -30,21 +30,21 @@ public class TBO {
 
   public void dispose() {
     glBindBuffer(GL_TEXTURE_BUFFER, tbo);
-    CheckGL.checkGLError("glBindBuffer");
+    CoreCheckGL.checkGLError("glBindBuffer");
 
     glDeleteBuffers(tbo);
-    CheckGL.checkGLError("glDeleteBuffers");
+    CoreCheckGL.checkGLError("glDeleteBuffers");
 
     glDeleteTextures(texture);
-    CheckGL.checkGLError("glDeleteTextures");
+    CoreCheckGL.checkGLError("glDeleteTextures");
   }
 
   private void init(final float[] data) {
     tbo = glGenBuffers();
-    CheckGL.checkGLError("glGenBuffers");
+    CoreCheckGL.checkGLError("glGenBuffers");
 
     glBindBuffer(GL_TEXTURE_BUFFER, tbo);
-    CheckGL.checkGLError("glBindBuffer");
+    CoreCheckGL.checkGLError("glBindBuffer");
 
     FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
     buffer.put(data);
@@ -52,12 +52,12 @@ public class TBO {
     glBufferData(GL_TEXTURE_BUFFER, buffer, GL_STATIC_DRAW); 
 
     texture = glGenTextures();
-    CheckGL.checkGLError("glGenTextures");
+    CoreCheckGL.checkGLError("glGenTextures");
 
     glBindTexture(GL_TEXTURE_BUFFER, texture);
-    CheckGL.checkGLError("glBindTexture");
+    CoreCheckGL.checkGLError("glBindTexture");
 
     glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, tbo);
-    CheckGL.checkGLError("glTexBuffer");
+    CoreCheckGL.checkGLError("glTexBuffer");
   }
 }

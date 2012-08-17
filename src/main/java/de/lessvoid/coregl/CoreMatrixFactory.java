@@ -7,7 +7,7 @@ import org.lwjgl.util.vector.Matrix4f;
  * Creates LWJGL Matrix4j instances for projection- and orthographic  projection.
  * @author void
  */
-public class MatrixFactory {
+public class CoreMatrixFactory {
 
   /**
    * Create orthographic projection Matrix4f.

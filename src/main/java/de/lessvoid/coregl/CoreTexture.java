@@ -3,7 +3,6 @@ package de.lessvoid.coregl;
 import static org.lwjgl.opengl.GL11.glGenTextures;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.logging.Logger;
 
@@ -11,8 +10,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
 
-public class Texture {
-  private Logger log = Logger.getLogger(Texture.class.getName());
+public class CoreTexture {
+  private Logger log = Logger.getLogger(CoreTexture.class.getName());
 
   private final int textureId;
   private final int width;
@@ -20,7 +19,7 @@ public class Texture {
   private final int textureWidth;
   private final int textureHeight;
 
-  public Texture(
+  public CoreTexture(
       final boolean filterParam,
       final int width,
       final int height,
@@ -55,7 +54,7 @@ public class Texture {
 
   public void dispose() {
     GL11.glDeleteTextures(textureId);
-    CheckGL.checkGLError("dispose");
+    CoreCheckGL.checkGLError("dispose");
   }
 
   private void createTexture(final ByteBuffer textureBuffer, final int width, final int height, final boolean filter, final int srcPixelFormat) {
@@ -69,7 +68,7 @@ public class Texture {
 
     IntBuffer temp = BufferUtils.createIntBuffer(16);
     GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE, temp);
-    CheckGL.checkGLError("glGetInteger");
+    CoreCheckGL.checkGLError("glGetInteger");
 
     int max = temp.get(0);
     if ((width > max) || (height > max)) {
@@ -86,7 +85,7 @@ public class Texture {
 
     GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, minFilter); 
     GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, magFilter); 
-    CheckGL.checkGLError("glTexParameteri");
+    CoreCheckGL.checkGLError("glTexParameteri");
 
     if (minFilter == GL11.GL_LINEAR_MIPMAP_NEAREST) {
       GLU.gluBuild2DMipmaps(
@@ -109,26 +108,20 @@ public class Texture {
           GL11.GL_UNSIGNED_BYTE, 
           textureBuffer);
     }
-    CheckGL.checkGLError("glTexImage2D");
+    CoreCheckGL.checkGLError("glTexImage2D");
   }
 
   private int createTextureID() {
     IntBuffer textureId = BufferUtils.createIntBuffer(1);
     textureId.rewind();
     glGenTextures(textureId);
-    CheckGL.checkGLError("glGenTextures");
+    CoreCheckGL.checkGLError("glGenTextures");
     textureId.rewind();
     return textureId.get();
   }
 
-  private IntBuffer createIntBuffer(final int size) {
-    ByteBuffer temp = ByteBuffer.allocateDirect(4 * size);
-    temp.order(ByteOrder.nativeOrder());
-    return temp.asIntBuffer();
-  }    
-
   public void bind() {
     GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
-    CheckGL.checkGLError("glBindTexture");
+    CoreCheckGL.checkGLError("glBindTexture");
   }
 }
