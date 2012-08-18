@@ -4,14 +4,32 @@ import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL31.glDrawArraysInstanced;
 
+/**
+ * Simple helper methods to render vertex arrays.
+ * @author void
+ */
 public class CoreRender {
+
+  /**
+   * Render the currently active VAO using triangle strips with the given
+   * number of vertices.
+   *
+   * @param count number of vertices to render as triangle strips
+   */
   public static void renderTriangleStrip(final int count) {
     glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
     CoreCheckGL.checkGLError("glDrawArrays");
   }
 
-  public static void renderTriangleStripInstances(final int count) {
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, count);
+  /**
+   * Render the currently active VAO using triangle strips with the given
+   * number of vertices AND do that primCount times.
+   *
+   * @param count number of vertices to render as triangle strips per primitve
+   * @param primCount number of primitives to render
+   */
+  public static void renderTriangleStripInstances(final int count, int primCount) {
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, count, primCount);
     CoreCheckGL.checkGLError("glDrawArraysInstanced");
   }
 }

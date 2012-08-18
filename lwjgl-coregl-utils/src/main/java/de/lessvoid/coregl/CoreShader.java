@@ -47,11 +47,12 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
- * Helper class that represents
+ * Helper class that represents a shader (actually as the combination of a vertex
+ * and a fragment shader - what GL actually calls program).
  * @author void
  */
 public class CoreShader {
-  private static Logger log = Logger.getLogger(CoreShader.class.getName());
+  private static final Logger log = Logger.getLogger(CoreShader.class.getName());
   private int program;
   private String loggingPrefix = "N/A";
   private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
@@ -59,13 +60,19 @@ public class CoreShader {
   private final String[] attributes;
 
   /**
-   * Create a new Shader and register the given vertex attributes.
-   * @param vertexAttributes vertex attributes
+   * Create a new Shader and register the given vertex attribute names.
+   * @param vertexAttributes array of vertex attribute names
    */
   public CoreShader(final String ... vertexAttributes) {
     this.attributes = vertexAttributes;
   }
 
+  /**
+   * Compile both of the given Shaders. This actually creates and links the shader
+   * program.
+   * @param vertexShader name of the vertex shader
+   * @param fragmentShader name of the fragment shader
+   */
   public void compile(final String vertexShader, final String fragmentShader) {
     int vertexShaderId = createVertexShader();
     prepareShader(vertexShaderId, vertexShader);
@@ -99,47 +106,47 @@ public class CoreShader {
     checkGL("glGetProgram");
   }
 
-  public void setUniform(final String name, final float value) {
+  public void setUniformf(final String name, final float value) {
     glUniform1f(getLocation(name), value);
     checkGL("glUniform1f");
   }
 
-  public void setUniform(final String name, final float v1, final float v2) {
+  public void setUniformf(final String name, final float v1, final float v2) {
     glUniform2f(getLocation(name), v1, v2);
     checkGL("glUniform2f");
   }
 
-  public void setUniform(final String name, final float v1, final float v2, final float v3) {
+  public void setUniformf(final String name, final float v1, final float v2, final float v3) {
     glUniform3f(getLocation(name), v1, v2, v3);
     checkGL("glUniform3f");
   }
 
-  public void setUniform(final String name, final float x, final float y, final float z, final float w) {
+  public void setUniformf(final String name, final float x, final float y, final float z, final float w) {
     glUniform4f(getLocation(name), x, y, z, w);
     checkGL("glUniform4f");
   }
 
-  public void setUniform(final String name, final int v1) {
+  public void setUniformi(final String name, final int v1) {
     glUniform1i(getLocation(name), v1);
     checkGL("glUniform1i");
   }
 
-  public void setUniform(final String name, final int v1, final int v2) {
+  public void setUniformi(final String name, final int v1, final int v2) {
     glUniform2i(getLocation(name), v1, v2);
     checkGL("glUniform2i");
   }
 
-  public void setUniform(final String name, final int v1, final int v2, final int v3) {
+  public void setUniformi(final String name, final int v1, final int v2, final int v3) {
     glUniform3i(getLocation(name), v1, v2, v3);
     checkGL("glUniform3i");
   }
 
-  public void setUniform(final String name, final int v1, final int v2, final int v3, final int v4) {
+  public void setUniformi(final String name, final int v1, final int v2, final int v3, final int v4) {
     glUniform4i(getLocation(name), v1, v2, v3, v4);
     checkGL("glUniform4i");
   }
 
-  public void setUniform(final String name, final Matrix4f matrix) {
+  public void setUniformMatrix4f(final String name, final Matrix4f matrix) {
     matBuffer.clear();
     matrix.store(matBuffer);
     matBuffer.rewind();
@@ -147,7 +154,7 @@ public class CoreShader {
     checkGL("glUniformMatrix4");
   }
 
-  public void setUniform(final String name, final float[] kernelValues) {
+  public void setUniformfArray(final String name, final float[] kernelValues) {
     FloatBuffer buffer = BufferUtils.createFloatBuffer(kernelValues.length);
     buffer.put(kernelValues);
     buffer.rewind();
@@ -166,6 +173,9 @@ public class CoreShader {
     checkGL("glBindAttribLocation");
   }
 
+  /**
+   * Activate this program.
+   */
   public void activate() {
     glUseProgram(program);
     checkGL("glUseProgram");
