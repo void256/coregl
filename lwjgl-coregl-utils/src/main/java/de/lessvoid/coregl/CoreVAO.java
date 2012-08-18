@@ -9,10 +9,10 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
-public class CoreVA {
+public class CoreVAO {
   private int vao;
 
-  public CoreVA() {
+  public CoreVAO() {
     init();
   }
 
@@ -30,11 +30,6 @@ public class CoreVA {
     glDeleteVertexArrays(vao);
   }
 
-  private void init() {
-    vao = glGenVertexArrays();
-    CoreCheckGL.checkGLError("glGenVertexArrays");
-  }
-
   public void enableVertexAttributef(final int index, final int size, final int stride, final int offset) {
     glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
     glEnableVertexAttribArray(index);
@@ -46,5 +41,10 @@ public class CoreVA {
     glVertexAttribDivisorARB(index, divisor);
     glEnableVertexAttribArray(index);
     CoreCheckGL.checkGLError("glVertexAttribPointer (" + index + ")");
+  }
+
+  private void init() {
+    vao = glGenVertexArrays();
+    CoreCheckGL.checkGLError("glGenVertexArrays");
   }
 }

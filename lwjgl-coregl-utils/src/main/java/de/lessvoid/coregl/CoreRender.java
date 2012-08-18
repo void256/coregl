@@ -5,8 +5,8 @@ import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL31.glDrawArraysInstanced;
 
 public class CoreRender {
-  public static void renderTriangleStrip() {
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  public static void renderTriangleStrip(final int count) {
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
     CoreCheckGL.checkGLError("glDrawArrays");
   }
 

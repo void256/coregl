@@ -40,7 +40,7 @@ public class CoreLwjglSetup {
      * Do some awesome stuff in here!
      * @return true when the render loop should be stopped and false if you want it to continue.
      */
-    boolean process();
+    boolean render();
   }
 
   /**
@@ -94,7 +94,7 @@ public class CoreLwjglSetup {
     long now = System.currentTimeMillis();
 
     while (!Display.isCloseRequested() && !done) {
-      done = renderLoop.process();
+      done = renderLoop.render();
       Display.update();
       CoreCheckGL.checkGLError("render loop check for errors");
 

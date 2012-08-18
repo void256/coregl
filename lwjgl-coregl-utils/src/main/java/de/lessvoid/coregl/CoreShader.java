@@ -58,8 +58,12 @@ public class CoreShader {
   private FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
   private final String[] attributes;
 
-  public CoreShader(final String ... names) {
-    attributes = names;
+  /**
+   * Create a new Shader and register the given vertex attributes.
+   * @param vertexAttributes vertex attributes
+   */
+  public CoreShader(final String ... vertexAttributes) {
+    this.attributes = vertexAttributes;
   }
 
   public void compile(final String vertexShader, final String fragmentShader) {
