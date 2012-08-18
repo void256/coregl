@@ -210,7 +210,7 @@ public class CoreLwjglSetup {
   }
 
   private void logMode(final String message, final DisplayMode currentMode) {
-    log.fine(
+    log.info(
         message +
         currentMode.getWidth() + ", " +
         currentMode.getHeight() + ", " +

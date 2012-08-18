@@ -1,10 +1,84 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.lessvoid</groupId>
-  <artifactId>lwjgl-coregl-utils</artifactId>
+  <artifactId>lwjgl-coregl</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>LWJGL OpenGL core</name>
+  <description>simple utility methods to make life with OpenGL core profile simpler</description>
+  <modules>
+    <module>lwjgl-coregl-utils</module>
+    <module>lwjgl-coregl-utils-examples</module>
+  </modules>
+  <url>https://github.com/void256/lwjgl-coregl-utils/</url>
+  <licenses>
+    <license>
+      <name>The BSD 2-Clause License</name>
+      <url>http://www.opensource.org/licenses/bsd-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>void256</id>
+      <name>void</name>
+      <email>void@lessvoid.com</email>
+      <url>http://www.lessvoid.com</url>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.1</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.2.2</version>
+          <configuration>
+            <!-- required by gpg-plugin see here: https://docs.sonatype.org/display/Repository/How+To+Generate+PGP+Signatures+With+Maven -->
+            <mavenExecutorId>forked-path</mavenExecutorId>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
   <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.3.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>2.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymockclassextension</artifactId>
+      <version>2.4</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.lwjgl.lwjgl</groupId>
       <artifactId>lwjgl</artifactId>
@@ -16,33 +90,56 @@
       <version>2.8.2</version>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.googlecode.mavennatives</groupId>
-        <artifactId>maven-nativedependencies-plugin</artifactId>
-        <version>0.0.5</version>
-        <executions>
-          <!-- If you use this pom.xml with eclipse m2e plugin you'll need 
-            to install the maven natives eclipse plugin from http://code.google.com/p/mavennatives/ 
-            to make the error message go away. It's as simple as installing it using 
-            the following update site: http://mavennatives.googlecode.com/svn/eclipse-update/. 
-            This plugin detects if you have the maven plugin configured, and if you do 
-            it executes the unpacking of natives, and configures the Native Library Location. 
-            This will allow you to run the examples from within eclipse without any more 
-            setup of LWJGL required! Just execute the individual examples like any other 
-            Java application from eclipse. Done! :) -->
-          <execution>
-            <id>unpacknatives</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  <description>simple utility methods to make life with OpenGL core profile simpler</description>
-  <name>LWJGL OpenGL core utililities</name>
+  <scm>
+    <connection>scm:git:git://github.com/void256/lwjgl-coregl-utils.git</connection>
+    <developerConnection>scm:git:git@github.com:void256/lwjgl-coregl-utils.git</developerConnection>
+    <url>scm:git:git://github.com/void256/lwjgl-coregl-utils.git</url>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>nifty-maven-repo.sourceforge.net</id>
+      <url>sftp://web.sourceforge.net/home/project-web/nifty-gui/htdocs/nifty-maven-repo</url>
+    </repository>
+    <snapshotRepository>
+      <id>nifty-maven-repo.sourceforge.net</id>
+      <url>sftp://web.sourceforge.net/home/project-web/nifty-gui/htdocs/nifty-maven-repo</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <repositories>
+    <repository>
+      <id>nifty-maven-repo.sourceforge.net</id>
+      <url>http://nifty-gui.sourceforge.net/nifty-maven-repo</url>
+    </repository>
+  </repositories>
+  <profiles>
+    <!-- profile for release signing all artifacts -->
+    <!-- remember to call with: mvn release:perform -Darguments=-Dgpg.passphrase=PASSPHRASE -->
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.1</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
