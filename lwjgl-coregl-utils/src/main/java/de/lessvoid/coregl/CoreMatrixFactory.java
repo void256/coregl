@@ -35,27 +35,47 @@ public class CoreMatrixFactory {
   }
 
   /**
-   * Create perspective projection Matrix4f.
-   * @param width width
-   * @param height height
+   * Create perspective projection Matrix4f in glFrustrum() style =)
+   *
+   * @param left left
+   * @param right right
+   * @param top top
+   * @param bottom bottom
    * @param zNear z near value (for example 1)
    * @param zFar z far value (for example 10000)
    * @return new perspective projection matrix
    */
-  public static Matrix4f createProjection(final float width, final float height, final float zNear, final float zFar) {
-    float left = 0;
-    float right = width;
-    float top = 0;
-    float bottom = height;
-
+  public static Matrix4f createProjection(
+      final float left,
+      final float right,
+      final float top,
+      final float bottom,
+      final float zNear,
+      final float zFar) {
     Matrix4f projection = new Matrix4f();
-    projection.m00 = 2 * zNear / (right-left);
+    projection.m00 = 2.f * zNear / (right-left);
+    projection.m11 = 2.f * zNear / (top-bottom);
     projection.m20 = (right+left) / (right-left);
-    projection.m11 = 2 * zNear / (top-bottom);
     projection.m21 = (top+bottom) / (top-bottom);
-    projection.m22 = -(zFar + zNear) / (zFar-zNear);
-    projection.m32 = - 2 * zFar * zNear / (zFar-zNear);
-    projection.m23 = -1;
+    projection.m22 = - (zFar + zNear) / (zFar-zNear);
+    projection.m23 = -1.f;
+    projection.m32 = - 2.f * zFar * zNear / (zFar - zNear);
+    projection.m33 = 0.f;
+    return projection;
+  }
+
+  public static Matrix4f createProjection(
+      final float angleOfView,
+      final float aspectRatio,
+      final float zNear,
+      final float zFar) {
+    Matrix4f projection = new Matrix4f();
+    projection.m00 = 1.f/(float)Math.tan(angleOfView);
+    projection.m11 = aspectRatio/(float)Math.tan(angleOfView);
+    projection.m22 = (zFar+zNear)/(zFar-zNear);
+    projection.m23 = 1.f;
+    projection.m32 = - 2.f * zFar * zNear / (zFar - zNear);
+    projection.m33 = 0.f;
     return projection;
   }
 }

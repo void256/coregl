@@ -28,6 +28,7 @@ public class CoreLwjglSetup {
   private static final Logger log = Logger.getLogger(CoreLwjglSetup.class.getName());
   private static final Comparator<DisplayMode> DisplayModeFrequencyComparator = new DisplayModeFrequencyComparator();
   private final StringBuilder fpsText = new StringBuilder();
+  private static final float NANO_TO_MS_CONVERSION = 1000000.f;
 
   /**
    * You can implement this interface when you use the renderLoop() method. This will be called each frame and allows
@@ -38,9 +39,10 @@ public class CoreLwjglSetup {
 
     /**
      * Do some awesome stuff in here!
+     * @param l 
      * @return true when the render loop should be stopped and false if you want it to continue.
      */
-    boolean render();
+    boolean render(float deltaTime);
   }
 
   /**
@@ -92,9 +94,12 @@ public class CoreLwjglSetup {
     boolean done = false;
     long frameCounter = 0;
     long now = System.currentTimeMillis();
+    long prevTime = System.nanoTime();
 
     while (!Display.isCloseRequested() && !done) {
-      done = renderLoop.render();
+      long nanoTime = System.nanoTime();
+      done = renderLoop.render((nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
+      prevTime = nanoTime;
       Display.update();
       CoreCheckGL.checkGLError("render loop check for errors");
 

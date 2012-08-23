@@ -72,8 +72,8 @@ public class CoreVAO {
    *        (the number of GL_FLOAT to use)
    * @param stride the stride between the data
    * @param offset the offset of the data
-   * @param divisor when the divisor is 1 this data is sent with every vertex. when it's 2
-   *        the data is send for every other vertex and so on.
+   * @param divisor Specify the number of instances that will pass between updates of the generic attribute at slot
+   *        index.
    */
   public void enableVertexAttributeDivisorf(final int index, final int size, final int stride, final int offset, final int divisor) {
     glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);

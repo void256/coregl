@@ -45,7 +45,7 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
   }
 
   @Override
-  public boolean render() {
+  public boolean render(final float deltaTime) {
     glClearColor(.1f, .1f, .3f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
