@@ -19,6 +19,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.util.glu.GLU;
 
 /**
  * This class helps to initialize LWJGL and to execute the renderloop.

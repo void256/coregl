@@ -25,10 +25,10 @@ public class CoreMatrixFactory {
 
     Matrix4f projection = new Matrix4f();
     projection.m00 = 2 / (right-left);
-    projection.m30 = - (right+left) / (right-left);
     projection.m11 = 2 / (top-bottom);
-    projection.m31 = - (top+bottom) / (top-bottom);
     projection.m22 = -2 / (zFar-zNear);
+    projection.m30 = - (right+left) / (right-left);
+    projection.m31 = - (top+bottom) / (top-bottom);
     projection.m32 = - (zFar+zNear) / (zFar-zNear);
     projection.m33 = 1;
     return projection;

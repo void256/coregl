@@ -1,6 +1,6 @@
 package de.lessvoid.coregl;
 
-import static org.lwjgl.opengl.GL11.GL_POINTS;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
 import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static org.lwjgl.opengl.GL31.glDrawArraysInstanced;
@@ -19,6 +19,17 @@ public class CoreRender {
    */
   public static void renderTriangleStrip(final int count) {
     glDrawArrays(GL_TRIANGLE_STRIP, 0, count);
+    CoreCheckGL.checkGLError("glDrawArrays");
+  }
+
+  /**
+   * Render the currently active VAO using triangles with the given
+   * number of vertices.
+   *
+   * @param count number of vertices to render as triangle strips
+   */
+  public static void renderTriangles(final int count) {
+    glDrawArrays(GL_TRIANGLES, 0, count);
     CoreCheckGL.checkGLError("glDrawArrays");
   }
 

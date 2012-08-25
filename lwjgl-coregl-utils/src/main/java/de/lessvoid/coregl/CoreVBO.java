@@ -4,6 +4,7 @@ package de.lessvoid.coregl;
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
@@ -56,6 +57,16 @@ public class CoreVBO {
    */
   public static CoreVBO createDynamicVBO(final float[] data) {
     return new CoreVBO(GL_DYNAMIC_DRAW, data);
+  }
+
+  /**
+   * This works exactly as createStaticVBO() but will use GL_STREAM_DRAW instead.
+   *
+   * @param data float array of buffer data
+   * @return the CoreVBO instance created
+   */
+  public static CoreVBO createStreamVBO(final float[] data) {
+    return new CoreVBO(GL_STREAM_DRAW, data);
   }
 
   /**
