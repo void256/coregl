@@ -1,14 +1,17 @@
 package de.lessvoid.coregl.examples;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glPointSize;
 
 import java.nio.FloatBuffer;
 
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
-import org.lwjgl.util.vector.Vector4f;
 
 import de.lessvoid.coregl.CoreLwjglSetup;
 import de.lessvoid.coregl.CoreLwjglSetup.RenderLoopCallback;
@@ -30,8 +33,10 @@ public class StarfieldMain implements RenderLoopCallback {
   private float angleY = 0.f;
 
   public StarfieldMain() {
-    shader = new CoreShader("aVertex", "aStarPos");
-    shader.compile("starfield/star.vs", "starfield/star.fs");
+    shader = CoreShader.newShader();
+    shader.vertexShader("starfield/star.vs");
+    shader.fragmentShader("starfield/star.fs");
+    shader.link();
 
     CoreVAO vao = new CoreVAO();
     vao.bind();

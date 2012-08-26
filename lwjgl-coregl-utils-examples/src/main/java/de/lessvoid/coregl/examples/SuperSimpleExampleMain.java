@@ -20,8 +20,10 @@ import de.lessvoid.coregl.CoreVBO;
 public class SuperSimpleExampleMain implements RenderLoopCallback {
 
   public SuperSimpleExampleMain() {
-    CoreShader shader = new CoreShader("vVertex", "vColor");
-    shader.compile("super-simple/super-simple.vs", "super-simple/super-simple.fs");
+    CoreShader shader = CoreShader.newShaderWithVertexAttributes("vVertex", "vColor");
+    shader.vertexShader("super-simple/super-simple.vs");
+    shader.fragmentShader("super-simple/super-simple.fs");
+    shader.link();
 
     CoreVAO vao = new CoreVAO();
     vao.bind();
