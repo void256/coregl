@@ -31,6 +31,7 @@ import static org.lwjgl.opengl.GL20.glUniform4f;
 import static org.lwjgl.opengl.GL20.glUniform4i;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4;
 import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -85,28 +86,31 @@ public class CoreShader {
    * @param filename the filename of the shader
    */
   public void vertexShader(final String filename) {
-    int vertexShaderId = createVertexShader();
+    int shaderId = glCreateShader(GL_VERTEX_SHADER);
     checkGLShader(filename, "glCreateShader(GL_VERTEX_SHADER)");
-
-    prepareShader(filename, vertexShaderId);
-
-    glAttachShader(program, vertexShaderId);
-    checkGLShader(filename, "glAttachShader (vertexShaderId)");
+    attachShader(filename, shaderId);
   }
 
   /**
    * Attach the given fragment shader file to this CoreShader. This will call glCreateShader(), loads and compiles
    * the shader source and finally attaches the shader.
-   * @param vertexShader the filename of the shader
+   * @param filename the filename of the shader
    */
   public void fragmentShader(final String filename) {
-    int fragmentShaderId = createFragmentShader();
-    checkGLShader(filename, "glCreateShader(GL_VERTEX_SHADER)");
+    int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
+    checkGLShader(filename, "glCreateShader(GL_FRAGMENT_SHADER)");
+    attachShader(filename, shaderId);
+  }
 
-    prepareShader(filename, fragmentShaderId);
-
-    glAttachShader(program, fragmentShaderId);
-    checkGLShader(filename, "glAttachShader (vertexShaderId)");
+  /**
+   * Attach the given geometry shader file to this CoreShader. This will call glCreateShader(), loads and compiles
+   * the shader source and finally attaches the shader.
+   * @param filename the filename of the shader
+   */
+  public void geometryShader(final String filename) {
+    int shaderId = glCreateShader(GL_GEOMETRY_SHADER);
+    checkGLShader(filename, "glCreateShader(GL_GEOMETRY_SHADER)");
+    attachShader(filename, shaderId);
   }
 
   /**
@@ -283,6 +287,13 @@ public class CoreShader {
     checkGL("glCreateProgram");
   }
 
+  private void attachShader(final String filename, final int shaderId) {
+    prepareShader(filename, shaderId);
+
+    glAttachShader(program, shaderId);
+    checkGLShader(filename, "glAttachShader");
+  }
+
   private int registerParameter(final String name) {
     int location = getUniform(name);
     parameter.put(name, location);
@@ -327,14 +338,6 @@ public class CoreShader {
 
     printLogInfo(shaderId);
     checkGLShader(filename, filename);
-  }
-
-  private int createVertexShader() {
-    return glCreateShader(GL_VERTEX_SHADER);
-  }
-
-  private int createFragmentShader() {
-    return glCreateShader(GL_FRAGMENT_SHADER);
   }
 
   private ByteBuffer loadShader(final String filename) {
