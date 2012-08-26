@@ -31,7 +31,7 @@ public class StarfieldMain implements RenderLoopCallback {
 
   public StarfieldMain() {
     shader = new CoreShader("aVertex", "aStarPos");
-    shader.compile("star.vs", "star.fs");
+    shader.compile("starfield/star.vs", "starfield/star.fs");
 
     CoreVAO vao = new CoreVAO();
     vao.bind();

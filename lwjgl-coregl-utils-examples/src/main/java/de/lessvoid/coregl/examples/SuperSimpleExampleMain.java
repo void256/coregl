@@ -21,7 +21,7 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
 
   public SuperSimpleExampleMain() {
     CoreShader shader = new CoreShader("vVertex", "vColor");
-    shader.compile("super-simple.vs", "super-simple.fs");
+    shader.compile("super-simple/super-simple.vs", "super-simple/super-simple.fs");
 
     CoreVAO vao = new CoreVAO();
     vao.bind();

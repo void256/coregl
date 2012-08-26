@@ -17,7 +17,12 @@ import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.glu.GLU;
 
@@ -153,6 +158,8 @@ public class CoreLwjglSetup {
     int viewportWidth = viewportBuffer.get(2);
     int viewportHeight = viewportBuffer.get(3);
 
+    log.info("GL_MAX_3D_TEXTURE_SIZE: " + GL11.glGetInteger(GL12.GL_MAX_3D_TEXTURE_SIZE));
+    
     GL11.glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
 
     GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
