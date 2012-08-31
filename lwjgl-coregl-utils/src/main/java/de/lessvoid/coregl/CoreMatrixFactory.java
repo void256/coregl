@@ -15,11 +15,7 @@ public class CoreMatrixFactory {
    * @param height height
    * @return new Matrix4j
    */
-  public static Matrix4f createOrtho(final float width, final float height) {
-    float left = 0;
-    float right = width;
-    float top = 0;
-    float bottom = height;
+  public static Matrix4f createOrtho(final float left, final float right, final float bottom, final float top) {
     float zNear = -9999;
     float zFar = 9999;
 
