@@ -48,6 +48,17 @@ public class CoreRender {
 
   /**
    * Render the currently active VAO using points with the given
+   * number of vertices.
+   *
+   * @param count number of vertices to render as points
+   */
+  public static void renderPoints(final int count) {
+    glDrawArrays(GL_POINTS, 0, count);
+    CoreCheckGL.checkGLError("glDrawArrays(GL_POINTS)");
+  }
+
+  /**
+   * Render the currently active VAO using points with the given
    * number of vertices AND do that primCount times.
    *
    * @param count number of vertices to render as points per primitive
