@@ -9,10 +9,12 @@ import org.lwjgl.util.vector.Vector4f;
 
 import de.lessvoid.coregl.CoreLwjglSetup;
 import de.lessvoid.coregl.CoreLwjglSetup.RenderLoopCallback;
+import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
+import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreMatrixFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreTexture;
+import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.simpleimageloader.ImageData;
@@ -97,7 +99,7 @@ public class GeometryShaderExampleMain implements RenderLoopCallback {
     SimpleImageLoader loader = new SimpleImageLoader();
     ImageData imageData = loader.load("demo.png", GeometryShaderExampleMain.class.getResourceAsStream("/nifty-logo-150x150.png"));
 
-    CoreTexture texture = new CoreTexture(true, 0, 0, imageData.getWidth(), imageData.getHeight(), imageData.getBitsPerPixel(), imageData.getData());
+    CoreTexture2D texture = new CoreTexture2D(ColorFormat.RGBA, imageData.getWidth(), imageData.getHeight(), imageData.getData(), ResizeFilter.Linear);
     texture.bind();
 
     // we only use a single shader and a single vao so we can activate both her

@@ -50,7 +50,7 @@ public class CoreTextureAtlasGenerator {
     generator = new TextureAtlasGenerator(width, height);
   }
 
-  public boolean addImage(final CoreTexture texture, final String name, final int padding) {
+  public boolean addImage(final CoreTexture2D texture, final String name, final int padding) {
     try {
       Result result = generator.addImage(texture.getWidth(), texture.getHeight(), name, padding);
       put(texture, result.getX(), result.getY());
@@ -65,7 +65,7 @@ public class CoreTextureAtlasGenerator {
     return renderToTexture;
   }
 
-  private void put(final CoreTexture source, final int x, final int y) {
+  private void put(final CoreTexture2D source, final int x, final int y) {
     FloatBuffer buffer = vbo.getBuffer();
     buffer.put(x);
     buffer.put(y);

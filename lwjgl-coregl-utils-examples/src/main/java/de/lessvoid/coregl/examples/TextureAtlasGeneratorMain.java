@@ -10,11 +10,13 @@ import java.nio.FloatBuffer;
 
 import de.lessvoid.coregl.CoreLwjglSetup;
 import de.lessvoid.coregl.CoreLwjglSetup.RenderLoopCallback;
+import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreMatrixFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreRenderToTexture;
 import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreTexture;
+import de.lessvoid.coregl.CoreTexture2D;
+import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTextureAtlasGenerator;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
@@ -52,7 +54,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     for (String f : base.list(new PNGFileFilter())) {
       String filename = "/texture-atlas/" + f;
       ImageData imageData = loader.load(filename, GeometryShaderExampleMain.class.getResourceAsStream(filename), new SimpleImageLoaderConfig().forceAlpha());
-      CoreTexture texture = new CoreTexture(true, imageData.getWidth(), imageData.getHeight(), imageData.getWidth(), imageData.getHeight(), imageData.getBitsPerPixel(), imageData.getData());
+      CoreTexture2D texture = new CoreTexture2D(ColorFormat.RGBA, imageData.getWidth(), imageData.getHeight(), imageData.getData(),  ResizeFilter.Linear);
       if (!generator.addImage(texture, filename, 5)) {
         System.out.println("failed to add image: " + filename);
       }
