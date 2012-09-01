@@ -4,6 +4,8 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.nio.FloatBuffer;
 
 import de.lessvoid.coregl.CoreLwjglSetup;
@@ -13,83 +15,49 @@ import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreRenderToTexture;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture;
+import de.lessvoid.coregl.CoreTextureAtlasGenerator;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.simpleimageloader.ImageData;
 import de.lessvoid.simpleimageloader.SimpleImageLoader;
+import de.lessvoid.simpleimageloader.SimpleImageLoaderConfig;
 
 public class TextureAtlasGeneratorMain implements RenderLoopCallback {
-  private CoreRenderToTexture renderToTexture;
+  private SimpleImageLoader loader = new SimpleImageLoader();
+
+  private CoreVAO vao;
   private CoreVBO vbo;
   private CoreShader shader;
-  private CoreTexture texture;
+  private CoreRenderToTexture textureAtlas;
 
   public TextureAtlasGeneratorMain() throws Exception {
     shader = CoreShader.newShaderWithVertexAttributes("aVertex", "aUV");
-    shader.vertexShader("texture-atlas/texture-atlas.vs");
-    shader.fragmentShader("texture-atlas/texture-atlas.fs");
+    shader.vertexShader("texture-atlas/texture.vs");
+    shader.fragmentShader("texture-atlas/texture.fs");
     shader.link();
-
-    CoreVAO vao = new CoreVAO();
-    vao.bind();
-
-    vbo = CoreVBO.createStaticVBOAndSend(new float[] {
-         100.f,  100.f,    0.0f, 0.0f,
-         100.f,  250.f,    0.0f, 1.0f,
-         250.f,  100.f,    1.0f, 0.0f,
-         250.f,  250.f,    1.0f, 1.0f,
-    });
-
-    // parameters are: index, size, stride, offset
-    // this will use the currently active VBO to store the VBO in the VAO
-    vao.enableVertexAttributef(0, 2, 4, 0);
-    vao.enableVertexAttributef(1, 2, 4, 2);
-
-    // we only use a single shader and a single vao so we can activate both her
-    // and let them stay active the whole time.
     shader.activate();
     shader.setUniformi("uTexture", 0);
 
-    SimpleImageLoader loader = new SimpleImageLoader();
-    ImageData imageData = loader.load("demo.png", GeometryShaderExampleMain.class.getResourceAsStream("/nifty-logo-150x150.png"));
-
-    texture = new CoreTexture(true, 0, 0, imageData.getWidth(), imageData.getHeight(), imageData.getBitsPerPixel(), imageData.getData());
-
+    vao = new CoreVAO();
     vao.bind();
 
-    renderToTexture = new CoreRenderToTexture(500, 500);
-    renderToTexture.on();
-    texture.bind();
+    vbo = CoreVBO.createStaticVBO(new float[4*4]);
+    vbo.bind();
 
-    glClearColor(1.f, 0.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-    FloatBuffer buffer = vbo.getBuffer();
-    buffer.put(0.f);
-    buffer.put(0.f);
-    buffer.put(0.0f);
-    buffer.put(0.0f);
+    vao.enableVertexAttributef(0, 2, 4, 0);
+    vao.enableVertexAttributef(1, 2, 4, 2);
 
-    buffer.put(0.f);
-    buffer.put(50.f);
-    buffer.put(0.0f);
-    buffer.put(1.0f);
-
-    buffer.put(50.f);
-    buffer.put(0.f);
-    buffer.put(1.0f);
-    buffer.put(0.0f);
-
-    buffer.put(50.f);
-    buffer.put(50.f);
-    buffer.put(1.0f);
-    buffer.put(1.0f);
-    buffer.rewind();
-    vbo.sendData();
-
-    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, 500.f, 0, 500.f));
-    CoreRender.renderTriangleStrip(4);
-    renderToTexture.off();
+    CoreTextureAtlasGenerator generator = new CoreTextureAtlasGenerator(1024, 1024);
+    File base = new File("src/main/resources/texture-atlas");
+    for (String f : base.list(new PNGFileFilter())) {
+      String filename = "/texture-atlas/" + f;
+      ImageData imageData = loader.load(filename, GeometryShaderExampleMain.class.getResourceAsStream(filename), new SimpleImageLoaderConfig().forceAlpha());
+      CoreTexture texture = new CoreTexture(true, imageData.getWidth(), imageData.getHeight(), imageData.getWidth(), imageData.getHeight(), imageData.getBitsPerPixel(), imageData.getData());
+      if (!generator.addImage(texture, filename, 5)) {
+        System.out.println("failed to add image: " + filename);
+      }
+    }
+    textureAtlas = generator.getDone();
   }
 
   @Override
@@ -97,32 +65,31 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     glClearColor(.1f, .1f, .3f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // render all the data in the currently active vao using triangle strips
-    //texture.bind();
-    renderToTexture.bindTexture();
+    textureAtlas.bindTexture();
 
     FloatBuffer buffer = vbo.getBuffer();
-    buffer.put(100.f);
-    buffer.put(200.f);
+    buffer.put(0.f);
+    buffer.put(0.f);
     buffer.put(0.0f);
     buffer.put(0.0f);
 
-    buffer.put(100.f);
-    buffer.put(700.f);
+    buffer.put(0.f);
+    buffer.put(0.f + 768);
     buffer.put(0.0f);
     buffer.put(1.0f);
     
-    buffer.put(600.f);
-    buffer.put(200.f);
+    buffer.put(0.f + 1024);
+    buffer.put(0.f);
     buffer.put(1.0f);
     buffer.put(0.0f);
     
-    buffer.put(600.f);
-    buffer.put(700.f);
+    buffer.put(0.f + 1024);
+    buffer.put(0.f + 768);
     buffer.put(1.0f);
     buffer.put(1.0f);
     buffer.rewind();
     vbo.sendData();
+    vao.bind();
 
     shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, 1024.f, 768.f, 0));
     CoreRender.renderTriangleStrip(4);
@@ -134,5 +101,12 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Texture Atlas Generator", 1024, 768);
     setup.renderLoop(new TextureAtlasGeneratorMain());
+  }
+
+  private static class PNGFileFilter implements FilenameFilter {
+    @Override
+    public boolean accept(File dir, String name) {
+      return name.endsWith(".png");
+    }
   }
 }

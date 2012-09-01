@@ -52,6 +52,22 @@ public class CoreRenderToTexture {
   }
 
   /**
+   * Get the width of this render target.
+   * @return width
+   */
+  public int getWidth() {
+    return width;
+  }
+
+  /**
+   * Get the height of this render target.
+   * @return height
+   */
+  public int getHeight() {
+    return height;
+  }
+
+  /**
    * Enable this CoreRenderToTexture object as the framebuffer target.
    */
   public void on() {
