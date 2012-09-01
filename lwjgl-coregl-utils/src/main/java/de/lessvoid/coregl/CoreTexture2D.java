@@ -517,15 +517,15 @@ public class CoreTexture2D {
    */
   private static int applyTextureId(final int target, final int textureId) {
     final int usedTextureId;
-    if (textureId == -1) {
-      usedTextureId = textureId;
-    } else {
+    if (textureId == AUTO) {
       usedTextureId = createTextureID();
+    } else {
+      usedTextureId = textureId;
     }
 
     GL11.glBindTexture(target, usedTextureId);
     checkGLError("glBindTexture", true);
-    return textureId;
+    return usedTextureId;
   }
 
   /**
