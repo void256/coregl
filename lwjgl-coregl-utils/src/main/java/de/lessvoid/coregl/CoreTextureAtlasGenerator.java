@@ -32,7 +32,6 @@ public class CoreTextureAtlasGenerator {
     shader.link();
     shader.activate();
     shader.setUniformi("uTexture", 0);
-    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, width, 0, height));
 
     vao = new CoreVAO();
     vao.bind();
@@ -46,6 +45,8 @@ public class CoreTextureAtlasGenerator {
     renderToTexture.on();
     glClearColor(0.2f, 0.2f, 0.2f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
+    renderToTexture.off();
+    vao.unbind();
 
     generator = new TextureAtlasGenerator(width, height);
   }
@@ -66,6 +67,12 @@ public class CoreTextureAtlasGenerator {
   }
 
   private void put(final CoreTexture2D source, final int x, final int y) {
+    shader.activate();
+    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, renderToTexture.getWidth(), 0, renderToTexture.getHeight()));
+
+    vao.bind();
+    renderToTexture.on();
+
     FloatBuffer buffer = vbo.getBuffer();
     buffer.put(x);
     buffer.put(y);
@@ -90,5 +97,7 @@ public class CoreTextureAtlasGenerator {
     vbo.sendData();
 
     CoreRender.renderTriangleStrip(4);
+    vao.unbind();
+    renderToTexture.off();
   }
 }
