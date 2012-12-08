@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -16,9 +17,14 @@ import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL20;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL21.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
+import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.opengl.GL15.*;
 import org.lwjgl.opengl.PixelFormat;
 
 /**
@@ -65,6 +71,13 @@ public class CoreLwjglSetup {
              record.getMessage() + "\n";
         }
       });
+    }
+
+    try {
+      LogManager.getLogManager().readConfiguration((new Object()).getClass().getResourceAsStream("/logging.properties"));
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
     }
   }
 
@@ -140,33 +153,33 @@ public class CoreLwjglSetup {
 
     // just output some infos about the system we're on
     log.info("plattform: " + LWJGLUtil.getPlatformName());
-    log.info("opengl version: " + GL11.glGetString(GL11.GL_VERSION));
-    log.info("opengl vendor: " + GL11.glGetString(GL11.GL_VENDOR));
-    log.info("opengl renderer: " + GL11.glGetString(GL11.GL_RENDERER));
+    log.info("opengl version: " + glGetString(GL_VERSION));
+    log.info("opengl vendor: " + glGetString(GL_VENDOR));
+    log.info("opengl renderer: " + glGetString(GL_RENDERER));
     IntBuffer maxVertexAttribts = BufferUtils.createIntBuffer(4 * 4);
-    GL11.glGetInteger(GL20.GL_MAX_VERTEX_ATTRIBS, maxVertexAttribts);
+    glGetInteger(GL_MAX_VERTEX_ATTRIBS, maxVertexAttribts);
     log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
     CoreCheckGL.checkGLError("init phase 1");
 
     IntBuffer viewportBuffer = BufferUtils.createIntBuffer(4 * 4);
-    GL11.glGetInteger(GL11.GL_VIEWPORT, viewportBuffer);
+    glGetInteger(GL_VIEWPORT, viewportBuffer);
     int viewportWidth = viewportBuffer.get(2);
     int viewportHeight = viewportBuffer.get(3);
 
-    log.info("GL_MAX_3D_TEXTURE_SIZE: " + GL11.glGetInteger(GL12.GL_MAX_3D_TEXTURE_SIZE));
+    log.info("GL_MAX_3D_TEXTURE_SIZE: " + glGetInteger(GL_MAX_3D_TEXTURE_SIZE));
     
-    GL11.glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
+    glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
 
-    GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-    GL11.glEnable(GL11.GL_BLEND);
-    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     CoreCheckGL.checkGLError("initialized");
   }
 
   private void createWindow(final String title) throws LWJGLException {
     Display.setFullscreen(false);
-    Display.create(new PixelFormat(), new ContextAttribs(3, 2).withProfileCore(true));
+    Display.create(new PixelFormat().withSamples(8), new ContextAttribs(3, 2).withProfileCore(true));
     Display.setVSyncEnabled(false);
     Display.setTitle(title);
   }

@@ -61,17 +61,58 @@ public class CoreMatrixFactory {
   }
 
   public static Matrix4f createProjection(
-      final float angleOfView,
+      final float fov,
       final float aspectRatio,
       final float zNear,
       final float zFar) {
     Matrix4f projection = new Matrix4f();
-    projection.m00 = 1.f/(float)Math.tan(angleOfView);
-    projection.m11 = aspectRatio/(float)Math.tan(angleOfView);
-    projection.m22 = (zFar+zNear)/(zFar-zNear);
-    projection.m23 = 1.f;
+    float e = 1.f/(float)Math.tan(fov / 2.f);
+    projection.m00 = e;
+    projection.m11 = e / aspectRatio;
+    projection.m22 = -(zFar+zNear)/(zFar-zNear);
+    projection.m23 = -1.f;
     projection.m32 = - 2.f * zFar * zNear / (zFar - zNear);
     projection.m33 = 0.f;
     return projection;
   }
+
+  public static Matrix4f createProjection2(
+      final float fov,
+      final float aspectRatio,
+      final float zNear,
+      final float zFar) {
+    float DEG2RAD = (float)( Math.PI / 180.f );
+
+    float tangent = (float) Math.tan(fov/2 * DEG2RAD);   // tangent of half fovY
+    float height = zNear * tangent;          // half height of near plane
+    float width = height * aspectRatio;      // half width of near plane
+
+    // params: left, right, bottom, top, near, far
+    return createProjection2(-width, width, -height, height, zNear, zFar);
+  }
+
+  public static Matrix4f createProjection2(
+      final float left,
+      final float right,
+      final float bottom,
+      final float top,
+      final float near,
+      final float far) {
+    float A = - (right + left) / (right - left);
+    float B = - (top + bottom) / (top - bottom);
+    float C = - (far + near) / (far - near);
+    float D = - 2 * far * near / (far - near);
+
+    Matrix4f projection = new Matrix4f();
+    projection.m00 = 2.f / (right - left);
+    projection.m20 = A;
+    projection.m11 = 2.f / (top - bottom);
+    projection.m21 = B;
+    projection.m22 = C;
+    projection.m32 = D;
+    projection.m23 = -1.f;
+    projection.m33 = 0.f;
+    return projection;
+  }
+
 }

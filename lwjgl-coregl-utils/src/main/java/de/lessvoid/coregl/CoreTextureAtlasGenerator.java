@@ -36,14 +36,14 @@ public class CoreTextureAtlasGenerator {
     vao = new CoreVAO();
     vao.bind();
 
-    vbo = CoreVBO.createStreamVBO(new float[4*4]);
+    vbo = CoreVBO.createStream(new float[4*4]);
     vbo.bind();
 
     vao.enableVertexAttributef(0, 2, 4, 0);
     vao.enableVertexAttributef(1, 2, 4, 2);
 
     renderToTexture.on();
-    glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
     renderToTexture.off();
     vao.unbind();
@@ -51,18 +51,17 @@ public class CoreTextureAtlasGenerator {
     generator = new TextureAtlasGenerator(width, height);
   }
 
-  public boolean addImage(final CoreTexture2D texture, final String name, final int padding) {
+  public Result addImage(final CoreTexture2D texture, final String name, final int padding) {
     try {
       Result result = generator.addImage(texture.getWidth(), texture.getHeight(), name, padding);
       put(texture, result.getX(), result.getY());
-      return true;
+      return result;
     } catch (TextureAtlasGeneratorException e) {
-      return false;
+      return null;
     }
   }
 
   public CoreRenderToTexture getDone() {
-    renderToTexture.off();
     return renderToTexture;
   }
 
@@ -94,10 +93,18 @@ public class CoreTextureAtlasGenerator {
     buffer.put(1.0f);
     buffer.put(1.0f);
     buffer.rewind();
-    vbo.sendData();
+    vbo.send();
 
     CoreRender.renderTriangleStrip(4);
     vao.unbind();
     renderToTexture.off();
+  }
+
+  public int getWidth() {
+    return renderToTexture.getWidth();
+  }
+
+  public int getHeight() {
+    return renderToTexture.getHeight();
   }
 }

@@ -1,8 +1,8 @@
 package de.lessvoid.coregl;
 
 
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
@@ -10,18 +10,18 @@ import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
 
-import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
 /**
- * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
+ * The CoreArrayVBO class represents a VBO bound to GL_ELEMENT_BUFFER.
  * @author void
  */
-public class CoreVBO {
+public class CoreElementVBO {
   private int id;
   private int usage;
-  private FloatBuffer vertexBuffer;
+  private IntBuffer indexBuffer;
 
   /**
    * Create a new VBO with static vertex data (GL_STATIC_DRAW). This will
@@ -32,8 +32,8 @@ public class CoreVBO {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  public static CoreVBO createStatic(final float[] data) {
-    return new CoreVBO(GL_STATIC_DRAW, data);
+  public static CoreElementVBO createStatic(final int[] data) {
+    return new CoreElementVBO(GL_STATIC_DRAW, data);
   }
 
   /**
@@ -43,8 +43,8 @@ public class CoreVBO {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  public static CoreVBO createStaticAndSend(final float[] data) {
-    CoreVBO result = new CoreVBO(GL_STATIC_DRAW, data);
+  public static CoreElementVBO createStaticAndSend(final int[] data) {
+    CoreElementVBO result = new CoreElementVBO(GL_STATIC_DRAW, data);
     result.send();
     return result;
   }
@@ -56,8 +56,8 @@ public class CoreVBO {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  public static CoreVBO createStaticAndSend(final FloatBuffer data) {
-    CoreVBO result = new CoreVBO(GL_STATIC_DRAW, data);
+  public static CoreElementVBO createStaticAndSend(final IntBuffer data) {
+    CoreElementVBO result = new CoreElementVBO(GL_STATIC_DRAW, data);
     result.send();
     return result;
   }
@@ -68,8 +68,8 @@ public class CoreVBO {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  public static CoreVBO createDynamic(final float[] data) {
-    return new CoreVBO(GL_DYNAMIC_DRAW, data);
+  public static CoreElementVBO createDynamic(final int[] data) {
+    return new CoreElementVBO(GL_DYNAMIC_DRAW, data);
   }
 
   /**
@@ -78,16 +78,9 @@ public class CoreVBO {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  public static CoreVBO createStream(final float[] data) {
-    return new CoreVBO(GL_STREAM_DRAW, data);
+  public static CoreElementVBO createStream(final int[] data) {
+    return new CoreElementVBO(GL_STREAM_DRAW, data);
   }
-
-  public CoreVBO(final int usageType, final FloatBuffer data) {
-	    usage = usageType;
-	    vertexBuffer = data;
-	    id = glGenBuffers();
-	    CoreCheckGL.checkGLError("glGenBuffers");
-	  }
 
   /**
    * Allows access to the internally kept nio FloatBuffer that contains the original
@@ -98,16 +91,16 @@ public class CoreVBO {
    * @return the FloatBuffer with the original buffer data (stored in main memory
    * not GPU memory)
    */
-  public FloatBuffer getBuffer() {
-    return vertexBuffer;
+  public IntBuffer getBuffer() {
+    return indexBuffer;
   }
 
   /**
    * bind the buffer object as GL_ARRAY_BUFFER
    */
   public void bind() {
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    CoreCheckGL.checkGLError("glBindBuffer(GL_ARRAY_BUFFER)");
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+    CoreCheckGL.checkGLError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER)");
   }
 
   /**
@@ -115,8 +108,8 @@ public class CoreVBO {
    */
   public void send() {
     bind();
-    glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
-    CoreCheckGL.checkGLError("glBufferData(GL_ARRAY_BUFFER)");
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
+    CoreCheckGL.checkGLError("glBufferData(GL_ELEMENT_ARRAY_BUFFER)");
   }
 
   /**
@@ -126,13 +119,20 @@ public class CoreVBO {
     glDeleteBuffers(id);
   }
 
-  private CoreVBO(final int usageType, final float[] data) {
+  private CoreElementVBO(final int usageType, final int[] data) {
     usage = usageType;
 
-    vertexBuffer = BufferUtils.createFloatBuffer(data.length);
-    vertexBuffer.put(data);
-    vertexBuffer.rewind();
+    indexBuffer = BufferUtils.createIntBuffer(data.length);
+    indexBuffer.put(data);
+    indexBuffer.rewind();
 
+    id = glGenBuffers();
+    CoreCheckGL.checkGLError("glGenBuffers");
+  }
+
+  public CoreElementVBO(final int usageType, final IntBuffer data) {
+    usage = usageType;
+    indexBuffer = data;
     id = glGenBuffers();
     CoreCheckGL.checkGLError("glGenBuffers");
   }

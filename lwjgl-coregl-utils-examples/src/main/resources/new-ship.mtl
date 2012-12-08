@@ -1,0 +1,9 @@
+# MTL written from /Users/void/Documents/workspace-juno/lwjgl-coregl/lwjgl-coregl-utils-examples/src/main/resources/new-ship.obj
+newmtl Default
+Kd 0.4 0.4 0.4
+Ns 724.077
+d 1
+illum 2
+Ka 0 0 0
+Ks 3e-05 3e-05 3e-05
+map_Kd /Volumes/data/3d/racer-one/texture/texture.psd

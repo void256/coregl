@@ -7,16 +7,16 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
+import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreLwjglSetup;
 import de.lessvoid.coregl.CoreLwjglSetup.RenderLoopCallback;
-import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreMatrixFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
+import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
+import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreVAO;
-import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.simpleimageloader.ImageData;
 import de.lessvoid.simpleimageloader.SimpleImageLoader;
 
@@ -82,8 +82,8 @@ public class GeometryShaderExampleMain implements RenderLoopCallback {
       vertexData[index++] = 0.0001f;//1.0f;
   };
     
-    vbo = CoreVBO.createDynamicVBO(vertexData);
-    vbo.sendData();
+    vbo = CoreVBO.createDynamic(vertexData);
+    vbo.send();
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO

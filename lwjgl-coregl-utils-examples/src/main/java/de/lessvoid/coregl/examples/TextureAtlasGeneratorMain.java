@@ -8,18 +8,18 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.FloatBuffer;
 
+import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreLwjglSetup;
 import de.lessvoid.coregl.CoreLwjglSetup.RenderLoopCallback;
-import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreMatrixFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreRenderToTexture;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
+import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTextureAtlasGenerator;
 import de.lessvoid.coregl.CoreVAO;
-import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.simpleimageloader.ImageData;
 import de.lessvoid.simpleimageloader.SimpleImageLoader;
 import de.lessvoid.simpleimageloader.SimpleImageLoaderConfig;
@@ -43,7 +43,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     vao = new CoreVAO();
     vao.bind();
 
-    vbo = CoreVBO.createStaticVBO(new float[4*4]);
+    vbo = CoreVBO.createStatic(new float[4*4]);
     vbo.bind();
 
     vao.enableVertexAttributef(0, 2, 4, 0);
@@ -55,7 +55,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
       String filename = "/texture-atlas/" + f;
       ImageData imageData = loader.load(filename, GeometryShaderExampleMain.class.getResourceAsStream(filename), new SimpleImageLoaderConfig().forceAlpha());
       CoreTexture2D texture = new CoreTexture2D(ColorFormat.RGBA, imageData.getWidth(), imageData.getHeight(), imageData.getData(),  ResizeFilter.Linear);
-      if (!generator.addImage(texture, filename, 5)) {
+      if (null == generator.addImage(texture, filename, 5)) {
         System.out.println("failed to add image: " + filename);
       }
     }
@@ -90,7 +90,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     buffer.put(1.0f);
     buffer.put(1.0f);
     buffer.rewind();
-    vbo.sendData();
+    vbo.send();
     vao.bind();
 
     shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, 1024.f, 768.f, 0));

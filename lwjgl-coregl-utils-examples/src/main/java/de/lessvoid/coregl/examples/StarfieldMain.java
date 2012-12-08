@@ -13,13 +13,13 @@ import java.nio.FloatBuffer;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreLwjglSetup;
 import de.lessvoid.coregl.CoreLwjglSetup.RenderLoopCallback;
 import de.lessvoid.coregl.CoreMatrixFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
-import de.lessvoid.coregl.CoreVBO;
 
 /**
  * FIXME
@@ -41,7 +41,7 @@ public class StarfieldMain implements RenderLoopCallback {
     CoreVAO vao = new CoreVAO();
     vao.bind();
 
-    CoreVBO.createStaticVBOAndSend(new float[] {
+    CoreVBO.createStaticAndSend(new float[] {
         -0.025f, -0.025f,
         -0.025f,  0.025f,
         0.025f, -0.025f,
@@ -49,9 +49,9 @@ public class StarfieldMain implements RenderLoopCallback {
     });
     vao.enableVertexAttributef(shader.getAttribLocation("aVertex"), 2, 0, 0);
 
-    CoreVBO starPosBuffer = CoreVBO.createStaticVBO(new float[STAR_COUNT * 3]);
+    CoreVBO starPosBuffer = CoreVBO.createStatic(new float[STAR_COUNT * 3]);
     FloatBuffer buffer = starPosBuffer.getBuffer();
-    float size = 10.f;
+    float size = 20.f;
 
     for (int i=0; i<STAR_COUNT; i++) {
       buffer.put(i*3 + 0, (float) Math.random() * size - size / 2.f);
@@ -69,7 +69,7 @@ public class StarfieldMain implements RenderLoopCallback {
     buffer.put(7*3 + 0, -size); buffer.put(7*3 + 1,  size); buffer.put(7*3 + 2,  size);
 */
     buffer.rewind();
-    starPosBuffer.sendData();
+    starPosBuffer.send();
     vao.enableVertexAttributeDivisorf(shader.getAttribLocation("aStarPos"), 3, 0, 0, 1);
 
     shader.activate();
@@ -96,8 +96,8 @@ public class StarfieldMain implements RenderLoopCallback {
 //    System.out.println(projection);
     
     z -= deltaTime / 1000.f;// System.out.println(z);
-//    angleX += deltaTime / 10000.f;
-//    angleY += deltaTime / 20000.f;
+    angleX += deltaTime / 1000.f;
+    angleY += deltaTime / 2000.f;
     //z += deltaTime / 10000.f;
 
     Matrix4f modelViewProjection = Matrix4f.mul(projection, Matrix4f.mul(translate, Matrix4f.mul(rotateX, rotateY, null), null), null);

@@ -1,9 +1,20 @@
 package de.lessvoid.coregl;
 
-import java.nio.*;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.logging.Logger;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.EXTFramebufferObject;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.SGISGenerateMipmap;
 import org.lwjgl.util.glu.GLU;
 
 /**
@@ -265,6 +276,19 @@ public class CoreTexture2D {
    * The height of the texture.
    */
   private final int height;
+
+  /**
+   * We remember the parameters used for the glTexture2D call so we can easily update the texture if we need later. 
+   */
+  private boolean textureCanBeUpdated;
+  private int texImageTarget;
+  private int texImageLevel;
+  private int texImageInternalFormat;
+  private int texImageWidth;
+  private int texImageHeight;
+  private int texBorder;
+  private int texFormat;
+  private int texType;
 
   /**
    * This is one of the simple constructors that only allow very limited possibilities for settings. How ever they use
@@ -788,18 +812,44 @@ public class CoreTexture2D {
    * @param pixels the pixel data
    * @throws CoreGLException in case OpenGL reports a error or in case the type of the buffer is unknown
    */
-  private static void glTexImage2D(final int target, final int level, final int internalformat, final int width,
-                            final int height, final int border, final int format, final int type, final Buffer pixels) {
+  private void glTexImage2D(
+      final int target,
+      final int level,
+      final int internalformat,
+      final int width,
+      final int height,
+      final int border,
+      final int format,
+      final int type,
+      final Buffer pixels) {
+    this.texImageTarget = target;
+    this.texImageLevel = level;
+    this.texImageInternalFormat = format;
+    this.texImageWidth = width;
+    this.texImageHeight = height;
+    this.texBorder = border;
+    this.texFormat = format;
+    this.texType = type;
+    this.textureCanBeUpdated = true;
+
+    updateTextureData(pixels);
+  }
+
+  public void updateTextureData(final Buffer pixels) {
+    if (!textureCanBeUpdated) {
+      throw new CoreGLException("updateTextureData() call can only be used to update texture data");
+    }
+
     if (pixels instanceof ByteBuffer) {
-      GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ByteBuffer) pixels);
+      GL11.glTexImage2D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texBorder, texFormat, texType, (ByteBuffer) pixels);
     } else if (pixels instanceof ShortBuffer) {
-      GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (ShortBuffer) pixels);
+      GL11.glTexImage2D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texBorder, texFormat, texType, (ShortBuffer) pixels);
     } else if (pixels instanceof IntBuffer) {
-      GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (IntBuffer) pixels);
+      GL11.glTexImage2D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texBorder, texFormat, texType, (IntBuffer) pixels);
     } else if (pixels instanceof FloatBuffer) {
-      GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (FloatBuffer) pixels);
+      GL11.glTexImage2D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texBorder, texFormat, texType, (FloatBuffer) pixels);
     } else if (pixels instanceof DoubleBuffer) {
-      GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, (DoubleBuffer) pixels);
+      GL11.glTexImage2D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texBorder, texFormat, texType, (DoubleBuffer) pixels);
     } else {
       throw new CoreGLException("Unknown buffer type; " + pixels.getClass().toString());
     }
