@@ -24,6 +24,28 @@ public class CoreRender {
   }
 
   /**
+   * Render the currently active VAO using triangle strips with the given
+   * number of vertices AND do that primCount times.
+   *
+   * @param count number of vertices to render as triangle strips per primitve
+   * @param primCount number of primitives to render
+   */
+  public static void renderTriangleStripInstances(final int count, int primCount) {
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, count, primCount);
+    CoreCheckGL.checkGLError("glDrawArraysInstanced(GL_TRIANGLE_STRIP)");
+  }
+
+  /**
+   * Render the currently active VAO using triangle strips, sending the given number of indizes.
+   *
+   * @param count number of indizes to render as triangle strips
+   */
+  public static void renderTriangleStripIndexed(final int count) {
+    glDrawElements(GL_TRIANGLE_STRIP, count, GL_UNSIGNED_INT, 0);
+    CoreCheckGL.checkGLError("glDrawElements(GL_TRIANGLE_STRIP)");
+  }
+
+  /**
    * Render the currently active VAO using triangles with the given
    * number of vertices.
    *
@@ -43,18 +65,6 @@ public class CoreRender {
   public static void renderTrianglesIndexed(final int count) {
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
     CoreCheckGL.checkGLError("glDrawElements");
-  }
-
-  /**
-   * Render the currently active VAO using triangle strips with the given
-   * number of vertices AND do that primCount times.
-   *
-   * @param count number of vertices to render as triangle strips per primitve
-   * @param primCount number of primitives to render
-   */
-  public static void renderTriangleStripInstances(final int count, int primCount) {
-    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, count, primCount);
-    CoreCheckGL.checkGLError("glDrawArraysInstanced(GL_TRIANGLE_STRIP)");
   }
 
   /**

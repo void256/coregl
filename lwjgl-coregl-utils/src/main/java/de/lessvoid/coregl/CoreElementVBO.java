@@ -1,7 +1,7 @@
 package de.lessvoid.coregl;
 
 
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
+import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL31.*;
 
 import java.nio.IntBuffer;
 
@@ -57,7 +58,7 @@ public class CoreElementVBO {
    * @return the CoreVBO instance created
    */
   public static CoreElementVBO createStaticAndSend(final IntBuffer data) {
-    CoreElementVBO result = new CoreElementVBO(GL_STATIC_DRAW, data);
+    CoreElementVBO result = new CoreElementVBO(GL_STATIC_DRAW, data.array());
     result.send();
     return result;
   }
@@ -103,11 +104,15 @@ public class CoreElementVBO {
     CoreCheckGL.checkGLError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER)");
   }
 
+  public void unbind() {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    CoreCheckGL.checkGLError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER -> unbind)");
+  }
+
   /**
    * Send the content of the FloatBuffer to the GPU.
    */
   public void send() {
-    bind();
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer, usage);
     CoreCheckGL.checkGLError("glBufferData(GL_ELEMENT_ARRAY_BUFFER)");
   }
@@ -128,12 +133,7 @@ public class CoreElementVBO {
 
     id = glGenBuffers();
     CoreCheckGL.checkGLError("glGenBuffers");
-  }
-
-  public CoreElementVBO(final int usageType, final IntBuffer data) {
-    usage = usageType;
-    indexBuffer = data;
-    id = glGenBuffers();
-    CoreCheckGL.checkGLError("glGenBuffers");
+    bind();
+    send();
   }
 }

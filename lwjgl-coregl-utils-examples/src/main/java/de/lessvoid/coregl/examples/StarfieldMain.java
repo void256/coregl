@@ -69,6 +69,7 @@ public class StarfieldMain implements RenderLoopCallback {
     buffer.put(7*3 + 0, -size); buffer.put(7*3 + 1,  size); buffer.put(7*3 + 2,  size);
 */
     buffer.rewind();
+    starPosBuffer.bind();
     starPosBuffer.send();
     vao.enableVertexAttributeDivisorf(shader.getAttribLocation("aStarPos"), 3, 0, 0, 1);
 

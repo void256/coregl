@@ -41,7 +41,7 @@ public class CoreTextureAtlasGenerator {
 
     vao.enableVertexAttributef(0, 2, 4, 0);
     vao.enableVertexAttributef(1, 2, 4, 2);
-
+    
     renderToTexture.on();
     glClearColor(0.0f, 0.0f, 0.0f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -93,6 +93,7 @@ public class CoreTextureAtlasGenerator {
     buffer.put(1.0f);
     buffer.put(1.0f);
     buffer.rewind();
+    vbo.bind();
     vbo.send();
 
     CoreRender.renderTriangleStrip(4);

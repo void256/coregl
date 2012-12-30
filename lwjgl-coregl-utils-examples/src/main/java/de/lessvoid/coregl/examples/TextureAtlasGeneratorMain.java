@@ -90,6 +90,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     buffer.put(1.0f);
     buffer.put(1.0f);
     buffer.rewind();
+    vbo.bind();
     vbo.send();
     vao.bind();
 
