@@ -6,6 +6,8 @@ package de.lessvoid.coregl;
  * @author Martin Karing &lt;nitram@illarion.org&gt;
  */
 public class CoreGLException extends RuntimeException {
+  private static final long serialVersionUID = 1L;
+
   /**
    * Constructs a new CoreGL exception with {@code null} as its detail message.  The cause is not initialized, and may
    * subsequently be initialized by a call to {@link #initCause}.

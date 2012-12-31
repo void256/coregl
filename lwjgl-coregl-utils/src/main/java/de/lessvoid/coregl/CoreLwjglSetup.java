@@ -1,5 +1,22 @@
 package de.lessvoid.coregl;
 
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_VENDOR;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glGetInteger;
+import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL12.GL_MAX_3D_TEXTURE_SIZE;
+import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
+
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,14 +34,6 @@ import org.lwjgl.LWJGLUtil;
 import org.lwjgl.opengl.ContextAttribs;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL21.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL31.*;
-import static org.lwjgl.opengl.GL32.*;
-import static org.lwjgl.opengl.GL15.*;
 import org.lwjgl.opengl.PixelFormat;
 
 /**
@@ -160,11 +169,6 @@ public class CoreLwjglSetup {
     glGetInteger(GL_MAX_VERTEX_ATTRIBS, maxVertexAttribts);
     log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
     CoreCheckGL.checkGLError("init phase 1");
-
-    IntBuffer viewportBuffer = BufferUtils.createIntBuffer(4 * 4);
-    glGetInteger(GL_VIEWPORT, viewportBuffer);
-    int viewportWidth = viewportBuffer.get(2);
-    int viewportHeight = viewportBuffer.get(3);
 
     log.info("GL_MAX_3D_TEXTURE_SIZE: " + glGetInteger(GL_MAX_3D_TEXTURE_SIZE));
     
