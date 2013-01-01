@@ -59,7 +59,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
         System.out.println("failed to add image: " + filename);
       }
     }
-    textureAtlas = generator.getDone();
+    textureAtlas = generator.getTargetTexture();
   }
 
   @Override

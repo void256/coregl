@@ -23,6 +23,13 @@ public class CoreTextureAtlasGenerator {
   private TextureAtlasGenerator generator;
   private CoreShader shader;
 
+  /**
+   * Prepare a RenderToTexture target of the given width x height that will be used as the rendering target for the
+   * texture atlas algorithm.
+   * 
+   * @param width width of the texture
+   * @param height height of the texture
+   */
   public CoreTextureAtlasGenerator(final int width, final int height) {
     renderToTexture = new CoreRenderToTexture(width, height);
 
@@ -51,6 +58,14 @@ public class CoreTextureAtlasGenerator {
     generator = new TextureAtlasGenerator(width, height);
   }
 
+  /**
+   * Add a single CoreTexture2D to the atlas and return informations about the position in the texture atlas.
+   *
+   * @param texture the texture
+   * @param name the name used to identify this texture
+   * @param padding padding value around the texture when being placed into the atlas
+   * @return the Result
+   */
   public Result addImage(final CoreTexture2D texture, final String name, final int padding) {
     try {
       Result result = generator.addImage(texture.getWidth(), texture.getHeight(), name, padding);
@@ -61,8 +76,29 @@ public class CoreTextureAtlasGenerator {
     }
   }
 
-  public CoreRenderToTexture getDone() {
+  /**
+   * The target texture allocated for the texture atlas. If you want to later render using the texture atlas you'll
+   * need to call this and call bind() on it.
+   * @return the CoreRenderToTexture allocated for the texture altas
+   */
+  public CoreRenderToTexture getTargetTexture() {
     return renderToTexture;
+  }
+
+  /**
+   * Width of the texture atlas used.
+   * @return width of the texture atlas
+   */
+  public int getWidth() {
+    return renderToTexture.getWidth();
+  }
+
+  /**
+   * Height of the texture atlas used.
+   * @return height of the texture atlas
+   */
+  public int getHeight() {
+    return renderToTexture.getHeight();
   }
 
   private void put(final CoreTexture2D source, final int x, final int y) {
@@ -99,13 +135,5 @@ public class CoreTextureAtlasGenerator {
     CoreRender.renderTriangleStrip(4);
     vao.unbind();
     renderToTexture.off();
-  }
-
-  public int getWidth() {
-    return renderToTexture.getWidth();
-  }
-
-  public int getHeight() {
-    return renderToTexture.getHeight();
   }
 }
