@@ -81,12 +81,20 @@ public class CoreLwjglSetup {
         }
       });
     }
+  }
 
+  /**
+   * (optional) This method will just set a new jdk14 Formatter that is more readable then the defaults and
+   * additionally reads the given loggingProperties from the Classpath and uses it to initialize the LogManager.
+   *
+   * @parameter loggingProperties a jdk14 configuration file available in the Classpath
+   */
+  public void initializeLogging(final String loggingProperties) {
+    initializeLogging();
     try {
-      LogManager.getLogManager().readConfiguration((new Object()).getClass().getResourceAsStream("/logging.properties"));
+      LogManager.getLogManager().readConfiguration((new Object()).getClass().getResourceAsStream(loggingProperties));
     } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
+      throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]");
     }
   }
 
