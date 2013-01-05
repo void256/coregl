@@ -26,10 +26,14 @@ public class TextureAtlasGenerator {
   public static class Result {
     private int x;
     private int y;
+    private int originalImageWidth;
+    private int originalImageHeight;
 
-    public Result(final int x, final int y) {
+    public Result(final int x, final int y, final int originalImageWidth, final int originalImageHeight) {
       this.x = x;
       this.y = y;
+      this.originalImageWidth = originalImageWidth;
+      this.originalImageHeight = originalImageHeight;
     }
 
     public int getX() {
@@ -39,7 +43,15 @@ public class TextureAtlasGenerator {
     public int getY() {
       return y;
     }
-  }
+
+    public int getOriginalImageWidth() {
+      return originalImageWidth;
+    }
+
+    public int getOriginalImageHeight() {
+      return originalImageHeight;
+    }
+}
 
   /**
    * Create a new TextureAtlasGenerator 
@@ -71,7 +83,7 @@ public class TextureAtlasGenerator {
       }
 
       rectangleMap.put(name, node.rect);
-      return new Result(node.rect.x, node.rect.y);
+      return new Result(node.rect.x, node.rect.y, imageWidth, imageHeight);
   }
 
   private static class Rectangle {
