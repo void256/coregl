@@ -1,6 +1,8 @@
 package de.lessvoid.coregl;
 
 
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
 import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
@@ -9,13 +11,15 @@ import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL31.GL_PRIMITIVE_RESTART;
+import static org.lwjgl.opengl.GL31.glPrimitiveRestartIndex;
 
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
 /**
- * The CoreArrayVBO class represents a VBO bound to GL_ELEMENT_BUFFER.
+ * The CoreElementVBO class represents a VBO bound to GL_ELEMENT_BUFFER.
  * @author void
  */
 public class CoreElementVBO {
@@ -121,6 +125,22 @@ public class CoreElementVBO {
    */
   public void delete() {
     glDeleteBuffers(id);
+  }
+
+  /**
+   * Enable primitive restart using the given value.
+   * @param value the value to use as primitive restart
+   */
+  public void enablePrimitiveRestart(final int value) {
+    glPrimitiveRestartIndex(value);
+    glEnable(GL_PRIMITIVE_RESTART);
+  }
+
+  /**
+   * Disable primitive restart again.
+   */
+  public void disablePrimitiveRestart() {
+    glDisable(GL_PRIMITIVE_RESTART);
   }
 
   private CoreElementVBO(final int usageType, final int[] data) {
