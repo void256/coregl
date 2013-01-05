@@ -24,6 +24,16 @@ public class CoreRender {
   }
 
   /**
+   * Render the currently active VAO using triangle fan with the given number of vertices.
+   *
+   * @param count number of vertices to render as triangle fan
+   */
+  public static void renderTriangleFan(final int count) {
+    glDrawArrays(GL_TRIANGLE_FAN, 0, count);
+    CoreCheckGL.checkGLError("glDrawArrays");
+  }
+
+  /**
    * Render the currently active VAO using triangle strips with the given
    * number of vertices AND do that primCount times.
    *
@@ -43,6 +53,16 @@ public class CoreRender {
   public static void renderTriangleStripIndexed(final int count) {
     glDrawElements(GL_TRIANGLE_STRIP, count, GL_UNSIGNED_INT, 0);
     CoreCheckGL.checkGLError("glDrawElements(GL_TRIANGLE_STRIP)");
+  }
+
+  /**
+   * Render the currently active VAO using triangle fans, sending the given number of indizes.
+   *
+   * @param count number of indizes to render as triangle fans.
+   */
+  public static void renderTriangleFanIndexed(final int count) {
+    glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, 0);
+    CoreCheckGL.checkGLError("glDrawElements(GL_TRIANGLE_FAN)");
   }
 
   /**
