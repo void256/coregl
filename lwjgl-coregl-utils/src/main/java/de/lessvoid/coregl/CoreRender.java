@@ -69,10 +69,10 @@ public class CoreRender {
    * Render the currently active VAO using triangles with the given
    * number of vertices.
    *
-   * @param count number of vertices to render as triangle strips
+   * @param vertexCount number of vertices to render as triangle strips
    */
-  public static void renderTriangles(final int count) {
-    glDrawArrays(GL_TRIANGLES, 0, count);
+  public static void renderTriangles(final int vertexCount) {
+    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     CoreCheckGL.checkGLError("glDrawArrays");
   }
 
