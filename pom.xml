@@ -91,9 +91,9 @@
     </dependency>
   </dependencies>
   <scm>
-    <connection>scm:git:git://github.com/void256/lwjgl-coregl-utils.git</connection>
-    <developerConnection>scm:git:git@github.com:void256/lwjgl-coregl-utils.git</developerConnection>
-    <url>scm:git:git://github.com/void256/lwjgl-coregl-utils.git</url>
+    <connection>scm:git:git://github.com/void256/lwjgl-coregl.git</connection>
+    <developerConnection>scm:git:git@github.com:void256/lwjgl-coregl.git</developerConnection>
+    <url>scm:git:git://github.com/void256/lwjgl-coregl.git</url>
   </scm>
   <distributionManagement>
     <repository>
