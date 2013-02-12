@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.lessvoid</groupId>
   <artifactId>lwjgl-coregl</artifactId>
-  <version>1.0</version>
+  <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>LWJGL OpenGL core</name>
   <description>simple utility methods to make life with OpenGL core profile simpler</description>
