@@ -7,14 +7,17 @@ import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
+import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreMatrixFactory;
 import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreRenderToTexture;
+import de.lessvoid.coregl.CoreFBO;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTextureBuffer;
@@ -24,9 +27,10 @@ public class DropShadow {
   private Matrix4f scale = new Matrix4f();
   private int shadowSize = 100;
   private float overDraw = 40;
-  private CoreRenderToTexture render1;
-  private CoreRenderToTexture render2;
-  private CoreRenderToTexture render3;
+  private CoreFBO render;
+  private CoreTexture2D render1;
+  private CoreTexture2D render2;
+  private CoreTexture2D render3;
   private CoreTexture2D image;
   private CoreVBO quad;
   private CoreVBO fullQuad;
@@ -36,13 +40,16 @@ public class DropShadow {
   private CoreTextureBuffer tbo;
   private CoreShader tboShader;
 
+  private int shadowTextureWidth;
+  private int shadowTextureHeight;
+
   public DropShadow(final CoreTexture2D image) {
     this.image = image;
 
     Matrix4f projection = CoreMatrixFactory.createProjection2(75.f, 1024.f / 768.f, 1f, 1000.f);
 
-    int shadowTextureWidth = image.getWidth() + 2*shadowSize;
-    int shadowTextureHeight = image.getHeight() + 2*shadowSize;
+    shadowTextureWidth = image.getWidth() + 2*shadowSize;
+    shadowTextureHeight = image.getHeight() + 2*shadowSize;
 
     float kernelValues[] = new float[101];
     calcGaussKernel(kernelValues);
@@ -76,9 +83,10 @@ public class DropShadow {
     plainTextureShader.setUniformf("tex", 0);
     plainTextureShader.setUniformf("alpha", 0.25f);
 
-    render1 = new CoreRenderToTexture(shadowTextureWidth, shadowTextureHeight);
-    render2 = new CoreRenderToTexture(shadowTextureWidth, shadowTextureHeight);
-    render3 = new CoreRenderToTexture(shadowTextureWidth, shadowTextureHeight);
+    render = new CoreFBO();
+    render1 = CoreTexture2D.createEmptyTexture(ColorFormat.RGBA, GL11.GL_UNSIGNED_BYTE, shadowTextureWidth, shadowTextureHeight, ResizeFilter.Linear);
+    render2 = CoreTexture2D.createEmptyTexture(ColorFormat.RGBA, GL11.GL_UNSIGNED_BYTE, shadowTextureWidth, shadowTextureHeight, ResizeFilter.Linear);
+    render3 = CoreTexture2D.createEmptyTexture(ColorFormat.RGBA, GL11.GL_UNSIGNED_BYTE, shadowTextureWidth, shadowTextureHeight, ResizeFilter.Linear);
 
     quad = createQuadVBO(shadowSize - overDraw, shadowSize - overDraw, image.getWidth() + 2*overDraw, image.getHeight() + 2*overDraw);
     fullQuad = createQuadVBO(0, 0, shadowTextureWidth, shadowTextureHeight);
@@ -107,7 +115,8 @@ public class DropShadow {
   }
 
   public void prepare() {
-    render1.on();
+    render.bindFramebuffer(shadowTextureWidth, shadowTextureHeight);
+    render.attachTexture(render1.getTextureId(), 0);
 
       glClearColor(0.0f, 0.f, 0.f, 0.f);
       glClear(GL_COLOR_BUFFER_BIT);
@@ -117,7 +126,7 @@ public class DropShadow {
       quad.bind();
       CoreRender.renderTriangles(2);
 
-    render2.on();
+   render.attachTexture(render2.getTextureId(), 0);
 
       glClearColor(0.0f, 0.f, 0.f, 0.f);
       glClear(GL_COLOR_BUFFER_BIT);
@@ -125,24 +134,24 @@ public class DropShadow {
       tboShader.activate();
       tboShader.setUniformf("dir", 1.f, 0.f);
       glActiveTexture(GL_TEXTURE0);
-      render1.bindTexture();
+      render1.bind();
       glActiveTexture(GL_TEXTURE1);
       tbo.bind();
       glActiveTexture(GL_TEXTURE0);
       fullQuad.bind();
       CoreRender.renderTriangles(2);
 
-    render3.on();
+    render.attachTexture(render3.getTextureId(), 0);
 
       glClearColor(0.f, 0.f, 0.f, 0.f);
       glClear(GL_COLOR_BUFFER_BIT);
 
       tboShader.setUniformf("dir", 0.f, 1.f);
-      render2.bindTexture();
+      render2.bind();
       fullQuad.bind();
       CoreRender.renderTriangles(2);
 
-    render3.off();
+    render.disable();
   }
 
   public Matrix4f render(final float x, final float y) {
@@ -168,7 +177,7 @@ public class DropShadow {
     Matrix4f.mul(projection, temp2, matrix);
 
     plainTextureShader.setUniformMatrix4f("matProj", matrix);
-    render3.bindTexture();
+    render3.bind();
     fullQuad.bind();
     CoreRender.renderTriangles(2);
     return matrix;

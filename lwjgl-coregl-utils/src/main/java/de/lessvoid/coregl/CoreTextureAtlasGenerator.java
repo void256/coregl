@@ -6,6 +6,10 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 
 import java.nio.FloatBuffer;
 
+import org.lwjgl.opengl.GL11;
+
+import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
+import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.textureatlas.TextureAtlasGenerator;
 import de.lessvoid.textureatlas.TextureAtlasGenerator.Result;
 import de.lessvoid.textureatlas.TextureAtlasGeneratorException;
@@ -17,11 +21,12 @@ import de.lessvoid.textureatlas.TextureAtlasGeneratorException;
  * @author void
  */
 public class CoreTextureAtlasGenerator {
-  private CoreRenderToTexture renderToTexture;
+  private CoreFBO renderToTexture;
   private CoreVAO vao;
   private CoreVBO vbo;
   private TextureAtlasGenerator generator;
   private CoreShader shader;
+  private CoreTexture2D texture;
 
   /**
    * Prepare a RenderToTexture target of the given width x height that will be used as the rendering target for the
@@ -31,7 +36,11 @@ public class CoreTextureAtlasGenerator {
    * @param height height of the texture
    */
   public CoreTextureAtlasGenerator(final int width, final int height) {
-    renderToTexture = new CoreRenderToTexture(width, height);
+    renderToTexture = new CoreFBO();
+    renderToTexture.bindFramebuffer();
+
+    texture = CoreTexture2D.createEmptyTexture(ColorFormat.RGBA, GL11.GL_UNSIGNED_BYTE, width, height, ResizeFilter.Linear);
+    renderToTexture.attachTexture(texture.getTextureId(), 0);
 
     shader = CoreShader.newShaderWithVertexAttributes("aVertex", "aUV");
     shader.vertexShader("de/lessvoid/coregl/plain-texture.vs");
@@ -49,10 +58,12 @@ public class CoreTextureAtlasGenerator {
     vao.enableVertexAttributef(0, 2, 4, 0);
     vao.enableVertexAttributef(1, 2, 4, 2);
     
-    renderToTexture.on();
+    renderToTexture.bindFramebuffer(texture.getWidth(), texture.getHeight());
+
     glClearColor(0.0f, 0.0f, 0.0f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
-    renderToTexture.off();
+
+    renderToTexture.disableAndResetViewport();
     vao.unbind();
 
     generator = new TextureAtlasGenerator(width, height);
@@ -81,8 +92,8 @@ public class CoreTextureAtlasGenerator {
    * need to call this and call bind() on it.
    * @return the CoreRenderToTexture allocated for the texture altas
    */
-  public CoreRenderToTexture getTargetTexture() {
-    return renderToTexture;
+  public CoreTexture2D getTargetTexture() {
+    return texture;
   }
 
   /**
@@ -90,7 +101,7 @@ public class CoreTextureAtlasGenerator {
    * @return width of the texture atlas
    */
   public int getWidth() {
-    return renderToTexture.getWidth();
+    return texture.getWidth();
   }
 
   /**
@@ -98,15 +109,15 @@ public class CoreTextureAtlasGenerator {
    * @return height of the texture atlas
    */
   public int getHeight() {
-    return renderToTexture.getHeight();
+    return texture.getHeight();
   }
 
   private void put(final CoreTexture2D source, final int x, final int y) {
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, renderToTexture.getWidth(), 0, renderToTexture.getHeight()));
+    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()));
 
     vao.bind();
-    renderToTexture.on();
+    renderToTexture.bindFramebuffer(texture.getWidth(), texture.getHeight());
 
     FloatBuffer buffer = vbo.getBuffer();
     buffer.put(x);
@@ -134,6 +145,6 @@ public class CoreTextureAtlasGenerator {
 
     CoreRender.renderTriangleStrip(4);
     vao.unbind();
-    renderToTexture.off();
+    renderToTexture.disableAndResetViewport();
   }
 }

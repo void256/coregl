@@ -12,6 +12,8 @@ import static org.lwjgl.opengl.GL31.glDrawArraysInstanced;
  */
 public class CoreRender {
 
+  // Triangle Strip
+
   /**
    * Render the currently active VAO using triangle strips with the given
    * number of vertices.
@@ -24,13 +26,13 @@ public class CoreRender {
   }
 
   /**
-   * Render the currently active VAO using triangle fan with the given number of vertices.
+   * Render the currently active VAO using triangle strips, sending the given number of indizes.
    *
-   * @param count number of vertices to render as triangle fan
+   * @param count number of indizes to render as triangle strips
    */
-  public static void renderTriangleFan(final int count) {
-    glDrawArrays(GL_TRIANGLE_FAN, 0, count);
-    CoreCheckGL.checkGLError("glDrawArrays");
+  public static void renderTriangleStripIndexed(final int count) {
+    glDrawElements(GL_TRIANGLE_STRIP, count, GL_UNSIGNED_INT, 0);
+    CoreCheckGL.checkGLError("glDrawElements(GL_TRIANGLE_STRIP)");
   }
 
   /**
@@ -45,14 +47,16 @@ public class CoreRender {
     CoreCheckGL.checkGLError("glDrawArraysInstanced(GL_TRIANGLE_STRIP)");
   }
 
+  // Triangle Fan
+
   /**
-   * Render the currently active VAO using triangle strips, sending the given number of indizes.
+   * Render the currently active VAO using triangle fan with the given number of vertices.
    *
-   * @param count number of indizes to render as triangle strips
+   * @param count number of vertices to render as triangle fan
    */
-  public static void renderTriangleStripIndexed(final int count) {
-    glDrawElements(GL_TRIANGLE_STRIP, count, GL_UNSIGNED_INT, 0);
-    CoreCheckGL.checkGLError("glDrawElements(GL_TRIANGLE_STRIP)");
+  public static void renderTriangleFan(final int count) {
+    glDrawArrays(GL_TRIANGLE_FAN, 0, count);
+    CoreCheckGL.checkGLError("glDrawArrays");
   }
 
   /**
@@ -64,6 +68,8 @@ public class CoreRender {
     glDrawElements(GL_TRIANGLE_FAN, count, GL_UNSIGNED_INT, 0);
     CoreCheckGL.checkGLError("glDrawElements(GL_TRIANGLE_FAN)");
   }
+
+  // Individual Triangles
 
   /**
    * Render the currently active VAO using triangles with the given
@@ -80,12 +86,25 @@ public class CoreRender {
    * Render the currently active VAO using triangles with the given
    * number of vertices.
    *
-   * @param count number of vertices to render as triangle strips
+   * @param count number of vertices to render as triangles
    */
   public static void renderTrianglesIndexed(final int count) {
     glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
     CoreCheckGL.checkGLError("glDrawElements");
   }
+
+  /**
+   * Render the currently active VAO using triangles with the given number of vertices AND do that primCount times.
+   *
+   * @param count number of vertices to render as triangles per primitve
+   * @param primCount number of primitives to render
+   */
+  public static void renderTrianglesInstances(final int count, int primCount) {
+    glDrawArraysInstanced(GL_TRIANGLES, 0, count, primCount);
+    CoreCheckGL.checkGLError("glDrawArraysInstanced(GL_TRIANGLES)");
+  }
+
+  // Points
 
   /**
    * Render the currently active VAO using points with the given

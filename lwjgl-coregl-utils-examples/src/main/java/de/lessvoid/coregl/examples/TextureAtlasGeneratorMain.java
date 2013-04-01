@@ -8,18 +8,17 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.FloatBuffer;
 
-import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreLwjglSetup;
 import de.lessvoid.coregl.CoreLwjglSetup.RenderLoopCallback;
 import de.lessvoid.coregl.CoreMatrixFactory;
 import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreRenderToTexture;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTextureAtlasGenerator;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.simpleimageloader.ImageData;
 import de.lessvoid.simpleimageloader.SimpleImageLoader;
 import de.lessvoid.simpleimageloader.SimpleImageLoaderConfig;
@@ -30,7 +29,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
   private CoreVAO vao;
   private CoreVBO vbo;
   private CoreShader shader;
-  private CoreRenderToTexture textureAtlas;
+  private CoreTexture2D textureAtlas;
 
   public TextureAtlasGeneratorMain() throws Exception {
     shader = CoreShader.newShaderWithVertexAttributes("aVertex", "aUV");
@@ -67,7 +66,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     glClearColor(.1f, .1f, .3f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    textureAtlas.bindTexture();
+    textureAtlas.bind();
 
     FloatBuffer buffer = vbo.getBuffer();
     buffer.put(0.f);

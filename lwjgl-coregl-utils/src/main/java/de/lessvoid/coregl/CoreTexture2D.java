@@ -8,6 +8,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.logging.Logger;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.EXTFramebufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -289,6 +290,84 @@ public class CoreTexture2D {
   private int texBorder;
   private int texFormat;
   private int texType;
+  private int texDepth;
+
+  /**
+   * Create an empty texture.
+   *
+   * @param format the ColorFormat for the texture
+   * @param dataType the data type you'll later send the pixel data
+   * @param width the width of the texture
+   * @param height the height of the texture
+   * @param filter the ResizeFilter to use
+   * @return the new allocated CoreTexture2D
+   */
+  public static CoreTexture2D createEmptyTexture(
+      final ColorFormat format,
+      final int dataType,
+      final int width,
+      final int height,
+      final ResizeFilter filter) {
+    // FIXME works only for ColorFormat.RGBA at the moment! add other formats
+    ByteBuffer buffer = BufferUtils.createByteBuffer(width*height*4);
+    byte[] data = new byte[width*height*4];
+    buffer.put(data);
+    buffer.flip();
+
+    return new CoreTexture2D(
+        AUTO,
+        GL11.GL_TEXTURE_2D,
+        0,
+        format.getInternalFormat(),
+        width,
+        height,
+        0,
+        format.getFormat(),
+        dataType,
+        buffer,
+        filter.getMagFilter(),
+        filter.getMinFilter());    
+  }
+
+  /**
+   * Create an empty texture.
+   *
+   * @param format the ColorFormat for the texture
+   * @param dataType the data type you'll later send the pixel data
+   * @param width the width of the texture
+   * @param height the height of the texture
+   * @param filter the ResizeFilter to use
+   * @return the new allocated CoreTexture2D
+   */
+  public static CoreTexture2D createEmptyTextureArray(
+      final ColorFormat format,
+      final int dataType,
+      final int width,
+      final int height,
+      final int num,
+      final ResizeFilter filter) {
+    // FIXME works only for ColorFormat.RGBA at the moment! add other formats
+    ByteBuffer buffer = BufferUtils.createByteBuffer(width*height*4*num);
+    byte[] data = new byte[width*height*4*num];
+    buffer.put(data);
+    buffer.flip();
+
+    return new CoreTexture2D(
+        AUTO,
+        GL30.GL_TEXTURE_2D_ARRAY,
+        0,
+        format.getInternalFormat(),
+        width,
+        height,
+        0,
+        format.getFormat(),
+        dataType,
+        buffer,
+        filter.getMagFilter(),
+        filter.getMinFilter(),
+        true,
+        num);    
+  }
 
   /**
    * This is one of the simple constructors that only allow very limited possibilities for settings. How ever they use
@@ -395,12 +474,67 @@ public class CoreTexture2D {
    * @param minFilter the minimizing filter
    * @throws CoreGLException in case the creation of the texture fails for any reason
    */
-  public CoreTexture2D(final int textureId, final int target, final int level, final int internalFormat,final int width,
-                           final int height, final int border, final int format, final int type, final Buffer data,
-                           final int magFilter, final int minFilter) {
-    this.textureId = createTexture(textureId, target, level, internalFormat, width, height, border, format, type, data,
-        magFilter, minFilter);
-    textureTarget = target;
+  public CoreTexture2D(
+      final int textureId,
+      final int target,
+      final int level,
+      final int internalFormat,
+      final int width,
+      final int height,
+      final int border,
+      final int format,
+      final int type,
+      final Buffer data,
+      final int magFilter,
+      final int minFilter) {
+    this(
+        textureId,
+        target,
+        level,
+        internalFormat,
+        width,
+        height,
+        border,
+        format,
+        type,
+        data,
+        magFilter,
+        minFilter,
+        false,
+        0);
+  }
+
+  private CoreTexture2D(
+      final int textureId,
+      final int target,
+      final int level,
+      final int internalFormat,
+      final int width,
+      final int height,
+      final int border,
+      final int format,
+      final int type,
+      final Buffer data,
+      final int magFilter,
+      final int minFilter,
+      final boolean textureArray,
+      final int depth) {
+    this.textureId = createTexture(
+        textureId,
+        target,
+        level,
+        internalFormat,
+        width,
+        height,
+        border,
+        format,
+        type,
+        data,
+        magFilter,
+        minFilter,
+        textureArray,
+        depth);
+    this.textureTarget = target;
     this.width = width;
     this.height = height;
   }
@@ -477,6 +611,14 @@ public class CoreTexture2D {
     GL11.glDeleteTextures(textureId);
     checkGLError("dispose", true);
     isDisposed = true;
+  }
+
+  /**
+   * Return the texture id of the texture.
+   * @return the textureId
+   */
+  public int getTextureId() {
+    return textureId;
   }
 
   /**
@@ -677,6 +819,7 @@ public class CoreTexture2D {
   private static void checkTarget(final int target) {
     switch (target) {
       case GL11.GL_TEXTURE_2D:
+      case GL30.GL_TEXTURE_2D_ARRAY:
       case GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X:
       case GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
       case GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
@@ -709,9 +852,21 @@ public class CoreTexture2D {
    * @return the texture ID of the newly created texture
    * @throws CoreGLException in case anything goes wrong
    */
-  private int createTexture(final int textureId, final int target, final int level, final int internalFormat,
-                                      final int width, final int height, final int border, final int format,
-                                      final int type, final Buffer data, final int magFilter, final int minFilter) {
+  private int createTexture(
+      final int textureId,
+      final int target,
+      final int level,
+      final int internalFormat,
+      final int width,
+      final int height,
+      final int border,
+      final int format,
+      final int type,
+      final Buffer data,
+      final int magFilter,
+      final int minFilter,
+      final boolean textureArray,
+      final int depth) {
     final int usedType = getType(type, data);
 
     if (errorChecks) {
@@ -725,7 +880,9 @@ public class CoreTexture2D {
     try {
       applyFilters(target, minFilter, magFilter);
 
-      if (isCreatingMipMaps(level, minFilter)) {
+      if (textureArray) {
+        glTexImage3D(target, level, internalFormat, width, height, depth, border, format, usedType, data);
+      } else if (isCreatingMipMaps(level, minFilter)) {
         if (GLContext.getCapabilities().OpenGL30) {
           glTexImage2D(target, 0, internalFormat, width, height, border, format, usedType, data);
           GL30.glGenerateMipmap(target);
@@ -835,6 +992,47 @@ public class CoreTexture2D {
     updateTextureData(pixels);
   }
 
+  /**
+   * This is a wrapper function for the actual call to {@code glTexImage3D}. It uses the generic {@link Buffer} and
+   * internally casts it as needed to fit the different implementations of the {@code glTexImage3D} function.
+   *
+   * @param target the target of the texture creation operation
+   * @param level the level of this texture
+   * @param internalformat the internal format
+   * @param width the width of the texture
+   * @param height the height of the texture
+   * @param depth the depth of the texture
+   * @param border the border width of the texture
+   * @param format the format of the pixel data
+   * @param type the data type of the pixel data
+   * @param pixels the pixel data
+   * @throws CoreGLException in case OpenGL reports a error or in case the type of the buffer is unknown
+   */
+  private void glTexImage3D(
+      final int target,
+      final int level,
+      final int internalformat,
+      final int width,
+      final int height,
+      final int depth,
+      final int border,
+      final int format,
+      final int type,
+      final Buffer pixels) {
+    this.texImageTarget = target;
+    this.texImageLevel = level;
+    this.texImageInternalFormat = format;
+    this.texImageWidth = width;
+    this.texImageHeight = height;
+    this.texBorder = border;
+    this.texFormat = format;
+    this.texType = type;
+    this.textureCanBeUpdated = true;
+    this.texDepth = depth;
+
+    updateTextureData3D(pixels);
+  }
+
   public void updateTextureData(final Buffer pixels) {
     if (!textureCanBeUpdated) {
       throw new CoreGLException("updateTextureData() call can only be used to update texture data");
@@ -854,6 +1052,27 @@ public class CoreTexture2D {
       throw new CoreGLException("Unknown buffer type; " + pixels.getClass().toString());
     }
     checkGLError("glTexImage2D", true);
+  }
+
+  public void updateTextureData3D(final Buffer pixels) {
+    if (!textureCanBeUpdated) {
+      throw new CoreGLException("updateTextureData() call can only be used to update texture data");
+    }
+
+    if (pixels instanceof ByteBuffer) {
+      GL12.glTexImage3D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texDepth, texBorder, texFormat, texType, (ByteBuffer) pixels);
+    } else if (pixels instanceof ShortBuffer) {
+      GL12.glTexImage3D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texDepth, texBorder, texFormat, texType, (ShortBuffer) pixels);
+    } else if (pixels instanceof IntBuffer) {
+      GL12.glTexImage3D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texDepth, texBorder, texFormat, texType, (IntBuffer) pixels);
+    } else if (pixels instanceof FloatBuffer) {
+      GL12.glTexImage3D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texDepth, texBorder, texFormat, texType, (FloatBuffer) pixels);
+    } else if (pixels instanceof DoubleBuffer) {
+      GL12.glTexImage3D(texImageTarget, texImageLevel, texImageInternalFormat, texImageWidth, texImageHeight, texDepth, texBorder, texFormat, texType, (DoubleBuffer) pixels);
+    } else {
+      throw new CoreGLException("Unknown buffer type; " + pixels.getClass().toString());
+    }
+    checkGLError("glTexImage3D", true);
   }
 
   /**

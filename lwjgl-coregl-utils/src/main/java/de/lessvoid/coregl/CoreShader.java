@@ -54,8 +54,8 @@ import org.lwjgl.util.vector.Matrix3f;
 import org.lwjgl.util.vector.Matrix4f;
 
 /**
- * Helper class that represents a shader (actually as the combination of a vertex
- * and a fragment shader - what GL actually calls program).
+ * Helper class that represents a shader (actually the combination of a vertex
+ * and a fragment shader - what GL actually calls a program).
  * @author void
  */
 public class CoreShader {
@@ -74,7 +74,7 @@ public class CoreShader {
   }
 
   /**
-   * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indizes in
+   * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indices in
    * ascending order beginning with 0. This method can be used when you want to control the vertex attribute binding
    * on your own.
    *
