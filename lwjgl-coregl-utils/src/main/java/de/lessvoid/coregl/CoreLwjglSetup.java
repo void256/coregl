@@ -90,7 +90,6 @@ public class CoreLwjglSetup {
    * @parameter loggingProperties a jdk14 configuration file available in the Classpath
    */
   public void initializeLogging(final String loggingProperties) {
-    initializeLogging();
     try {
       LogManager.getLogManager().readConfiguration((new Object()).getClass().getResourceAsStream(loggingProperties));
     } catch (Exception e) {
