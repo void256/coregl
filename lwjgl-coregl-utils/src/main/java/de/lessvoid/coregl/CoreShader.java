@@ -473,7 +473,7 @@ public class CoreShader {
       name.rewind();
       int result = glGetUniformLocation(program, name);
       checkGLError("glGetUniformLocation for [" + uniformName + "] failed");
-      log.info(getLoggingPrefix() + "glUniformLocation for [" + uniformName + "] = [" + result + "]");
+      log.fine(getLoggingPrefix() + "glUniformLocation for [" + uniformName + "] = [" + result + "]");
       return result;
     } catch (UnsupportedEncodingException e) {
       log.log(Level.WARNING, getLoggingPrefix() + e.getMessage(), e);
