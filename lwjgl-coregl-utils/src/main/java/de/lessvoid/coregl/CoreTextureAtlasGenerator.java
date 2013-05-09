@@ -3,9 +3,11 @@ package de.lessvoid.coregl;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glViewport;
 
 import java.nio.FloatBuffer;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
@@ -58,12 +60,14 @@ public class CoreTextureAtlasGenerator {
     vao.enableVertexAttributef(0, 2, 4, 0);
     vao.enableVertexAttributef(1, 2, 4, 2);
     
-    renderToTexture.bindFramebuffer(texture.getWidth(), texture.getHeight());
+    renderToTexture.bindFramebuffer();
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    renderToTexture.disableAndResetViewport();
+    renderToTexture.disable();
+    glViewport(0, 0, Display.getWidth(), Display.getHeight());
+
     vao.unbind();
 
     generator = new TextureAtlasGenerator(width, height);
@@ -117,7 +121,7 @@ public class CoreTextureAtlasGenerator {
     shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()));
 
     vao.bind();
-    renderToTexture.bindFramebuffer(texture.getWidth(), texture.getHeight());
+    renderToTexture.bindFramebuffer();
 
     FloatBuffer buffer = vbo.getBuffer();
     buffer.put(x);
@@ -145,6 +149,7 @@ public class CoreTextureAtlasGenerator {
 
     CoreRender.renderTriangleStrip(4);
     vao.unbind();
-    renderToTexture.disableAndResetViewport();
+    renderToTexture.disable();
+    glViewport(0, 0, Display.getWidth(), Display.getHeight());
   }
 }

@@ -62,6 +62,27 @@ public class CoreLwjglSetup {
   }
 
   /**
+   * You can implement this interface when you use the renderLoop() method. This will be called each frame and allows
+   * you to actually draw.
+   * @author void
+   */
+  public static interface RenderLoopCallback2 {
+
+    /**
+     * Do some awesome stuff in here!
+     * @param l 
+     * @return true when the render actually rendered a new frame and false otherwise
+     */
+    boolean render(float deltaTime);
+
+    /**
+     * Might return true when the render loop should stop.
+     * @return true when the render loop should stop and false if it should continue
+     */
+    boolean shouldEnd();
+  }
+
+  /**
    * (optional) This method will just set a new jdk14 Formatter that is more readable then the defaults.
    */
   public void initializeLogging() {
@@ -133,6 +154,32 @@ public class CoreLwjglSetup {
       Display.update();
       CoreCheckGL.checkGLError("render loop check for errors");
 
+      frameCounter++;
+      long diff = System.currentTimeMillis() - now;
+      if (diff >= 1000) {
+        now += diff;
+        log.info(buildFpsText(frameCounter));
+        frameCounter = 0;
+      }
+    }
+  }
+
+  public void renderLoop2(final RenderLoopCallback2 renderLoop) {
+    boolean done = false;
+    long frameCounter = 0;
+    long now = System.currentTimeMillis();
+    long prevTime = System.nanoTime();
+
+    while (!Display.isCloseRequested() && !done) {
+      long nanoTime = System.nanoTime();
+      boolean newFrame = renderLoop.render((nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
+      prevTime = nanoTime;
+      if (newFrame) {
+        Display.update();
+        CoreCheckGL.checkGLError("render loop check for errors");
+      }
+
+      done = renderLoop.shouldEnd();
       frameCounter++;
       long diff = System.currentTimeMillis() - now;
       if (diff >= 1000) {

@@ -51,29 +51,10 @@ public class CoreFBO {
   }
 
   /**
-   * Enable this FBO and use the dimensions provided to setup the glViewport().
-   *
-   * @param width the width of the viewport to use
-   * @param height the height of the viewport to use
-   */
-  public void bindFramebuffer(final int width, final int height) {
-    bindFramebuffer();
-    glViewport(0, 0, width, height);
-  }
-
-  /**
    * Disable rendering to this FBO.
    */
   public void disable() {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-  }
-
-  /**
-   * Disable rendering to this FBO and reset the viewport to the Display.getDisplayMode() dimensions.
-   */
-  public void disableAndResetViewport() {
-    disable();
-    glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
   }
 
   /**
@@ -113,6 +94,14 @@ public class CoreFBO {
     glDrawBuffer(GL_COLOR_ATTACHMENT0 + colorAttachmentIdx);
     CoreCheckGL.checkGLError("glDrawBuffer");
 
+    checkFramebufferStatus();
+  }
+
+  public void attachStencil(final int width, final int height) {
+    int renderBuffer = glGenRenderbuffers();
+    glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height);
+    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
     checkFramebufferStatus();
   }
 

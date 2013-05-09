@@ -3,10 +3,12 @@ package de.lessvoid.coregl.examples.tools;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
@@ -115,8 +117,9 @@ public class DropShadow {
   }
 
   public void prepare() {
-    render.bindFramebuffer(shadowTextureWidth, shadowTextureHeight);
+    render.bindFramebuffer();
     render.attachTexture(render1.getTextureId(), 0);
+      glViewport(0, 0, shadowTextureWidth, shadowTextureHeight);
 
       glClearColor(0.0f, 0.f, 0.f, 0.f);
       glClear(GL_COLOR_BUFFER_BIT);
