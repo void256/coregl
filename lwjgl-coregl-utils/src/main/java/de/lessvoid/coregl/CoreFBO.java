@@ -47,14 +47,14 @@ public class CoreFBO {
    * Enable this FBO (glBindFramebuffer)
    */
   public void bindFramebuffer() {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
   }
 
   /**
    * Disable rendering to this FBO.
    */
   public void disable() {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
   }
 
   /**
@@ -71,7 +71,7 @@ public class CoreFBO {
    * @param colorAttachmentIdx the color attachment to use (0=GL_COLOR_ATTACHMENT0, 1=GL_COLOR_ATTACHMENT1 and so on)
    */
   public void attachTexture(final int textureId, final int colorAttachmentIdx) {
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachmentIdx, GL_TEXTURE_2D, textureId, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachmentIdx, GL_TEXTURE_2D, textureId, 0);
     CoreCheckGL.checkGLError("glFramebufferTexture2D");
 
     glDrawBuffer(GL_COLOR_ATTACHMENT0 + colorAttachmentIdx);
@@ -88,7 +88,7 @@ public class CoreFBO {
    * @param layer the texture index inside the texture array to attach
    */
   public void attachTexture(final int textureId, final int colorAttachmentIdx, final int layer) {
-    glFramebufferTextureLayer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachmentIdx, textureId, 0, layer);
+    glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorAttachmentIdx, textureId, 0, layer);
     CoreCheckGL.checkGLError("glFramebufferTextureLayer");
 
     glDrawBuffer(GL_COLOR_ATTACHMENT0 + colorAttachmentIdx);
@@ -101,7 +101,7 @@ public class CoreFBO {
     int renderBuffer = glGenRenderbuffers();
     glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height);
-    glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
     checkFramebufferStatus();
   }
 
@@ -111,7 +111,7 @@ public class CoreFBO {
   }
 
   private void checkFramebufferStatus() {
-    int fboStatus = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
+    int fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
       throw new CoreGLException(translateErrorState(fboStatus));
     }
