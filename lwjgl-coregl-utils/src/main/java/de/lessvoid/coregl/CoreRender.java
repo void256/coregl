@@ -12,6 +12,11 @@ import static org.lwjgl.opengl.GL31.glDrawArraysInstanced;
  */
 public class CoreRender {
 
+  public static void renderLines(final int count) {
+    glDrawArrays(GL_LINE_STRIP, 0, count);
+    CoreCheckGL.checkGLError("glDrawArrays");
+  }
+
   // Triangle Strip
 
   /**
@@ -79,6 +84,11 @@ public class CoreRender {
    */
   public static void renderTriangles(final int vertexCount) {
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    CoreCheckGL.checkGLError("glDrawArrays");
+  }
+
+  public static void renderTrianglesOffset(final int offset, final int vertexCount) {
+    glDrawArrays(GL_TRIANGLES, offset, vertexCount);
     CoreCheckGL.checkGLError("glDrawArrays");
   }
 
