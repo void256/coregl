@@ -1,10 +1,16 @@
 package de.lessvoid.coregl;
 
+import static org.lwjgl.opengl.GL11.GL_LINE_STRIP;
 import static org.lwjgl.opengl.GL11.GL_POINTS;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLE_FAN;
 import static org.lwjgl.opengl.GL11.GL_TRIANGLE_STRIP;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.glDrawElements;
 import static org.lwjgl.opengl.GL31.glDrawArraysInstanced;
+
+import org.lwjgl.opengl.GL32;
 
 /**
  * Simple helper methods to render vertex arrays.
@@ -14,6 +20,11 @@ public class CoreRender {
 
   public static void renderLines(final int count) {
     glDrawArrays(GL_LINE_STRIP, 0, count);
+    CoreCheckGL.checkGLError("glDrawArrays");
+  }
+
+  public static void renderLinesAdjacent(final int count) {
+    glDrawArrays(GL32.GL_LINE_STRIP_ADJACENCY, 0, count);
     CoreCheckGL.checkGLError("glDrawArrays");
   }
 

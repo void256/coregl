@@ -29,8 +29,8 @@ import static org.lwjgl.opengl.GL20.glUniform3f;
 import static org.lwjgl.opengl.GL20.glUniform3i;
 import static org.lwjgl.opengl.GL20.glUniform4f;
 import static org.lwjgl.opengl.GL20.glUniform4i;
-import static org.lwjgl.opengl.GL20.glUniformMatrix4;
 import static org.lwjgl.opengl.GL20.glUniformMatrix3;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
@@ -104,6 +104,13 @@ public class CoreShader {
     return fragmentShader(getStream(filename));
   }
 
+  public int fragmentShader(final String file, final InputStream ... inputStreams) throws FileNotFoundException {
+    InputStream[] sources = new InputStream[inputStreams.length + 1];
+    System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
+    sources[sources.length - 1] = getStream(file);
+    return fragmentShader(sources);
+  }
+
   /**
    * Attach the given geometry shader file to this CoreShader. This will call glCreateShader(), loads and compiles
    * the shader source and finally attaches the shader.
@@ -140,6 +147,20 @@ public class CoreShader {
     return geometryShader(getStream(file));
   }
 
+  public int geometryShader(final File file, final InputStream ... inputStreams) throws FileNotFoundException {
+    InputStream[] sources = new InputStream[inputStreams.length + 1];
+    System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
+    sources[sources.length - 1] = getStream(file);
+    return geometryShader(sources);
+  }
+
+  public int geometryShader(final String file, final InputStream ... inputStreams) throws FileNotFoundException {
+    InputStream[] sources = new InputStream[inputStreams.length + 1];
+    System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
+    sources[sources.length - 1] = getStream(file);
+    return geometryShader(sources);
+  }
+
   /**
    * Attach the given vertex shader file to this CoreShader. This will call glCreateShader(), loads and compiles
    * the shader source and finally attaches the shader.
@@ -148,7 +169,7 @@ public class CoreShader {
   public int vertexShader(final InputStream source) {
     int shaderId = glCreateShader(GL_VERTEX_SHADER);
     checkGLError("glCreateShader(GL_VERTEX_SHADER)");
-    prepareShader(source, shaderId);
+    prepareShader(shaderId, source);
     glAttachShader(program, shaderId);
     checkGLError("glAttachShader");
     return shaderId;
@@ -159,10 +180,10 @@ public class CoreShader {
    * the shader source and finally attaches the shader.
    * @param filename the file of the shader
    */
-  public int fragmentShader(final InputStream source) {
+  public int fragmentShader(final InputStream ... sources) {
     int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
     checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
-    prepareShader(source, shaderId);
+    prepareShader(shaderId, sources);
     glAttachShader(program, shaderId);
     checkGLError("glAttachShader");
     return shaderId;
@@ -173,10 +194,10 @@ public class CoreShader {
    * the shader source and finally attaches the shader.
    * @param filename the file of the shader
    */
-  public int geometryShader(final InputStream source) {
+  public int geometryShader(final InputStream ... sources) {
     int shaderId = glCreateShader(GL_GEOMETRY_SHADER);
     checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
-    prepareShader(source, shaderId);
+    prepareShader(shaderId, sources);
     glAttachShader(program, shaderId);
     checkGLError("glAttachShader");
     return shaderId;
@@ -242,7 +263,7 @@ public class CoreShader {
    * @param filename the file of the shader
    */
   public void vertexShader(final int shaderId, final InputStream source) {
-    prepareShader(source, shaderId);
+    prepareShader(shaderId, source);
   }
 
   /**
@@ -251,7 +272,7 @@ public class CoreShader {
    * @param filename the file of the shader
    */
   public void fragmentShader(final int shaderId, final InputStream source) {
-    prepareShader(source, shaderId);
+    prepareShader(shaderId, source);
   }
 
   /**
@@ -260,7 +281,7 @@ public class CoreShader {
    * @param filename the file of the shader
    */
   public void geometryShader(final int shaderId, InputStream source) {
-    prepareShader(source, shaderId);
+    prepareShader(shaderId, source);
   }
 
   /**
@@ -481,9 +502,13 @@ public class CoreShader {
     }
   }
 
-  private void prepareShader(final InputStream source, final int shaderId) {
-    glShaderSource(shaderId, loadShader(source));
-    checkGLError("glShaderSource");
+  private void prepareShader(final int shaderId, final InputStream ... sources) {
+    try {
+      glShaderSource(shaderId, loadShader(sources));
+      checkGLError("glShaderSource");
+    } catch (IOException e) {
+      throw new CoreGLException(e);
+    }
 
     glCompileShader(shaderId);
     checkGLError("glCompileShader");
@@ -496,9 +521,13 @@ public class CoreShader {
     checkGLError(String.valueOf(shaderId));
   }
 
-  private ByteBuffer loadShader(final InputStream source) {
-    byte[] data = read(source);
+  private ByteBuffer loadShader(final InputStream ... sources) throws IOException {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    for (InputStream source : sources) {
+      out.write(read(source));
+    }
 
+    byte[] data = out.toByteArray();
     ByteBuffer result = BufferUtils.createByteBuffer(data.length);
     result.put(data);
     result.flip();
