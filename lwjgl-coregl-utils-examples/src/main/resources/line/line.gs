@@ -1,13 +1,13 @@
 //#version 150 core
 
 // line cap styles
-//#define LINE_CAP_BUTT
-//#define LINE_CAP_SQUARE
-//#define LINE_CAP_ROUND
+//#define CAP_BUTT
+//#define CAP_SQUARE
+//#define CAP_ROUND
 
 // line join styles
-//#define LINE_JOIN_NONE
-//#define LINE_JOIN_MITER
+//#define JOIN_NONE
+//#define JOIN_MITER
 
 #define PI 3.1415926535897932384626433832795
 
@@ -62,12 +62,12 @@ void main(void) {
   // now get a vector orthogonal to the line dir halfwidth long vector
   vec2 flip = vec2(-lineDirHalfWidth.y, lineDirHalfWidth.x);
 
-#ifdef LINE_CAP_BUTT
+#ifdef CAP_BUTT
 
   float capU = r2;
   vec2 capExtrude = lineDir * r2;
 
-#elif defined(LINE_CAP_SQUARE) || defined(LINE_CAP_ROUND)
+#elif defined(CAP_SQUARE) || defined(CAP_ROUND)
 
   float capU = halfWidth;
   vec2 capExtrude = lineDirHalfWidth;
@@ -78,19 +78,19 @@ void main(void) {
   if (x0 != x1 || y0 != y1) {
     // this is a line join at the beginning of the current line segment
 
-#ifdef LINE_JOIN_NONE
+#ifdef JOIN_NONE
 
     vec2 p2 = start + flip;
     vec2 p0 = p2 - capExtrude;
     gl_Position = uMvp * vec4(p0.x, p0.y, 0., 1.);
     uv = vec2(-capU, halfWidth);
-//    EmitVertex();
+    EmitVertex();
 
     vec2 p3 = start - flip;
     vec2 p1 = p3 - capExtrude;
     gl_Position = uMvp * vec4(p1.x, p1.y, 0., 1.);
     uv = vec2(-capU, -halfWidth);
-//    EmitVertex();
+    EmitVertex();
 
     gl_Position = uMvp * vec4(p2.x, p2.y, 0., 1.);
     uv = vec2(0.0, halfWidth);
@@ -100,7 +100,7 @@ void main(void) {
     uv = vec2(0.0, -halfWidth);
     EmitVertex();
 
-#elif defined(LINE_JOIN_MITER)
+#elif defined(JOIN_MITER)
 
     vec2 offset;
     calcMiterAngleOffset(vec2(x0, y0)-vec2(x1, y1), vec2(x2, y2)-vec2(x1, y1), lineDir, halfWidth, offset);
@@ -144,7 +144,7 @@ void main(void) {
   if (x3 != x2 || y3 != y2) {
     // this is a line join at the end of the current line segment
 
-#ifdef LINE_JOIN_NONE
+#ifdef JOIN_NONE
 
     vec2 pp0 = end + flip;
     gl_Position = uMvp * vec4( pp0.x, pp0.y, 0., 1.);
@@ -159,14 +159,14 @@ void main(void) {
     vec2 p6 = end + flip + capExtrude;
     gl_Position = uMvp * vec4( p6.x, p6.y, 0., 1.);
     uv = vec2(capU, halfWidth);
-//    EmitVertex();
+    EmitVertex();
 
     vec2 p7 = end - flip + capExtrude;
     gl_Position = uMvp * vec4( p7.x, p7.y, 0., 1.);
     uv = vec2(capU, -halfWidth);
-//    EmitVertex();
+    EmitVertex();
 
-#elif defined(LINE_JOIN_MITER)
+#elif defined(JOIN_MITER)
 
     vec2 offset;
     calcMiterAngleOffset(vec2(x1, y1)-vec2(x2, y2), vec2(x3, y3)-vec2(x2, y2), lineDir, halfWidth, offset);

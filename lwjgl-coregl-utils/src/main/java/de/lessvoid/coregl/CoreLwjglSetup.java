@@ -237,7 +237,7 @@ public class CoreLwjglSetup {
 
   private void createWindow(final String title) throws LWJGLException {
     Display.setFullscreen(false);
-    Display.create(new PixelFormat(), new ContextAttribs(3, 2).withProfileCore(true));
+    Display.create(new PixelFormat().withStencilBits(8), new ContextAttribs(3, 2).withProfileCore(true));
     Display.setVSyncEnabled(false);
     Display.setTitle(title);
   }

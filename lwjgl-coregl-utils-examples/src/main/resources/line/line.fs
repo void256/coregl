@@ -1,13 +1,13 @@
 //#version 150 core
 
 // line cap styles
-//#define LINE_CAP_BUTT
-//#define LINE_CAP_SQUARE
-//#define LINE_CAP_ROUND
+//#define CAP_BUTT
+//#define CAP_SQUARE
+//#define CAP_ROUND
 
 // line join styles
-//#define LINE_JOIN_NONE
-//#define LINE_JOIN_MITER
+//#define JOIN_NONE
+//#define JOIN_MITER
 
 // the line color
 uniform vec4 lineColor;
@@ -28,11 +28,11 @@ void main() {
   float halfWidthMinus2R = lineParameters.z;
   float r2 = lineParameters.w;
 
-#ifdef LINE_CAP_ROUND
+#ifdef CAP_ROUND
 
   float distance = sqrt(uv.x*uv.x + uv.y*uv.y);
   float intensity = 1.0 - smoothstep (halfWidthMinus2R, halfWidth, distance);
-  color = vec4(lineColor.r, lineColor.g, lineColor.b, intensity);
+  color = vec4(lineColor.r, lineColor.g, lineColor.b, intensity*lineColor.a);
 
 #else
 
@@ -41,13 +41,13 @@ void main() {
 
   float distanceX = sqrt(uv.x*uv.x);
 
-  #ifdef LINE_CAP_BUTT
+  #ifdef CAP_BUTT
   float intensityX = 1.0 - smoothstep (0, r2, distanceX);
-  #elif defined(LINE_CAP_SQUARE)
+  #elif defined(CAP_SQUARE)
   float intensityX = 1.0 - smoothstep(halfWidthMinus2R, halfWidth, distanceX);
   #endif
 
-  color = vec4(lineColor.r, lineColor.g, lineColor.b, intensityX*intensityY);
+  color = vec4(lineColor.r, lineColor.g, lineColor.b, intensityX*intensityY*lineColor.a);
 
 #endif
 }

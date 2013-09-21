@@ -1,6 +1,12 @@
 package de.lessvoid.coregl.examples;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL32.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL12.*;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
@@ -32,14 +38,14 @@ public class LineMain implements RenderLoopCallback {
   public LineMain() throws Exception {
     lineShader1 = CoreShader.newShaderWithVertexAttributes("aVertex");
     lineShader1.vertexShader("line/line.vs");
-    lineShader1.geometryShader("line/line.gs", stream("#version 150 core\n#define LINE_CAP_ROUND\n#define LINE_JOIN_MITER\n"));
-    lineShader1.fragmentShader("line/line.fs", stream("#version 150 core\n#define LINE_CAP_ROUND\n#define LINE_JOIN_MITER\n"));
+    lineShader1.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"));
+    lineShader1.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"));
     lineShader1.link();
 
     lineShader2 = CoreShader.newShaderWithVertexAttributes("aVertex");
     lineShader2.vertexShader("line/line.vs");
-    lineShader2.geometryShader("line/line.gs", stream("#version 150 core\n#define LINE_CAP_BUTT\n#define LINE_JOIN_NONE\n"));
-    lineShader2.fragmentShader("line/line.fs", stream("#version 150 core\n#define LINE_CAP_BUTT\n#define LINE_JOIN_NONE\n"));
+    lineShader2.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"));
+    lineShader2.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"));
     lineShader2.link();
 
     src = new CoreVAO();
@@ -59,15 +65,21 @@ public class LineMain implements RenderLoopCallback {
   @Override
   public boolean render(final float deltaTime) {
     glClearColor(1.f, 1.f, 1.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearStencil(0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    glStencilFuncSeparate(GL_FRONT_AND_BACK, GL_EQUAL, 0, 0xff);
+    glStencilOpSeparate(GL_FRONT_AND_BACK, GL_KEEP, GL_KEEP, GL_INCR);
+    glStencilMask(0xFF);
+    glEnable(GL_STENCIL_TEST);
 
     totalTime += deltaTime;
     float w = 50.f;
-    float r = 1.f;
+    float r = 2.f;
 
     lineShader1.activate();
     lineShader1.setUniformMatrix4f("uMvp", ORTHO);
-    lineShader1.setUniformf("lineColor", 0.f, 0.f, 0.f, 1.f);
+    lineShader1.setUniformf("lineColor", 0.f, 0.f, 0.f, 0.1f);
     lineShader1.setUniformf("lineParameters", (2*r + w), (2*r + w) / 2.f, (2*r + w) / 2.f - 2 * r, (2*r));
 
     FloatBuffer buffer = vbo.getBuffer();
@@ -85,9 +97,11 @@ public class LineMain implements RenderLoopCallback {
     vbo.send();
     CoreRender.renderLinesAdjacent(5);
 
+    glDisable(GL_STENCIL_TEST);
+
     // Draw thin purple lines above
-    w = 2.f;
-    r = 0.75f;
+    w = 1.f;
+    r = 0.8f;
     lineShader2.activate();
     lineShader2.setUniformMatrix4f("uMvp", ORTHO);
     lineShader2.setUniformf("lineColor", 1.f, 0.f, 1.f, 1.f);
