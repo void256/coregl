@@ -50,4 +50,6 @@ void main() {
   color = vec4(lineColor.r, lineColor.g, lineColor.b, intensityX*intensityY*lineColor.a);
 
 #endif
+color.r = color.a;
+color.gba = vec3(0.0);
 }
