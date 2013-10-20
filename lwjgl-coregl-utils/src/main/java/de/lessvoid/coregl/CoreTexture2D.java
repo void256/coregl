@@ -117,77 +117,82 @@ public class CoreTexture2D {
      * In case this format is used the pixel data is expected to contain only one color channel. This color channel is
      * used as the <b>red</b> color of the newly created RGB texture.
      */
-    Red(GL11.GL_RED, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB),
+    Red(GL11.GL_RED, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB, 1),
 
     /**
      * In case this format is used the pixel data is expected to contain only one color channel. This color channel is
      * used as the <b>green</b> color of the newly created RGB texture.
      */
-    Green(GL11.GL_GREEN, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB),
+    Green(GL11.GL_GREEN, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB, 1),
 
     /**
      * In case this format is used the pixel data is expected to contain only one color channel. This color channel is
      * used as the <b>blue</b> color of the newly created RGB texture.
      */
-    Blue(GL11.GL_BLUE, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB),
+    Blue(GL11.GL_BLUE, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB, 1),
 
     /**
      * In case this format is used the pixel data is expected to contain only one color channel. This color channel is
      * used as the <b>alpha</b> color of the newly created alpha texture.
      */
-    Alpha(GL11.GL_ALPHA, GL11.GL_ALPHA, GL13.GL_COMPRESSED_ALPHA),
+    Alpha(GL11.GL_ALPHA, GL11.GL_ALPHA, GL13.GL_COMPRESSED_ALPHA, 1),
 
     /**
      * In case this format is used the pixel data is expected to contain three color channels. The colors are
      * <b>red</b>, <b>green</b> and <b>blue</b> in this order. The created texture will be a RGB texture.
      */
-    RGB(GL11.GL_RGB, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB),
+    RGB(GL11.GL_RGB, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB, 3),
 
     /**
      * In case this format is used the pixel data is expected to contain three color channels. The colors are
      * <b>blue</b>, <b>green</b> and <b>red</b> in this order. The created texture will be a RGB texture.
      */
-    BGR(GL12.GL_BGR, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB),
+    BGR(GL12.GL_BGR, GL11.GL_RGB, GL13.GL_COMPRESSED_RGB, 3),
 
     /**
      * In case this format is used the pixel data is expected to contain four color channels. The colors are
      * <b>red</b>, <b>green</b>, <b>blue</b> and <b>alpha</b> in this order. The created texture will be a RGBA texture.
      */
-    RGBA(GL11.GL_RGBA, GL11.GL_RGBA, GL13.GL_COMPRESSED_RGBA),
+    RGBA(GL11.GL_RGBA, GL11.GL_RGBA, GL13.GL_COMPRESSED_RGBA, 4),
 
     /**
      * In case this format is used the pixel data is expected to contain four color channels. The colors are
      * <b>blue</b>, <b>green</b>, <b>red</b> and <b>alpha</b> in this order. The created texture will be a RGBA texture.
      */
-    BGRA(GL12.GL_BGRA, GL11.GL_RGBA, GL13.GL_COMPRESSED_RGBA),
+    BGRA(GL12.GL_BGRA, GL11.GL_RGBA, GL13.GL_COMPRESSED_RGBA, 4),
 
     /**
      * In case this format is used the pixel data is expected to contain only one color channels. The color is used
      * as luminance level, so the created texture will be a gray-scale texture.
      */
-    Luminance(GL11.GL_LUMINANCE, GL11.GL_LUMINANCE, GL13.GL_COMPRESSED_LUMINANCE),
+    Luminance(GL11.GL_LUMINANCE, GL11.GL_LUMINANCE, GL13.GL_COMPRESSED_LUMINANCE, 1),
 
     /**
      * In case this format is used the pixel data is expected to contain only two color channels. The channels are
      * expected to be the <b>luminance</b> and the <b>alpha</b> channel. The created texture will be gray-scale texture
      * with transparency.
      */
-    LuminanceAlpha(GL11.GL_LUMINANCE_ALPHA, GL11.GL_LUMINANCE_ALPHA, GL13.GL_COMPRESSED_LUMINANCE_ALPHA);
+    LuminanceAlpha(GL11.GL_LUMINANCE_ALPHA, GL11.GL_LUMINANCE_ALPHA, GL13.GL_COMPRESSED_LUMINANCE_ALPHA, 2);
 
     /**
      * The pixel data format.
      */
-    private int format;
+    private final int format;
 
     /**
      * The texture format.
      */
-    private int internalFormat;
+    private final int internalFormat;
 
     /**
      * The compressed kind of the texture format.
      */
-    private int compressedInternalFormat;
+    private final int compressedInternalFormat;
+
+    /**
+     * Number of components per pixels
+     */
+    private final int componentsPerPixel;
 
     /**
      * Default constructor.
@@ -195,11 +200,17 @@ public class CoreTexture2D {
      * @param newFormat the pixel data format
      * @param newInternalFormat the internal format
      * @param newCompressedInternalFormat the compressed internal format
+     * @param newComponentsPerPixel the number of components (usually bytes) per pixel
      */
-    ColorFormat(final int newFormat, final int newInternalFormat, final int newCompressedInternalFormat) {
+    ColorFormat(
+        final int newFormat,
+        final int newInternalFormat,
+        final int newCompressedInternalFormat,
+        final int newComponentsPerPixel) {
       format = newFormat;
       internalFormat = newInternalFormat;
       compressedInternalFormat = newCompressedInternalFormat;
+      componentsPerPixel = newComponentsPerPixel;
     }
 
     /**
@@ -227,6 +238,15 @@ public class CoreTexture2D {
      */
     public int getInternalFormat() {
       return internalFormat;
+    }
+
+    /**
+     * The number of components per pixel.
+     *
+     * @return the number of components per pixel
+     */
+    public int getComponentsPerPixel() {
+      return componentsPerPixel;
     }
   }
 
@@ -308,9 +328,8 @@ public class CoreTexture2D {
       final int width,
       final int height,
       final ResizeFilter filter) {
-    // FIXME works only for ColorFormat.RGBA at the moment! add other formats
-    ByteBuffer buffer = BufferUtils.createByteBuffer(width*height*4);
-    byte[] data = new byte[width*height*4];
+    ByteBuffer buffer = BufferUtils.createByteBuffer(width*height*format.getComponentsPerPixel());
+    byte[] data = new byte[width*height*format.getComponentsPerPixel()];
     buffer.put(data);
     buffer.flip();
 
