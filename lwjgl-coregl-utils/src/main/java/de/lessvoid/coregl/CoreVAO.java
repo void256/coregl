@@ -2,10 +2,10 @@ package de.lessvoid.coregl;
 
 
 import static org.lwjgl.opengl.ARBInstancedArrays.glVertexAttribDivisorARB;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
@@ -60,6 +60,11 @@ public class CoreVAO {
     glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
     glEnableVertexAttribArray(index);
     CoreCheckGL.checkGLError("glVertexAttribPointer (" + index + ")");
+  }
+
+  public void disableVertexAttribute(final int index) {
+    glDisableVertexAttribArray(index);
+    CoreCheckGL.checkGLError("glDisableVertexAttribArray (" + index + ")");
   }
 
   /**
