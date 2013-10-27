@@ -1,16 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.lessvoid</groupId>
-  <artifactId>lwjgl-coregl</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <artifactId>coregl</artifactId>
+  <version>2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>LWJGL OpenGL core</name>
+  <name>OpenGL core utilities (main)</name>
   <description>simple utility methods to make life with OpenGL core profile simpler</description>
   <modules>
-    <module>lwjgl-coregl-utils</module>
-    <module>lwjgl-coregl-utils-examples</module>
+    <module>coregl-utils</module>
+    <module>coregl-utils-lwjgl</module>
+    <module>coregl-utils-lwjgl-examples</module>
+    <module>coregl-utils-jogl</module>
+    <module>coregl-utils-jogl-examples</module>
   </modules>
-  <url>https://github.com/void256/lwjgl-coregl-utils/</url>
+  <url>https://github.com/void256/coregl-utils/</url>
   <licenses>
     <license>
       <name>The BSD 2-Clause License</name>
@@ -79,21 +82,11 @@
       <version>2.4</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.lwjgl.lwjgl</groupId>
-      <artifactId>lwjgl</artifactId>
-      <version>2.9.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.lwjgl.lwjgl</groupId>
-      <artifactId>lwjgl_util</artifactId>
-      <version>2.9.0</version>
-    </dependency>
   </dependencies>
   <scm>
-    <connection>scm:git:git://github.com/void256/lwjgl-coregl.git</connection>
-    <developerConnection>scm:git:git@github.com:void256/lwjgl-coregl.git</developerConnection>
-    <url>scm:git:git://github.com/void256/lwjgl-coregl.git</url>
+    <connection>scm:git:git://github.com/void256/coregl.git</connection>
+    <developerConnection>scm:git:git@github.com:void256/coregl.git</developerConnection>
+    <url>scm:git:git://github.com/void256/coregl.git</url>
   </scm>
   <distributionManagement>
     <repository>

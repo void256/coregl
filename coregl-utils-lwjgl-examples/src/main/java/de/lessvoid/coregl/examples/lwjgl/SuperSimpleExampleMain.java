@@ -1,72 +1,29 @@
-# OpenGL core utilities
-
-**Simple utility classes and methods to make life with OpenGL core profile simpler.**
-
-- The classes provided can be used independently from each other. You don't need to learn a complex API.
-- The abstractions provided are rather low level. This is by intention. The library is supposed to be as simple and lightweight as possible.
-- Adapter jars are provided for LWJGL and JOGL. If you want you can target both Java OpenGL providers or you can use the implementations directly. You decide. 
-
-It's main purpose is to reduce the amount of boilerplate code you would need to write when talking to OpenGL core profile.
-**It's not meant to be anything else.**
-
-I've came up with these classes while learning OpenGL core profile. Maybe you can find them useful too.
-
-## Maven
-
-The dependencies you'll need.
-
-### LWJGL
-
-```
-  <dependencies>
-    <!-- The actual API -->
-    <dependency>
-      <groupId>de.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <!-- The LWJGL adapter -->
-    <dependency>
-      <groupId>de.lessvoid</groupId>
-      <artifactId>coregl-utils-lwjgl</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
-```
-
-### Jogl (WIP)
-
-```
-  <dependencies>
-    <!-- The actual API -->
-    <dependency>
-      <groupId>de.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <!-- The Jogl adapter -->
-    <dependency>
-      <groupId>de.lessvoid</groupId>
-      <artifactId>coregl-utils-jogl</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-  </dependencies>
-```
-
-### Maven Repository
-
-```
-  <repositories>
-    <repository>
-      <id>nifty-maven-repo.sourceforge.net</id>
-      <url>http://nifty-gui.sourceforge.net/nifty-maven-repo</url>
-    </repository>
-  </repositories>
-```
-
-## Example (LWJGL)
-
-```java
+/**
+ * Copyright (c) 2013, Jens Hohmuth 
+ * All rights reserved. 
+ * 
+ * Redistribution and use in source and binary forms, with or without 
+ * modification, are permitted provided that the following conditions are 
+ * met: 
+ * 
+ *  * Redistributions of source code must retain the above copyright 
+ *    notice, this list of conditions and the following disclaimer. 
+ *  * Redistributions in binary form must reproduce the above copyright 
+ *    notice, this list of conditions and the following disclaimer in the 
+ *    documentation and/or other materials provided with the distribution. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package de.lessvoid.coregl.examples.lwjgl;
 
 import de.lessvoid.coregl.CoreFactory;
@@ -133,4 +90,3 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
     setup.renderLoop(new SuperSimpleExampleMain(factory));
   }
 }
-```
