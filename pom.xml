@@ -4,7 +4,7 @@
   <artifactId>coregl</artifactId>
   <version>2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>OpenGL core utilities (main)</name>
+  <name>OpenGL core utilities</name>
   <description>simple utility methods to make life with OpenGL core profile simpler</description>
   <modules>
     <module>coregl-utils</module>
