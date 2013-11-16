@@ -76,14 +76,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.util.vector.Matrix3f;
-import org.lwjgl.util.vector.Matrix4f;
 
 import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreGLException;
 import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.math.Mat3;
-import de.lessvoid.math.Mat4;
 
 public class CoreShaderLwjgl implements CoreShader {
   private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
@@ -409,21 +405,21 @@ public class CoreShaderLwjgl implements CoreShader {
   }
 
   /*
-   * 
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#setUniformMatrix4f(java.lang.String, java.nio.FloatBuffer)
    */
   @Override
-  public <T> void setUniformMatrix4f(final String name, final T m) {
-    toBuffer(m, matBuffer);
+  public void setUniformMatrix4f(final String name, final FloatBuffer matBuffer) {
     glUniformMatrix4(getLocation(name), false, matBuffer);
     checkGLError("glUniformMatrix4");
   }
 
   /*
-   * 
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#setUniformMatrix3f(java.lang.String, java.nio.FloatBuffer)
    */
   @Override
-  public <T> void setUniformMatrix3f(final String name, final T m) {
-    toBuffer(m, matBuffer);
+  public void setUniformMatrix3f(final String name, final FloatBuffer matBuffer) {
     glUniformMatrix3(getLocation(name), false, matBuffer);
     checkGLError("glUniformMatrix3");
   }
@@ -597,27 +593,5 @@ public class CoreShaderLwjgl implements CoreShader {
 
   private InputStream getStream(final String filename) {
     return Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
-  }
-
-  private <T> void toBuffer(final T m, final FloatBuffer buffer) {
-    buffer.clear();
-
-    if (m instanceof Matrix4f) {
-      Matrix4f matrix = (Matrix4f) m;
-      matrix.store(buffer);
-    } else if (m instanceof Mat4) {
-      Mat4 matrix = (Mat4) m;
-      matrix.store(buffer);
-    } else if (m instanceof Matrix3f) {
-      Matrix3f matrix = (Matrix3f) m;
-      matrix.store(buffer);
-    } else if (m instanceof Mat3) {
-      Mat3 matrix = (Mat3) m;
-      matrix.store(buffer);
-    } else {
-      throw new IllegalArgumentException("Unsupported class argument: " + m.getClass());
-    }
-    
-    buffer.rewind();
   }
 }

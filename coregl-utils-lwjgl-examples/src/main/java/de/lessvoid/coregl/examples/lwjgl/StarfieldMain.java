@@ -44,7 +44,7 @@ import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.CoreMatrixFactory;
+import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.math.Mat4;
 
 public class StarfieldMain implements RenderLoopCallback {
@@ -107,14 +107,14 @@ public class StarfieldMain implements RenderLoopCallback {
     Mat4 translate = Mat4.createTranslate(0.f, 0.f, z);
     Mat4 rotateX = Mat4.createRotate(angleX, 1.f, 0.f, 0.f);
     Mat4 rotateY = Mat4.createRotate(angleY, 0.f, 1.f, 0.f);
-    Mat4 projection = CoreMatrixFactory.createProjection(65.f, 1024.f/768.f, 1f, 1000.f);
+    Mat4 projection = MatrixFactory.createProjection(65.f, 1024.f/768.f, 1f, 1000.f);
 
     z -= deltaTime / 1000.f;
     angleX += deltaTime / 1000.f;
     angleY += deltaTime / 2000.f;
 
     Mat4 modelViewProjection = Mat4.mul(projection, Mat4.mul(translate, Mat4.mul(rotateX, rotateY, null), null), null);
-    shader.setUniformMatrix4f("uModelViewProjection", modelViewProjection);
+    shader.setUniformMatrix4f("uModelViewProjection", modelViewProjection.toBuffer());
 
     return false;
   }

@@ -45,7 +45,7 @@ import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.CoreMatrixFactory;
+import de.lessvoid.math.MatrixFactory;
 
 public class CompositeExampleMain implements RenderLoopCallback {
   private final CoreShader shader;
@@ -107,7 +107,7 @@ public class CompositeExampleMain implements RenderLoopCallback {
     white.enableVertexAttributef(1, 4, 6, 2);
 
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, 1024.f, 768.f, 0));
+    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
 
     glEnable(GL_BLEND);
   }

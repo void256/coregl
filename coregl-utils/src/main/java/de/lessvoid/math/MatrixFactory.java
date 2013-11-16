@@ -33,7 +33,7 @@ import de.lessvoid.math.Mat4;
  * Creates Mat4 instances for projection- and ortho projection.
  * @author void
  */
-public class CoreMatrixFactory {
+public class MatrixFactory {
 
   /**
    * Create orthographic projection Matrix4f.

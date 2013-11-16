@@ -39,7 +39,7 @@ import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.CoreMatrixFactory;
+import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.math.Mat4;
 import de.lessvoid.math.Vec4;
 import de.lessvoid.simpleimageloader.ImageData;
@@ -132,12 +132,12 @@ public class GeometryShaderExampleMain implements RenderLoopCallback {
     // we only use a single shader and a single vao so we can activate both her
     // and let them stay active the whole time.
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, 1024.f, 768.f, 0));
+    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
     shader.setUniformf("uWidth", 1024.f);
     shader.setUniformf("uHeight", 768.f);
     shader.setUniformi("uTex", 0);
 
-    System.out.println(Mat4.transform(CoreMatrixFactory.createOrtho(0, 1024.f, 768.f, 0), new Vec4(10.0f, 758.0f, 0.0f, 1.0f), null));
+    System.out.println(Mat4.transform(MatrixFactory.createOrtho(0, 1024.f, 768.f, 0), new Vec4(10.0f, 758.0f, 0.0f, 1.0f), null));
     vao.bind();
   }
 

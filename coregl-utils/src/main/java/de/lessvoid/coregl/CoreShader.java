@@ -30,6 +30,7 @@ package de.lessvoid.coregl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.nio.FloatBuffer;
 
 /**
  * Helper class that represents a shader (actually the combination of a vertex
@@ -265,14 +266,14 @@ public interface CoreShader {
    * @param name the name of the uniform
    * @param matrix the Matrix4f to set
    */
-  <T> void setUniformMatrix4f(String name, T matrix);
+  void setUniformMatrix4f(String name, FloatBuffer matrix);
 
   /**
    * Set the uniform mat4 with the given name to the given matrix (Matrix4f).
    * @param name the name of the uniform
-   * @param matrix the Matrix4f to set
+   * @param matrix the Matrix3f to set
    */
-  <T> void setUniformMatrix3f(String name, T matrix);
+  void setUniformMatrix3f(String name, FloatBuffer matrix);
 
   /**
    * Set the uniform float array with the given name to a new value.

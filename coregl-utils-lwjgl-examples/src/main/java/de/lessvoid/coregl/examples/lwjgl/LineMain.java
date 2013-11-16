@@ -59,11 +59,11 @@ import de.lessvoid.coregl.CoreTexture2D.Type;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.CoreMatrixFactory;
+import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.math.Mat4;
 
 public class LineMain implements RenderLoopCallback {
-  private static final Mat4 ORTHO = CoreMatrixFactory.createOrtho(0, 1024.f, 768.f, 0);
+  private static final Mat4 ORTHO = MatrixFactory.createOrtho(0, 1024.f, 768.f, 0);
   private final CoreShader texture;
   private final CoreShader lineShader1;
   private final CoreShader lineShader2;
@@ -147,7 +147,7 @@ public class LineMain implements RenderLoopCallback {
     float r = 2.f;
 
     lineShader1.activate();
-    lineShader1.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, 1024.f, 0, 768.f));
+    lineShader1.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 0, 768.f).toBuffer());
     lineShader1.setUniformf("lineColor", 1.f, 1.f, 1.f, (float)((Math.sin(time/1700.f) + 1.0) / 2.0));
     lineShader1.setUniformf("lineParameters", (2*r + w), (2*r + w) / 2.f, (2*r + w) / 2.f - 2 * r, (2*r));
 
@@ -205,7 +205,7 @@ public class LineMain implements RenderLoopCallback {
 
     glViewport(0, 0, Display.getWidth(), Display.getHeight());
     backgroundShader.activate();
-    backgroundShader.setUniformMatrix4f("uMvp", ORTHO);
+    backgroundShader.setUniformMatrix4f("uMvp", ORTHO.toBuffer());
     factory.getCoreRender().renderTriangleStrip(4);
 
     // Render lines fbo
@@ -243,7 +243,7 @@ public class LineMain implements RenderLoopCallback {
 
     fboTexture.bind();
     texture.activate();
-    texture.setUniformMatrix4f("uMvp", ORTHO);
+    texture.setUniformMatrix4f("uMvp", ORTHO.toBuffer());
     texture.setUniformi("uTexture", 0);
     texture.setUniformf("lineColor", 1.f, 1.f, 1.f, 1.f);
     factory.getCoreRender().renderTriangleStrip(4);

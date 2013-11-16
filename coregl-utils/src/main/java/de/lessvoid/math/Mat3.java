@@ -32,6 +32,8 @@
 package de.lessvoid.math;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
@@ -46,18 +48,11 @@ import java.nio.FloatBuffer;
  */
 
 public class Mat3 implements Serializable {
+  private final FloatBuffer matrixBuffer = ByteBuffer.allocateDirect(36).order(ByteOrder.nativeOrder()).asFloatBuffer();
 
 	private static final long serialVersionUID = 1L;
 
-	public float m00,
-		m01,
-		m02,
-		m10,
-		m11,
-		m12,
-		m20,
-		m21,
-		m22;
+	public float m00, m01, m02, m10, m11, m12, m20, m21, m22;
 
 	/**
 	 * Constructor for Matrix3f. Matrix is initialised to the identity.
@@ -362,6 +357,18 @@ public class Mat3 implements Serializable {
 		buf.append(m02).append(' ').append(m12).append(' ').append(m22).append(' ').append('\n');
 		return buf.toString();
 	}
+
+	 /**
+   * Store this Matrix to an internal FloatBuffer and return that buffer. Please note that the same internal buffer
+   * will be used for each call.
+   * @return FloatBuffer with the Matrix data
+   */
+  public FloatBuffer toBuffer() {
+    matrixBuffer.clear();
+    store(matrixBuffer);
+    matrixBuffer.rewind();
+    return matrixBuffer;
+  }
 
 	/**
 	 * Invert this matrix

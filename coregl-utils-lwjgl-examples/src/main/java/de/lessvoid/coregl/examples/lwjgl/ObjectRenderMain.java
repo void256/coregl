@@ -39,7 +39,6 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
-import org.lwjgl.util.vector.Matrix3f;
 
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreSetup;
@@ -53,8 +52,9 @@ import de.lessvoid.coregl.examples.lwjgl.WavefrontObjectLoader.Data;
 import de.lessvoid.coregl.examples.tools.FileChangeWatcher;
 import de.lessvoid.coregl.examples.tools.FileChangeWatcher.Callback;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.CoreMatrixFactory;
+import de.lessvoid.math.Mat3;
 import de.lessvoid.math.Mat4;
+import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.simpleimageloader.ImageData;
 import de.lessvoid.simpleimageloader.SimpleImageLoader;
 
@@ -209,13 +209,13 @@ public class ObjectRenderMain implements RenderLoopCallback{
     Mat4 rotateX = Mat4.createRotate(angleX, 1.f, 0.f, 0.f);
     Mat4 rotateY = Mat4.createRotate(angleY, 0.f, 1.f, 0.f);
     Mat4 modelView = Mat4.mul(translate, Mat4.mul(rotateX, rotateY, null), null);
-    shader.setUniformMatrix4f("uModelViewMatrix", modelView);
+    shader.setUniformMatrix4f("uModelViewMatrix", modelView.toBuffer());
 
-    Mat4 projection = CoreMatrixFactory.createProjection2(75.f, 1024.f / 768.f, 1f, 1000.f);
+    Mat4 projection = MatrixFactory.createProjection2(75.f, 1024.f / 768.f, 1f, 1000.f);
     Mat4 modelViewProjection = Mat4.mul(projection, modelView, null);
-    shader.setUniformMatrix4f("uModelViewProjectionMatrix", modelViewProjection);
+    shader.setUniformMatrix4f("uModelViewProjectionMatrix", modelViewProjection.toBuffer());
 
-    Matrix3f normalMatrix = new Matrix3f();
+    Mat3 normalMatrix = new Mat3();
     normalMatrix.m00 = modelView.m00;
     normalMatrix.m10 = modelView.m10;
     normalMatrix.m20 = modelView.m20;
@@ -225,7 +225,7 @@ public class ObjectRenderMain implements RenderLoopCallback{
     normalMatrix.m02 = modelView.m02;
     normalMatrix.m12 = modelView.m12;
     normalMatrix.m22 = modelView.m22;
-    shader.setUniformMatrix3f("uNormalMatrix", normalMatrix);
+    shader.setUniformMatrix3f("uNormalMatrix", normalMatrix.toBuffer());
 
     shader.setUniformf("uLightPosition", 0.f, 0.f, 100.f, 1.f);
     shader.setUniformf("uKd", 1.f, 1.f, 1.f);

@@ -7,9 +7,6 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
-
-import org.lwjgl.util.vector.Matrix4f;
-
 import de.lessvoid.coregl.CoreFBO;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreShader;
@@ -19,12 +16,12 @@ import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2D.Type;
 import de.lessvoid.coregl.CoreTextureBuffer;
 import de.lessvoid.coregl.CoreVBO;
-import de.lessvoid.math.CoreMatrixFactory;
 import de.lessvoid.math.Mat4;
+import de.lessvoid.math.MatrixFactory;
 
 public class DropShadow {
   private CoreShader black;
-  private Matrix4f scale = new Matrix4f();
+  private Mat4 scale = new Mat4();
   private int shadowSize = 100;
   private float overDraw = 40;
   private CoreFBO render;
@@ -48,7 +45,7 @@ public class DropShadow {
     this.factory = factory;
     this.image = image;
 
-    Mat4 projection = CoreMatrixFactory.createProjection2(75.f, 1024.f / 768.f, 1f, 1000.f);
+    Mat4 projection = MatrixFactory.createProjection2(75.f, 1024.f / 768.f, 1f, 1000.f);
 
     shadowTextureWidth = image.getWidth() + 2*shadowSize;
     shadowTextureHeight = image.getHeight() + 2*shadowSize;
@@ -61,7 +58,7 @@ public class DropShadow {
     tboShader.fragmentShader("blur2.fs");
     tboShader.vertexShader("blur2.vs");
     tboShader.activate();
-    tboShader.setUniformMatrix4f("projection", CoreMatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight));
+    tboShader.setUniformMatrix4f("projection", MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
     tboShader.setUniformf("texture", 0);
     tboShader.setUniformf("off", 0.f, 0.f);
     tboShader.setUniformf("blurSize", 1.f/((shadowTextureWidth)*1f));
@@ -71,8 +68,8 @@ public class DropShadow {
     black.fragmentShader("dropShadow-black.fs");
     black.vertexShader("nifty.vs");
     black.activate();
-    black.setUniformMatrix4f("matProj", CoreMatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight));
-    black.setUniformMatrix4f("matScale", scale);
+    black.setUniformMatrix4f("matProj", MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
+    black.setUniformMatrix4f("matScale", scale.toBuffer());
     black.setUniformf("off", 0.f, 0.f);
     black.setUniformf("tex", 0);
 
@@ -80,8 +77,8 @@ public class DropShadow {
     plainTextureShader.fragmentShader("nifty-fixedalpha.fs");
     plainTextureShader.vertexShader("nifty.vs");
     plainTextureShader.activate();
-    plainTextureShader.setUniformMatrix4f("matScale", scale);
-    plainTextureShader.setUniformMatrix4f("matProj", projection);
+    plainTextureShader.setUniformMatrix4f("matScale", scale.toBuffer());
+    plainTextureShader.setUniformMatrix4f("matProj", projection.toBuffer());
     plainTextureShader.setUniformf("tex", 0);
     plainTextureShader.setUniformf("alpha", 0.25f);
 
@@ -160,7 +157,7 @@ public class DropShadow {
   public Mat4 render(final float x, final float y) {
     plainTextureShader.activate();
     plainTextureShader.setUniformf("off", x, y);
-    Mat4 projection = CoreMatrixFactory.createProjection(0, 1024, 0, 768);
+    Mat4 projection = MatrixFactory.createProjection(0, 1024, 0, 768);
 
     Mat4 move1 = Mat4.createTranslate(x + 256, y + 256, 0);
     Mat4 move2 = Mat4.createTranslate(-(x + 256), -(y + 256), 0);
@@ -173,7 +170,7 @@ public class DropShadow {
     Mat4.mul(move1, temp1, temp2);
     Mat4.mul(projection, temp2, matrix);
 
-    plainTextureShader.setUniformMatrix4f("matProj", matrix);
+    plainTextureShader.setUniformMatrix4f("matProj", matrix.toBuffer());
     render3.bind();
     fullQuad.bind();
     factory.getCoreRender().renderTriangles(2);

@@ -38,7 +38,7 @@ import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2D.Type;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
-import de.lessvoid.math.CoreMatrixFactory;
+import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.textureatlas.TextureAtlasGenerator.Result;
 
 /**
@@ -145,7 +145,7 @@ public class CoreTextureAtlasGenerator {
 
   private void put(final CoreTexture2D source, final int x, final int y) {
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()));
+    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()).toBuffer());
 
     vao.bind();
     renderToTexture.bindFramebuffer();

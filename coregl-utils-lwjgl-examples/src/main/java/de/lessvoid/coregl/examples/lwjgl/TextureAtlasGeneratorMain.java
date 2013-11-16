@@ -44,7 +44,7 @@ import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.CoreMatrixFactory;
+import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.simpleimageloader.ImageData;
 import de.lessvoid.simpleimageloader.SimpleImageLoader;
 import de.lessvoid.simpleimageloader.SimpleImageLoaderConfig;
@@ -123,7 +123,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     vbo.send();
     vao.bind();
 
-    shader.setUniformMatrix4f("uMvp", CoreMatrixFactory.createOrtho(0, 1024.f, 768.f, 0));
+    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
     factory.getCoreRender().renderTriangleStrip(4);
     return false;
   }
