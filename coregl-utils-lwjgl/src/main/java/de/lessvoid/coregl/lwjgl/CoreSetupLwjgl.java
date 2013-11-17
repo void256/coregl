@@ -152,7 +152,7 @@ public class CoreSetupLwjgl implements CoreSetup {
       long diff = System.currentTimeMillis() - now;
       if (diff >= 1000) {
         now += diff;
-        log.info(buildFpsText(frameCounter));
+        log.fine(buildFpsText(frameCounter));
         frameCounter = 0;
       }
     }
@@ -187,6 +187,24 @@ public class CoreSetupLwjgl implements CoreSetup {
         frameCounter = 0;
       }
     }
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreSetup#getFactory()
+   */
+  @Override
+  public CoreFactory getFactory() {
+    return factory;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreSetup#enableVSync(boolean)
+   */
+  @Override
+  public void enableVSync(final boolean enable) {
+    Display.setVSyncEnabled(enable);
   }
 
   private void initGraphics(final String title, final int requestedWidth, final int requestedHeight) throws Exception {
@@ -320,10 +338,5 @@ public class CoreSetupLwjgl implements CoreSetup {
         return 0;
       }
     }
-  }
-
-  @Override
-  public CoreFactory getFactory() {
-    return factory;
   }
 }

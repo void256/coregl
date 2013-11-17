@@ -46,7 +46,7 @@ public interface CoreSetup {
 
     /**
      * Do some awesome stuff in here!
-     * @param l 
+     * @param deltaTime the time past since the last call in ms
      * @return true when the render loop should be stopped and false if you want it to continue.
      */
     boolean render(float deltaTime);
@@ -61,7 +61,7 @@ public interface CoreSetup {
 
     /**
      * Do some awesome stuff in here!
-     * @param l 
+     * @param deltaTime the time past since the last call in ms
      * @return true when the render actually rendered a new frame and false otherwise
      */
     boolean render(float deltaTime);
@@ -117,4 +117,10 @@ public interface CoreSetup {
    * @return a CoreFactory
    */
   CoreFactory getFactory();
+
+  /**
+   * Enable vsync.
+   * @param enable true to enable and false to disable
+   */
+  void enableVSync(boolean enable);
 }
