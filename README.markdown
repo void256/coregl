@@ -19,13 +19,6 @@ The dependencies you'll need.
 
 ```
   <dependencies>
-    <!-- The actual API -->
-    <dependency>
-      <groupId>de.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <!-- The LWJGL adapter -->
     <dependency>
       <groupId>de.lessvoid</groupId>
       <artifactId>coregl-utils-lwjgl</artifactId>
@@ -38,13 +31,6 @@ The dependencies you'll need.
 
 ```
   <dependencies>
-    <!-- The actual API -->
-    <dependency>
-      <groupId>de.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
-      <version>2.0-SNAPSHOT</version>
-    </dependency>
-    <!-- The Jogl adapter -->
     <dependency>
       <groupId>de.lessvoid</groupId>
       <artifactId>coregl-utils-jogl</artifactId>
