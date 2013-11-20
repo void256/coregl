@@ -205,7 +205,7 @@ public class ObjectRenderMain implements RenderLoopCallback{
         
     Mat4 translate = Mat4.createTranslate(x, y, z);
     angleX = 0;//(float) Math.sin(time / 500.f) / 2.f + (float)( Math.PI );
-    angleY = -time / 5000.f;
+    angleY = -time / 50.f;
     Mat4 rotateX = Mat4.createRotate(angleX, 1.f, 0.f, 0.f);
     Mat4 rotateY = Mat4.createRotate(angleY, 0.f, 1.f, 0.f);
     Mat4 modelView = Mat4.mul(translate, Mat4.mul(rotateX, rotateY, null), null);
