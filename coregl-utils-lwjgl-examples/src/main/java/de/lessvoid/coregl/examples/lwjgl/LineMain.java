@@ -41,6 +41,8 @@ import static org.lwjgl.opengl.GL14.GL_MAX;
 import static org.lwjgl.opengl.GL20.glBlendEquationSeparate;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
@@ -59,8 +61,8 @@ import de.lessvoid.coregl.CoreTexture2D.Type;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.math.Mat4;
+import de.lessvoid.math.MatrixFactory;
 
 public class LineMain implements RenderLoopCallback {
   private static final Mat4 ORTHO = MatrixFactory.createOrtho(0, 1024.f, 768.f, 0);
@@ -88,14 +90,14 @@ public class LineMain implements RenderLoopCallback {
 
     lineShader1 = factory.newShaderWithVertexAttributes("aVertex");
     lineShader1.vertexShader("line/line.vs");
-    lineShader1.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"));
-    lineShader1.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"));
+    lineShader1.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"), resource("line/line.gs"));
+    lineShader1.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"), resource("line/line.fs"));
     lineShader1.link();
 
     lineShader2 = factory.newShaderWithVertexAttributes("aVertex");
     lineShader2.vertexShader("line/line.vs");
-    lineShader2.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"));
-    lineShader2.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"));
+    lineShader2.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"), resource("line/line.gs"));
+    lineShader2.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"), resource("line/line.fs"));
     lineShader2.link();
 
     src = factory.createVAO();
@@ -118,6 +120,10 @@ public class LineMain implements RenderLoopCallback {
     backgroundShader.vertexShader("background-gradient.vs");
     backgroundShader.fragmentShader("background-gradient.fs");
     backgroundShader.link();
+  }
+
+  private InputStream resource(final String name) {
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
   }
 
   private InputStream stream(final String data) {
