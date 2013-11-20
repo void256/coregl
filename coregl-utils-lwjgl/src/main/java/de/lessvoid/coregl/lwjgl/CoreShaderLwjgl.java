@@ -58,6 +58,13 @@ import static org.lwjgl.opengl.GL20.glUniform4i;
 import static org.lwjgl.opengl.GL20.glUniformMatrix3;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4;
 import static org.lwjgl.opengl.GL20.glUseProgram;
+import static org.lwjgl.opengl.GL31.GL_UNIFORM_ARRAY_STRIDE;
+import static org.lwjgl.opengl.GL31.GL_UNIFORM_MATRIX_STRIDE;
+import static org.lwjgl.opengl.GL31.GL_UNIFORM_OFFSET;
+import static org.lwjgl.opengl.GL31.glGetActiveUniforms;
+import static org.lwjgl.opengl.GL31.glGetUniformBlockIndex;
+import static org.lwjgl.opengl.GL31.glGetUniformIndices;
+import static org.lwjgl.opengl.GL31.glUniformBlockBinding;
 import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
 
 import java.io.ByteArrayInputStream;
@@ -72,6 +79,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -96,37 +104,7 @@ public class CoreShaderLwjgl implements CoreShader {
    */
   @Override
   public int vertexShader(final String filename) {
-    return vertexShader(getStream(filename));
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#fragmentShader(java.lang.String)
-   */
-  @Override
-  public int fragmentShader(final String filename) {
-    return fragmentShader(getStream(filename));
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#fragmentShader(java.lang.String, java.io.InputStream[])
-   */
-  @Override
-  public int fragmentShader(final String file, final InputStream ... inputStreams) throws FileNotFoundException {
-    InputStream[] sources = new InputStream[inputStreams.length + 1];
-    System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
-    sources[sources.length - 1] = getStream(file);
-    return fragmentShader(sources);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#geometryShader(java.lang.String)
-   */
-  @Override
-  public int geometryShader(final String filename) {
-    return geometryShader(getStream(filename));
+    return vertexShader(filename, getStream(filename));
   }
 
   /*
@@ -135,16 +113,60 @@ public class CoreShaderLwjgl implements CoreShader {
    */
   @Override
   public int vertexShader(final File file) throws FileNotFoundException {
-    return vertexShader(getStream(file));
+    return vertexShader(file.getName(), getStream(file));
   }
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#fragmentShader(java.io.File)
+   * @see de.lessvoid.coregl.CoreShader#vertexShader(java.io.InputStream)
+   */
+  public int vertexShader(final String streamName, final InputStream ... sources) {
+    return vertexShaderFromStream(streamName, sources);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#vertexShader(int, java.lang.String)
    */
   @Override
-  public int fragmentShader(final File file) throws FileNotFoundException {
-    return fragmentShader(getStream(file));
+  public void vertexShader(final int shaderId, final String filename) {
+    vertexShader(shaderId, filename, getStream(filename));
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#vertexShader(int, java.io.File)
+   */
+  @Override
+  public void vertexShader(final int shaderId, final File file) throws FileNotFoundException {
+    vertexShader(shaderId, file.getName(), getStream(file));
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#vertexShader(int, java.io.InputStream)
+   */
+  @Override
+  public void vertexShader(final int shaderId, final String streamName, final InputStream source) {
+    prepareShader(shaderId, streamName, source);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#geometryShader(int, java.lang.String)
+   */
+  @Override
+  public void geometryShader(final int shaderId, final String filename) {
+    geometryShader(shaderId, filename, getStream(filename));
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#geometryShader(java.lang.String)
+   */
+  @Override
+  public int geometryShader(final String filename) {
+    return geometryShaderFromStream(filename, getStream(filename));
   }
 
   /*
@@ -153,7 +175,7 @@ public class CoreShaderLwjgl implements CoreShader {
    */
   @Override
   public int geometryShader(final File file) throws FileNotFoundException {
-    return geometryShader(getStream(file));
+    return geometryShader(file.getName(), getStream(file));
   }
 
   /*
@@ -165,7 +187,7 @@ public class CoreShaderLwjgl implements CoreShader {
     InputStream[] sources = new InputStream[inputStreams.length + 1];
     System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
     sources[sources.length - 1] = getStream(file);
-    return geometryShader(sources);
+    return geometryShader(file.getName(), sources);
   }
 
   /*
@@ -173,98 +195,17 @@ public class CoreShaderLwjgl implements CoreShader {
    * @see de.lessvoid.coregl.CoreShader#geometryShader(java.lang.String, java.io.InputStream[])
    */
   @Override
-  public int geometryShader(final String file, final InputStream ... inputStreams) throws FileNotFoundException {
-    InputStream[] sources = new InputStream[inputStreams.length + 1];
-    System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
-    sources[sources.length - 1] = getStream(file);
-    return geometryShader(sources);
+  public int geometryShader(final String streamName, final InputStream ... inputStreams) throws FileNotFoundException {
+    return geometryShaderFromStream(streamName, inputStreams);
   }
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#vertexShader(java.io.InputStream)
+   * @see de.lessvoid.coregl.CoreShader#geometryShader(int, java.io.InputStream)
    */
   @Override
-  public int vertexShader(final InputStream source) {
-    int shaderId = glCreateShader(GL_VERTEX_SHADER);
-    checkGLError("glCreateShader(GL_VERTEX_SHADER)");
-    prepareShader(shaderId, source);
-    glAttachShader(program, shaderId);
-    checkGLError("glAttachShader");
-    return shaderId;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#fragmentShader(java.io.InputStream[])
-   */
-  @Override
-  public int fragmentShader(final InputStream ... sources) {
-    int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
-    checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
-    prepareShader(shaderId, sources);
-    glAttachShader(program, shaderId);
-    checkGLError("glAttachShader");
-    return shaderId;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#geometryShader(java.io.InputStream[])
-   */
-  @Override
-  public int geometryShader(final InputStream ... sources) {
-    int shaderId = glCreateShader(GL_GEOMETRY_SHADER);
-    checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
-    prepareShader(shaderId, sources);
-    glAttachShader(program, shaderId);
-    checkGLError("glAttachShader");
-    return shaderId;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#vertexShader(int, java.lang.String)
-   */
-  @Override
-  public void vertexShader(final int shaderId, final String filename) {
-    vertexShader(shaderId, getStream(filename));
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#fragmentShader(int, java.lang.String)
-   */
-  @Override
-  public void fragmentShader(final int shaderId, final String filename) {
-    fragmentShader(shaderId, getStream(filename));
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#geometryShader(int, java.lang.String)
-   */
-  @Override
-  public void geometryShader(final int shaderId, final String filename) {
-    geometryShader(shaderId, getStream(filename));
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#vertexShader(int, java.io.File)
-   */
-  @Override
-  public void vertexShader(final int shaderId, final File file) throws FileNotFoundException {
-    vertexShader(shaderId, getStream(file));
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#fragmentShader(int, java.io.File)
-   */
-  @Override
-  public void fragmentShader(final int shaderId, final File file) throws FileNotFoundException {
-    fragmentShader(shaderId, getStream(file));
+  public void geometryShader(final int shaderId, final String streamName, InputStream source) {
+    prepareShader(shaderId, streamName, source);
   }
 
   /*
@@ -273,16 +214,52 @@ public class CoreShaderLwjgl implements CoreShader {
    */
   @Override
   public void geometryShader(final int shaderId, final File file) throws FileNotFoundException {
-    geometryShader(shaderId, getStream(file));
+    geometryShader(shaderId, file.getName(), getStream(file));
   }
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#vertexShader(int, java.io.InputStream)
+   * @see de.lessvoid.coregl.CoreShader#fragmentShader(java.lang.String)
    */
   @Override
-  public void vertexShader(final int shaderId, final InputStream source) {
-    prepareShader(shaderId, source);
+  public int fragmentShader(final String filename) {
+    return fragmentShader(filename, getStream(filename));
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#fragmentShader(java.io.File)
+   */
+  @Override
+  public int fragmentShader(final File file) throws FileNotFoundException {
+    return fragmentShaderFromStream(file.getName(), getStream(file));
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#fragmentShader(java.lang.String, java.io.InputStream[])
+   */
+  @Override
+  public int fragmentShader(final String streamName, final InputStream ... inputStreams) {
+    return fragmentShaderFromStream(streamName, inputStreams);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#fragmentShader(int, java.lang.String)
+   */
+  @Override
+  public void fragmentShader(final int shaderId, final String filename) {
+    fragmentShader(shaderId, filename, getStream(filename));
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#fragmentShader(int, java.io.File)
+   */
+  @Override
+  public void fragmentShader(final int shaderId, final File file) throws FileNotFoundException {
+    fragmentShader(shaderId, file.getName(), getStream(file));
   }
 
   /*
@@ -290,17 +267,35 @@ public class CoreShaderLwjgl implements CoreShader {
    * @see de.lessvoid.coregl.CoreShader#fragmentShader(int, java.io.InputStream)
    */
   @Override
-  public void fragmentShader(final int shaderId, final InputStream source) {
-    prepareShader(shaderId, source);
+  public void fragmentShader(final int shaderId, final String streamName, final InputStream source) {
+    prepareShader(shaderId, streamName, source);
   }
 
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreShader#geometryShader(int, java.io.InputStream)
-   */
-  @Override
-  public void geometryShader(final int shaderId, InputStream source) {
-    prepareShader(shaderId, source);
+  private int vertexShaderFromStream(final String streamName, final InputStream ... sources) {
+    int shaderId = glCreateShader(GL_VERTEX_SHADER);
+    checkGLError("glCreateShader(GL_VERTEX_SHADER)");
+    prepareShader(shaderId, streamName, sources);
+    glAttachShader(program, shaderId);
+    checkGLError("glAttachShader");
+    return shaderId;
+  }
+
+  private int geometryShaderFromStream(final String streamName, final InputStream ... sources) {
+    int shaderId = glCreateShader(GL_GEOMETRY_SHADER);
+    checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
+    prepareShader(shaderId, streamName, sources);
+    glAttachShader(program, shaderId);
+    checkGLError("glAttachShader");
+    return shaderId;
+  }
+
+  private int fragmentShaderFromStream(final String streamName, final InputStream ... sources) {
+    int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
+    checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
+    prepareShader(shaderId, streamName, sources);
+    glAttachShader(program, shaderId);
+    checkGLError("glAttachShader");
+    return shaderId;
   }
 
   /*
@@ -458,6 +453,61 @@ public class CoreShaderLwjgl implements CoreShader {
     checkGLError("glBindAttribLocation");
   }
 
+  public static class UniformBlockInfo {
+    public String name;
+    int offset;
+    int arrayStride;
+    int matrixStride;
+
+    public String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("[");
+      builder.append("name: ").append(name).append(", ");
+      builder.append("offset: ").append(offset).append(", ");
+      builder.append("arrayStride: ").append(arrayStride).append(", ");
+      builder.append("matrixStride: ").append(matrixStride);
+      builder.append("]");
+      return builder.toString();
+    }
+  }
+
+  public Map<String, UniformBlockInfo> getUniformIndices(final String ... uniformNames) {
+    Map<String, UniformBlockInfo> result = new Hashtable<String, UniformBlockInfo>();
+
+    IntBuffer intBuffer = BufferUtils.createIntBuffer(uniformNames.length);
+    glGetUniformIndices(program, uniformNames, intBuffer);
+
+    IntBuffer uniformOffsets = BufferUtils.createIntBuffer(uniformNames.length);
+    glGetActiveUniforms(program, intBuffer, GL_UNIFORM_OFFSET, uniformOffsets);
+
+    IntBuffer arrayStrides = BufferUtils.createIntBuffer(uniformNames.length);
+    glGetActiveUniforms(program, intBuffer, GL_UNIFORM_ARRAY_STRIDE, arrayStrides);
+
+    IntBuffer matrixStrides = BufferUtils.createIntBuffer(uniformNames.length);
+    glGetActiveUniforms(program, intBuffer, GL_UNIFORM_MATRIX_STRIDE, matrixStrides);
+
+    checkGL.checkGLError("getUniformIndices");
+
+    for (int i=0; i<uniformNames.length; i++) {
+      UniformBlockInfo blockInfo = new UniformBlockInfo();
+      blockInfo.name = uniformNames[i];
+      blockInfo.offset = uniformOffsets.get(i);
+      blockInfo.arrayStride = arrayStrides.get(i);
+      blockInfo.matrixStride = matrixStrides.get(i);
+      result.put(blockInfo.name, blockInfo);
+    }
+
+    return result;
+  }
+
+  public void uniformBlockBinding(final String name, final int uniformBlockBinding) {
+    int uniformBlockIndex = glGetUniformBlockIndex(program, name);
+    checkGL.checkGLError("glGetUniformBlockIndex");
+
+    glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+    checkGL.checkGLError("glUniformBlockBinding");
+  }
+
   /*
    * (non-Javadoc)
    * @see de.lessvoid.coregl.CoreShader#activate()
@@ -505,7 +555,7 @@ public class CoreShaderLwjgl implements CoreShader {
     }
   }
 
-  private void prepareShader(final int shaderId, final InputStream ... sources) {
+  private void prepareShader(final int shaderId, final String name, final InputStream ... sources) {
     try {
       glShaderSource(shaderId, loadShader(sources));
       checkGLError("glShaderSource");
@@ -517,7 +567,7 @@ public class CoreShaderLwjgl implements CoreShader {
     checkGLError("glCompileShader");
 
     if (glGetShader(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
-      log.warning("compile error: " + glGetShaderInfoLog(shaderId, 1024));
+      log.warning("'" + name + "' compile error: " + glGetShaderInfoLog(shaderId, 1024));
     }
 
     printLogInfo(shaderId);
