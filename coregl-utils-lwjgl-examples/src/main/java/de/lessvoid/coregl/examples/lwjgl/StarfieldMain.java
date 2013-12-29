@@ -40,6 +40,7 @@ import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
@@ -66,16 +67,16 @@ public class StarfieldMain implements RenderLoopCallback {
     CoreVAO vao = factory.createVAO();
     vao.bind();
 
-    factory.createStaticAndSend(new float[] {
+    factory.createVBOStaticAndSend(new float[] {
         -0.025f, -0.025f,
         -0.025f,  0.025f,
         0.025f, -0.025f,
         0.025f,  0.025f,
     });
-    vao.enableVertexAttributef(shader.getAttribLocation("aVertex"), 2, 0, 0);
+    vao.vertexAttribPointer(shader.getAttribLocation("aVertex"), 2, FloatType.FLOAT, 0, 0);
 
-    CoreVBO starPosBuffer = factory.createStatic(new float[STAR_COUNT * 3]);
-    FloatBuffer buffer = starPosBuffer.getBuffer();
+    CoreVBO starPosBuffer = factory.createVBOStatic(new float[STAR_COUNT * 3]);
+    FloatBuffer buffer = starPosBuffer.getFloatBuffer();
     float size = 20.f;
 
     for (int i=0; i<STAR_COUNT; i++) {
@@ -87,7 +88,7 @@ public class StarfieldMain implements RenderLoopCallback {
     buffer.rewind();
     starPosBuffer.bind();
     starPosBuffer.send();
-    vao.enableVertexAttributeDivisorf(shader.getAttribLocation("aStarPos"), 3, 0, 0, 1);
+    vao.enableVertexAttributeDivisorf(shader.getAttribLocation("aStarPos"), 3, FloatType.FLOAT, 0, 0, 1);
 
     shader.activate();
     vao.bind();
@@ -120,7 +121,7 @@ public class StarfieldMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = new CoreFactoryLwjgl();
+    CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Hello Lwjgl Core GL", 1024, 768);

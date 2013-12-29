@@ -39,6 +39,7 @@ import static org.lwjgl.opengl.GL15.glUnmapBuffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import org.lwjgl.BufferUtils;
 
@@ -50,64 +51,77 @@ import de.lessvoid.coregl.CoreVBO;
  * @author void
  */
 public class CoreVBOLwjgl implements CoreVBO {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
 
   private final int id;
   private final int usage;
-  private final long byteLength;
-  private FloatBuffer vertexBuffer;
+  private final int byteLength;
+  private ByteBuffer vertexBuffer;
   private ByteBuffer mappedBufferCache;
 
-  CoreVBOLwjgl(final int usageType, final float[] data) {
+  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final short[] data) {
+    checkGL = checkGLParam;
+    usage = usageType;
+    byteLength = data.length << 1;
+
+    vertexBuffer = BufferUtils.createByteBuffer(byteLength);
+    vertexBuffer.asShortBuffer().put(data);
+    vertexBuffer.rewind();
+
+    id = initBuffer();
+  }
+
+  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final ShortBuffer data) {
+    checkGL = checkGLParam;
+    usage = usageType;
+    byteLength = data.limit() << 1;
+
+    vertexBuffer = BufferUtils.createByteBuffer(byteLength);
+    vertexBuffer.asShortBuffer().put(data);
+    vertexBuffer.rewind();
+
+    id = initBuffer();
+  }
+
+  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final float[] data) {
+    checkGL = checkGLParam;
     usage = usageType;
     byteLength = data.length << 2;
 
-    vertexBuffer = BufferUtils.createFloatBuffer(data.length);
-    vertexBuffer.put(data);
+    vertexBuffer = BufferUtils.createByteBuffer(byteLength);
+    vertexBuffer.asFloatBuffer().put(data);
     vertexBuffer.rewind();
 
-    id = glGenBuffers();
-    checkGL.checkGLError("glGenBuffers");
-
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
-    checkGL.checkGLError("glBufferData");
+    id = initBuffer();
   }
 
-  CoreVBOLwjgl(final int usageType, final FloatBuffer data) {
+  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final FloatBuffer data) {
+    checkGL = checkGLParam;
     usage = usageType;
     byteLength = data.limit() << 2;
 
-    vertexBuffer = BufferUtils.createFloatBuffer(data.limit());
-    vertexBuffer.put(data);
+    vertexBuffer = BufferUtils.createByteBuffer(data.limit() * 4);
+    vertexBuffer.asFloatBuffer().put(data);
     vertexBuffer.rewind();
 
-    id = glGenBuffers();
-    checkGL.checkGLError("glGenBuffers");
-
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
-    checkGL.checkGLError("glBufferData");
+    id = initBuffer();
   }
 
-  /**
-   * Allows access to the internally kept nio FloatBuffer that contains the original
-   * buffer data. You can access and change this buffer if you want to update the
-   * buffer content. Just make sure that you call rewind() before sending your new
-   * data to the GPU with the sendData() method.
-   *
-   * @return the FloatBuffer with the original buffer data (stored in main memory
-   * not GPU memory)
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVBO#getFloatBuffer()
    */
-  public FloatBuffer getBuffer() {
-    return vertexBuffer;
+  @Override
+  public FloatBuffer getFloatBuffer() {
+    return vertexBuffer.asFloatBuffer();
   }
 
-  /**
-   * Maps the buffer object that this represents into client space and returns the buffer as a FloatBuffer
-   * @return the FloatBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVBO#getFloatBufferMapped()
    */
-  public FloatBuffer getMappedBuffer() {
+  @Override
+  public FloatBuffer getFloatBufferMapped() {
     ByteBuffer dataBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY, byteLength, mappedBufferCache);
     checkGL.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
 
@@ -115,9 +129,32 @@ public class CoreVBOLwjgl implements CoreVBO {
     return dataBuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVBO#getFloatBuffer()
+   */
+  @Override
+  public ShortBuffer getShortBuffer() {
+    return vertexBuffer.asShortBuffer();
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVBO#getFloatBufferMapped()
+   */
+  @Override
+  public ShortBuffer getShortBufferMapped() {
+    ByteBuffer dataBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY, byteLength, mappedBufferCache);
+    checkGL.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
+
+    mappedBufferCache = dataBuffer;
+    return dataBuffer.order(ByteOrder.nativeOrder()).asShortBuffer();
+  }
+
   /**
    * You'll need to call that when you're done writing data into a mapped buffer to return access back to the GPU.
    */
+  @Override
   public void unmapBuffer() {
     glUnmapBuffer(GL_ARRAY_BUFFER);
   }
@@ -125,6 +162,7 @@ public class CoreVBOLwjgl implements CoreVBO {
   /**
    * bind the buffer object as GL_ARRAY_BUFFER
    */
+  @Override
   public void bind() {
     glBindBuffer(GL_ARRAY_BUFFER, id);
     checkGL.checkGLError("glBindBuffer(GL_ARRAY_BUFFER)");
@@ -133,6 +171,7 @@ public class CoreVBOLwjgl implements CoreVBO {
   /**
    * Send the content of the FloatBuffer to the GPU.
    */
+  @Override
   public void send() {
     glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
     checkGL.checkGLError("glBufferData(GL_ARRAY_BUFFER)");
@@ -141,7 +180,18 @@ public class CoreVBOLwjgl implements CoreVBO {
   /**
    * Delete all resources for this VBO.
    */
+  @Override
   public void delete() {
     glDeleteBuffers(id);
+  }
+
+  private int initBuffer() {
+    int id = glGenBuffers();
+    checkGL.checkGLError("glGenBuffers");
+
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+    glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
+    checkGL.checkGLError("glBufferData");
+    return id;
   }
 }

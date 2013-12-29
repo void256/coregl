@@ -41,8 +41,6 @@ import static org.lwjgl.opengl.GL14.GL_MAX;
 import static org.lwjgl.opengl.GL20.glBlendEquationSeparate;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
@@ -59,6 +57,7 @@ import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2D.Type;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
 import de.lessvoid.math.Mat4;
@@ -103,12 +102,12 @@ public class LineMain implements RenderLoopCallback {
     src = factory.createVAO();
     src.bind();
 
-    vbo = factory.createDynamic(new float[2*5]);
-    src.enableVertexAttributef(0, 2, 2, 0);
+    vbo = factory.createVBODynamic(new float[2*5]);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
     totalTime = 0;
 
-    vboQuad = factory.createDynamic(new float[4*4]);
-    vboBackground = factory.createDynamic(new float[5*4]);
+    vboQuad = factory.createVBODynamic(new float[4*4]);
+    vboBackground = factory.createVBODynamic(new float[5*4]);
 
     fbo = factory.createCoreFBO();
     fbo.bindFramebuffer();
@@ -157,7 +156,7 @@ public class LineMain implements RenderLoopCallback {
     lineShader1.setUniformf("lineColor", 1.f, 1.f, 1.f, (float)((Math.sin(time/1700.f) + 1.0) / 2.0));
     lineShader1.setUniformf("lineParameters", (2*r + w), (2*r + w) / 2.f, (2*r + w) / 2.f - 2 * r, (2*r));
 
-    FloatBuffer buffer = vbo.getBuffer();
+    FloatBuffer buffer = vbo.getFloatBuffer();
     buffer.put(100.f);
     buffer.put(100.f);
     buffer.put(100.f);
@@ -169,7 +168,7 @@ public class LineMain implements RenderLoopCallback {
     buffer.put(600.f + (float)Math.cos(totalTime/1500.f)*200.f);
     buffer.put(300.f + (float)Math.sin(totalTime/1500.f)*200.f);
     buffer.rewind();
-    src.enableVertexAttributef(0, 2, 2, 0);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
     src.disableVertexAttribute(1);
     vbo.send();
     factory.getCoreRender().renderLinesAdjacent(5);
@@ -178,7 +177,7 @@ public class LineMain implements RenderLoopCallback {
     // Render background
     glDisable(GL_BLEND);
 
-    FloatBuffer background = vboBackground.getBuffer();
+    FloatBuffer background = vboBackground.getFloatBuffer();
     background.put(0.f);
     background.put(0.f);
     background.put(1.f);
@@ -205,8 +204,8 @@ public class LineMain implements RenderLoopCallback {
     background.rewind();
 
     vboBackground.bind();
-    src.enableVertexAttributef(0, 2, 5, 0);
-    src.enableVertexAttributef(1, 3, 5, 2);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 5, 0);
+    src.vertexAttribPointer(1, 3, FloatType.FLOAT, 5, 2);
     vboBackground.send();
 
     glViewport(0, 0, Display.getWidth(), Display.getHeight());
@@ -220,7 +219,7 @@ public class LineMain implements RenderLoopCallback {
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 
-    FloatBuffer quad = vboQuad.getBuffer();
+    FloatBuffer quad = vboQuad.getFloatBuffer();
     quad.put(0.f);
     quad.put(0.f);
     quad.put(0.f);
@@ -243,8 +242,8 @@ public class LineMain implements RenderLoopCallback {
     quad.rewind();
 
     vboQuad.bind();
-    src.enableVertexAttributef(0, 2, 4, 0);
-    src.enableVertexAttributef(1, 2, 4, 2);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
+    src.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
     vboQuad.send();
 
     fboTexture.bind();
@@ -257,7 +256,7 @@ public class LineMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = new CoreFactoryLwjgl();
+    CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging();
     setup.initialize("Hello line caps", 1024, 768);

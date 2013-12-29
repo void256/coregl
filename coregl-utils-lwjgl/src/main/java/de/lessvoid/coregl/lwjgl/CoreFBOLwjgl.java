@@ -63,8 +63,13 @@ import de.lessvoid.coregl.CoreGLException;
  * @see CoreFBO
  */
 public class CoreFBOLwjgl implements CoreFBO {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
   private int fbo;
+
+  CoreFBOLwjgl(final CoreCheckGL checkGL) {
+    this.checkGL = checkGL;
+    initialize();
+  }
 
   /*
    * (non-Javadoc)
@@ -144,10 +149,6 @@ public class CoreFBOLwjgl implements CoreFBO {
     glRenderbufferStorage(GL_RENDERBUFFER, GL_STENCIL_INDEX8, width, height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
     checkFramebufferStatus();
-  }
-
-  CoreFBOLwjgl() {
-    initialize();
   }
 
   private void initialize() {

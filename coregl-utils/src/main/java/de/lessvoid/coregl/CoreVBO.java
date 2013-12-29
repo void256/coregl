@@ -28,6 +28,7 @@ package de.lessvoid.coregl;
 
 
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
@@ -41,16 +42,31 @@ public interface CoreVBO {
    * buffer content. Just make sure that you call rewind() before sending your new
    * data to the GPU with the sendData() method.
    *
-   * @return the FloatBuffer with the original buffer data (stored in main memory
-   * not GPU memory)
+   * @return the FloatBuffer with the original buffer data (stored in main memory not GPU memory)
    */
-  FloatBuffer getBuffer();
+  FloatBuffer getFloatBuffer();
 
   /**
    * Maps the buffer object that this represents into client space and returns the buffer as a FloatBuffer
    * @return the FloatBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
    */
-  FloatBuffer getMappedBuffer();
+  FloatBuffer getFloatBufferMapped();
+
+  /**
+   * Allows access to the internally kept nio ShortBuffer that contains the original
+   * buffer data. You can access and change this buffer if you want to update the
+   * buffer content. Just make sure that you call rewind() before sending your new
+   * data to the GPU with the sendData() method.
+   *
+   * @return the ShortBuffer with the original buffer data (stored in main memory not GPU memory)
+   */
+  ShortBuffer getShortBuffer();
+
+  /**
+   * Maps the buffer object that this represents into client space and returns the buffer as a ShortBuffer
+   * @return the ShortBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
+   */
+  ShortBuffer getShortBufferMapped();
 
   /**
    * You'll need to call that when you're done writing data into a mapped buffer to return access back to the GPU.
@@ -63,7 +79,7 @@ public interface CoreVBO {
   void bind();
 
   /**
-   * Send the content of the FloatBuffer to the GPU.
+   * Send the content of the Buffer to the GPU.
    */
   void send();
 

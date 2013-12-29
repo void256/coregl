@@ -46,7 +46,7 @@ import static org.lwjgl.opengl.GL20.glGetShaderInfoLog;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
-import static org.lwjgl.opengl.GL20.glUniform1;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL20.glUniform1f;
 import static org.lwjgl.opengl.GL20.glUniform1i;
 import static org.lwjgl.opengl.GL20.glUniform2f;
@@ -90,7 +90,7 @@ import de.lessvoid.coregl.CoreGLException;
 import de.lessvoid.coregl.CoreShader;
 
 public class CoreShaderLwjgl implements CoreShader {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
 
   private static final Logger log = Logger.getLogger(CoreShaderLwjgl.class.getName());
   private int program;
@@ -434,6 +434,19 @@ public class CoreShaderLwjgl implements CoreShader {
 
   /*
    * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreShader#setUniformiArray(java.lang.String, int[])
+   */
+  @Override
+  public void setUniformiArray(final String name, final int[] values) {
+    IntBuffer buffer = BufferUtils.createIntBuffer(values.length);
+    buffer.put(values);
+    buffer.rewind();
+    glUniform4(getLocation(name), buffer);
+    checkGLError("glUniform1");
+  }
+
+  /*
+   * (non-Javadoc)
    * @see de.lessvoid.coregl.CoreShader#getAttribLocation(java.lang.String)
    */
   @Override
@@ -518,7 +531,8 @@ public class CoreShaderLwjgl implements CoreShader {
     checkGLError("glUseProgram");
   }
 
-  CoreShaderLwjgl(final String ... vertexAttributes) {
+  CoreShaderLwjgl(final CoreCheckGL checkGL, final String ... vertexAttributes) {
+    this.checkGL = checkGL;
     this.attributes = vertexAttributes;
     this.program = glCreateProgram();
     checkGLError("glCreateProgram");

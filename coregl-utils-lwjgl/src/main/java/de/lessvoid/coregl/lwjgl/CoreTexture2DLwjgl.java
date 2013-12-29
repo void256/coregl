@@ -51,7 +51,7 @@ import de.lessvoid.coregl.CoreGLException;
 import de.lessvoid.coregl.CoreTexture2D;
 
 public class CoreTexture2DLwjgl implements CoreTexture2D {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
 
   private static Map<ResizeFilter, ResizeFilterInfo> resizeFilterMap = new Hashtable<ResizeFilter, ResizeFilterInfo>();
   private static Map<ColorFormat, ColorFormatInfo> formatMap = new Hashtable<ColorFormat, ColorFormatInfo>();
@@ -136,6 +136,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    * @return the new allocated CoreTexture2D
    */
   static CoreTexture2DLwjgl createEmptyTexture(
+      final CoreCheckGL checkGL,
       final ColorFormat format,
       final Type dataType,
       final int width,
@@ -147,6 +148,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
     buffer.flip();
 
     return new CoreTexture2DLwjgl(
+        checkGL,
         AUTO,
         GL11.GL_TEXTURE_2D,
         0,
@@ -216,6 +218,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    * @return the new allocated CoreTexture2D
    */
   static CoreTexture2DLwjgl createEmptyTextureArray(
+      final CoreCheckGL checkGL,
       final ColorFormat format,
       final Type dataType,
       final int width,
@@ -229,6 +232,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
     buffer.flip();
 
     return new CoreTexture2DLwjgl(
+        checkGL,
         AUTO,
         GL30.GL_TEXTURE_2D_ARRAY,
         0,
@@ -258,12 +262,13 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    */
   // PUBLIC
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final ColorFormat format,
       final int width,
       final int height,
       final Buffer data,
       final ResizeFilter filter) {
-    this(format, false, width, height, data, filter);
+    this(checkGL, format, false, width, height, data, filter);
   }
 
   /**
@@ -278,6 +283,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    * @throws CoreGLException in case the creation of the texture fails for any reason
    */
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final int internalFormat,
       final int width,
       final int height,
@@ -285,6 +291,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final Buffer data,
       final ResizeFilter filter) {
     this(
+        checkGL,
         AUTO,
         GL11.GL_TEXTURE_2D,
         0,
@@ -312,6 +319,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    * @throws CoreGLException in case the creation of the texture fails for any reason
    */
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final ColorFormat format,
       final boolean compressed,
       final int width,
@@ -319,6 +327,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final Buffer data,
       final ResizeFilter filter) {
     this(
+        checkGL,
         formatMap.get(format).internalFormat,
         width,
         height,
@@ -341,6 +350,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    */
   // PUBLIC
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final ColorFormat internalFormat,
       final int width,
       final int height,
@@ -348,7 +358,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final Buffer data,
       final int magFilter,
       final int minFilter) {
-    this(GL11.GL_TEXTURE_2D, internalFormat, width, height, format, data, magFilter, minFilter);
+    this(checkGL, GL11.GL_TEXTURE_2D, internalFormat, width, height, format, data, magFilter, minFilter);
   }
 
   /**
@@ -364,6 +374,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    * @throws CoreGLException in case the creation of the texture fails for any reason
    */
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final int internalFormat,
       final int width,
       final int height,
@@ -372,6 +383,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final int magFilter,
       final int minFilter) {
     this(
+        checkGL,
         AUTO,
         GL11.GL_TEXTURE_2D,
         0,
@@ -401,6 +413,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    */
   // PUBLIC
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final int target,
       final ColorFormat internalFormat,
       final int width,
@@ -410,6 +423,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final int magFilter,
       final int minFilter) {
     this(
+        checkGL,
         AUTO,
         target,
         0,
@@ -446,6 +460,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    */
   // PUBLIC
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final int textureId,
       final int target,
       final int level,
@@ -459,6 +474,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final int magFilter,
       final int minFilter) {
     this(
+        checkGL,
         textureId,
         target,
         level,
@@ -496,6 +512,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
    * @throws CoreGLException in case the creation of the texture fails for any reason
    */
   CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final int textureId,
       final int target,
       final int level,
@@ -509,6 +526,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final int magFilter,
       final int minFilter) {
     this(
+        checkGL,
         textureId,
         target,
         level,
@@ -526,6 +544,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
   }
 
   private CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final int textureId,
       final int target,
       final int level,
@@ -540,6 +559,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final int minFilter,
       final boolean textureArray,
       final int depth) {
+    this.checkGL = checkGL;
     this.textureId = createTexture(
         textureId,
         target,
@@ -561,6 +581,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
   }
 
   private CoreTexture2DLwjgl(
+      final CoreCheckGL checkGL,
       final int textureId,
       final int target,
       final int level,
@@ -575,6 +596,7 @@ public class CoreTexture2DLwjgl implements CoreTexture2D {
       final int minFilter,
       final boolean textureArray,
       final int depth) {
+    this.checkGL = checkGL;
     this.textureId = createTexture(
         textureId,
         target,

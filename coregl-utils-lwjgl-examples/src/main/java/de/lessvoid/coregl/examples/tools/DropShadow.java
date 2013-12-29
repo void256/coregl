@@ -178,7 +178,7 @@ public class DropShadow {
   }
 
   private static CoreVBO createQuadVBO(final CoreFactory factory, final float x, final float y, final float w, final float h) {
-    return factory.createStatic(new float[] {
+    return factory.createVBOStatic(new float[] {
         x,     y,     0.f, 0.f,
         x + w, y,     1.f, 0.f,
         x,     y + h, 0.f, 1.f,

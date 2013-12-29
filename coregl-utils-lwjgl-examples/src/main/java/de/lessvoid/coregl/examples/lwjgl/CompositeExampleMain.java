@@ -42,6 +42,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
@@ -64,7 +65,7 @@ public class CompositeExampleMain implements RenderLoopCallback {
     src = factory.createVAO();
     src.bind();
 
-    factory.createStaticAndSend(new float[] {
+    factory.createVBOStaticAndSend(new float[] {
           0.f,   0.f,    1.f, 1.f, 0.f, 1.f,
         100.f,   0.f,    1.f, 1.f, 0.f, 1.f,
           0.f, 100.f,    1.f, 1.f, 0.f, 1.f,
@@ -73,13 +74,13 @@ public class CompositeExampleMain implements RenderLoopCallback {
         100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
     });
 
-    src.enableVertexAttributef(0, 2, 6, 0);
-    src.enableVertexAttributef(1, 4, 6, 2);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+    src.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
     dst = factory.createVAO();
     dst.bind();
 
-    factory.createStaticAndSend(new float[] {
+    factory.createVBOStaticAndSend(new float[] {
           0.f,   0.f,    0.f, 0.f, 1.f, 1.f,
         100.f,   0.f,    0.f, 0.f, 1.f, 1.f,
         100.f, 100.f,    0.f, 0.f, 1.f, 1.f,
@@ -88,13 +89,13 @@ public class CompositeExampleMain implements RenderLoopCallback {
         100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
     });
 
-    dst.enableVertexAttributef(0, 2, 6, 0);
-    dst.enableVertexAttributef(1, 4, 6, 2);
+    dst.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+    dst.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
     white = factory.createVAO();
     white.bind();
 
-    factory.createStaticAndSend(new float[] {
+    factory.createVBOStaticAndSend(new float[] {
           0.f,   0.f,    1.f, 1.f, 1.f, 1.f,
         100.f,   0.f,    1.f, 1.f, 1.f, 1.f,
         100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
@@ -103,8 +104,8 @@ public class CompositeExampleMain implements RenderLoopCallback {
         100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
     });
 
-    white.enableVertexAttributef(0, 2, 6, 0);
-    white.enableVertexAttributef(1, 4, 6, 2);
+    white.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+    white.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
     shader.activate();
     shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
@@ -221,7 +222,7 @@ public class CompositeExampleMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = new CoreFactoryLwjgl();
+    CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Hello Compositing", 1024, 768);

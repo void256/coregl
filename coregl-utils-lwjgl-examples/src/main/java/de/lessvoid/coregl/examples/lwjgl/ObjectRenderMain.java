@@ -47,6 +47,7 @@ import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.examples.lwjgl.WavefrontObjectLoader.Data;
 import de.lessvoid.coregl.examples.tools.FileChangeWatcher;
@@ -163,14 +164,14 @@ public class ObjectRenderMain implements RenderLoopCallback{
       data = loader.asVertexAndIndexBuffer();
       System.out.println(data.getIndexData().limit() / 3);
       System.out.println(data.getVertexData().limit());
-      factory.createStaticAndSend(data.getVertexData());
+      factory.createVBOStaticAndSend(data.getVertexData());
       factory.createStaticAndSend(data.getIndexData());
   
       // parameters are: index, size, stride, offset
       // this will use the currently active VBO to store the VBO in the VAO
-      vao.enableVertexAttributef(0, 3, 8, 0);
-      vao.enableVertexAttributef(1, 2, 8, 3);
-      vao.enableVertexAttributef(2, 3, 8, 5);
+      vao.vertexAttribPointer(0, 3, FloatType.FLOAT, 8, 0);
+      vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 8, 3);
+      vao.vertexAttribPointer(2, 3, FloatType.FLOAT, 8, 5);
   
       // we only use a single shader and a single vao so we can activate both here
       // and let them stay active the whole time.
@@ -237,7 +238,7 @@ public class ObjectRenderMain implements RenderLoopCallback{
   }
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = new CoreFactoryLwjgl();
+    CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Hello Lwjgl Core GL", 1024, 768);

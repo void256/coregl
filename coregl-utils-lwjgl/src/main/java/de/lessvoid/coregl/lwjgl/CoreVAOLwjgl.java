@@ -28,13 +28,30 @@ package de.lessvoid.coregl.lwjgl;
 
 
 import static org.lwjgl.opengl.ARBInstancedArrays.glVertexAttribDivisorARB;
+import static org.lwjgl.opengl.GL11.GL_BYTE;
+import static org.lwjgl.opengl.GL11.GL_DOUBLE;
 import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_INT;
+import static org.lwjgl.opengl.GL11.GL_SHORT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_SHORT;
+import static org.lwjgl.opengl.GL12.GL_UNSIGNED_INT_2_10_10_10_REV;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.GL_HALF_FLOAT;
+import static org.lwjgl.opengl.GL30.GL_UNSIGNED_INT_10F_11F_11F_REV;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
+import static org.lwjgl.opengl.GL30.glVertexAttribIPointer;
+import static org.lwjgl.opengl.GL33.GL_INT_2_10_10_10_REV;
+import static org.lwjgl.opengl.GL41.GL_FIXED;
+
+import java.util.Hashtable;
+import java.util.Map;
+
 import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreVAO;
 
@@ -43,8 +60,35 @@ import de.lessvoid.coregl.CoreVAO;
  * @author void
  */
 public class CoreVAOLwjgl implements CoreVAO {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
   private int vao;
+  private final static Map<IntType, Integer> intTypeMap;
+  private final static Map<FloatType, Integer> floatTypeMap;
+
+  static {
+    intTypeMap = new Hashtable<CoreVAO.IntType, Integer>();
+    intTypeMap.put(IntType.BYTE, GL_BYTE);
+    intTypeMap.put(IntType.UNSIGNED_BYTE, GL_UNSIGNED_BYTE);
+    intTypeMap.put(IntType.SHORT, GL_SHORT);
+    intTypeMap.put(IntType.UNSIGNED_SHORT, GL_UNSIGNED_SHORT);
+    intTypeMap.put(IntType.INT, GL_INT);
+    intTypeMap.put(IntType.UNSIGNED_INT, GL_UNSIGNED_INT);
+
+    floatTypeMap = new Hashtable<CoreVAO.FloatType, Integer>();
+    floatTypeMap.put(FloatType.BYTE, GL_BYTE);
+    floatTypeMap.put(FloatType.UNSIGNED_BYTE, GL_UNSIGNED_BYTE);
+    floatTypeMap.put(FloatType.SHORT, GL_SHORT);
+    floatTypeMap.put(FloatType.UNSIGNED_SHORT, GL_UNSIGNED_SHORT);
+    floatTypeMap.put(FloatType.INT, GL_INT);
+    floatTypeMap.put(FloatType.UNSIGNED_INT, GL_UNSIGNED_INT);
+    floatTypeMap.put(FloatType.HALF_FLOAT, GL_HALF_FLOAT);
+    floatTypeMap.put(FloatType.FLOAT, GL_FLOAT);
+    floatTypeMap.put(FloatType.DOUBLE, GL_DOUBLE);
+    floatTypeMap.put(FloatType.FIXED, GL_FIXED);
+    floatTypeMap.put(FloatType.INT_2_10_10_10_REV, GL_INT_2_10_10_10_REV);
+    floatTypeMap.put(FloatType.UNSIGNED_INT_2_10_10_10_REV, GL_UNSIGNED_INT_2_10_10_10_REV);
+    floatTypeMap.put(FloatType.UNSIGNED_INT_10F_11F_11F_REV, GL_UNSIGNED_INT_10F_11F_11F_REV);
+  }
 
   /*
    * (non-Javadoc)
@@ -77,11 +121,76 @@ public class CoreVAOLwjgl implements CoreVAO {
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributef(int, int, int, int)
+   * @see de.lessvoid.coregl.CoreVAO#vertexAttribPointer(int, int, FloatType, int, int)
    */
   @Override
-  public void enableVertexAttributef(final int index, final int size, final int stride, final int offset) {
-    glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
+  public void vertexAttribPointer(
+      final int index,
+      final int size,
+      final FloatType type,
+      final int stride,
+      final int offset) {
+    glVertexAttribPointer(index, size, floatTypeMap.get(type), false, stride * 4, offset * 4);
+    checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributeDivisorf(int, int, FloatType, int, int, int)
+   */
+  @Override
+  public void enableVertexAttributeDivisorf(
+      final int index,
+      final int size,
+      final FloatType type,
+      final int stride,
+      final int offset,
+      final int divisor) {
+    glVertexAttribPointer(index, size, floatTypeMap.get(type), false, stride * 4, offset * 4);
+    glVertexAttribDivisorARB(index, divisor);
+    glEnableVertexAttribArray(index);
+    checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttribute(int)
+   */
+  @Override
+  public void enableVertexAttribute(final int index) {
+    glEnableVertexAttribArray(index);
+    checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#vertexAttribIPointer(int, int, de.lessvoid.coregl.CoreVAO.IntType, int, int)
+   */
+  @Override
+  public void vertexAttribIPointer(
+      final int index,
+      final int size,
+      final IntType type,
+      final int stride,
+      final int offset) {
+    glVertexAttribIPointer(index, size, intTypeMap.get(type), stride * 4, offset * 4);
+    checkGL.checkGLError("glVertexAttribIPointer (" + index + ")");
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributeDivisori(int, int, IntType, int, int, int)
+   */
+  @Override
+  public void enableVertexAttributeDivisori(
+      final int index,
+      final int size,
+      final IntType type,
+      final int stride,
+      final int offset,
+      final int divisor) {
+    glVertexAttribIPointer(index, size, intTypeMap.get(type), stride * 4, offset * 4);
+    glVertexAttribDivisorARB(index, divisor);
     glEnableVertexAttribArray(index);
     checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
   }
@@ -96,22 +205,11 @@ public class CoreVAOLwjgl implements CoreVAO {
     checkGL.checkGLError("glDisableVertexAttribArray (" + index + ")");
   }
 
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributeDivisorf(int, int, int, int, int)
-   */
-  @Override
-  public void enableVertexAttributeDivisorf(final int index, final int size, final int stride, final int offset, final int divisor) {
-    glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
-    glVertexAttribDivisorARB(index, divisor);
-    glEnableVertexAttribArray(index);
-    checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
-  }
-
   /**
    * Create a new VAO. This calls glGenVertexArrays.
    */
-  CoreVAOLwjgl() {
+  CoreVAOLwjgl(final CoreCheckGL checkGLParam) {
+    checkGL = checkGLParam;
     vao = glGenVertexArrays();
     checkGL.checkGLError("glGenVertexArrays");
   }

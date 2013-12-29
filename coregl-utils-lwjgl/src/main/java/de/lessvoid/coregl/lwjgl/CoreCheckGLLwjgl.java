@@ -41,6 +41,9 @@ public class CoreCheckGLLwjgl implements CoreCheckGL {
   // The logger of this class.
   private static Logger log = Logger.getLogger(CoreCheckGLLwjgl.class.getName());
 
+  public CoreCheckGLLwjgl() {
+  }
+
   /*
    * (non-Javadoc)
    * @see de.lessvoid.coregl.CoreCheckGL#checkGLError()

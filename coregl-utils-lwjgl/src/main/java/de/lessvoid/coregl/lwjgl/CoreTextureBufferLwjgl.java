@@ -46,7 +46,7 @@ import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreTextureBuffer;
 
 public class CoreTextureBufferLwjgl implements CoreTextureBuffer {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
 
   private int tbo;
   private int texture;
@@ -76,7 +76,8 @@ public class CoreTextureBufferLwjgl implements CoreTextureBuffer {
     checkGL.checkGLError("glDeleteTextures");
   }
 
-  CoreTextureBufferLwjgl(final byte[] data) {
+  CoreTextureBufferLwjgl(final CoreCheckGL checkGL, final byte[] data) {
+    this.checkGL = checkGL;
     // GL_R8Ibyte 1 NO R 0 0 1
     // GL_RG8Ibyte 2 NO R G 0 1
     // GL_RGBA8Ibyte 4 NO R G B A
@@ -89,7 +90,8 @@ public class CoreTextureBufferLwjgl implements CoreTextureBuffer {
 
   }
 
-  CoreTextureBufferLwjgl(final short[] data) {
+  CoreTextureBufferLwjgl(final CoreCheckGL checkGL, final short[] data) {
+    this.checkGL = checkGL;
     // GL_R16I short 1 NO R 0 0 1
     // GL_RG16I short 2 NO R G 0 1
     // GL_RGBA16I short 4 NO R G B A
@@ -102,7 +104,8 @@ public class CoreTextureBufferLwjgl implements CoreTextureBuffer {
 
   }
 
-  CoreTextureBufferLwjgl(final int[] data) {
+  CoreTextureBufferLwjgl(final CoreCheckGL checkGL, final int[] data) {
+    this.checkGL = checkGL;
     // GL_R32I int 1 NO R 0 0 1
     // GL_RG32I int 2 NO R G 0 1
     // GL_RGB32I int 3 NO R G B 1
@@ -116,7 +119,8 @@ public class CoreTextureBufferLwjgl implements CoreTextureBuffer {
 
   }
 
-  CoreTextureBufferLwjgl(final float[] data) {
+  CoreTextureBufferLwjgl(final CoreCheckGL checkGL, final float[] data) {
+    this.checkGL = checkGL;
     // GL_R16F half 1 NO R 0 0 1
     // GL_RG16F half 2 NO R G 0 1
     // GL_RGBA16F half 4 NO R G B A

@@ -290,6 +290,13 @@ public interface CoreShader {
    */
   void setUniformfArray(String name, float[] values);
 
+  /**
+   * Set the uniform int array with the given name to a new value.
+   * @param name the name of the uniform
+   * @param values the new int array to set
+   */
+  void setUniformiArray(String name, int[] values);
+
   // attribute location
 
   /**

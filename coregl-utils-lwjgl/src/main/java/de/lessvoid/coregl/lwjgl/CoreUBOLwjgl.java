@@ -27,14 +27,13 @@
 package de.lessvoid.coregl.lwjgl;
 
 
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL32.*;
-import static org.lwjgl.opengl.GL31.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glDeleteBuffers;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL30.glBindBufferBase;
+import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -51,7 +50,13 @@ import de.lessvoid.math.Vec3;
 import de.lessvoid.math.Vec4;
 
 public class CoreUBOLwjgl{
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  @Override
+  protected void finalize() throws Throwable {
+    super.finalize();
+    System.out.println("HJSAHDKJAHSD");
+  }
+
+  private final CoreCheckGL checkGL;
 
   private final int id;
   private final int usage;
@@ -59,11 +64,19 @@ public class CoreUBOLwjgl{
   private final ByteBuffer byteBuffer;
   private final Map<String, UniformBlockInfo> blockInfos;
 
-  public static CoreUBOLwjgl createStatic(final int length, final Map<String, UniformBlockInfo> infos) {
-    return new CoreUBOLwjgl(GL_STATIC_DRAW, length, infos);
+  public static CoreUBOLwjgl createStatic(
+      final CoreCheckGL checkGL,
+      final int length,
+      final Map<String, UniformBlockInfo> infos) {
+    return new CoreUBOLwjgl(checkGL, GL_STATIC_DRAW, length, infos);
   }
 
-  CoreUBOLwjgl(final int usageType, final int length, final Map<String, UniformBlockInfo> infos) {
+  CoreUBOLwjgl(
+      final CoreCheckGL checkGLParam,
+      final int usageType,
+      final int length,
+      final Map<String, UniformBlockInfo> infos) {
+    checkGL = checkGLParam;
     usage = usageType;
     byteLength = length;
     byteBuffer = BufferUtils.createByteBuffer(length);

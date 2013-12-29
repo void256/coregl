@@ -45,7 +45,7 @@ import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreElementVBO;
 
 public class CoreElementVBOLwjgl implements CoreElementVBO {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
 
   private int id;
   private int usage;
@@ -117,7 +117,8 @@ public class CoreElementVBOLwjgl implements CoreElementVBO {
     glDisable(GL_PRIMITIVE_RESTART);
   }
 
-  CoreElementVBOLwjgl(final int usageType, final int[] data) {
+  CoreElementVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final int[] data) {
+    checkGL = checkGLParam;
     usage = usageType;
 
     indexBuffer = BufferUtils.createIntBuffer(data.length);
@@ -130,7 +131,8 @@ public class CoreElementVBOLwjgl implements CoreElementVBO {
     send();
   }
 
-  CoreElementVBOLwjgl(final int usageType, final IntBuffer data) {
+  CoreElementVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final IntBuffer data) {
+    checkGL = checkGLParam;
     usage = usageType;
 
     indexBuffer = BufferUtils.createIntBuffer(data.limit());

@@ -11,8 +11,6 @@ in vec4 vColor;
 // output
 out vec4 c;
 
-float off[4] = float[]( 0.1, 0.2, 0.3, 0.4 );
-
 void main() {
   gl_Position = vec4(vVertex.xy + vec2(
   // works

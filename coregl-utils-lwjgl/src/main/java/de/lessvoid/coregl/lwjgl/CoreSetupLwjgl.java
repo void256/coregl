@@ -63,16 +63,22 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.PixelFormat;
 
 import de.lessvoid.coregl.CoreCheckGL;
-import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreFactory;
+import de.lessvoid.coregl.CoreSetup;
 
 public class CoreSetupLwjgl implements CoreSetup {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
-  private static final CoreFactory factory = new CoreFactoryLwjgl();
   private static final Logger log = Logger.getLogger(CoreSetupLwjgl.class.getName());
   private static final Comparator<DisplayMode> DisplayModeFrequencyComparator = new DisplayModeFrequencyComparator();
   private final StringBuilder fpsText = new StringBuilder();
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
+  private final CoreCheckGL checkGL;
+  private CoreFactory coreFactory;
+  private String lastFPS = "";
+
+  public CoreSetupLwjgl(final CoreFactoryLwjgl coreFactory, final CoreCheckGL checkGL) {
+    this.coreFactory = coreFactory;
+    this.checkGL = checkGL;
+  }
 
   /*
    * (non-Javadoc)
@@ -146,13 +152,14 @@ public class CoreSetupLwjgl implements CoreSetup {
       done = renderLoop.render((nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
       prevTime = nanoTime;
       Display.update();
-      checkGL.checkGLError("render loop check for errors");
 
       frameCounter++;
       long diff = System.currentTimeMillis() - now;
       if (diff >= 1000) {
         now += diff;
-        log.fine(buildFpsText(frameCounter));
+        String fpsText = buildFpsText(frameCounter);
+        lastFPS = fpsText;
+        log.fine(fpsText);
         frameCounter = 0;
       }
     }
@@ -175,7 +182,6 @@ public class CoreSetupLwjgl implements CoreSetup {
       prevTime = nanoTime;
       if (newFrame) {
         Display.update();
-        checkGL.checkGLError("render loop check for errors");
       }
 
       done = renderLoop.shouldEnd();
@@ -195,7 +201,7 @@ public class CoreSetupLwjgl implements CoreSetup {
    */
   @Override
   public CoreFactory getFactory() {
-    return factory;
+    return coreFactory;
   }
 
   /*
@@ -205,6 +211,11 @@ public class CoreSetupLwjgl implements CoreSetup {
   @Override
   public void enableVSync(final boolean enable) {
     Display.setVSyncEnabled(enable);
+  }
+
+  @Override
+  public String getFPS() {
+    return lastFPS;
   }
 
   private void initGraphics(final String title, final int requestedWidth, final int requestedHeight) throws Exception {

@@ -123,4 +123,10 @@ public interface CoreSetup {
    * @param enable true to enable and false to disable
    */
   void enableVSync(boolean enable);
+
+  /**
+   * Returns the last measured FPS and frametime info String.
+   * @return
+   */
+  String getFPS();
 }

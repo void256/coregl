@@ -47,7 +47,11 @@ import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreScreenshot;
 
 public class CoreScreenshotLwjgl implements CoreScreenshot {
-  private final static CoreCheckGL coreCheckGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
+
+  CoreScreenshotLwjgl(final CoreCheckGL checkGLParam) {
+    this.checkGL = checkGLParam;
+  }
 
   /*
    * (non-Javadoc)
@@ -59,7 +63,7 @@ public class CoreScreenshotLwjgl implements CoreScreenshot {
       ByteBuffer pixels = BufferUtils.createByteBuffer(width*height*3);
       glPixelStorei(GL_PACK_ALIGNMENT, 1);
       glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-      coreCheckGL.checkGLError("glReadPixels");
+      checkGL.checkGLError("glReadPixels");
 
       WritableRaster raster = bi.getRaster();
       int[] buffer = new int[width*height*3];
@@ -85,7 +89,7 @@ public class CoreScreenshotLwjgl implements CoreScreenshot {
       ByteBuffer pixels = BufferUtils.createByteBuffer(width*height);
       glPixelStorei(GL_PACK_ALIGNMENT, 1);
       glReadPixels(0, 0, width, height, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, pixels);
-      coreCheckGL.checkGLError("glReadPixels");
+      checkGL.checkGLError("glReadPixels");
 
       WritableRaster raster = bi.getRaster();
       int[] pixel = new int[1];

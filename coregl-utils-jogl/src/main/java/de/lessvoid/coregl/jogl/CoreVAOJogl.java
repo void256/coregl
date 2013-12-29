@@ -7,6 +7,7 @@ import javax.media.opengl.GLContext;
 
 import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 
 
 
@@ -60,14 +61,88 @@ public class CoreVAOJogl implements CoreVAO {
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributef(int, int, int, int)
+   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributef(int, int, FloatType, int, int)
    */
   @Override
-  public void enableVertexAttributef(final int index, final int size, final int stride, final int offset) {
+  public void vertexAttribPointer(
+      final int index,
+      final int size,
+      final FloatType type,
+      final int stride,
+      final int offset) {
     final GL gl = GLContext.getCurrentGL();
     gl.getGL2ES2().glVertexAttribPointer(index, size, GL.GL_FLOAT, false, stride * 4, offset * 4);
     gl.getGL2ES2().glEnableVertexAttribArray(index);
     checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributeDivisorf(int, int, FloatType, int, int, int)
+   */
+  @Override
+  public void enableVertexAttributeDivisorf(
+      final int index,
+      final int size,
+      final FloatType type,
+      final int stride,
+      final int offset,
+      final int divisor) {
+    final GL gl = GLContext.getCurrentGL();
+    if (gl.isGL3()) {
+      gl.getGL2GL3().glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
+// FIXME      gl.getGL2GL3().glVertexAttribDivisorARB(index, divisor);
+      gl.getGL2GL3().glEnableVertexAttribArray(index);
+      checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributei(int)
+   */
+  @Override
+  public void enableVertexAttribute(final int index) {
+    final GL gl = GLContext.getCurrentGL();
+    gl.getGL2ES2().glEnableVertexAttribArray(index);
+    checkGL.checkGLError("glEnableVertexAttribArray (" + index + ")");
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#vertexAttribIPointer(int, int, de.lessvoid.coregl.CoreVAO.IntType, int, int)
+   */
+  @Override
+  public void vertexAttribIPointer(
+      final int index,
+      final int size,
+      final IntType type,
+      final int stride,
+      final int offset) {
+    final GL gl = GLContext.getCurrentGL();
+    gl.getGL2ES2().glVertexAttribPointer(index, size, GL.GL_FLOAT, false, stride * 4, offset * 4);
+    checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributeDivisorf(int, int, IntType, int, int, int)
+   */
+  @Override
+  public void enableVertexAttributeDivisori(
+      final int index,
+      final int size,
+      final IntType type,
+      final int stride,
+      final int offset,
+      final int divisor) {
+    final GL gl = GLContext.getCurrentGL();
+    if (gl.isGL3()) {
+      gl.getGL2GL3().glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
+// FIXME      gl.getGL2GL3().glVertexAttribDivisorARB(index, divisor);
+      gl.getGL2GL3().glEnableVertexAttribArray(index);
+      checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
+    }
   }
 
   /*
@@ -80,26 +155,6 @@ public class CoreVAOJogl implements CoreVAO {
     if (gl.isGL3()) {
       gl.getGL2GL3().glDisableVertexAttribArray(index);
       checkGL.checkGLError("glDisableVertexAttribArray (" + index + ")");
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVAO#enableVertexAttributeDivisorf(int, int, int, int, int)
-   */
-  @Override
-  public void enableVertexAttributeDivisorf(
-      final int index,
-      final int size,
-      final int stride,
-      final int offset,
-      final int divisor) {
-    final GL gl = GLContext.getCurrentGL();
-    if (gl.isGL3()) {
-      gl.getGL2GL3().glVertexAttribPointer(index, size, GL_FLOAT, false, stride * 4, offset * 4);
-// FIXME      gl.getGL2GL3().glVertexAttribDivisorARB(index, divisor);
-      gl.getGL2GL3().glEnableVertexAttribArray(index);
-      checkGL.checkGLError("glVertexAttribPointer (" + index + ")");
     }
   }
 

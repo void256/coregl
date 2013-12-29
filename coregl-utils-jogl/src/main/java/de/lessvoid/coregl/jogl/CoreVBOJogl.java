@@ -2,6 +2,7 @@ package de.lessvoid.coregl.jogl;
 
 
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import javax.media.opengl.GL;
 import javax.media.opengl.GL3;
@@ -47,7 +48,7 @@ public class CoreVBOJogl implements CoreVBO {
    * @see de.lessvoid.coregl.CoreVBO#getBuffer()
    */
   @Override
-  public FloatBuffer getBuffer() {
+  public FloatBuffer getFloatBuffer() {
     return vertexBuffer;
   }
 
@@ -90,7 +91,7 @@ public class CoreVBOJogl implements CoreVBO {
    * @see de.lessvoid.coregl.CoreVBO#getMappedBuffer()
    */
   @Override
-  public FloatBuffer getMappedBuffer() {
+  public FloatBuffer getFloatBufferMapped() {
     // FIXME
     throw new UnsupportedOperationException();
   }
@@ -121,5 +122,17 @@ public class CoreVBOJogl implements CoreVBO {
     gl.getGL2ES2().glBindBuffer(GL.GL_ARRAY_BUFFER, id);
     gl.getGL2ES2().glBufferData(GL.GL_ARRAY_BUFFER, data.length, vertexBuffer, usage);
     checkGL.checkGLError("glBufferData");
+  }
+
+  @Override
+  public ShortBuffer getShortBuffer() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public ShortBuffer getShortBufferMapped() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

@@ -32,6 +32,7 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
@@ -52,7 +53,7 @@ public class CurveExampleMain implements RenderLoopCallback {
     vao.bind();
 
     float aspect = 4.f/3.f;
-    factory.createStaticAndSend(new float[] {
+    factory.createVBOStaticAndSend(new float[] {
         -0.4f, -0.4f * aspect,    0.0f, 0.0f, 
          0.4f, -0.4f * aspect,    1.0f, 0.0f, 
         -0.4f,  0.4f * aspect,    0.0f, 1.0f, 
@@ -61,8 +62,8 @@ public class CurveExampleMain implements RenderLoopCallback {
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
-    vao.enableVertexAttributef(0, 2, 4, 0);
-    vao.enableVertexAttributef(1, 2, 4, 2);
+    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
+    vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
 
     // we only use a single shader and a single vao so we can activate both here
     // and let them stay active the whole time.
@@ -85,7 +86,7 @@ public class CurveExampleMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = new CoreFactoryLwjgl();
+    CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Hello Lwjgl Core GL", 1024, 768);

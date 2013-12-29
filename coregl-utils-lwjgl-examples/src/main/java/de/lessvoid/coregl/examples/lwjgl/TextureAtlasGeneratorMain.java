@@ -41,6 +41,7 @@ import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
@@ -72,11 +73,11 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     vao = factory.createVAO();
     vao.bind();
 
-    vbo = factory.createStatic(new float[4*4]);
+    vbo = factory.createVBOStatic(new float[4*4]);
     vbo.bind();
 
-    vao.enableVertexAttributef(0, 2, 4, 0);
-    vao.enableVertexAttributef(1, 2, 4, 2);
+    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
+    vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
 
     CoreTextureAtlasGenerator generator = new CoreTextureAtlasGenerator(factory, 1024, 1024);
     File base = new File("src/main/resources/texture-atlas");
@@ -98,7 +99,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
 
     textureAtlas.bind();
 
-    FloatBuffer buffer = vbo.getBuffer();
+    FloatBuffer buffer = vbo.getFloatBuffer();
     buffer.put(0.f);
     buffer.put(0.f);
     buffer.put(0.0f);
@@ -129,7 +130,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = new CoreFactoryLwjgl();
+    CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Texture Atlas Generator", 1024, 768);

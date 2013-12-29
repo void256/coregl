@@ -29,6 +29,7 @@ package de.lessvoid.coregl;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
@@ -199,7 +200,7 @@ public interface CoreFactory {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  CoreVBO createStatic(float[] data);
+  CoreVBO createVBOStatic(float[] data);
 
   /**
    * This provides the same functionality as createStaticVBO() but automatically
@@ -208,7 +209,7 @@ public interface CoreFactory {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  CoreVBO createStaticAndSend(float[] data);
+  CoreVBO createVBOStaticAndSend(float[] data);
 
   /**
    * This provides the same functionality as createStatic() but automatically
@@ -217,7 +218,7 @@ public interface CoreFactory {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  CoreVBO createStaticAndSend(FloatBuffer data);
+  CoreVBO createVBOStaticAndSend(FloatBuffer data);
 
   /**
    * This works exactly as createStaticVBO() but will use GL_DYNAMIC_DRAW instead.
@@ -225,7 +226,7 @@ public interface CoreFactory {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  CoreVBO createDynamic(float[] data);
+  CoreVBO createVBODynamic(float[] data);
 
   /**
    * This works exactly as createStaticVBO() but will use GL_STREAM_DRAW instead.
@@ -233,7 +234,52 @@ public interface CoreFactory {
    * @param data float array of buffer data
    * @return the CoreVBO instance created
    */
-  CoreVBO createStream(float[] data);
+  CoreVBO createVBOStream(float[] data);
+
+  /**
+   * Create a new VBO with static vertex data (GL_STATIC_DRAW). This will
+   * create the buffer object but does not bind or sends the data to the GPU.
+   * You'll need to call bind() to bind this VBO and you'll need to call sendData()
+   * to transmit the buffer data to the GPU.
+   * 
+   * @param data float array of buffer data
+   * @return the CoreVBO instance created
+   */
+  CoreVBO createVBOStatic(short[] data);
+
+  /**
+   * This provides the same functionality as createStaticVBO() but automatically
+   * sends the data given to the GPU.
+   * 
+   * @param data float array of buffer data
+   * @return the CoreVBO instance created
+   */
+  CoreVBO createVBOStaticAndSend(short[] data);
+
+  /**
+   * This provides the same functionality as createStatic() but automatically
+   * sends the data given to the GPU.
+   * 
+   * @param data float array of buffer data
+   * @return the CoreVBO instance created
+   */
+  CoreVBO createVBOStaticAndSend(ShortBuffer data);
+
+  /**
+   * This works exactly as createStaticVBO() but will use GL_DYNAMIC_DRAW instead.
+   *
+   * @param data float array of buffer data
+   * @return the CoreVBO instance created
+   */
+  CoreVBO createVBODynamic(short[] data);
+
+  /**
+   * This works exactly as createStaticVBO() but will use GL_STREAM_DRAW instead.
+   *
+   * @param data float array of buffer data
+   * @return the CoreVBO instance created
+   */
+  CoreVBO createVBOStream(short[] data);
 
   // CoreVAO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 

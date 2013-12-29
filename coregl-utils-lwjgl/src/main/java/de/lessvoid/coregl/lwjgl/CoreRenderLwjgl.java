@@ -49,7 +49,11 @@ import de.lessvoid.coregl.CoreRender;
  * @author void
  */
 public class CoreRenderLwjgl implements CoreRender {
-  private static final CoreCheckGL checkGL = new CoreCheckGLLwjgl();
+  private final CoreCheckGL checkGL;
+
+  CoreRenderLwjgl(final CoreCheckGL checkGLParam) {
+    this.checkGL = checkGLParam;
+  }
 
   /*
    * (non-Javadoc)

@@ -37,8 +37,6 @@ public class MatrixFactory {
 
   /**
    * Create orthographic projection Matrix4f.
-   * @param width width
-   * @param height height
    * @return new Matrix4j
    */
   public static Mat4 createOrtho(final float left, final float right, final float bottom, final float top) {

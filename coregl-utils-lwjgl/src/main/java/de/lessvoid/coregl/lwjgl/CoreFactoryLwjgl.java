@@ -33,14 +33,15 @@ import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 import de.lessvoid.coregl.CoreCheckGL;
-import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreElementVBO;
 import de.lessvoid.coregl.CoreFBO;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreScreenshot;
+import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
@@ -50,6 +51,31 @@ import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
 
 public class CoreFactoryLwjgl implements CoreFactory {
+  private final CoreCheckGL checkGL;
+  private final CoreRender coreRender;
+  private final CoreScreenshot coreScreenshot;
+
+  public static CoreFactoryLwjgl create() {
+    return new CoreFactoryLwjgl(true);
+  }
+
+  public static CoreFactoryLwjgl createWithNoErrorChecks() {
+    return new CoreFactoryLwjgl(false);
+  }
+
+  private CoreFactoryLwjgl(final boolean errorCheckEnabled) {
+    if (errorCheckEnabled) {
+      checkGL = new CoreCheckGLLwjgl();
+    } else {
+      checkGL = new CoreCheckGL() {
+        @Override public void checkGLError(final String message, final boolean throwException) {}
+        @Override public void checkGLError(final String message) {}
+        @Override public void checkGLError() {}
+      };
+    }
+    coreRender = new CoreRenderLwjgl(checkGL);
+    coreScreenshot = new CoreScreenshotLwjgl(checkGL);
+  }
 
   // CoreTexture2D /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,7 +86,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
       final int width,
       final int height,
       final ResizeFilter filter) {
-    return CoreTexture2DLwjgl.createEmptyTexture(format, dataType, width, height, filter);
+    return CoreTexture2DLwjgl.createEmptyTexture(checkGL, format, dataType, width, height, filter);
   }
 
   @Override
@@ -71,7 +97,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
       final int height,
       final int num,
       final ResizeFilter filter) {
-    return CoreTexture2DLwjgl.createEmptyTextureArray(format, dataType, width, height, num, filter);
+    return CoreTexture2DLwjgl.createEmptyTextureArray(checkGL, format, dataType, width, height, num, filter);
   }
 
   @Override
@@ -81,7 +107,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
       final int height,
       final Buffer data,
       final ResizeFilter filter) {
-    return new CoreTexture2DLwjgl(format, width, height, data, filter);
+    return new CoreTexture2DLwjgl(checkGL, format, width, height, data, filter);
   }
 
   @Override
@@ -93,7 +119,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
       final Buffer data,
       final int magFilter,
       final int minFilter) {
-    return new CoreTexture2DLwjgl(internalFormat, width, height, format, data, magFilter, minFilter);
+    return new CoreTexture2DLwjgl(checkGL, internalFormat, width, height, format, data, magFilter, minFilter);
   }
 
   @Override
@@ -106,7 +132,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
       final Buffer data,
       final int magFilter,
       final int minFilter) {
-    return new CoreTexture2DLwjgl(target, internalFormat, width, height, format, data, magFilter, minFilter);
+    return new CoreTexture2DLwjgl(checkGL, target, internalFormat, width, height, format, data, magFilter, minFilter);
   }
 
   @Override
@@ -124,6 +150,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
       final int magFilter,
       final int minFilter) {
     return new CoreTexture2DLwjgl(
+        checkGL,
         textureId, target, level, internalFormat, width, height, border, format, type, data, magFilter, minFilter);
   }
 
@@ -134,7 +161,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    * @return the new CoreShader instance
    */
   public CoreShader newShader() {
-    return new CoreShaderLwjgl();
+    return new CoreShaderLwjgl(checkGL);
   }
 
   /**
@@ -147,7 +174,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    * @return the CoreShader instance
    */
   public CoreShader newShaderWithVertexAttributes(final String ... vertexAttributes) {
-    return new CoreShaderLwjgl(vertexAttributes);
+    return new CoreShaderLwjgl(checkGL, vertexAttributes);
   }
 
   // CoreVBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,8 +184,8 @@ public class CoreFactoryLwjgl implements CoreFactory {
    * @see de.lessvoid.coregl.CoreFactory#createStatic(float[])
    */
   @Override
-  public CoreVBO createStatic(final float[] data) {
-    return new CoreVBOLwjgl(GL_STATIC_DRAW, data);
+  public CoreVBO createVBOStatic(final float[] data) {
+    return new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
   }
 
   /*
@@ -166,8 +193,8 @@ public class CoreFactoryLwjgl implements CoreFactory {
    * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(float[])
    */
   @Override
-  public CoreVBO createStaticAndSend(final float[] data) {
-    CoreVBOLwjgl result = new CoreVBOLwjgl(GL_STATIC_DRAW, data);
+  public CoreVBO createVBOStaticAndSend(final float[] data) {
+    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
     result.send();
     return result;
   }
@@ -177,8 +204,8 @@ public class CoreFactoryLwjgl implements CoreFactory {
    * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(java.nio.FloatBuffer)
    */
   @Override
-  public CoreVBO createStaticAndSend(final FloatBuffer data) {
-    CoreVBOLwjgl result = new CoreVBOLwjgl(GL_STATIC_DRAW, data);
+  public CoreVBO createVBOStaticAndSend(final FloatBuffer data) {
+    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
     result.send();
     return result;
   }
@@ -188,8 +215,8 @@ public class CoreFactoryLwjgl implements CoreFactory {
    * @see de.lessvoid.coregl.CoreFactory#createDynamic(float[])
    */
   @Override
-  public CoreVBO createDynamic(final float[] data) {
-    return new CoreVBOLwjgl(GL_DYNAMIC_DRAW, data);
+  public CoreVBO createVBODynamic(final float[] data) {
+    return new CoreVBOLwjgl(checkGL, GL_DYNAMIC_DRAW, data);
   }
 
   /*
@@ -197,8 +224,57 @@ public class CoreFactoryLwjgl implements CoreFactory {
    * @see de.lessvoid.coregl.CoreFactory#createStream(float[])
    */
   @Override
-  public CoreVBO createStream(final float[] data) {
-    return new CoreVBOLwjgl(GL_STREAM_DRAW, data);
+  public CoreVBO createVBOStream(final float[] data) {
+    return new CoreVBOLwjgl(checkGL, GL_STREAM_DRAW, data);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreFactory#createStatic(short[])
+   */
+  @Override
+  public CoreVBO createVBOStatic(final short[] data) {
+    return new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(short[])
+   */
+  @Override
+  public CoreVBO createVBOStaticAndSend(final short[] data) {
+    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
+    result.send();
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(java.nio.ShortBuffer)
+   */
+  @Override
+  public CoreVBO createVBOStaticAndSend(final ShortBuffer data) {
+    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
+    result.send();
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreFactory#createDynamic(short[])
+   */
+  @Override
+  public CoreVBO createVBODynamic(final short[] data) {
+    return new CoreVBOLwjgl(checkGL, GL_DYNAMIC_DRAW, data);
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.lessvoid.coregl.CoreFactory#createStream(short[])
+   */
+  @Override
+  public CoreVBO createVBOStream(final short[] data) {
+    return new CoreVBOLwjgl(checkGL, GL_STREAM_DRAW, data);
   }
 
   // CoreVAO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +285,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    */
   @Override
   public CoreVAO createVAO() {
-    return new CoreVAOLwjgl();
+    return new CoreVAOLwjgl(checkGL);
   }
 
   // CoreFBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +296,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    */
   @Override
   public CoreFBO createCoreFBO() {
-    return new CoreFBOLwjgl();
+    return new CoreFBOLwjgl(checkGL);
   }
 
   // CoreTextureBuffer /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,7 +307,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    */
   @Override
   public CoreTextureBuffer createCoreTextureBuffer(byte[] data) {
-    return new CoreTextureBufferLwjgl(data);
+    return new CoreTextureBufferLwjgl(checkGL, data);
   }
 
   /*
@@ -240,7 +316,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    */
   @Override
   public CoreTextureBuffer createCoreTextureBuffer(short[] data) {
-    return new CoreTextureBufferLwjgl(data);
+    return new CoreTextureBufferLwjgl(checkGL, data);
   }
 
   /*
@@ -249,7 +325,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    */
   @Override
   public CoreTextureBuffer createCoreTextureBuffer(int[] data) {
-    return new CoreTextureBufferLwjgl(data);
+    return new CoreTextureBufferLwjgl(checkGL, data);
   }
 
   /*
@@ -258,7 +334,7 @@ public class CoreFactoryLwjgl implements CoreFactory {
    */
   @Override
   public CoreTextureBuffer createCoreTextureBuffer(float[] data) {
-    return new CoreTextureBufferLwjgl(data);
+    return new CoreTextureBufferLwjgl(checkGL, data);
   }
 
   // CoreCheckGL ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,54 +348,51 @@ public class CoreFactoryLwjgl implements CoreFactory {
 
   @Override
   public CoreElementVBO createStatic(final int[] data) {
-    return new CoreElementVBOLwjgl(GL_STATIC_DRAW, data);
+    return new CoreElementVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
   }
 
   @Override
   public CoreElementVBO createStaticAndSend(final int[] data) {
-    CoreElementVBOLwjgl result = new CoreElementVBOLwjgl(GL_STATIC_DRAW, data);
+    CoreElementVBOLwjgl result = new CoreElementVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
     result.send();
     return result;
   }
 
   @Override
   public CoreElementVBO createStaticAndSend(final IntBuffer data) {
-    CoreElementVBOLwjgl result = new CoreElementVBOLwjgl(GL_STATIC_DRAW, data);
+    CoreElementVBOLwjgl result = new CoreElementVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
     result.send();
     return result;
   }
 
   @Override
   public CoreElementVBO createDynamic(final int[] data) {
-    return new CoreElementVBOLwjgl(GL_DYNAMIC_DRAW, data);
+    return new CoreElementVBOLwjgl(checkGL, GL_DYNAMIC_DRAW, data);
   }
 
   @Override
   public CoreElementVBO createStream(final int[] data) {
-    return new CoreElementVBOLwjgl(GL_STREAM_DRAW, data);
+    return new CoreElementVBOLwjgl(checkGL, GL_STREAM_DRAW, data);
   }
 
   // CoreDisplaySetup //////////////////////////////////////////////////////////////////////////////////////////////////
 
   @Override
   public CoreSetup createSetup() {
-    return new CoreSetupLwjgl();
+    return new CoreSetupLwjgl(this, checkGL);
   }
 
   // CoreRender ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   @Override
   public CoreRender getCoreRender() {
-    return CORE_RENDER_LWJGL;
+    return coreRender;
   }
 
   // CoreScreenshot ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   @Override
   public CoreScreenshot createCoreScreenshot() {
-    return CORE_SCREENSHOT_LWJGL;
+    return coreScreenshot;
   }
-
-  private static final CoreRenderLwjgl CORE_RENDER_LWJGL = new CoreRenderLwjgl();
-  private static final CoreScreenshot CORE_SCREENSHOT_LWJGL = new CoreScreenshotLwjgl();
 }

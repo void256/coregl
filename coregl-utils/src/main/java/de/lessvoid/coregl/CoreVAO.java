@@ -32,6 +32,32 @@ package de.lessvoid.coregl;
  * @author void
  */
 public interface CoreVAO {
+
+  public enum IntType {
+    BYTE,
+    UNSIGNED_BYTE,
+    SHORT,
+    UNSIGNED_SHORT,
+    INT,
+    UNSIGNED_INT
+  }
+
+  public enum FloatType {
+    BYTE,
+    UNSIGNED_BYTE,
+    SHORT,
+    UNSIGNED_SHORT,
+    INT,
+    UNSIGNED_INT,
+    HALF_FLOAT,
+    FLOAT,
+    DOUBLE,
+    FIXED,
+    INT_2_10_10_10_REV,
+    UNSIGNED_INT_2_10_10_10_REV,
+    UNSIGNED_INT_10F_11F_11F_REV
+  }
+
   /**
    * Bind this VAO to make it the current VAO.
    */
@@ -57,13 +83,7 @@ public interface CoreVAO {
    * @param stride the stride between the data
    * @param offset the offset of the data
    */
-  void enableVertexAttributef(int index, int size, int stride, int offset);
-
-  /**
-   * Disable thegiven vertex attribute index.
-   * @param index the index of the vertex attribute to disable
-   */
-  void disableVertexAttribute(int index);
+  void vertexAttribPointer(int index, int size, FloatType vertexType, int stride, int offset);
 
   /**
    * Configure the vertex attribute with the given data. The type of the data will be
@@ -78,5 +98,45 @@ public interface CoreVAO {
    * @param divisor Specify the number of instances that will pass between updates of the generic attribute at slot
    *        index.
    */
-  void enableVertexAttributeDivisorf(int index, int size, int stride, int offset, int divisor);
+  void enableVertexAttributeDivisorf(int index, int size, FloatType vertexType, int stride, int offset, int divisor);
+
+  /**
+   * Enable the vertex attribute with the given index.
+   *
+   * @param index the index of the vertex attribute to modify
+   */
+  void enableVertexAttribute(int index);
+
+  /**
+   * Configure the vertex attribute with the given data. The type of the data will be
+   * GL_FLOAT.
+   *
+   * @param index the index of the vertex attribute to modify
+   * @param size the size of the data for this vertex attribute
+   *        (the number of GL_FLOAT to use)
+   * @param stride the stride between the data
+   * @param offset the offset of the data
+   */
+  void vertexAttribIPointer(int index, int size, IntType vertexType, int stride, int offset);
+
+  /**
+   * Configure the vertex attribute with the given data. The type of the data will be
+   * GL_FLOAT. This will additionally call glVertexAttribDivisorARB to change the
+   * frequency this data will be sent.
+   *
+   * @param index the index of the vertex attribute to modify
+   * @param size the size of the data for this vertex attribute
+   *        (the number of GL_FLOAT to use)
+   * @param stride the stride between the data
+   * @param offset the offset of the data
+   * @param divisor Specify the number of instances that will pass between updates of the generic attribute at slot
+   *        index.
+   */
+  void enableVertexAttributeDivisori(int index, int size, IntType vertexType, int stride, int offset, int divisor);
+
+  /**
+   * Disable thegiven vertex attribute index.
+   * @param index the index of the vertex attribute to disable
+   */
+  void disableVertexAttribute(int index);
 }

@@ -32,6 +32,7 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
@@ -51,7 +52,7 @@ public class BackgroundMain implements RenderLoopCallback {
     CoreVAO vao = factory.createVAO();
     vao.bind();
 
-    factory.createStaticAndSend(new float[] {
+    factory.createVBOStaticAndSend(new float[] {
         -1.0f, -1.0f,
         -1.0f,  1.0f,
          1.0f, -1.0f,
@@ -60,7 +61,7 @@ public class BackgroundMain implements RenderLoopCallback {
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
-    vao.enableVertexAttributef(0, 2, 2, 0);
+    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
 
     // we only use a single shader and a single vao so we can activate both here
     // and let them stay active the whole time.
@@ -83,7 +84,7 @@ public class BackgroundMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = new CoreFactoryLwjgl();
+    CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Core GL Background", 1024, 768);
