@@ -28,6 +28,9 @@ package de.lessvoid.coregl.lwjgl;
 
 
 import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
 import static org.lwjgl.opengl.GL15.GL_WRITE_ONLY;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
@@ -36,119 +39,75 @@ import static org.lwjgl.opengl.GL15.glGenBuffers;
 import static org.lwjgl.opengl.GL15.glMapBuffer;
 import static org.lwjgl.opengl.GL15.glUnmapBuffer;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-
-import org.lwjgl.BufferUtils;
+import java.util.Hashtable;
+import java.util.Map;
 
 import de.lessvoid.coregl.CoreCheckGL;
+import de.lessvoid.coregl.CoreGLException;
 import de.lessvoid.coregl.CoreVBO;
 
 /**
  * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
  * @author void
  */
-public class CoreVBOLwjgl implements CoreVBO {
-  private final CoreCheckGL checkGL;
+public class CoreVBOLwjgl < T extends Buffer > implements CoreVBO < T > {
+  private static Map<UsageType, Integer> usageTypeMap = new Hashtable<UsageType, Integer>();
+  static {
+    initUsageTypeMap();
+  }
 
+  private final CoreCheckGL checkGL;
   private final int id;
   private final int usage;
+  private final DataType dataType;
   private final int byteLength;
-  private ByteBuffer vertexBuffer;
+
+  private T vertexBuffer;
   private ByteBuffer mappedBufferCache;
 
-  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final short[] data) {
+  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final DataType dataTypeParam, final UsageType usageType, final int size) {
     checkGL = checkGLParam;
-    usage = usageType;
-    byteLength = data.length << 1;
+    usage = usageTypeMap.get(usageType);
+    dataType = dataTypeParam;
+    byteLength = dataType.calcByteLength(size);
 
-    vertexBuffer = BufferUtils.createByteBuffer(byteLength);
-    vertexBuffer.asShortBuffer().put(data);
+    vertexBuffer = dataType.createBuffer(size);
     vertexBuffer.rewind();
 
     id = initBuffer();
   }
 
-  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final ShortBuffer data) {
-    checkGL = checkGLParam;
-    usage = usageType;
-    byteLength = data.limit() << 1;
-
-    vertexBuffer = BufferUtils.createByteBuffer(byteLength);
-    vertexBuffer.asShortBuffer().put(data);
+  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final DataType dataTypeParam, final UsageType usageType, final Object[] data) {
+    this(checkGLParam, dataTypeParam, usageType, data.length);
+    dataType.putArray(vertexBuffer, data);
     vertexBuffer.rewind();
-
-    id = initBuffer();
-  }
-
-  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final float[] data) {
-    checkGL = checkGLParam;
-    usage = usageType;
-    byteLength = data.length << 2;
-
-    vertexBuffer = BufferUtils.createByteBuffer(byteLength);
-    vertexBuffer.asFloatBuffer().put(data);
-    vertexBuffer.rewind();
-
-    id = initBuffer();
-  }
-
-  CoreVBOLwjgl(final CoreCheckGL checkGLParam, final int usageType, final FloatBuffer data) {
-    checkGL = checkGLParam;
-    usage = usageType;
-    byteLength = data.limit() << 2;
-
-    vertexBuffer = BufferUtils.createByteBuffer(data.limit() * 4);
-    vertexBuffer.asFloatBuffer().put(data);
-    vertexBuffer.rewind();
-
-    id = initBuffer();
+    send();
   }
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVBO#getFloatBuffer()
+   * @see de.lessvoid.coregl.CoreVBO#getBuffer()
    */
   @Override
-  public FloatBuffer getFloatBuffer() {
-    return vertexBuffer.asFloatBuffer();
+  public T getBuffer() {
+    return vertexBuffer;
   }
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVBO#getFloatBufferMapped()
+   * @see de.lessvoid.coregl.CoreVBO#getMappedBuffer()
    */
   @Override
-  public FloatBuffer getFloatBufferMapped() {
+  public T getMappedBuffer() {
     ByteBuffer dataBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY, byteLength, mappedBufferCache);
     checkGL.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
 
     mappedBufferCache = dataBuffer;
-    return dataBuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVBO#getFloatBuffer()
-   */
-  @Override
-  public ShortBuffer getShortBuffer() {
-    return vertexBuffer.asShortBuffer();
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVBO#getFloatBufferMapped()
-   */
-  @Override
-  public ShortBuffer getShortBufferMapped() {
-    ByteBuffer dataBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY, byteLength, mappedBufferCache);
-    checkGL.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
-
-    mappedBufferCache = dataBuffer;
-    return dataBuffer.order(ByteOrder.nativeOrder()).asShortBuffer();
+    return dataType.asBuffer(dataBuffer);
   }
 
   /**
@@ -173,7 +132,14 @@ public class CoreVBOLwjgl implements CoreVBO {
    */
   @Override
   public void send() {
-    glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+    if (DataType.FLOAT.equals(dataType)) {
+      glBufferData(GL_ARRAY_BUFFER, (FloatBuffer) vertexBuffer, usage);
+    } else if (DataType.SHORT.equals(dataType)) {
+      glBufferData(GL_ARRAY_BUFFER, (ShortBuffer) vertexBuffer, usage);
+    } else {
+      throw new CoreGLException("Unsupported CoreVBO.DataType (" + dataType + ")");
+    }
     checkGL.checkGLError("glBufferData(GL_ARRAY_BUFFER)");
   }
 
@@ -188,10 +154,12 @@ public class CoreVBOLwjgl implements CoreVBO {
   private int initBuffer() {
     int id = glGenBuffers();
     checkGL.checkGLError("glGenBuffers");
-
-    glBindBuffer(GL_ARRAY_BUFFER, id);
-    glBufferData(GL_ARRAY_BUFFER, vertexBuffer, usage);
-    checkGL.checkGLError("glBufferData");
     return id;
+  }
+
+  private static void initUsageTypeMap() {
+    usageTypeMap.put(UsageType.DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
+    usageTypeMap.put(UsageType.STATIC_DRAW, GL_STATIC_DRAW);
+    usageTypeMap.put(UsageType.STREAM_DRAW, GL_STREAM_DRAW);
   }
 }

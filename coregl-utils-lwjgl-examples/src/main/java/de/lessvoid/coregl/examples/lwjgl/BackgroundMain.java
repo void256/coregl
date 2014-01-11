@@ -32,9 +32,11 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
-import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
 
 public class BackgroundMain implements RenderLoopCallback {
@@ -52,7 +54,7 @@ public class BackgroundMain implements RenderLoopCallback {
     CoreVAO vao = factory.createVAO();
     vao.bind();
 
-    factory.createVBOStaticAndSend(new float[] {
+    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
         -1.0f, -1.0f,
         -1.0f,  1.0f,
          1.0f, -1.0f,
@@ -61,6 +63,7 @@ public class BackgroundMain implements RenderLoopCallback {
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
+    vao.enableVertexAttribute(0);
     vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
 
     // we only use a single shader and a single vao so we can activate both here

@@ -31,9 +31,7 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.GL_STREAM_DRAW;
 
 import java.nio.Buffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 
 import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreElementVBO;
@@ -49,6 +47,8 @@ import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTextureBuffer;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVBO;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 
 public class CoreFactoryLwjgl implements CoreFactory {
   private final CoreCheckGL checkGL;
@@ -181,100 +181,20 @@ public class CoreFactoryLwjgl implements CoreFactory {
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStatic(float[])
+   * @see de.lessvoid.coregl.CoreFactory#createVBO(de.lessvoid.coregl.CoreVBO.DataType, de.lessvoid.coregl.CoreVBO.UsageType, int)
    */
   @Override
-  public CoreVBO createVBOStatic(final float[] data) {
-    return new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
+  public <T extends Buffer> CoreVBO<T> createVBO(DataType dataType, final UsageType usageType, final int size) {
+    return new CoreVBOLwjgl<T>(checkGL, dataType, usageType, size);
   }
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(float[])
+   * @see de.lessvoid.coregl.CoreFactory#createVBO(de.lessvoid.coregl.CoreVBO.DataType, de.lessvoid.coregl.CoreVBO.UsageType, java.lang.Object[])
    */
   @Override
-  public CoreVBO createVBOStaticAndSend(final float[] data) {
-    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
-    result.send();
-    return result;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(java.nio.FloatBuffer)
-   */
-  @Override
-  public CoreVBO createVBOStaticAndSend(final FloatBuffer data) {
-    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
-    result.send();
-    return result;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createDynamic(float[])
-   */
-  @Override
-  public CoreVBO createVBODynamic(final float[] data) {
-    return new CoreVBOLwjgl(checkGL, GL_DYNAMIC_DRAW, data);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStream(float[])
-   */
-  @Override
-  public CoreVBO createVBOStream(final float[] data) {
-    return new CoreVBOLwjgl(checkGL, GL_STREAM_DRAW, data);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStatic(short[])
-   */
-  @Override
-  public CoreVBO createVBOStatic(final short[] data) {
-    return new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(short[])
-   */
-  @Override
-  public CoreVBO createVBOStaticAndSend(final short[] data) {
-    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
-    result.send();
-    return result;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStaticAndSend(java.nio.ShortBuffer)
-   */
-  @Override
-  public CoreVBO createVBOStaticAndSend(final ShortBuffer data) {
-    CoreVBOLwjgl result = new CoreVBOLwjgl(checkGL, GL_STATIC_DRAW, data);
-    result.send();
-    return result;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createDynamic(short[])
-   */
-  @Override
-  public CoreVBO createVBODynamic(final short[] data) {
-    return new CoreVBOLwjgl(checkGL, GL_DYNAMIC_DRAW, data);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreFactory#createStream(short[])
-   */
-  @Override
-  public CoreVBO createVBOStream(final short[] data) {
-    return new CoreVBOLwjgl(checkGL, GL_STREAM_DRAW, data);
+  public <T extends Buffer> CoreVBO<T> createVBO(final DataType dataType, final UsageType usageType, final Object[] data) {
+    return new CoreVBOLwjgl<T>(checkGL, dataType, usageType, data);
   }
 
   // CoreVAO ///////////////////////////////////////////////////////////////////////////////////////////////////////////

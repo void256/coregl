@@ -27,6 +27,10 @@
 package de.lessvoid.coregl;
 
 
+import java.lang.reflect.Array;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -34,39 +38,99 @@ import java.nio.ShortBuffer;
  * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
  * @author void
  */
-public interface CoreVBO {
+public interface CoreVBO < T extends Buffer > {
 
   /**
-   * Allows access to the internally kept nio FloatBuffer that contains the original
+   * Type of the VBO.
+   * @author void
+   */
+  public enum UsageType {
+    DYNAMIC_DRAW,
+    STATIC_DRAW,
+    STREAM_DRAW 
+  }
+
+  public enum DataType {
+    FLOAT(2),
+    SHORT(1);
+
+    private final int byteSizeFactor;
+
+    private DataType(final int byteSizeFactor) {
+      this.byteSizeFactor = byteSizeFactor;
+    }
+
+    public int calcByteLength(final int size) {
+      return size << byteSizeFactor;
+    }
+
+    public <T extends Buffer> T createBuffer(final int size) {
+      ByteBuffer byteBuffer = createByteBuffer(calcByteLength(size));
+      if (FLOAT.equals(this)) {
+        return (T) byteBuffer.asFloatBuffer();
+      } else if (SHORT.equals(this)) {
+        return (T) byteBuffer.asShortBuffer();
+      }
+      throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
+    }
+
+    public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
+      if (FLOAT.equals(this)) {
+        return (T)  dataBuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
+      } else if (SHORT.equals(this)) {
+        return (T)  dataBuffer.order(ByteOrder.nativeOrder()).asShortBuffer();
+      }
+      throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
+    }
+
+    public void putArray(final Buffer b, final Object[] data) {
+      if (DataType.FLOAT.equals(this)) {
+        ((FloatBuffer) b).put(toFloatArray(data));
+      } else if (DataType.SHORT.equals(this)) {
+        ((ShortBuffer) b).put(toShortArray(data));
+      } else {
+        throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
+      }
+    }
+
+    private static ByteBuffer createByteBuffer(final int size) {
+      return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
+    }
+
+    private static float[] toFloatArray(final Object[] data) {
+      int arrlength = Array.getLength(data);
+      float[] outputArray = new float[arrlength];
+      for(int i = 0; i < arrlength; ++i){
+         outputArray[i] = (Float) data[i];
+      }
+      return outputArray;
+    }
+
+    private static short[] toShortArray(final Object[] data) {
+      int arrlength = Array.getLength(data);
+      short[] outputArray = new short[arrlength];
+      for(int i = 0; i < arrlength; ++i){
+         outputArray[i] = (Short) data[i];
+      }
+      return outputArray;
+    }
+  }
+
+  /**
+   * Allows access to the internally kept nio Buffer that contains the original
    * buffer data. You can access and change this buffer if you want to update the
    * buffer content. Just make sure that you call rewind() before sending your new
-   * data to the GPU with the sendData() method.
+   * data to the GPU with the send() method.
    *
-   * @return the FloatBuffer with the original buffer data (stored in main memory not GPU memory)
+   * @return the Buffer with the original buffer data (stored in main memory not GPU memory)
    */
-  FloatBuffer getFloatBuffer();
+  T getBuffer();
 
   /**
-   * Maps the buffer object that this represents into client space and returns the buffer as a FloatBuffer
+   * Maps the buffer object that this represents into client space and returns the buffer
    * @return the FloatBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
    */
-  FloatBuffer getFloatBufferMapped();
-
-  /**
-   * Allows access to the internally kept nio ShortBuffer that contains the original
-   * buffer data. You can access and change this buffer if you want to update the
-   * buffer content. Just make sure that you call rewind() before sending your new
-   * data to the GPU with the sendData() method.
-   *
-   * @return the ShortBuffer with the original buffer data (stored in main memory not GPU memory)
-   */
-  ShortBuffer getShortBuffer();
-
-  /**
-   * Maps the buffer object that this represents into client space and returns the buffer as a ShortBuffer
-   * @return the ShortBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
-   */
-  ShortBuffer getShortBufferMapped();
+  T getMappedBuffer();
 
   /**
    * You'll need to call that when you're done writing data into a mapped buffer to return access back to the GPU.

@@ -59,6 +59,8 @@ import de.lessvoid.coregl.CoreTexture2D.Type;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
 import de.lessvoid.math.Mat4;
 import de.lessvoid.math.MatrixFactory;
@@ -69,9 +71,9 @@ public class LineMain implements RenderLoopCallback {
   private final CoreShader lineShader1;
   private final CoreShader lineShader2;
   private final CoreVAO src;
-  private final CoreVBO vbo;
-  private final CoreVBO vboQuad;
-  private final CoreVBO vboBackground;
+  private final CoreVBO<FloatBuffer> vbo;
+  private final CoreVBO<FloatBuffer> vboQuad;
+  private final CoreVBO<FloatBuffer> vboBackground;
   private final CoreFBO fbo;
   private float totalTime;
   private final CoreTexture2D fboTexture;
@@ -102,12 +104,14 @@ public class LineMain implements RenderLoopCallback {
     src = factory.createVAO();
     src.bind();
 
-    vbo = factory.createVBODynamic(new float[2*5]);
+    vbo = factory.createVBO(DataType.FLOAT, UsageType.DYNAMIC_DRAW, 2*5);
+    vbo.bind();
+    src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
     totalTime = 0;
 
-    vboQuad = factory.createVBODynamic(new float[4*4]);
-    vboBackground = factory.createVBODynamic(new float[5*4]);
+    vboQuad = factory.createVBO(DataType.FLOAT, UsageType.DYNAMIC_DRAW, 4*4);
+    vboBackground = factory.createVBO(DataType.FLOAT, UsageType.DYNAMIC_DRAW, 5*4);
 
     fbo = factory.createCoreFBO();
     fbo.bindFramebuffer();
@@ -156,7 +160,7 @@ public class LineMain implements RenderLoopCallback {
     lineShader1.setUniformf("lineColor", 1.f, 1.f, 1.f, (float)((Math.sin(time/1700.f) + 1.0) / 2.0));
     lineShader1.setUniformf("lineParameters", (2*r + w), (2*r + w) / 2.f, (2*r + w) / 2.f - 2 * r, (2*r));
 
-    FloatBuffer buffer = vbo.getFloatBuffer();
+    FloatBuffer buffer = vbo.getBuffer();
     buffer.put(100.f);
     buffer.put(100.f);
     buffer.put(100.f);
@@ -168,16 +172,18 @@ public class LineMain implements RenderLoopCallback {
     buffer.put(600.f + (float)Math.cos(totalTime/1500.f)*200.f);
     buffer.put(300.f + (float)Math.sin(totalTime/1500.f)*200.f);
     buffer.rewind();
-    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
-    src.disableVertexAttribute(1);
     vbo.send();
+
+    src.enableVertexAttribute(0);
+    src.disableVertexAttribute(1);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
     factory.getCoreRender().renderLinesAdjacent(5);
     fbo.disable();
 
     // Render background
     glDisable(GL_BLEND);
 
-    FloatBuffer background = vboBackground.getFloatBuffer();
+    FloatBuffer background = vboBackground.getBuffer();
     background.put(0.f);
     background.put(0.f);
     background.put(1.f);
@@ -203,10 +209,12 @@ public class LineMain implements RenderLoopCallback {
     background.put(1.0f);
     background.rewind();
 
-    vboBackground.bind();
-    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 5, 0);
-    src.vertexAttribPointer(1, 3, FloatType.FLOAT, 5, 2);
     vboBackground.send();
+
+    src.enableVertexAttribute(0);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 5, 0);
+    src.enableVertexAttribute(1);
+    src.vertexAttribPointer(1, 3, FloatType.FLOAT, 5, 2);
 
     glViewport(0, 0, Display.getWidth(), Display.getHeight());
     backgroundShader.activate();
@@ -219,7 +227,7 @@ public class LineMain implements RenderLoopCallback {
     glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
 
-    FloatBuffer quad = vboQuad.getFloatBuffer();
+    FloatBuffer quad = vboQuad.getBuffer();
     quad.put(0.f);
     quad.put(0.f);
     quad.put(0.f);
@@ -241,10 +249,12 @@ public class LineMain implements RenderLoopCallback {
     quad.put(1.0f);
     quad.rewind();
 
-    vboQuad.bind();
-    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
-    src.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
     vboQuad.send();
+
+    src.enableVertexAttribute(0);
+    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
+    src.enableVertexAttribute(1);
+    src.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
 
     fboTexture.bind();
     texture.activate();

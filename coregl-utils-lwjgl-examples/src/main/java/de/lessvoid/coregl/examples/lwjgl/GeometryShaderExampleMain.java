@@ -36,12 +36,14 @@ import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
-import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.math.Mat4;
+import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.math.Vec4;
 import de.lessvoid.simpleimageloader.ImageData;
 import de.lessvoid.simpleimageloader.SimpleImageLoader;
@@ -69,7 +71,7 @@ public class GeometryShaderExampleMain implements RenderLoopCallback {
     CoreVAO vao = factory.createVAO();
     vao.bind();
 
-    float[] vertexData = new float[vertexCount*dataPerVertex];
+    Float[] vertexData = new Float[vertexCount*dataPerVertex];
     int index = 0;
     for (int i=0; i<vertexCount; i++) {
       vertexData[index++] = (float)Math.random() * (1024.f - 50.f);
@@ -110,17 +112,38 @@ public class GeometryShaderExampleMain implements RenderLoopCallback {
       vertexData[index++] = 0.0001f;//1.0f;
   };
     
-    vbo = factory.createVBODynamic(vertexData);
+    vbo = factory.createVBO(DataType.FLOAT, UsageType.DYNAMIC_DRAW, vertexData);
     vbo.send();
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
-    vao.vertexAttribPointer(shader.getAttribLocation("aVertex"), 4, FloatType.FLOAT, dataPerVertex, 0);
+    
+    int attribLocation = shader.getAttribLocation("aVertex");
+    vao.enableVertexAttribute(attribLocation);
+    vao.vertexAttribPointer(attribLocation, 4, FloatType.FLOAT, dataPerVertex, 0);
+
+    attribLocation = shader.getAttribLocation("aColor1");
+    vao.enableVertexAttribute(attribLocation);
     vao.vertexAttribPointer(shader.getAttribLocation("aColor1"), 4, FloatType.FLOAT, dataPerVertex, 4);
+
+    attribLocation = shader.getAttribLocation("aColor2");
+    vao.enableVertexAttribute(attribLocation);
     vao.vertexAttribPointer(shader.getAttribLocation("aColor2"), 4, FloatType.FLOAT, dataPerVertex, 8);
+
+    attribLocation = shader.getAttribLocation("aColor3");
+    vao.enableVertexAttribute(attribLocation);
     vao.vertexAttribPointer(shader.getAttribLocation("aColor3"), 4, FloatType.FLOAT, dataPerVertex, 12);
+
+    attribLocation = shader.getAttribLocation("aColor4");
+    vao.enableVertexAttribute(attribLocation);
     vao.vertexAttribPointer(shader.getAttribLocation("aColor4"), 4, FloatType.FLOAT, dataPerVertex, 16);
+
+    attribLocation = shader.getAttribLocation("aUV1");
+    vao.enableVertexAttribute(attribLocation);
     vao.vertexAttribPointer(shader.getAttribLocation("aUV1"), 4, FloatType.FLOAT, dataPerVertex, 20);
+
+    attribLocation = shader.getAttribLocation("aUV2");
+    vao.enableVertexAttribute(attribLocation);
     vao.vertexAttribPointer(shader.getAttribLocation("aUV2"), 4, FloatType.FLOAT, dataPerVertex, 24);
 
     // load texture

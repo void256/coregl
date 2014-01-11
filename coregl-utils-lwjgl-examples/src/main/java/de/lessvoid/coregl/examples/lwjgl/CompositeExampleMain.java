@@ -42,9 +42,11 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
-import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
 import de.lessvoid.math.MatrixFactory;
 
@@ -65,7 +67,7 @@ public class CompositeExampleMain implements RenderLoopCallback {
     src = factory.createVAO();
     src.bind();
 
-    factory.createVBOStaticAndSend(new float[] {
+    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
           0.f,   0.f,    1.f, 1.f, 0.f, 1.f,
         100.f,   0.f,    1.f, 1.f, 0.f, 1.f,
           0.f, 100.f,    1.f, 1.f, 0.f, 1.f,
@@ -74,13 +76,15 @@ public class CompositeExampleMain implements RenderLoopCallback {
         100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
     });
 
+    src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+    src.enableVertexAttribute(1);
     src.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
     dst = factory.createVAO();
     dst.bind();
 
-    factory.createVBOStaticAndSend(new float[] {
+    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
           0.f,   0.f,    0.f, 0.f, 1.f, 1.f,
         100.f,   0.f,    0.f, 0.f, 1.f, 1.f,
         100.f, 100.f,    0.f, 0.f, 1.f, 1.f,
@@ -89,13 +93,15 @@ public class CompositeExampleMain implements RenderLoopCallback {
         100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
     });
 
+    dst.enableVertexAttribute(0);
     dst.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+    dst.enableVertexAttribute(1);
     dst.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
     white = factory.createVAO();
     white.bind();
 
-    factory.createVBOStaticAndSend(new float[] {
+    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
           0.f,   0.f,    1.f, 1.f, 1.f, 1.f,
         100.f,   0.f,    1.f, 1.f, 1.f, 1.f,
         100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
@@ -104,7 +110,9 @@ public class CompositeExampleMain implements RenderLoopCallback {
         100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
     });
 
+    white.enableVertexAttribute(0);
     white.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+    white.enableVertexAttribute(1);
     white.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
     shader.activate();

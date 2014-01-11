@@ -41,9 +41,11 @@ import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
-import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
 import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.simpleimageloader.ImageData;
@@ -55,7 +57,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
   private SimpleImageLoader loader = new SimpleImageLoader();
 
   private CoreVAO vao;
-  private CoreVBO vbo;
+  private CoreVBO<FloatBuffer> vbo;
   private CoreShader shader;
   private CoreTexture2D textureAtlas;
   private CoreFactory factory;
@@ -73,11 +75,13 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     vao = factory.createVAO();
     vao.bind();
 
-    vbo = factory.createVBOStatic(new float[4*4]);
+    vbo = factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, 4*4);
     vbo.bind();
 
     vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
     vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
+    vao.enableVertexAttribute(0);
+    vao.enableVertexAttribute(1);
 
     CoreTextureAtlasGenerator generator = new CoreTextureAtlasGenerator(factory, 1024, 1024);
     File base = new File("src/main/resources/texture-atlas");
@@ -99,7 +103,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
 
     textureAtlas.bind();
 
-    FloatBuffer buffer = vbo.getFloatBuffer();
+    FloatBuffer buffer = vbo.getBuffer();
     buffer.put(0.f);
     buffer.put(0.f);
     buffer.put(0.0f);
@@ -120,7 +124,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     buffer.put(1.0f);
     buffer.put(1.0f);
     buffer.rewind();
-    vbo.bind();
+
     vbo.send();
     vao.bind();
 

@@ -1,11 +1,10 @@
 package de.lessvoid.coregl.jogl;
 
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 import javax.media.opengl.GL;
-import javax.media.opengl.GL3;
 import javax.media.opengl.GLContext;
 
 import com.jogamp.common.nio.Buffers;
@@ -13,44 +12,11 @@ import com.jogamp.common.nio.Buffers;
 import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreVBO;
 
-public class CoreVBOJogl implements CoreVBO {
+public class CoreVBOJogl < T extends Buffer > implements CoreVBO < T > {
   private static final CoreCheckGL checkGL = new CoreCheckGLJogl();
   private final int id;
   private final int usage;
   private FloatBuffer vertexBuffer;
-
-  public static CoreVBOJogl createStatic(final float[] data) {
-    return new CoreVBOJogl(GL.GL_STATIC_DRAW, data);
-  }
-
-  public static CoreVBOJogl createStaticAndSend(final float[] data) {
-    CoreVBOJogl result = new CoreVBOJogl(GL.GL_STATIC_DRAW, data);
-    result.send();
-    return result;
-  }
-
-  public static CoreVBOJogl createStaticAndSend(final FloatBuffer data) {
-    CoreVBOJogl result = new CoreVBOJogl(GL.GL_STATIC_DRAW, data.array());
-    result.send();
-    return result;
-  }
-
-  public static CoreVBOJogl createDynamic(final float[] data) {
-    return new CoreVBOJogl(GL.GL_DYNAMIC_DRAW, data);
-  }
-
-  public static CoreVBOJogl createStream(final float[] data) {
-    return new CoreVBOJogl(GL3.GL_STREAM_DRAW, data);
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVBO#getBuffer()
-   */
-  @Override
-  public FloatBuffer getFloatBuffer() {
-    return vertexBuffer;
-  }
 
   /*
    * (non-Javadoc)
@@ -88,16 +54,6 @@ public class CoreVBOJogl implements CoreVBO {
 
   /*
    * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreVBO#getMappedBuffer()
-   */
-  @Override
-  public FloatBuffer getFloatBufferMapped() {
-    // FIXME
-    throw new UnsupportedOperationException();
-  }
-
-  /*
-   * (non-Javadoc)
    * @see de.lessvoid.coregl.CoreVBO#unmapBuffer()
    */
   @Override
@@ -125,14 +81,12 @@ public class CoreVBOJogl implements CoreVBO {
   }
 
   @Override
-  public ShortBuffer getShortBuffer() {
-    // TODO Auto-generated method stub
+  public T getBuffer() {
     return null;
   }
 
   @Override
-  public ShortBuffer getShortBufferMapped() {
-    // TODO Auto-generated method stub
+  public T getMappedBuffer() {
     return null;
   }
 }

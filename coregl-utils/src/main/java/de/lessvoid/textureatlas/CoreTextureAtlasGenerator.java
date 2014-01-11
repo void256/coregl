@@ -36,9 +36,11 @@ import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2D.Type;
-import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.textureatlas.TextureAtlasGenerator.Result;
 
@@ -52,7 +54,7 @@ public class CoreTextureAtlasGenerator {
   private CoreRender coreRender;
   private CoreFBO renderToTexture;
   private CoreVAO vao;
-  private CoreVBO vbo;
+  private CoreVBO<FloatBuffer> vbo;
   private TextureAtlasGenerator generator;
   private CoreShader shader;
   private CoreTexture2D texture;
@@ -83,10 +85,12 @@ public class CoreTextureAtlasGenerator {
     vao = coreFactory.createVAO();
     vao.bind();
 
-    vbo = coreFactory.createVBOStream(new float[4*4]);
+    vbo = coreFactory.createVBO(DataType.FLOAT, UsageType.STREAM_DRAW, 4*4);
     vbo.bind();
 
+    vao.enableVertexAttribute(0);
     vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
+    vao.enableVertexAttribute(1);
     vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
     
     renderToTexture.bindFramebuffer();
@@ -151,7 +155,7 @@ public class CoreTextureAtlasGenerator {
     vao.bind();
     renderToTexture.bindFramebuffer();
 
-    FloatBuffer buffer = vbo.getFloatBuffer();
+    FloatBuffer buffer = vbo.getBuffer();
     buffer.put(x);
     buffer.put(y);
     buffer.put(0.0f);

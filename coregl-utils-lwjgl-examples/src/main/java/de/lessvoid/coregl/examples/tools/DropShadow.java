@@ -7,6 +7,9 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+
+import java.nio.FloatBuffer;
+
 import de.lessvoid.coregl.CoreFBO;
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreShader;
@@ -14,6 +17,8 @@ import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2D.Type;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.CoreTextureBuffer;
 import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.math.Mat4;
@@ -29,8 +34,8 @@ public class DropShadow {
   private CoreTexture2D render2;
   private CoreTexture2D render3;
   private CoreTexture2D image;
-  private CoreVBO quad;
-  private CoreVBO fullQuad;
+  private CoreVBO<FloatBuffer> quad;
+  private CoreVBO<FloatBuffer> fullQuad;
   private CoreShader plainTextureShader;
   private float angle = 0;
 
@@ -177,8 +182,8 @@ public class DropShadow {
     return matrix;
   }
 
-  private static CoreVBO createQuadVBO(final CoreFactory factory, final float x, final float y, final float w, final float h) {
-    return factory.createVBOStatic(new float[] {
+  private static CoreVBO<FloatBuffer> createQuadVBO(final CoreFactory factory, final float x, final float y, final float w, final float h) {
+    return factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
         x,     y,     0.f, 0.f,
         x + w, y,     1.f, 0.f,
         x,     y + h, 0.f, 1.f,

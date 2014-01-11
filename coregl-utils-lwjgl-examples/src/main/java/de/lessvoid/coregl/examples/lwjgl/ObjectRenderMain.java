@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.opengl.GL11;
@@ -49,6 +50,8 @@ import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.examples.lwjgl.WavefrontObjectLoader.Data;
 import de.lessvoid.coregl.examples.tools.FileChangeWatcher;
 import de.lessvoid.coregl.examples.tools.FileChangeWatcher.Callback;
@@ -164,7 +167,8 @@ public class ObjectRenderMain implements RenderLoopCallback{
       data = loader.asVertexAndIndexBuffer();
       System.out.println(data.getIndexData().limit() / 3);
       System.out.println(data.getVertexData().limit());
-      factory.createVBOStaticAndSend(data.getVertexData());
+
+      factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, toFloatArray(data.getVertexData()));
       factory.createStaticAndSend(data.getIndexData());
   
       // parameters are: index, size, stride, offset
@@ -172,6 +176,9 @@ public class ObjectRenderMain implements RenderLoopCallback{
       vao.vertexAttribPointer(0, 3, FloatType.FLOAT, 8, 0);
       vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 8, 3);
       vao.vertexAttribPointer(2, 3, FloatType.FLOAT, 8, 5);
+      vao.enableVertexAttribute(0);
+      vao.enableVertexAttribute(1);
+      vao.enableVertexAttribute(2);
   
       // we only use a single shader and a single vao so we can activate both here
       // and let them stay active the whole time.
@@ -189,6 +196,17 @@ public class ObjectRenderMain implements RenderLoopCallback{
     GL11.glEnable(GL11.GL_CULL_FACE);
     GL11.glFrontFace(GL11.GL_CCW);
     GL11.glEnable(GL13.GL_MULTISAMPLE);
+  }
+
+  private Float[] toFloatArray(final FloatBuffer floatBuffer) {
+    float[] vertexData = new float[floatBuffer.limit()];
+    data.getVertexData().get(vertexData);
+
+    Float[] vertexData2 = new Float[vertexData.length];
+    for (int i=0; i<vertexData.length; i++) {
+      vertexData2[i] = vertexData[i];
+    }
+    return vertexData2;
   }
 
   @Override
