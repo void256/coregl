@@ -101,7 +101,9 @@ public interface CoreVBO < T extends Buffer > {
       int arrlength = Array.getLength(data);
       float[] outputArray = new float[arrlength];
       for(int i = 0; i < arrlength; ++i){
-         outputArray[i] = (Float) data[i];
+        if (data[i] != null) {
+          outputArray[i] = (Float) data[i];
+        }
       }
       return outputArray;
     }
@@ -110,7 +112,9 @@ public interface CoreVBO < T extends Buffer > {
       int arrlength = Array.getLength(data);
       short[] outputArray = new short[arrlength];
       for(int i = 0; i < arrlength; ++i){
-         outputArray[i] = (Short) data[i];
+        if (data[i] != null) {
+          outputArray[i] = (Short) data[i];
+        }
       }
       return outputArray;
     }
