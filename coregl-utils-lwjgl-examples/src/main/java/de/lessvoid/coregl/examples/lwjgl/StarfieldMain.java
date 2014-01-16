@@ -119,7 +119,7 @@ public class StarfieldMain implements RenderLoopCallback {
     angleY += deltaTime / 2000.f;
 
     Mat4 modelViewProjection = Mat4.mul(projection, Mat4.mul(translate, Mat4.mul(rotateX, rotateY, null), null), null);
-    shader.setUniformMatrix4f("uModelViewProjection", modelViewProjection.toBuffer());
+    shader.setUniformMatrix("uModelViewProjection", 4, modelViewProjection.toBuffer());
 
     return false;
   }

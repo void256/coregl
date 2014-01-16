@@ -283,7 +283,7 @@ public class CoreSetupLwjgl implements CoreSetup {
       }
     }
 
-    DisplayMode[] matchingModes = matching.toArray(new DisplayMode[0]);
+    DisplayMode[] matchingModes = matching.toArray(new DisplayMode[matching.size()]);
     return matchingModes;
   }
 
@@ -313,7 +313,7 @@ public class CoreSetupLwjgl implements CoreSetup {
     return
         mode.getWidth() == requestedWidth &&
         mode.getHeight() == requestedHeight &&
-        mode.getBitsPerPixel() == 32;
+        (mode.getBitsPerPixel() == 32 || mode.getBitsPerPixel() == 24);
   }
 
   private void logMode(final String message, final DisplayMode currentMode) {

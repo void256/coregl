@@ -116,7 +116,7 @@ public class CompositeExampleMain implements RenderLoopCallback {
     white.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
+    shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
 
     glEnable(GL_BLEND);
   }

@@ -150,7 +150,7 @@ public class CoreTextureAtlasGenerator {
 
   private void put(final CoreTexture2D source, final int x, final int y) {
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()).toBuffer());
+    shader.setUniformMatrix("uMvp", 4,MatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()).toBuffer());
 
     vao.bind();
     renderToTexture.bindFramebuffer();

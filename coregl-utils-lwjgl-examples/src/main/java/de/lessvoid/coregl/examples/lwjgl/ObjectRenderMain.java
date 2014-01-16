@@ -228,11 +228,11 @@ public class ObjectRenderMain implements RenderLoopCallback{
     Mat4 rotateX = Mat4.createRotate(angleX, 1.f, 0.f, 0.f);
     Mat4 rotateY = Mat4.createRotate(angleY, 0.f, 1.f, 0.f);
     Mat4 modelView = Mat4.mul(translate, Mat4.mul(rotateX, rotateY, null), null);
-    shader.setUniformMatrix4f("uModelViewMatrix", modelView.toBuffer());
+    shader.setUniformMatrix("uModelViewMatrix", 4, modelView.toBuffer());
 
     Mat4 projection = MatrixFactory.createProjection2(75.f, 1024.f / 768.f, 1f, 1000.f);
     Mat4 modelViewProjection = Mat4.mul(projection, modelView, null);
-    shader.setUniformMatrix4f("uModelViewProjectionMatrix", modelViewProjection.toBuffer());
+    shader.setUniformMatrix("uModelViewProjectionMatrix", 4, modelViewProjection.toBuffer());
 
     Mat3 normalMatrix = new Mat3();
     normalMatrix.m00 = modelView.m00;
@@ -244,7 +244,7 @@ public class ObjectRenderMain implements RenderLoopCallback{
     normalMatrix.m02 = modelView.m02;
     normalMatrix.m12 = modelView.m12;
     normalMatrix.m22 = modelView.m22;
-    shader.setUniformMatrix3f("uNormalMatrix", normalMatrix.toBuffer());
+    shader.setUniformMatrix("uNormalMatrix", 3, normalMatrix.toBuffer());
 
     shader.setUniformf("uLightPosition", 0.f, 0.f, 100.f, 1.f);
     shader.setUniformf("uKd", 1.f, 1.f, 1.f);

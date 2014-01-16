@@ -63,7 +63,7 @@ public class DropShadow {
     tboShader.fragmentShader("blur2.fs");
     tboShader.vertexShader("blur2.vs");
     tboShader.activate();
-    tboShader.setUniformMatrix4f("projection", MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
+    tboShader.setUniformMatrix("projection", 4, MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
     tboShader.setUniformf("texture", 0);
     tboShader.setUniformf("off", 0.f, 0.f);
     tboShader.setUniformf("blurSize", 1.f/((shadowTextureWidth)*1f));
@@ -73,8 +73,8 @@ public class DropShadow {
     black.fragmentShader("dropShadow-black.fs");
     black.vertexShader("nifty.vs");
     black.activate();
-    black.setUniformMatrix4f("matProj", MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
-    black.setUniformMatrix4f("matScale", scale.toBuffer());
+    black.setUniformMatrix("matProj", 4, MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
+    black.setUniformMatrix("matScale", 4, scale.toBuffer());
     black.setUniformf("off", 0.f, 0.f);
     black.setUniformf("tex", 0);
 
@@ -82,8 +82,8 @@ public class DropShadow {
     plainTextureShader.fragmentShader("nifty-fixedalpha.fs");
     plainTextureShader.vertexShader("nifty.vs");
     plainTextureShader.activate();
-    plainTextureShader.setUniformMatrix4f("matScale", scale.toBuffer());
-    plainTextureShader.setUniformMatrix4f("matProj", projection.toBuffer());
+    plainTextureShader.setUniformMatrix("matScale", 4, scale.toBuffer());
+    plainTextureShader.setUniformMatrix("matProj", 4, projection.toBuffer());
     plainTextureShader.setUniformf("tex", 0);
     plainTextureShader.setUniformf("alpha", 0.25f);
 
@@ -175,7 +175,7 @@ public class DropShadow {
     Mat4.mul(move1, temp1, temp2);
     Mat4.mul(projection, temp2, matrix);
 
-    plainTextureShader.setUniformMatrix4f("matProj", matrix.toBuffer());
+    plainTextureShader.setUniformMatrix("matProj", 4, matrix.toBuffer());
     render3.bind();
     fullQuad.bind();
     factory.getCoreRender().renderTriangles(2);
