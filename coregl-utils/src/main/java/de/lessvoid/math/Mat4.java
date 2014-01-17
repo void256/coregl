@@ -45,7 +45,7 @@ import java.nio.FloatBuffer;
  */
 public class Mat4 implements Serializable {
 	private static final long serialVersionUID = 1L;
-  private final FloatBuffer matrixBuffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asFloatBuffer();
+  private FloatBuffer matrixBuffer;
 
 	public float m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33;
 
@@ -78,6 +78,9 @@ public class Mat4 implements Serializable {
 	 * @return FloatBuffer with the Matrix data
 	 */
   public FloatBuffer toBuffer() {
+    if (matrixBuffer == null) {
+      matrixBuffer = ByteBuffer.allocateDirect(64).order(ByteOrder.nativeOrder()).asFloatBuffer();
+    }
     matrixBuffer.clear();
     store(matrixBuffer);
     matrixBuffer.rewind();

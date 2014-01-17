@@ -48,7 +48,7 @@ import java.nio.FloatBuffer;
  */
 
 public class Mat3 implements Serializable {
-  private final FloatBuffer matrixBuffer = ByteBuffer.allocateDirect(36).order(ByteOrder.nativeOrder()).asFloatBuffer();
+  private FloatBuffer matrixBuffer;
 
 	private static final long serialVersionUID = 1L;
 
@@ -364,6 +364,9 @@ public class Mat3 implements Serializable {
    * @return FloatBuffer with the Matrix data
    */
   public FloatBuffer toBuffer() {
+    if (matrixBuffer == null) {
+      matrixBuffer = ByteBuffer.allocateDirect(36).order(ByteOrder.nativeOrder()).asFloatBuffer();
+    }
     matrixBuffer.clear();
     store(matrixBuffer);
     matrixBuffer.rewind();
