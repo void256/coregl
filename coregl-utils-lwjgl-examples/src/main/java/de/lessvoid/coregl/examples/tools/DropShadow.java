@@ -64,10 +64,10 @@ public class DropShadow {
     tboShader.vertexShader("blur2.vs");
     tboShader.activate();
     tboShader.setUniformMatrix("projection", 4, MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
-    tboShader.setUniformf("texture", 0);
+    tboShader.setUniformf("texture", 0f);
     tboShader.setUniformf("off", 0.f, 0.f);
     tboShader.setUniformf("blurSize", 1.f/((shadowTextureWidth)*1f));
-    tboShader.setUniformf("lookup", 1);
+    tboShader.setUniformf("lookup", 1f);
 
     black = factory.newShaderWithVertexAttributes("vVertex", "vTexCoords");
     black.fragmentShader("dropShadow-black.fs");
@@ -76,7 +76,7 @@ public class DropShadow {
     black.setUniformMatrix("matProj", 4, MatrixFactory.createProjection(0, shadowTextureWidth, 0, shadowTextureHeight).toBuffer());
     black.setUniformMatrix("matScale", 4, scale.toBuffer());
     black.setUniformf("off", 0.f, 0.f);
-    black.setUniformf("tex", 0);
+    black.setUniformf("tex", 0f);
 
     plainTextureShader = factory.newShaderWithVertexAttributes("vVertex", "vTexCoords");
     plainTextureShader.fragmentShader("nifty-fixedalpha.fs");
@@ -84,7 +84,7 @@ public class DropShadow {
     plainTextureShader.activate();
     plainTextureShader.setUniformMatrix("matScale", 4, scale.toBuffer());
     plainTextureShader.setUniformMatrix("matProj", 4, projection.toBuffer());
-    plainTextureShader.setUniformf("tex", 0);
+    plainTextureShader.setUniformf("tex", 0f);
     plainTextureShader.setUniformf("alpha", 0.25f);
 
     render = factory.createCoreFBO();

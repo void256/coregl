@@ -20,8 +20,8 @@ public class CoreShaderJogl implements CoreShader {
 
 	private static final Logger log = Logger.getLogger(CoreShaderJogl.class.getName());
 	private int program;
-	private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
 	private FloatBuffer matBuffer = Buffers.newDirectFloatBuffer(new float[16]);
+	private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
 	private final String[] attributes;
 
 	CoreShaderJogl(final CoreCheckGL checkGL, final String... vertexAttrs) {
@@ -292,19 +292,25 @@ public class CoreShaderJogl implements CoreShader {
 	
 	// uniform data
 
-	@Override
-	public void setUniformi(final String name, final int... values) {
-		setUniform(name, UniformTypeJogl.INT, values);
+	public void setUniformi(final String name, final int...values) {
+		Object[] intObjs = new Integer[values.length];
+		for(int i=0; i < values.length; i++)
+			intObjs[i] = values[i];
+		setUniform(name, UniformTypeJogl.INT, intObjs);
 	}
 
-	@Override
-	public void setUniformf(final String name, final float... values) {
-		setUniform(name, UniformTypeJogl.FLOAT, values);
+	public void setUniformf(final String name, final float...values) {
+		Object[] intObjs = new Float[values.length];
+		for(int i=0; i < values.length; i++)
+			intObjs[i] = values[i];
+		setUniform(name, UniformTypeJogl.FLOAT, intObjs);
 	}
 
-	@Override
-	public void setUniformd(final String name, final double... values) {
-		setUniform(name, UniformTypeJogl.DOUBLE, values);
+	public void setUniformd(final String name, final double...values) {
+		Object[] intObjs = new Double[values.length];
+		for(int i=0; i < values.length; i++)
+			intObjs[i] = values[i];
+		setUniform(name, UniformTypeJogl.DOUBLE, intObjs);
 	}
 
 	@Override
@@ -345,8 +351,10 @@ public class CoreShaderJogl implements CoreShader {
 
 	@Override
 	public void setUniformMatrix(final String name, final int componentNum, final float... values) {
-		FloatBuffer buff = Buffers.newDirectFloatBuffer(values);
-		setUniformMatrix(name, componentNum, UniformTypeJogl.FLOAT, buff);
+		matBuffer.clear();
+		matBuffer.put(values);
+		matBuffer.flip();
+		setUniformMatrix(name, componentNum, UniformTypeJogl.FLOAT, matBuffer);
 	}
 
 	@Override

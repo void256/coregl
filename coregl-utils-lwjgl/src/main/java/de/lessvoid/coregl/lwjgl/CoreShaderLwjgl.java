@@ -273,16 +273,53 @@ public class CoreShaderLwjgl implements CoreShader {
 		checkGLError("glGetProgram");
 	}
 
+	// BEGIN TEMPORARY TEST METHODS //
+	void setDirectUniform2i(final String name, final int...value) {
+		glUniform2i(getLocation(name), value[0], value[1]);
+	}
+
+	void setDirectUniformf(final String name, final float...values) {
+		switch(values.length) {
+		case 1:
+			glUniform1f(getLocation(name), values[0]);
+			break;
+		case 2:
+			glUniform2f(getLocation(name), values[0], values[1]);
+			break;
+		case 3:
+			glUniform3f(getLocation(name), values[0], values[1], values[2]);
+			break;
+		case 4:
+			glUniform4f(getLocation(name), values[0], values[1], values[2], values[3]);
+			break;
+		}
+	}
+	
+	void setDirectUniformMatrix4f(final String name, final FloatBuffer matBuffer) {
+		glUniformMatrix4(getLocation(name), false, matBuffer);
+		checkGLError("glUniformMatrix4");
+	}
+	// END TEMPORARY TEST METHODS //
+
 	public void setUniformi(final String name, final int...values) {
-		setUniform(name, UniformTypeLwjgl.INT, values);
+		Object[] intObjs = new Integer[values.length];
+		for(int i=0; i < values.length; i++)
+			intObjs[i] = values[i];
+		setUniform(name, UniformTypeLwjgl.INT, intObjs);
 	}
 
 	public void setUniformf(final String name, final float...values) {
-		setUniform(name, UniformTypeLwjgl.FLOAT, values);
+		Object[] intObjs = new Float[values.length];
+		for(int i=0; i < values.length; i++)
+			intObjs[i] = values[i];
+		setUniform(name, UniformTypeLwjgl.FLOAT, intObjs);
 	}
 
 	public void setUniformd(final String name, final double...values) {
-		setUniform(name, UniformTypeLwjgl.DOUBLE, values);
+		Object[] intObjs = new Double[values.length];
+		for(int i=0; i < values.length; i++)
+			intObjs[i] = values[i];
+		setUniform(name, UniformTypeLwjgl.DOUBLE, intObjs);
 	}
 
 	@Override
@@ -329,10 +366,10 @@ public class CoreShaderLwjgl implements CoreShader {
 
 	@Override
 	public void setUniformMatrix(final String name, final int componentNum, final float... values) {
-		FloatBuffer matBuff = BufferUtils.createFloatBuffer(values.length);
-		matBuff.put(values);
-		matBuff.flip();
-		setUniformMatrix(name, componentNum, UniformTypeLwjgl.FLOAT, matBuff);
+		matBuffer.clear();
+		matBuffer.put(values);
+		matBuffer.flip();
+		setUniformMatrix(name, componentNum, UniformTypeLwjgl.FLOAT, matBuffer);
 	}
 
 	@Override
@@ -384,46 +421,46 @@ public class CoreShaderLwjgl implements CoreShader {
 
 	private void setUniformv(final String name, final int componentNum, 
 			final UniformTypeLwjgl type, final Buffer data) {
-        int loc = getLocation(name);
-        if(componentNum < 1 || componentNum > 4)
-        	throw(new IllegalArgumentException("illegal number of compoments for setUniform"+type.suffix+"v"));
-        String method = "glUniform"+componentNum;
-        try {
-                Method m = GL20.class.getMethod(method, int.class, type.buffer);
-                m.setAccessible(true);
-                m.invoke(null, loc, data);
-        } catch (NoSuchMethodException e) {
-        	throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
-        } catch (SecurityException e) {
-                e.printStackTrace();
-        } catch (IllegalAccessException e) {
-                e.printStackTrace();
-        } catch (InvocationTargetException e) {
-                e.printStackTrace();
-        }
-        checkGLError(method);
+		int loc = getLocation(name);
+		if(componentNum < 1 || componentNum > 4)
+			throw(new IllegalArgumentException("illegal number of compoments for setUniform"+type.suffix+"v"));
+		String method = "glUniform"+componentNum;
+		try {
+			Method m = GL20.class.getMethod(method, int.class, type.buffer);
+			m.setAccessible(true);
+			m.invoke(null, loc, data);
+		} catch (NoSuchMethodException e) {
+			throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		checkGLError(method);
 	}
-	
+
 	private void setUniformMatrix(final String name, final int componentNum,
 			final UniformTypeLwjgl type, final Buffer data) {
-        int loc = getLocation(name);
-        if(componentNum < 2 || componentNum > 4)
-        	throw(new IllegalArgumentException("illegal number of compoments for setUniformMatrix"));
-        String method = "glUniformMatrix"+componentNum;
-        try {
-                Method m = GL20.class.getMethod(method, int.class, boolean.class, type.buffer);
-                m.setAccessible(true);
-                m.invoke(null, loc, false, data);
-        } catch (NoSuchMethodException e) {
-        	throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
-        } catch (SecurityException e) {
-                e.printStackTrace();
-        } catch (IllegalAccessException e) {
-                e.printStackTrace();
-        } catch (InvocationTargetException e) {
-                e.printStackTrace();
-        }
-        checkGLError(method);
+		int loc = getLocation(name);
+		if(componentNum < 2 || componentNum > 4)
+			throw(new IllegalArgumentException("illegal number of compoments for setUniformMatrix"));
+		String method = "glUniformMatrix"+componentNum;
+		try {
+			Method m = GL20.class.getMethod(method, int.class, boolean.class, type.buffer);
+			m.setAccessible(true);
+			m.invoke(null, loc, false, data);
+		} catch (NoSuchMethodException e) {
+			throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		checkGLError(method);
 	}
 
 	/*

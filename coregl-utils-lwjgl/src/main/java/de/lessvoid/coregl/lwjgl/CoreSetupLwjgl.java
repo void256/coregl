@@ -221,10 +221,11 @@ public class CoreSetupLwjgl implements CoreSetup {
   private void initGraphics(final String title, final int requestedWidth, final int requestedHeight) throws Exception {
     // get current DisplayMode
     DisplayMode currentMode = Display.getDisplayMode();
+    int bitDepth = currentMode.getBitsPerPixel();
     logMode("currentMode: ", currentMode);
 
     // find a matching DisplayMode by size
-    DisplayMode[] matchingModes = sizeMatch(requestedWidth, requestedHeight);
+    DisplayMode[] matchingModes = sizeMatch(requestedWidth, requestedHeight, bitDepth);
 
     // match by frequency
     DisplayMode selectedMode = frequencyMatch(matchingModes, currentMode.getFrequency());
@@ -270,14 +271,15 @@ public class CoreSetupLwjgl implements CoreSetup {
     Display.setTitle(title);
   }
 
-  private DisplayMode[] sizeMatch(final int requestedWidth, final int requestedHeight) throws LWJGLException {
+  private DisplayMode[] sizeMatch(final int requestedWidth, final int requestedHeight, 
+		  final int requestedBitDepth) throws LWJGLException {
     DisplayMode[] modes = Display.getAvailableDisplayModes();
     log.fine("Found " + modes.length + " display modes");
 
     List<DisplayMode> matching = new ArrayList<DisplayMode>();
     for (int i = 0; i < modes.length; i++) {
       DisplayMode mode = modes[i];
-      if (matchesRequestedMode(requestedWidth, requestedHeight, mode)) {
+      if (matchesRequestedMode(requestedWidth, requestedHeight, requestedBitDepth, mode)) {
         logMode("matching mode: ", mode);
         matching.add(mode);
       }
@@ -309,11 +311,12 @@ public class CoreSetupLwjgl implements CoreSetup {
     Display.setLocation(x, y);
   }
 
-  private boolean matchesRequestedMode(final int requestedWidth, final int requestedHeight, final DisplayMode mode) {
+  private boolean matchesRequestedMode(final int requestedWidth, final int requestedHeight, 
+		  final int requestedBitDepth, final DisplayMode mode) {
     return
         mode.getWidth() == requestedWidth &&
         mode.getHeight() == requestedHeight &&
-        (mode.getBitsPerPixel() == 32 || mode.getBitsPerPixel() == 24);
+        mode.getBitsPerPixel() == requestedBitDepth;
   }
 
   private void logMode(final String message, final DisplayMode currentMode) {
