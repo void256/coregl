@@ -49,7 +49,7 @@ public class CoreShaderLwjgl implements CoreShader {
 	private static final Logger log = Logger.getLogger(CoreShaderLwjgl.class.getName());
 	private int program;
 	private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
-	private FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
+	private FloatBuffer matBuffer;
 	private final String[] attributes;
 
 	/*
@@ -273,53 +273,16 @@ public class CoreShaderLwjgl implements CoreShader {
 		checkGLError("glGetProgram");
 	}
 
-	// BEGIN TEMPORARY TEST METHODS //
-	void setDirectUniform2i(final String name, final int...value) {
-		glUniform2i(getLocation(name), value[0], value[1]);
-	}
-
-	void setDirectUniformf(final String name, final float...values) {
-		switch(values.length) {
-		case 1:
-			glUniform1f(getLocation(name), values[0]);
-			break;
-		case 2:
-			glUniform2f(getLocation(name), values[0], values[1]);
-			break;
-		case 3:
-			glUniform3f(getLocation(name), values[0], values[1], values[2]);
-			break;
-		case 4:
-			glUniform4f(getLocation(name), values[0], values[1], values[2], values[3]);
-			break;
-		}
-	}
-	
-	void setDirectUniformMatrix4f(final String name, final FloatBuffer matBuffer) {
-		glUniformMatrix4(getLocation(name), false, matBuffer);
-		checkGLError("glUniformMatrix4");
-	}
-	// END TEMPORARY TEST METHODS //
-
 	public void setUniformi(final String name, final int...values) {
-		Object[] intObjs = new Integer[values.length];
-		for(int i=0; i < values.length; i++)
-			intObjs[i] = values[i];
-		setUniform(name, UniformTypeLwjgl.INT, intObjs);
+		setUniform(name, UniformTypeLwjgl.INT, toObjectArray(values));
 	}
 
 	public void setUniformf(final String name, final float...values) {
-		Object[] intObjs = new Float[values.length];
-		for(int i=0; i < values.length; i++)
-			intObjs[i] = values[i];
-		setUniform(name, UniformTypeLwjgl.FLOAT, intObjs);
+		setUniform(name, UniformTypeLwjgl.FLOAT, toObjectArray(values));
 	}
 
 	public void setUniformd(final String name, final double...values) {
-		Object[] intObjs = new Double[values.length];
-		for(int i=0; i < values.length; i++)
-			intObjs[i] = values[i];
-		setUniform(name, UniformTypeLwjgl.DOUBLE, intObjs);
+		setUniform(name, UniformTypeLwjgl.DOUBLE, toObjectArray(values));
 	}
 
 	@Override
@@ -366,6 +329,9 @@ public class CoreShaderLwjgl implements CoreShader {
 
 	@Override
 	public void setUniformMatrix(final String name, final int componentNum, final float... values) {
+		if(matBuffer == null)
+			BufferUtils.createFloatBuffer(16);
+
 		matBuffer.clear();
 		matBuffer.put(values);
 		matBuffer.flip();
@@ -677,17 +643,37 @@ public class CoreShaderLwjgl implements CoreShader {
 		return Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
 	}
 
+	private Object[] toObjectArray(int[] ints) {
+		Object[] intObjs = new Integer[ints.length];
+		for(int i=0; i < intObjs.length; i++)
+			intObjs[i] = ints[i];
+		return intObjs;
+	}
+
+	private Object[] toObjectArray(float[] floats) {
+		Object[] intObjs = new Float[floats.length];
+		for(int i=0; i < intObjs.length; i++)
+			intObjs[i] = floats[i];
+		return intObjs;
+	}
+
+	private Object[] toObjectArray(double[] doubles) {
+		Object[] intObjs = new Double[doubles.length];
+		for(int i=0; i < intObjs.length; i++)
+			intObjs[i] = doubles[i];
+		return intObjs;
+	}
+
 	enum UniformTypeLwjgl {
-		INT("i", int.class, int[].class, IntBuffer.class),
-		FLOAT("f", float.class, float[].class, FloatBuffer.class),
-		DOUBLE("d", double.class, double[].class, DoubleBuffer.class);
+		INT("i", int.class, IntBuffer.class),
+		FLOAT("f", float.class, FloatBuffer.class),
+		DOUBLE("d", double.class, DoubleBuffer.class);
 
 		String suffix;
-		Class<?> value, array, buffer;
+		Class<?> value, buffer;
 
-		UniformTypeLwjgl(String suffix, Class<?> value, Class<?> array, Class<?> buffer) {
+		UniformTypeLwjgl(String suffix, Class<?> value, Class<?> buffer) {
 			this.suffix = suffix;
-			this.array = array;
 			this.buffer = buffer;
 			this.value = value;
 		}
