@@ -128,7 +128,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
     vbo.send();
     vao.bind();
 
-    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
+    shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
     factory.getCoreRender().renderTriangleStrip(4);
     return false;
   }

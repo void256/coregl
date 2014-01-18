@@ -1,56 +1,36 @@
-/**
- * Copyright (c) 2013, Jens Hohmuth 
- * All rights reserved. 
- * 
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are 
- * met: 
- * 
- *  * Redistributions of source code must retain the above copyright 
- *    notice, this list of conditions and the following disclaimer. 
- *  * Redistributions in binary form must reproduce the above copyright 
- *    notice, this list of conditions and the following disclaimer in the 
- *    documentation and/or other materials provided with the distribution. 
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
- * THE POSSIBILITY OF SUCH DAMAGE.
- */
-package de.lessvoid.coregl.lwjgl;
+package de.lessvoid.coregl.jogl;
 
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL31.*;
-import static org.lwjgl.opengl.GL32.GL_GEOMETRY_SHADER;
+import static javax.media.opengl.GL.GL_FALSE;
 
 import java.io.*;
 import java.lang.reflect.*;
 import java.nio.*;
 import java.util.*;
-import java.util.logging.*;
+import java.util.logging.Logger;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL20;
+import javax.media.opengl.*;
+
+import com.jogamp.common.nio.Buffers;
 
 import de.lessvoid.coregl.*;
 
-public class CoreShaderLwjgl implements CoreShader {
+public class CoreShaderJogl implements CoreShader {
+
 	private final CoreCheckGL checkGL;
 
-	private static final Logger log = Logger.getLogger(CoreShaderLwjgl.class.getName());
+	private static final Logger log = Logger.getLogger(CoreShaderJogl.class.getName());
 	private int program;
+	private FloatBuffer matBuffer = Buffers.newDirectFloatBuffer(16);
 	private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
-	private FloatBuffer matBuffer;
 	private final String[] attributes;
+
+	CoreShaderJogl(final CoreCheckGL checkGL, final String... vertexAttrs) {
+		final GL2ES2 gl = getGL2();
+		this.checkGL = checkGL;
+		this.attributes = vertexAttrs;
+		this.program = gl.glCreateProgram();
+		checkGLError("glCreateProgram");
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -226,148 +206,178 @@ public class CoreShaderLwjgl implements CoreShader {
 	}
 
 	private int vertexShaderFromStream(final String streamName, final InputStream ... sources) {
-		int shaderId = glCreateShader(GL_VERTEX_SHADER);
+		final GL2ES2 gl = getGL2();
+		int shaderId = gl.glCreateShader(GL2.GL_VERTEX_SHADER);
 		checkGLError("glCreateShader(GL_VERTEX_SHADER)");
 		prepareShader(shaderId, streamName, sources);
-		glAttachShader(program, shaderId);
+		gl.glAttachShader(program, shaderId);
 		checkGLError("glAttachShader");
 		return shaderId;
 	}
 
 	private int geometryShaderFromStream(final String streamName, final InputStream ... sources) {
-		int shaderId = glCreateShader(GL_GEOMETRY_SHADER);
+		final GL2ES2 gl = getGL2();
+		int shaderId = gl.glCreateShader(GL3.GL_GEOMETRY_SHADER);
 		checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
 		prepareShader(shaderId, streamName, sources);
-		glAttachShader(program, shaderId);
+		gl.glAttachShader(program, shaderId);
 		checkGLError("glAttachShader");
 		return shaderId;
 	}
 
 	private int fragmentShaderFromStream(final String streamName, final InputStream ... sources) {
-		int shaderId = glCreateShader(GL_FRAGMENT_SHADER);
+		final GL2ES2 gl = getGL2();
+		int shaderId = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
 		checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
 		prepareShader(shaderId, streamName, sources);
-		glAttachShader(program, shaderId);
+		gl.glAttachShader(program, shaderId);
 		checkGLError("glAttachShader");
 		return shaderId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.lessvoid.coregl.CoreShader#link()
-	 */
+	private void prepareShader(final int shaderId, final String name, final InputStream ... srcStreams) {
+		final GL2ES2 gl = getGL2();
+		try {
+			String[] sources = loadShader(srcStreams);
+			int[] strlens = new int[sources.length];
+			for(int i=0; i < sources.length; i++)
+				strlens[i] = sources[i].length();
+			gl.glShaderSource(shaderId, 1, sources, strlens, 0);
+			checkGLError("glShaderSource");
+		} catch (IOException e) {
+			throw new CoreGLException(e);
+		}
+
+		gl.glCompileShader(shaderId);
+		checkGLError("glCompileShader");
+
+		int[] stat = new int[1];
+		gl.glGetShaderiv(shaderId, GL2.GL_COMPILE_STATUS, stat, 0);
+
+		if (stat[0] == GL_FALSE) {
+			log.warning("'" + name + "' compile error: " + getShaderInfoLogJogl(shaderId));
+		}
+
+		printLogInfo(shaderId);
+		checkGLError(String.valueOf(shaderId));
+	}
+
 	@Override
 	public void link() {
-		for (int i=0; i<attributes.length; i++) {
-			glBindAttribLocation(program, i, attributes[i]);
+		final GL2ES2 gl = getGL2();
+
+		for(int i=0; i < attributes.length; i++) {
+			gl.glBindAttribLocation(program, i, attributes[i]);
 			checkGLError("glBindAttribLocation (" + attributes[i] + ")");
 		}
 
-		glLinkProgram(program);
+		gl.glLinkProgram(program);
 		checkGLError("glLinkProgram");
+		gl.glValidateProgram(program);
 
-		if (glGetProgram(program, GL_LINK_STATUS) != GL_TRUE) {
-			log.warning("link error: " + glGetProgramInfoLog(program, 1024));
-			checkGLError("glGetProgramInfoLog");
-		}
+		IntBuffer intBuff = IntBuffer.allocate(1);
+		gl.glGetProgramiv(program, GL2.GL_LINK_STATUS, intBuff);
+		if(intBuff.get(0) == GL_FALSE)
+			log.warning("link error: " + getProgramInfoLogJogl());
+
 		checkGLError("glGetProgram");
 	}
 
+	@Override
+	public void activate() {
+		final GL2ES2 gl = getGL2();
+		gl.glUseProgram(program);
+		checkGLError("glUseProgram");
+	}
+
+	// uniform data
+
 	public void setUniformi(final String name, final int...values) {
-		setUniform(name, UniformTypeLwjgl.INT, toObjectArray(values));
+		setUniform(name, UniformTypeJogl.INT, toObjectArray(values));
 	}
 
 	public void setUniformf(final String name, final float...values) {
-		setUniform(name, UniformTypeLwjgl.FLOAT, toObjectArray(values));
+		setUniform(name, UniformTypeJogl.FLOAT, toObjectArray(values));
 	}
 
 	public void setUniformd(final String name, final double...values) {
-		setUniform(name, UniformTypeLwjgl.DOUBLE, toObjectArray(values));
+		setUniform(name, UniformTypeJogl.DOUBLE, toObjectArray(values));
 	}
 
 	@Override
 	public void setUniformiv(final String name, final int componentNum, final int... values) {
-		IntBuffer buff = BufferUtils.createIntBuffer(values.length);
-		buff.put(values);
-		buff.flip();
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, buff);
+		IntBuffer buff = Buffers.newDirectIntBuffer(values);
+		setUniformv(name, componentNum, UniformTypeJogl.INT, buff);
 	}
 
 	@Override
 	public void setUniformiv(final String name, final int componentNum, final IntBuffer values) {
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, values);
+		setUniformv(name, componentNum, UniformTypeJogl.INT, values);
 	}
 
 	@Override
 	public void setUniformfv(final String name, final int componentNum, final float... values) {
-		FloatBuffer buff = BufferUtils.createFloatBuffer(values.length);
-		buff.put(values);
-		buff.flip();
-		setUniformv(name, componentNum, UniformTypeLwjgl.FLOAT, buff);
+		FloatBuffer buff = Buffers.newDirectFloatBuffer(values);
+		setUniformv(name, componentNum, UniformTypeJogl.FLOAT, buff);
 
 	}
 
 	@Override
 	public void setUniformfv(final String name, final int componentNum, final FloatBuffer values) {
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, values);
+		setUniformv(name, componentNum, UniformTypeJogl.FLOAT, values);
 
 	}
 
 	@Override
 	public void setUniformdv(final String name, final int componentNum, final double... values) {
-		DoubleBuffer buff = BufferUtils.createDoubleBuffer(values.length);
-		buff.put(values);
-		buff.flip();
-		setUniformv(name, componentNum, UniformTypeLwjgl.FLOAT, buff);
+		DoubleBuffer buff = Buffers.newDirectDoubleBuffer(values);
+		setUniformv(name, componentNum, UniformTypeJogl.DOUBLE, buff);
 
 	}
 
 	@Override
 	public void setUniformdv(final String name, final int componentNum, final DoubleBuffer values) {
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, values);
+		setUniformv(name, componentNum, UniformTypeJogl.DOUBLE, values);
 	}
 
 	@Override
 	public void setUniformMatrix(final String name, final int componentNum, final float... values) {
-		if(matBuffer == null)
-			BufferUtils.createFloatBuffer(16);
-
 		matBuffer.clear();
 		matBuffer.put(values);
 		matBuffer.flip();
-		setUniformMatrix(name, componentNum, UniformTypeLwjgl.FLOAT, matBuffer);
+		setUniformMatrix(name, componentNum, UniformTypeJogl.FLOAT, matBuffer);
 	}
 
 	@Override
 	public void setUniformMatrix(final String name, final int componentNum,
 			FloatBuffer values) {
-		setUniformMatrix(name, componentNum, UniformTypeLwjgl.FLOAT, values);
+		setUniformMatrix(name, componentNum, UniformTypeJogl.FLOAT, values);
 	}
 
-	private void setUniform(final String name, final UniformTypeLwjgl type, final Object...values) {
+	private void setUniform(final String name, final UniformTypeJogl type, final Object...values) {
 		int loc = getLocation(name);
 		String method = "glUniform"+values.length+type.suffix;
 		try {
 			switch(values.length) {
 			case 1:
-				Method m = GL20.class.getMethod(method, int.class, type.value);
+				Method m = GL2ES2.class.getMethod(method, int.class, type.value);
 				m.setAccessible(true);
-				m.invoke(null, loc, values[0]);
+				m.invoke(getGL2(), loc, values[0]);
 				break;
 			case 2:
-				m = GL20.class.getMethod(method, int.class, type.value, type.value);
+				m = GL2ES2.class.getMethod(method, int.class, type.value, type.value);
 				m.setAccessible(true);
-				m.invoke(null, loc, values[0], values[1]);
+				m.invoke(getGL2(), loc, values[0], values[1]);
 				break;
 			case 3:
-				m = GL20.class.getMethod(method, int.class, type.value, type.value, type.value);
+				m = GL2ES2.class.getMethod(method, int.class, type.value, type.value, type.value);
 				m.setAccessible(true);
-				m.invoke(null, loc, values[0], values[1], values[2]);
+				m.invoke(getGL2(), loc, values[0], values[1], values[2]);
 				break;
 			case 4:
-				m = GL20.class.getMethod(method, int.class, type.value, type.value, type.value, type.value);
+				m = GL2ES2.class.getMethod(method, int.class, type.value, type.value, type.value, type.value);
 				m.setAccessible(true);
-				m.invoke(null, loc, values[0], values[1], values[2], values[3]);
+				m.invoke(getGL2(), loc, values[0], values[1], values[2], values[3]);
 				break;
 			default:
 				throw(new IllegalArgumentException("illegal number of values supplied to "
@@ -386,15 +396,15 @@ public class CoreShaderLwjgl implements CoreShader {
 	}
 
 	private void setUniformv(final String name, final int componentNum, 
-			final UniformTypeLwjgl type, final Buffer data) {
+			final UniformTypeJogl type, final Buffer data) {
 		int loc = getLocation(name);
 		if(componentNum < 1 || componentNum > 4)
 			throw(new IllegalArgumentException("illegal number of compoments for setUniform"+type.suffix+"v"));
-		String method = "glUniform"+componentNum;
+		String method = "glUniform"+componentNum+type.suffix+"v";
 		try {
-			Method m = GL20.class.getMethod(method, int.class, type.buffer);
+			Method m = GL2ES2.class.getMethod(method, int.class, int.class, type.buffer);
 			m.setAccessible(true);
-			m.invoke(null, loc, data);
+			m.invoke(getGL2(), loc, data.limit(), data);
 		} catch (NoSuchMethodException e) {
 			throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
 		} catch (SecurityException e) {
@@ -408,15 +418,15 @@ public class CoreShaderLwjgl implements CoreShader {
 	}
 
 	private void setUniformMatrix(final String name, final int componentNum,
-			final UniformTypeLwjgl type, final Buffer data) {
+			final UniformTypeJogl type, final Buffer data) {
 		int loc = getLocation(name);
 		if(componentNum < 2 || componentNum > 4)
 			throw(new IllegalArgumentException("illegal number of compoments for setUniformMatrix"));
-		String method = "glUniformMatrix"+componentNum;
+		String method = "glUniformMatrix"+componentNum+type.suffix+"v";
 		try {
-			Method m = GL20.class.getMethod(method, int.class, boolean.class, type.buffer);
+			Method m = GL2ES2.class.getMethod(method, int.class, int.class, boolean.class, type.buffer);
 			m.setAccessible(true);
-			m.invoke(null, loc, false, data);
+			m.invoke(getGL2(), loc, 1, false, data);
 		} catch (NoSuchMethodException e) {
 			throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
 		} catch (SecurityException e) {
@@ -427,27 +437,6 @@ public class CoreShaderLwjgl implements CoreShader {
 			e.printStackTrace();
 		}
 		checkGLError(method);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.lessvoid.coregl.CoreShader#getAttribLocation(java.lang.String)
-	 */
-	@Override
-	public int getAttribLocation(final String name) {
-		int result = glGetAttribLocation(program, name);
-		checkGLError("glGetAttribLocation");
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.lessvoid.coregl.CoreShader#bindAttribLocation(java.lang.String, int)
-	 */
-	@Override
-	public void bindAttribLocation(final String name, final int index) {
-		glBindAttribLocation(program, index, name);
-		checkGLError("glBindAttribLocation");
 	}
 
 	public static class UniformBlockInfo {
@@ -469,19 +458,21 @@ public class CoreShaderLwjgl implements CoreShader {
 	}
 
 	public Map<String, UniformBlockInfo> getUniformIndices(final String ... uniformNames) {
+		final GL3 gl = getGL2().getGL3();
 		Map<String, UniformBlockInfo> result = new Hashtable<String, UniformBlockInfo>();
+		int count = uniformNames.length;
 
-		IntBuffer intBuffer = BufferUtils.createIntBuffer(uniformNames.length);
-		glGetUniformIndices(program, uniformNames, intBuffer);
+		IntBuffer intBuffer = Buffers.newDirectIntBuffer(uniformNames.length);
+		gl.glGetUniformIndices(program, count, uniformNames, intBuffer);
 
-		IntBuffer uniformOffsets = BufferUtils.createIntBuffer(uniformNames.length);
-		glGetActiveUniforms(program, intBuffer, GL_UNIFORM_OFFSET, uniformOffsets);
+		IntBuffer uniformOffsets = Buffers.newDirectIntBuffer(uniformNames.length);
+		gl.glGetActiveUniformsiv(program, count, intBuffer, GL3.GL_UNIFORM_OFFSET, uniformOffsets);
 
-		IntBuffer arrayStrides = BufferUtils.createIntBuffer(uniformNames.length);
-		glGetActiveUniforms(program, intBuffer, GL_UNIFORM_ARRAY_STRIDE, arrayStrides);
+		IntBuffer arrayStrides = Buffers.newDirectIntBuffer(uniformNames.length);
+		gl.glGetActiveUniformsiv(program, count, intBuffer, GL3.GL_UNIFORM_ARRAY_STRIDE, arrayStrides);
 
-		IntBuffer matrixStrides = BufferUtils.createIntBuffer(uniformNames.length);
-		glGetActiveUniforms(program, intBuffer, GL_UNIFORM_MATRIX_STRIDE, matrixStrides);
+		IntBuffer matrixStrides = Buffers.newDirectIntBuffer(uniformNames.length);
+		gl.glGetActiveUniformsiv(program, count, intBuffer, GL3.GL_UNIFORM_MATRIX_STRIDE, matrixStrides);
 
 		checkGL.checkGLError("getUniformIndices");
 
@@ -498,91 +489,41 @@ public class CoreShaderLwjgl implements CoreShader {
 	}
 
 	public void uniformBlockBinding(final String name, final int uniformBlockBinding) {
-		int uniformBlockIndex = glGetUniformBlockIndex(program, name);
+		final GL3 gl = getGL2().getGL3();
+		int uniformBlockIndex = gl.glGetUniformBlockIndex(program, name);
 		checkGL.checkGLError("glGetUniformBlockIndex");
 
-		glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+		gl.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
 		checkGL.checkGLError("glUniformBlockBinding");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.lessvoid.coregl.CoreShader#activate()
-	 */
+	//
+
 	@Override
-	public void activate() {
-		glUseProgram(program);
-		checkGLError("glUseProgram");
-	}
-
-	CoreShaderLwjgl(final CoreCheckGL checkGL, final String ... vertexAttributes) {
-		this.checkGL = checkGL;
-		this.attributes = vertexAttributes;
-		this.program = glCreateProgram();
-		checkGLError("glCreateProgram");
-	}
-
-	private int registerParameter(final String name) {
-		int location = getUniform(name);
-		parameter.put(name, location);
-		return location;
-	}
-
-	private int getLocation(final String name) {
-		Integer value = parameter.get(name);
-		if (value == null) {
-			return registerParameter(name);
-		}
-		return value;
-	}
-
-	private int getUniform(final String uniformName) {
-		try {
-			byte[] bytes = uniformName.getBytes("ISO-8859-1");
-			ByteBuffer name = BufferUtils.createByteBuffer(bytes.length + 1);
-			name.put(bytes);
-			name.put((byte)0x00);
-			name.rewind();
-			int result = glGetUniformLocation(program, name);
-			checkGLError("glGetUniformLocation for [" + uniformName + "] failed");
-			log.fine(getLoggingPrefix() + "glUniformLocation for [" + uniformName + "] = [" + result + "]");
-			return result;
-		} catch (UnsupportedEncodingException e) {
-			log.log(Level.WARNING, getLoggingPrefix() + e.getMessage(), e);
-			return -1;
-		}
-	}
-
-	private void prepareShader(final int shaderId, final String name, final InputStream ... sources) {
-		try {
-			glShaderSource(shaderId, loadShader(sources));
-			checkGLError("glShaderSource");
-		} catch (IOException e) {
-			throw new CoreGLException(e);
-		}
-
-		glCompileShader(shaderId);
-		checkGLError("glCompileShader");
-
-		if (glGetShader(shaderId, GL_COMPILE_STATUS) == GL_FALSE) {
-			log.warning("'" + name + "' compile error: " + glGetShaderInfoLog(shaderId, 1024));
-		}
-
-		printLogInfo(shaderId);
-		checkGLError(String.valueOf(shaderId));
-	}
-
-	private ByteBuffer loadShader(final InputStream ... sources) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		for (InputStream source : sources) {
-			out.write(read(source));
-		}
-
-		byte[] data = out.toByteArray();
-		ByteBuffer result = BufferUtils.createByteBuffer(data.length);
-		result.put(data);
-		result.flip();
+	public int getAttribLocation(String name) {
+		int result = getGL2().glGetAttribLocation(program, name);
+		checkGLError("glGetAttribLocation");
 		return result;
+	}
+
+	@Override
+	public void bindAttribLocation(String name, int index) {
+		getGL2().glBindAttribLocation(program, index, name);
+		checkGLError("glBindAttribLocation");
+	}
+
+	private String[] loadShader(final InputStream ... srcStreams) throws IOException {
+		String[] sources = new String[srcStreams.length];
+		for(int i=0; i < srcStreams.length; i++) {
+			BufferedReader buffIn = new BufferedReader(new InputStreamReader(srcStreams[i]));
+			StringBuilder sb = new StringBuilder();
+			String nextLine = null;
+			while((nextLine = buffIn.readLine()) != null)
+				sb.append(nextLine + "\n");
+			sources[i] = sb.toString();
+		}
+
+		return sources;
 	}
 
 	private byte[] read(final InputStream dataStream) {
@@ -607,22 +548,56 @@ public class CoreShaderLwjgl implements CoreShader {
 		return out.toByteArray();
 	}
 
-	private void printLogInfo(final int obj) {
-		ByteBuffer infoLog = BufferUtils.createByteBuffer(2048);
-		IntBuffer lengthBuffer = BufferUtils.createIntBuffer(1);
-		glGetShaderInfoLog(obj, lengthBuffer, infoLog);
+	private String getShaderInfoLogJogl(int shaderId) {
+		final GL2ES2 gl = getGL2();
+		int[] logLength = new int[1];
+		gl.glGetShaderiv(shaderId, GL2.GL_INFO_LOG_LENGTH, logLength, 0);
+		byte[] logData = new byte[logLength[0]];
+		gl.glGetShaderInfoLog(shaderId, logLength[0], null, 0, logData, 0);
 		checkGLError("glGetShaderInfoLog");
+		return new String(logData);
+	}
 
-		byte[] infoBytes = new byte[lengthBuffer.get()];
-		infoLog.get(infoBytes);
-		if (infoBytes.length == 0) {
-			return;
+	private String getProgramInfoLogJogl() {
+		final GL2ES2 gl = getGL2();
+		int[] loglen = new int[1];
+		gl.glGetProgramiv(program, GL2.GL_INFO_LOG_LENGTH, loglen, 0);
+		String logstr = null;
+		if (loglen[0] > 0) {
+			log.info("GLProgram link error: " + "[log len="+loglen[0]+"] ");
+			ByteBuffer byteBuffer = ByteBuffer.allocate(loglen[0]);
+			gl.glGetProgramInfoLog(program, loglen[0], null, byteBuffer);
+			logstr = new String(byteBuffer.array());
+
+		} else {
+			log.warning("Info log is unavailable");
 		}
-		try {
-			log.info(getLoggingPrefix() + "Info log:\n" + new String(infoBytes, "ISO-8859-1"));
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
+		checkGLError("glGetProgramInfoLog");
+		return logstr;
+	}
+
+	private int registerParameter(final String name) {
+		int location = getUniform(name);
+		parameter.put(name, location);
+		return location;
+	}
+
+	private int getLocation(final String name) {
+		Integer value = parameter.get(name);
+		if (value == null) {
+			return registerParameter(name);
 		}
+		return value;
+	}
+
+	private int getUniform(final String name) {
+		return getGL2().glGetUniformLocation(program, name);
+	}
+
+	private void printLogInfo(final int obj) {
+		String logStr = getShaderInfoLogJogl(obj);
+		checkGLError("glGetShaderInfoLog");
+		log.info(getLoggingPrefix() + "Info log:\n" + logStr);
 		checkGLError("printLogInfo");
 	}
 
@@ -664,7 +639,11 @@ public class CoreShaderLwjgl implements CoreShader {
 		return intObjs;
 	}
 
-	enum UniformTypeLwjgl {
+	private GL2ES2 getGL2() {
+		return GLContext.getCurrentGL().getGL2ES2();
+	}
+
+	enum UniformTypeJogl {
 		INT("i", int.class, IntBuffer.class),
 		FLOAT("f", float.class, FloatBuffer.class),
 		DOUBLE("d", double.class, DoubleBuffer.class);
@@ -672,7 +651,7 @@ public class CoreShaderLwjgl implements CoreShader {
 		String suffix;
 		Class<?> value, buffer;
 
-		UniformTypeLwjgl(String suffix, Class<?> value, Class<?> buffer) {
+		UniformTypeJogl(String suffix, Class<?> value, Class<?> buffer) {
 			this.suffix = suffix;
 			this.buffer = buffer;
 			this.value = value;

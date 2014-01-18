@@ -156,7 +156,7 @@ public class GeometryShaderExampleMain implements RenderLoopCallback {
     // we only use a single shader and a single vao so we can activate both her
     // and let them stay active the whole time.
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
+    shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
     shader.setUniformf("uWidth", 1024.f);
     shader.setUniformf("uHeight", 768.f);
     shader.setUniformi("uTex", 0);
