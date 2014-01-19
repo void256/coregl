@@ -156,7 +156,7 @@ public class LineMain implements RenderLoopCallback {
     float r = 2.f;
 
     lineShader1.activate();
-    lineShader1.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 0, 768.f).toBuffer());
+    lineShader1.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 0, 768.f).toBuffer());
     lineShader1.setUniformf("lineColor", 1.f, 1.f, 1.f, (float)((Math.sin(time/1700.f) + 1.0) / 2.0));
     lineShader1.setUniformf("lineParameters", (2*r + w), (2*r + w) / 2.f, (2*r + w) / 2.f - 2 * r, (2*r));
 
@@ -218,7 +218,7 @@ public class LineMain implements RenderLoopCallback {
 
     glViewport(0, 0, Display.getWidth(), Display.getHeight());
     backgroundShader.activate();
-    backgroundShader.setUniformMatrix4f("uMvp", ORTHO.toBuffer());
+    backgroundShader.setUniformMatrix("uMvp", 4, ORTHO.toBuffer());
     factory.getCoreRender().renderTriangleStrip(4);
 
     // Render lines fbo
@@ -258,7 +258,7 @@ public class LineMain implements RenderLoopCallback {
 
     fboTexture.bind();
     texture.activate();
-    texture.setUniformMatrix4f("uMvp", ORTHO.toBuffer());
+    texture.setUniformMatrix("uMvp", 4, ORTHO.toBuffer());
     texture.setUniformi("uTexture", 0);
     texture.setUniformf("lineColor", 1.f, 1.f, 1.f, 1.f);
     factory.getCoreRender().renderTriangleStrip(4);

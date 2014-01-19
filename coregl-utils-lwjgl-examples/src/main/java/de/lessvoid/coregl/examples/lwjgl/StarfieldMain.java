@@ -26,29 +26,17 @@
  */
 package de.lessvoid.coregl.examples.lwjgl;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glPointSize;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.nio.FloatBuffer;
 
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreSetup;
+import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
 import de.lessvoid.coregl.CoreVAO.FloatType;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreVAO;
-import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.math.MatrixFactory;
-import de.lessvoid.math.Mat4;
+import de.lessvoid.math.*;
 
 public class StarfieldMain implements RenderLoopCallback {
   private static final int STAR_COUNT = 20000;
@@ -119,7 +107,7 @@ public class StarfieldMain implements RenderLoopCallback {
     angleY += deltaTime / 2000.f;
 
     Mat4 modelViewProjection = Mat4.mul(projection, Mat4.mul(translate, Mat4.mul(rotateX, rotateY, null), null), null);
-    shader.setUniformMatrix4f("uModelViewProjection", modelViewProjection.toBuffer());
+    shader.setUniformMatrix("uModelViewProjection", 4, modelViewProjection.toBuffer());
 
     return false;
   }
