@@ -30,41 +30,44 @@ import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreRender;
 import de.lessvoid.coregl.CoreSetup;
 import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
-import de.lessvoid.coregl.CoreVAO.FloatType;
-import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
+import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
 import de.lessvoid.math.MatrixFactory;
 
 public class LinearGradientMain implements RenderLoopCallback {
   private final CoreRender coreRender;
+  private float time;
+  private CoreShader shader;
 
   public LinearGradientMain(final CoreFactory factory) {
     coreRender = factory.getCoreRender();
 
-    CoreShader shader = factory.newShaderWithVertexAttributes("aVertex");
+    shader = factory.newShaderWithVertexAttributes("aVertex");
     shader.vertexShader("linear-gradient/linear-gradient.vs");
     shader.fragmentShader("linear-gradient/linear-gradient.fs");
     shader.link();
     shader.activate();
-    shader.setUniformMatrix4f("uMvp", MatrixFactory.createOrtho(0, 1024.f, 0, 768.f).toBuffer());
-    shader.setUniformfArray("gradientStop", new float[] { 0.0f, 1.0f });
-    shader.setUniformfArray("gradientColor", new float[] {
-        1.0f, 0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f, 1.0f });
-    shader.setUniformi("numStops", 2);
-    shader.setUniformf("gradient", 100.0f, 100.0f, 200.0f, 200.0f );
+    shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
+    shader.setUniformfv("gradientStop", 1, new float[] { 0.0f, 0.25f, 1.0f });
+    shader.setUniformfv("gradientColor", 4, new float[] {
+        0.4f, 0.4f, 0.4f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        0.4f, 0.4f, 0.4f, 1.0f });
+    shader.setUniformi("numStops", 3);
+    shader.setUniformf("gradient", 100.0f, 100.0f, 500.0f, 500.0f );
 
     CoreVAO vao = factory.createVAO();
     vao.bind();
 
     factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
         100.f, 100.f,
-        100.f, 200.f,
-        200.f, 100.f,
-        200.f, 200.f,
+        100.f, 500.f,
+        500.f, 100.f,
+        500.f, 500.f,
     });
 
     // parameters are: index, size, stride, offset
@@ -84,12 +87,17 @@ public class LinearGradientMain implements RenderLoopCallback {
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
     coreRender.renderTriangleStrip(4);
+
+    time += deltaTime;
+    shader.setUniformfv("gradientStop", 1, new float[] { 0.0f, (float) (Math.sin(time / 2000) + 1.0) / 2.0f, 1.0f });
+
     return false;
   }
 
   public static void main(final String[] args) throws Exception {
     CoreFactory factory = CoreFactoryLwjgl.create();
     CoreSetup setup = factory.createSetup();
+    setup.enableVSync(true);
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Hello Lwjgl Core GL", 1024, 768);
     setup.renderLoop(new LinearGradientMain(factory));
