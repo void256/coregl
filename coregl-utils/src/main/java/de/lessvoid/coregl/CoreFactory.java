@@ -26,290 +26,314 @@
  */
 package de.lessvoid.coregl;
 
-import java.nio.Buffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2D.Type;
 import de.lessvoid.coregl.CoreVBO.UsageType;
 
-public interface CoreFactory {
+public class CoreFactory {
+	
+	private final CoreCheckGL checkGL;
+	
+	private CoreGL gl;
+	
+	/**
+	 * Equivalent to <code>CoreFactory(gl, true)</code>
+	 * @param gl
+	 */
+	public CoreFactory(CoreGL gl) {
+		this(gl, true);
+	}
 
-  // CoreTexture2D /////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Creates a new CoreFactory using the CoreGL interface provided and with optional error checking.
+	 * @param gl
+	 * @param errorChecksEnabled true if error checking should be enabeld, false otherwise
+	 */
+	public CoreFactory(CoreGL gl, boolean errorChecksEnabled) {
+		this.gl = gl;
+		checkGL = new CoreCheckGL(gl);
+		checkGL.setEnabled(errorChecksEnabled);
+	}
 
-  /**
-   * Create an empty texture.
-   *
-   * @param format the ColorFormat for the texture
-   * @param dataType the data type you'll later send the pixel data
-   * @param width the width of the texture
-   * @param height the height of the texture
-   * @param filter the ResizeFilter to use
-   * @return the new allocated CoreTexture2D
-   */
-  CoreTexture2D createEmptyTexture(
-      ColorFormat format,
-      Type dataType,
-      int width,
-      int height,
-      ResizeFilter filter);
+	// CoreTexture2D /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Create an empty texture.
-   *
-   * @param format the ColorFormat for the texture
-   * @param dataType the data type you'll later send the pixel data
-   * @param width the width of the texture
-   * @param height the height of the texture
-   * @param filter the ResizeFilter to use
-   * @return the new allocated CoreTexture2D
-   */
-  CoreTexture2D createEmptyTextureArray(
-      ColorFormat format,
-      Type dataType,
-      int width,
-      int height,
-      int num,
-      ResizeFilter filter);
+	/**
+	 * Create an empty texture.
+	 *
+	 * @param format the ColorFormat for the texture
+	 * @param dataType the data type you'll later send the pixel data
+	 * @param width the width of the texture
+	 * @param height the height of the texture
+	 * @param filter the ResizeFilter to use
+	 * @return the new allocated CoreTexture2D
+	 */
+	CoreTexture2D createEmptyTexture(
+			ColorFormat format,
+			Type dataType,
+			int width,
+			int height,
+			ResizeFilter filter);
 
-  /**
-   * This is one of the simple constructors that only allow very limited possibilities for settings. How ever they use
-   * settings that should fit the need on most cases.
-   *
-   * @param format the texture format
-   * @param width the width of the texture
-   * @param height the height of the texture
-   * @param data the pixel data
-   * @param filter the used filter
-   * @throws CoreGLException in case the creation of the texture fails for any reason
-   */
-  CoreTexture2D createTexture(
-      ColorFormat format,
-      int width,
-      int height,
-      Buffer data,
-      ResizeFilter filter);
+	/**
+	 * Create an empty texture.
+	 *
+	 * @param format the ColorFormat for the texture
+	 * @param dataType the data type you'll later send the pixel data
+	 * @param width the width of the texture
+	 * @param height the height of the texture
+	 * @param filter the ResizeFilter to use
+	 * @return the new allocated CoreTexture2D
+	 */
+	CoreTexture2D createEmptyTextureArray(
+			ColorFormat format,
+			Type dataType,
+			int width,
+			int height,
+			int num,
+			ResizeFilter filter);
 
-  /**
-   * This is the constructor is a slightly reduced version that defines some common options automatically.
-   *
-   * @param internalFormat the internal format of the texture
-   * @param width the width of the texture in pixels
-   * @param height the height of the texture in pixels
-   * @param format the format of the pixel data
-   * @param data the pixel data
-   * @param magFilter the magnifying filter
-   * @param minFilter the minimizing filter
-   * @throws CoreGLException in case the creation of the texture fails for any reason
-   */
-  CoreTexture2D createTexture(
-      ColorFormat internalFormat,
-      int width,
-      int height,
-      ColorFormat format,
-      Buffer data,
-      int magFilter,
-      int minFilter);
+	/**
+	 * This is one of the simple constructors that only allow very limited possibilities for settings. How ever they use
+	 * settings that should fit the need on most cases.
+	 *
+	 * @param format the texture format
+	 * @param width the width of the texture
+	 * @param height the height of the texture
+	 * @param data the pixel data
+	 * @param filter the used filter
+	 * @throws CoreGLException in case the creation of the texture fails for any reason
+	 */
+	CoreTexture2D createTexture(
+			ColorFormat format,
+			int width,
+			int height,
+			Buffer data,
+			ResizeFilter filter);
 
-  /**
-   * This is the constructor is a slightly reduced version that defines some common options automatically.
-   *
-   * @param target the target type of the texture operations, has to be a valid 2D texture target
-   * @param internalFormat the internal format of the texture
-   * @param width the width of the texture in pixels
-   * @param height the height of the texture in pixels
-   * @param format the format of the pixel data
-   * @param data the pixel data
-   * @param magFilter the magnifying filter
-   * @param minFilter the minimizing filter
-   * @throws CoreGLException in case the creation of the texture fails for any reason
-   */
-  CoreTexture2D createTexture(
-      int target,
-      ColorFormat internalFormat,
-      int width,
-      int height,
-      ColorFormat format,
-      Buffer data,
-      int magFilter,
-      int minFilter);
+	/**
+	 * This is the constructor is a slightly reduced version that defines some common options automatically.
+	 *
+	 * @param internalFormat the internal format of the texture
+	 * @param width the width of the texture in pixels
+	 * @param height the height of the texture in pixels
+	 * @param format the format of the pixel data
+	 * @param data the pixel data
+	 * @param magFilter the magnifying filter
+	 * @param minFilter the minimizing filter
+	 * @throws CoreGLException in case the creation of the texture fails for any reason
+	 */
+	CoreTexture2D createTexture(
+			ColorFormat internalFormat,
+			int width,
+			int height,
+			ColorFormat format,
+			Buffer data,
+			int magFilter,
+			int minFilter);
 
-  /**
-   * This is the constructor that allows to define all the settings required to create a texture. Using this causes the
-   * class to disable all assumptions and do exactly what you want.
-   *
-   * @param textureId the ID that is supposed to be used with the texture, it has to be a valid texture ID for the
-   *                  selected target. Use {@link #AUTO} to tell the class to fetch a texture ID in its own.
-   * @param target the target type of the texture operations, has to be a valid 2D texture target
-   * @param level the mipmap level of the texture, in case you want the automated mipmap generation to kick in leave
-   *              this value on {@code 0} and selected a fitting minimizing filter
-   * @param internalFormat the internal format of the texture
-   * @param width the width of the texture in pixels
-   * @param height the height of the texture in pixels
-   * @param border the width of the border of the texture
-   * @param format the format of the pixel data
-   * @param type the data type of the pixel data
-   * @param data the pixel data
-   * @param magFilter the magnifying filter
-   * @param minFilter the minimizing filter
-   * @throws CoreGLException in case the creation of the texture fails for any reason
-   */
-  CoreTexture2D createTexture(
-      int textureId,
-      int target,
-      int level,
-      ColorFormat internalFormat,
-      int width,
-      int height,
-      int border,
-      ColorFormat format,
-      Type type,
-      Buffer data,
-      int magFilter,
-      int minFilter);
+	/**
+	 * This is the constructor is a slightly reduced version that defines some common options automatically.
+	 *
+	 * @param target the target type of the texture operations, has to be a valid 2D texture target
+	 * @param internalFormat the internal format of the texture
+	 * @param width the width of the texture in pixels
+	 * @param height the height of the texture in pixels
+	 * @param format the format of the pixel data
+	 * @param data the pixel data
+	 * @param magFilter the magnifying filter
+	 * @param minFilter the minimizing filter
+	 * @throws CoreGLException in case the creation of the texture fails for any reason
+	 */
+	CoreTexture2D createTexture(
+			int target,
+			ColorFormat internalFormat,
+			int width,
+			int height,
+			ColorFormat format,
+			Buffer data,
+			int magFilter,
+			int minFilter);
 
-  // CoreShader ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * This is the constructor that allows to define all the settings required to create a texture. Using this causes the
+	 * class to disable all assumptions and do exactly what you want.
+	 *
+	 * @param textureId the ID that is supposed to be used with the texture, it has to be a valid texture ID for the
+	 *                  selected target. Use {@link #AUTO} to tell the class to fetch a texture ID in its own.
+	 * @param target the target type of the texture operations, has to be a valid 2D texture target
+	 * @param level the mipmap level of the texture, in case you want the automated mipmap generation to kick in leave
+	 *              this value on {@code 0} and selected a fitting minimizing filter
+	 * @param internalFormat the internal format of the texture
+	 * @param width the width of the texture in pixels
+	 * @param height the height of the texture in pixels
+	 * @param border the width of the border of the texture
+	 * @param format the format of the pixel data
+	 * @param type the data type of the pixel data
+	 * @param data the pixel data
+	 * @param magFilter the magnifying filter
+	 * @param minFilter the minimizing filter
+	 * @throws CoreGLException in case the creation of the texture fails for any reason
+	 */
+	CoreTexture2D createTexture(
+			int textureId,
+			int target,
+			int level,
+			ColorFormat internalFormat,
+			int width,
+			int height,
+			int border,
+			ColorFormat format,
+			Type type,
+			Buffer data,
+			int magFilter,
+			int minFilter);
 
-  /**
-   * Create a new Shader.
-   * @return the new CoreShader instance
-   */
-  CoreShader newShader();
+	// CoreShader ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indices in
-   * ascending order beginning with 0. This method can be used when you want to control the vertex attribute binding
-   * on your own.
-   *
-   * @param vertexAttributes the name of the vertex attribute. The first String gets generic attribute index 0. the
-   *        second String gets generic attribute index 1 and so on.
-   * @return the CoreShader instance
-   */
-  CoreShader newShaderWithVertexAttributes(String ... vertexAttributes);
+	/**
+	 * Create a new Shader.
+	 * @return the new CoreShader instance
+	 */
+	CoreShader newShader();
 
-  // CoreVBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indices in
+	 * ascending order beginning with 0. This method can be used when you want to control the vertex attribute binding
+	 * on your own.
+	 *
+	 * @param vertexAttributes the name of the vertex attribute. The first String gets generic attribute index 0. the
+	 *        second String gets generic attribute index 1 and so on.
+	 * @return the CoreShader instance
+	 */
+	CoreShader newShaderWithVertexAttributes(String ... vertexAttributes);
 
-  /**
-   * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
-   * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
-   * the buffer data to the GPU.
-   *
-   * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
-   * @param usageType the GL usage type for the buffer @see {@link UsageType}
-   * @param size the size of the buffer
-   * @return the CoreVBO instance
-   */
-  <T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, int size);
+	// CoreVBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
-   * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
-   * the buffer data to the GPU.
-   *
-   * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
-   * @param usageType the GL usage type for the buffer @see {@link UsageType}
-   * @param size the size of the buffer
-   * @return the CoreVBO instance
-   */
-  <T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, Object[] data);
+	/**
+	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
+	 * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
+	 * the buffer data to the GPU.
+	 *
+	 * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
+	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
+	 * @param size the size of the buffer
+	 * @return the CoreVBO instance
+	 */
+	<T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, int size);
 
-  // CoreVAO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
+	 * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
+	 * the buffer data to the GPU.
+	 *
+	 * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
+	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
+	 * @param size the size of the buffer
+	 * @return the CoreVBO instance
+	 */
+	<T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, Object[] data);
 
-  /**
-   * Create a new CoreVAO.
-   * @return the CoreVAO instance created
-   */
-  CoreVAO createVAO();
+	// CoreVAO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // CoreFBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Create a new CoreVAO.
+	 * @return the CoreVAO instance created
+	 */
+	CoreVAO createVAO();
 
-  /**
-   * Create a new CoreFBO.
-   * @return the CoreFBO instance created
-   */
-  CoreFBO createCoreFBO();
+	// CoreFBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // CoreTextureBuffer /////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Create a new CoreFBO.
+	 * @return the CoreFBO instance created
+	 */
+	CoreFBO createCoreFBO();
 
-  CoreTextureBuffer createCoreTextureBuffer(byte[] data);
-  CoreTextureBuffer createCoreTextureBuffer(short[] data);
-  CoreTextureBuffer createCoreTextureBuffer(int[] data);
-  CoreTextureBuffer createCoreTextureBuffer(float[] data);
+	// CoreTextureBuffer /////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // CoreCheckGL ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	CoreTextureBuffer createCoreTextureBuffer(byte[] data);
+	CoreTextureBuffer createCoreTextureBuffer(short[] data);
+	CoreTextureBuffer createCoreTextureBuffer(int[] data);
+	CoreTextureBuffer createCoreTextureBuffer(float[] data);
 
-  /**
-   * Create the helper class to check for GL errors.
-   * @return CoreCheckGL instance
-   */
-  CoreCheckGL createCoreCheckGL();
+	// CoreCheckGL ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // CoreElementVBO ////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Create the helper class to check for GL errors.
+	 * @return CoreCheckGL instance
+	 */
+	CoreCheckGL createCoreCheckGL() {
+		return new CoreCheckGL(gl);
+	}
 
-  /**
-   * Create a new VBO with static vertex data (GL_STATIC_DRAW). This will
-   * create the buffer object but does not bind or send the data to the GPU.
-   * You'll need to call bind() to bind this VBO and you'll need to call sendData()
-   * to transmit the buffer data to the GPU.
-   * 
-   * @param data float array of buffer data
-   * @return the CoreVBO instance created
-   */
-  CoreElementVBO createStatic(int[] data);
+	// CoreElementVBO ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This provides the same functionality as createStaticVBO() but automatically
-   * sends the data given to the GPU.
-   * 
-   * @param data float array of buffer data
-   * @return the CoreVBO instance created
-   */
-  CoreElementVBO createStaticAndSend(int[] data);
+	/**
+	 * Create a new VBO with static vertex data (GL_STATIC_DRAW). This will
+	 * create the buffer object but does not bind or send the data to the GPU.
+	 * You'll need to call bind() to bind this VBO and you'll need to call sendData()
+	 * to transmit the buffer data to the GPU.
+	 * 
+	 * @param data float array of buffer data
+	 * @return the CoreVBO instance created
+	 */
+	CoreElementVBO createStatic(int[] data);
 
-  /**
-   * This provides the same functionality as createStatic() but automatically
-   * sends the data given to the GPU.
-   * 
-   * @param data float array of buffer data
-   * @return the CoreVBO instance created
-   */
-  CoreElementVBO createStaticAndSend(IntBuffer data);
+	/**
+	 * This provides the same functionality as createStaticVBO() but automatically
+	 * sends the data given to the GPU.
+	 * 
+	 * @param data float array of buffer data
+	 * @return the CoreVBO instance created
+	 */
+	CoreElementVBO createStaticAndSend(int[] data);
 
-  /**
-   * This works exactly as createStaticVBO() but will use GL_DYNAMIC_DRAW instead.
-   *
-   * @param data float array of buffer data
-   * @return the CoreVBO instance created
-   */
-  CoreElementVBO createDynamic(int[] data);
+	/**
+	 * This provides the same functionality as createStatic() but automatically
+	 * sends the data given to the GPU.
+	 * 
+	 * @param data float array of buffer data
+	 * @return the CoreVBO instance created
+	 */
+	CoreElementVBO createStaticAndSend(IntBuffer data);
 
-  /**
-   * This works exactly as createStaticVBO() but will use GL_STREAM_DRAW instead.
-   *
-   * @param data float array of buffer data
-   * @return the CoreVBO instance created
-   */
-  CoreElementVBO createStream(int[] data);
+	/**
+	 * This works exactly as createStaticVBO() but will use GL_DYNAMIC_DRAW instead.
+	 *
+	 * @param data float array of buffer data
+	 * @return the CoreVBO instance created
+	 */
+	CoreElementVBO createDynamic(int[] data);
 
-  // CoreDisplaySetup //////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * This works exactly as createStaticVBO() but will use GL_STREAM_DRAW instead.
+	 *
+	 * @param data float array of buffer data
+	 * @return the CoreVBO instance created
+	 */
+	CoreElementVBO createStream(int[] data);
 
-  /**
-   * Create the CoreDisplaySetup class that is completely optional but a handy tool to setup the rendering system.
-   * @return
-   */
-  CoreSetup createSetup();
+	// CoreDisplaySetup //////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // CoreRender ////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Create the CoreDisplaySetup class that is completely optional but a handy tool to setup the rendering system.
+	 * @return
+	 */
+	CoreSetup createSetup();
 
-  /**
-   * Create the CoreRender class.
-   * @return CoreRender instance
-   */
-  CoreRender getCoreRender();
+	// CoreRender ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // CoreScreenshot ////////////////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Create the CoreRender class.
+	 * @return CoreRender instance
+	 */
+	CoreRender getCoreRender();
 
-  CoreScreenshot createCoreScreenshot();
+	// CoreScreenshot ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	CoreScreenshot createCoreScreenshot();
 
 }

@@ -46,9 +46,9 @@ import java.nio.ShortBuffer;
 import java.util.Hashtable;
 import java.util.Map;
 
-import de.lessvoid.coregl.CoreCheckGL;
-import de.lessvoid.coregl.CoreGLException;
-import de.lessvoid.coregl.CoreVBO;
+import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.CoreVBO.DataType;
+import de.lessvoid.coregl.CoreVBO.UsageType;
 
 /**
  * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
@@ -136,7 +136,7 @@ public class CoreVBOLwjgl < T extends Buffer > implements CoreVBO < T > {
     if (DataType.FLOAT.equals(dataType)) {
       glBufferData(GL_ARRAY_BUFFER, (FloatBuffer) vertexBuffer, usage);
     } else if (DataType.SHORT.equals(dataType)) {
-      glBufferData(GL_ARRAY_BUFFER, (ShortBuffer) vertexBuffer, usage);
+      glBufferData(GL_ARRAY_BUFFER, ((ShortBuffer) vertexBuffer), usage);
     } else {
       throw new CoreGLException("Unsupported CoreVBO.DataType (" + dataType + ")");
     }

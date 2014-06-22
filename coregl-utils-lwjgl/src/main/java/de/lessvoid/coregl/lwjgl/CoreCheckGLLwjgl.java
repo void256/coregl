@@ -34,10 +34,9 @@ import java.util.logging.Logger;
 
 import org.lwjgl.util.glu.GLU;
 
-import de.lessvoid.coregl.CoreCheckGL;
 import de.lessvoid.coregl.CoreGLException;
 
-public class CoreCheckGLLwjgl implements CoreCheckGL {
+public class CoreCheckGLLwjgl {
   // The logger of this class.
   private static Logger log = Logger.getLogger(CoreCheckGLLwjgl.class.getName());
 
@@ -48,7 +47,6 @@ public class CoreCheckGLLwjgl implements CoreCheckGL {
    * (non-Javadoc)
    * @see de.lessvoid.coregl.CoreCheckGL#checkGLError()
    */
-  @Override
   public void checkGLError() {
     checkGLError("");
   }
@@ -57,7 +55,6 @@ public class CoreCheckGLLwjgl implements CoreCheckGL {
    * (non-Javadoc)
    * @see de.lessvoid.coregl.CoreCheckGL#checkGLError(java.lang.String)
    */
-  @Override
   public void checkGLError(final String message) {
     checkGLError(message, false);
   }
@@ -66,7 +63,6 @@ public class CoreCheckGLLwjgl implements CoreCheckGL {
    * (non-Javadoc)
    * @see de.lessvoid.coregl.CoreCheckGL#checkGLError(java.lang.String, boolean)
    */
-  @Override
   public void checkGLError(final String message, final boolean throwException) {
     int error = glGetError();
     boolean hasError = false;

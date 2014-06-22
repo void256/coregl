@@ -26,54 +26,111 @@
  */
 package de.lessvoid.coregl;
 
-
 import java.nio.IntBuffer;
+
 
 /**
  * The CoreElementVBO class represents a VBO bound to GL_ELEMENT_BUFFER.
  * @author void
  */
-public interface CoreElementVBO {
+public class CoreElementVBO {
 
-  /**
-   * Allows access to the internally kept nio FloatBuffer that contains the original
-   * buffer data. You can access and change this buffer if you want to update the
-   * buffer content. Just make sure that you call rewind() before sending your new
-   * data to the GPU with the sendData() method.
-   *
-   * @return the FloatBuffer with the original buffer data (stored in main memory
-   * not GPU memory)
-   */
-  IntBuffer getBuffer();
+	private CoreGL gl;
+	private int id;
+	private int usage;
+	private IntBuffer indexBuffer;
 
-  /**
-   * bind the buffer object as GL_ARRAY_BUFFER
-   */
-  void bind();
+	CoreElementVBO(final CoreGL gl, final int usageType, final int[] data) {
+		this.gl = gl;
+		usage = usageType;
 
-  /**
-   * bind the buffer with id 0
-   */
-  void unbind();
+		indexBuffer = gl.getUtil().createIntBuffer(data);
 
-  /**
-   * Send the content of the FloatBuffer to the GPU.
-   */
-  void send();
+		IntBuffer idbuff = IntBuffer.allocate(1);
+		gl.glGenBuffers(1, idbuff);
+		idbuff.rewind(); // in case glGenBuffers doesn't call flip()
+		id = idbuff.get();
+		gl.checkGLError("glGenBuffers");
+		bind();
+		send();
+	}
 
-  /**
-   * Delete all resources for this VBO.
-   */
-  void delete();
+	CoreElementVBO(final CoreGL gl, final int usageType, final IntBuffer data) {
+		this.gl = gl;
+		usage = usageType;
 
-  /**
-   * Enable primitive restart using the given value.
-   * @param value the value to use as primitive restart
-   */
-  void enablePrimitiveRestart(int value);
+		indexBuffer = gl.getUtil().createIntBuffer(data);
 
-  /**
-   * Disable primitive restart again.
-   */
-  void disablePrimitiveRestart();
+		IntBuffer idbuff = IntBuffer.allocate(1);
+		gl.glGenBuffers(1, idbuff);
+		idbuff.rewind(); // in case glGenBuffers doesn't call flip()
+		id = idbuff.get();
+		gl.checkGLError("glGenBuffers");
+		bind();
+		send();
+	}
+
+
+	/**
+	 * Allows access to the internally kept nio FloatBuffer that contains the original
+	 * buffer data. You can access and change this buffer if you want to update the
+	 * buffer content. Just make sure that you call rewind() before sending your new
+	 * data to the GPU with the sendData() method.
+	 *
+	 * @return the FloatBuffer with the original buffer data (stored in main memory
+	 * not GPU memory)
+	 */
+	IntBuffer getBuffer() {
+		return indexBuffer;
+	}
+
+	/**
+	 * bind the buffer object as GL_ARRAY_BUFFER
+	 */
+	void bind() {
+		gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER(), id);
+		gl.checkGLError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER)");
+	}
+
+	/**
+	 * bind the buffer with id 0
+	 */
+	void unbind() {
+		gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER(), 0);
+		gl.checkGLError("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER -> unbind)");
+	}
+
+	/**
+	 * Send the content of the FloatBuffer to the GPU.
+	 */
+	void send() {
+		gl.glBufferData(id, indexBuffer, usage);
+		gl.checkGLError("glBufferData(GL_ELEMENT_ARRAY_BUFFER)");
+	}
+
+	/**
+	 * Delete all resources for this VBO.
+	 */
+	void delete() {
+		IntBuffer idbuff = IntBuffer.allocate(1);
+		idbuff.put(id);
+		idbuff.flip();
+		gl.glDeleteBuffers(1, idbuff);
+	}
+
+	/**
+	 * Enable primitive restart using the given value.
+	 * @param value the value to use as primitive restart
+	 */
+	void enablePrimitiveRestart(int value) {
+		gl.glPrimitiveRestartIndex(value);
+		gl.glEnable(gl.GL_PRIMITIVE_RESTART());
+	}
+
+	/**
+	 * Disable primitive restart again.
+	 */
+	void disablePrimitiveRestart() {
+		gl.glDisable(gl.GL_PRIMITIVE_RESTART());
+	}
 }
