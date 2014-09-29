@@ -2,6 +2,10 @@ package de.lessvoid.coregl;
 
 import java.nio.*;
 
+/**
+ * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
+ * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ */
 public interface CoreGL {
 	// OpenGL constants
 	public int GL_ALPHA();
@@ -48,6 +52,8 @@ public interface CoreGL {
 	public int GL_TEXTURE_COORD_ARRAY();
 	public int GL_TEXTURE_MAG_FILTER();
 	public int GL_TEXTURE_MIN_FILTER();
+	public int GL_LINE_STRIP();
+	public int GL_LINE_STRIP_ADJACENCY();
 	public int GL_TRIANGLES();
 	public int GL_TRIANGLE_STRIP();
 	public int GL_TRIANGLE_FAN();
@@ -87,6 +93,7 @@ public interface CoreGL {
 	public int GL_STATIC_DRAW();
 	public int GL_STREAM_DRAW();
 	public int GL_TEXTURE0();
+	public int GL_TEXTURE_2D_ARRAY();
 	public int GL_TEXTURE_CUBE_MAP_NEGATIVE_X();
 	public int GL_TEXTURE_CUBE_MAP_NEGATIVE_Y();
 	public int GL_TEXTURE_CUBE_MAP_NEGATIVE_Z();
@@ -100,11 +107,41 @@ public interface CoreGL {
 	public int GL_UNSIGNED_INT_2_10_10_10_REV();
 	public int GL_UNSIGNED_INT_8_8_8_8();
 	public int GL_UNSIGNED_INT_8_8_8_8_REV();
+	public int GL_HALF_FLOAT();
+	public int GL_DOUBLE();
+	public int GL_FIXED();
+	public int GL_INT_2_10_10_10_REV();
+	public int GL_UNSIGNED_INT_10F_11F_11F_REV();
 	public int GL_UNSIGNED_SHORT_5_6_5_REV();
 	public int GL_UNSIGNED_SHORT_4_4_4_4_REV();
 	public int GL_UNSIGNED_SHORT_1_5_5_5_REV();
 	public int GL_VERTEX_SHADER();
 	public int GL_WRITE_ONLY();
+	public int GL_UNIFORM_OFFSET();
+	public int GL_UNIFORM_ARRAY_STRIDE();
+	public int GL_UNIFORM_MATRIX_STRIDE();
+	public int GL_PACK_ALIGNMENT();
+	public int GL_STENCIL_INDEX();
+	public int GL_TEXTURE_BUFFER();
+	public int GL_R32F();
+	public int GL_FRAMEBUFFER();
+	public int GL_FRAMEBUFFER_COMPLETE();
+	public int GL_FRAMEBUFFER_UNDEFINED();
+	public int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT();
+	public int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT();
+	public int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER();
+	public int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER();
+	public int GL_FRAMEBUFFER_UNSUPPORTED();
+	public int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE();
+	public int GL_COLOR_ATTACHMENT0();
+	public int GL_RENDERBUFFER();
+	public int GL_STENCIL_INDEX8();
+	public int GL_STENCIL_ATTACHMENT();
+	public int GL_VERSION();
+	public int GL_VENDOR();
+	public int GL_RENDERER();
+	public int GL_MAX_VERTEX_ATTRIBS();
+	public int GL_MAX_3D_TEXTURE_SIZE();
 
 	// OpenGL methods
 	public void glAlphaFunc (int func, float ref);
@@ -121,9 +158,13 @@ public interface CoreGL {
 	public void glEnable (int cap);
 	public void glEnableClientState (int array);
 	public void glGenTextures (int n, IntBuffer textures);
+	public void glPixelStorei(int param, int n);
+	public void glReadPixels (int x, int y, int width, int height, int format, int type, ByteBuffer pixelBuffer);
 	public int glGetError();
-	public void glGetIntegerv (int pname, int[] params, int offset);
-	public void glGetIntegerv (int pname, IntBuffer params);
+	public void glGetIntegerv(int pname, int[] params, int offset);
+	public void glGetIntegerv(int pname, IntBuffer params);
+	public int glGetInteger(int pname);
+	public String glGetString(int pname);
 	public boolean glIsEnabled(int cap);
 	public void glLoadIdentity();
 	public void glMatrixMode (int mode);
@@ -132,21 +173,29 @@ public interface CoreGL {
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type, ByteBuffer pixels);
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type, DoubleBuffer pixels);
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type, FloatBuffer pixels);
-	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type, IntBuffer pixels);
+	public void glTexImage2D (int arget, int level, int internalformat, int width, int height, int border, int format, int type, IntBuffer pixels);
 	public void glTexImage2D (int target, int level, int internalformat, int width, int height, int border, int format, int type, ShortBuffer pixels);
-	public void glTexParameterf (int target, int pname, float param);
+	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels);
+	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, DoubleBuffer pixels);
+	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, FloatBuffer pixels);
+	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, IntBuffer pixels);
+	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ShortBuffer pixels);
+	public void glTexParameterf(int target, int pname, float param);
 	public void glTexParameteri(int target, int pname, int param);
-	public void glTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels);
-	public void glTranslatef (float x, float y, float z);
-	public void glVertexPointer (int size, int type, int stride, FloatBuffer pointer);
-	public void glViewport (int x, int y, int width, int height);
+	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels);
+	public void glTexBuffer(int arg0, int arg1, int arg2);
+	public void glTranslatef(float x, float y, float z);
+	public void glVertexPointer(int size, int type, int stride, FloatBuffer pointer);
+	public void glViewport(int x, int y, int width, int height);
 	public void glActiveTexture(int texture);
 	public void glAttachShader(int program, int shader);
 	public void glBindAttribLocation(int program, int index, String name);
 	public void glBindBuffer(int target, int buffer);
 	public void glBindVertexArray(int array);
+	public void glVertexAttribDivisorARB (int index, int divisor);
 	public void glBufferData(int target, IntBuffer data, int usage);
 	public void glBufferData(int target, FloatBuffer data, int usage);
+	public void glBufferData(int target, ShortBuffer data, int usage);
 	public void glCompileShader(int shader);
 	public int glCreateProgram();
 	public int glCreateShader(int type);
@@ -154,8 +203,10 @@ public interface CoreGL {
 	public void glDeleteVertexArrays(int n, IntBuffer arrays);
 	public void glDrawArraysInstanced(int mode, int first, int count, int primcount);
 	public void glEnableVertexAttribArray(int index);
+	public void glDisableVertexAttribArray(int index);
 	public void glGenBuffers(int n, IntBuffer buffers);
 	public void glGenerateMipmap(int target);
+	public void glGenFramebuffers(int n, IntBuffer frameBuffs);
 	public void glGenVertexArrays(int n, IntBuffer arrays);
 	public int glGetAttribLocation(int program, String name);
 	public void glGetProgramiv(int program, int pname, IntBuffer params);
@@ -163,6 +214,9 @@ public interface CoreGL {
 	public void glGetShaderiv(int shader, int pname, IntBuffer params);
 	public String glGetShaderInfoLog(int shader);
 	public int glGetUniformLocation(int program, String name);
+	public void glGetUniformIndices(int program, String[] uniformNames, IntBuffer indexBuffer);
+	public void glGetActiveUniforms(int program, int uniformCount, IntBuffer indices, int pname, IntBuffer params);
+	public int glGetUniformBlockIndex(int program, String name);
 	public void glLinkProgram(int program);
 	public ByteBuffer glMapBuffer(int target, int access, long length, ByteBuffer oldBuffer);
 	public void glPrimitiveRestartIndex(int index);
@@ -177,13 +231,29 @@ public interface CoreGL {
 	public void glUniform3i(int location, int v0, int v1, int v2);
 	public void glUniform4i(int location, int v0, int v1, int v2, int v3);
 	public void glUniformMatrix4(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformBlockBinding(int prog, int blockIndex, int blockBinding);
 	public boolean glUnmapBuffer(int target);
 	public void glUseProgram(int program);
 	public void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long offset);
+	public void glVertexAttribIPointer(int index, int size, int type, int stride, int buffer);
+	public int glCheckFramebufferStatus(int target);
+	public void glBindFramebuffer(int target, int fbo);
+	public void glDeleteFramebuffers(int fboCount, IntBuffer fboIds);
+	public void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level);
+	public void glFramebufferTextureLayer(int target, int attachment, int texture, int level, int layer);
+	public void glDrawBuffer(int mode);
+	public void glGenRenderBuffers(int buffCount, IntBuffer buffer);
+	public void glBindRenderbuffer(int target, int renderBuffer);
+	public void glRenderbufferStorage(int target, int internalFormat, int width, int height);
+	public void glFramebufferRenderbuffer(int target, int attachment, int renderBufferTarget, int renderBuffer);
 	
 	public void checkGLError();
 	public void checkGLError(String msg);
 	public void checkGLError(String msg, boolean throwException);
+	public void setErrorChecksEnabled(boolean enabled);
+	
+	public int getDisplayWidth();
+	public int getDisplayHeight();
 	
 	public CoreUtil getUtil();
 }

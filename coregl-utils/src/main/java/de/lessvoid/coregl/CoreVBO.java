@@ -28,12 +28,15 @@ package de.lessvoid.coregl;
 
 import java.lang.reflect.Array;
 import java.nio.*;
+import java.util.*;
 
 /**
  * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
  * @author void
  */
 public class CoreVBO < T extends Buffer > {
+	
+	private static Map<UsageType, Integer> usageTypeMap = new Hashtable<UsageType, Integer>();
 
 	private CoreGL gl;
 	private final int id;
@@ -43,6 +46,16 @@ public class CoreVBO < T extends Buffer > {
 
 	private T vertexBuffer;
 	private ByteBuffer mappedBufferCache;
+
+	/**
+	 * Type of the VBO.
+	 * @author void
+	 */
+	public enum UsageType {
+		DYNAMIC_DRAW,
+		STATIC_DRAW,
+		STREAM_DRAW
+	}
 
 	public enum DataType {
 		FLOAT(2),
@@ -114,8 +127,9 @@ public class CoreVBO < T extends Buffer > {
 		}
 	}
 
-	CoreVBO(final DataType dataTypeParam, final int usageType, final int size) {
-		usage = usageType;
+	CoreVBO(final CoreGL gl, final DataType dataTypeParam, final UsageType usageType, final int size) {
+		this.gl = gl;
+		usage = usageTypeMap.get(usageType);
 		dataType = dataTypeParam;
 		byteLength = dataType.calcByteLength(size);
 
@@ -125,8 +139,8 @@ public class CoreVBO < T extends Buffer > {
 		id = initBuffer();
 	}
 
-	CoreVBO(final DataType dataTypeParam, final int usageType, final Object[] data) {
-		this(dataTypeParam, usageType, data.length);
+	CoreVBO(final CoreGL gl, final DataType dataTypeParam, final UsageType usageType, final Object[] data) {
+		this(gl, dataTypeParam, usageType, data.length);
 		dataType.putArray(vertexBuffer, data);
 		vertexBuffer.rewind();
 		send();
@@ -149,10 +163,10 @@ public class CoreVBO < T extends Buffer > {
 	 * @return the FloatBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
 	 */
 	T getMappedBuffer() {
-	    ByteBuffer dataBuffer = gl.glMapBuffer(gl.GL_ARRAY_BUFFER(), gl.GL_WRITE_ONLY(), byteLength, mappedBufferCache);
-	    gl.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
-	    mappedBufferCache = dataBuffer;
-	    return dataType.asBuffer(dataBuffer);
+		ByteBuffer dataBuffer = gl.glMapBuffer(gl.GL_ARRAY_BUFFER(), gl.GL_WRITE_ONLY(), byteLength, mappedBufferCache);
+		gl.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
+		mappedBufferCache = dataBuffer;
+		return dataType.asBuffer(dataBuffer);
 	}
 
 	/**
@@ -174,15 +188,15 @@ public class CoreVBO < T extends Buffer > {
 	 * Send the content of the Buffer to the GPU.
 	 */
 	void send() {
-	    gl.glBindBuffer(gl.GL_ARRAY_BUFFER(), id);
-	    if (DataType.FLOAT.equals(dataType)) {
-	      gl.glBufferData(gl.GL_ARRAY_BUFFER(), (FloatBuffer) vertexBuffer, usage);
-	    } else if (DataType.SHORT.equals(dataType)) {
-	      gl.glBufferData(gl.GL_ARRAY_BUFFER(), (IntBuffer) vertexBuffer, usage); //FIXME illegal cast short buffer -> int buffer
-	    } else {
-	      throw new CoreGLException("Unsupported CoreVBO.DataType (" + dataType + ")");
-	    }
-	    gl.checkGLError("glBufferData(GL_ARRAY_BUFFER)");
+		gl.glBindBuffer(gl.GL_ARRAY_BUFFER(), id);
+		if (DataType.FLOAT.equals(dataType)) {
+			gl.glBufferData(gl.GL_ARRAY_BUFFER(), (FloatBuffer) vertexBuffer, usage);
+		} else if (DataType.SHORT.equals(dataType)) {
+			gl.glBufferData(gl.GL_ARRAY_BUFFER(), (IntBuffer) vertexBuffer, usage); //FIXME illegal cast short buffer -> int buffer
+		} else {
+			throw new CoreGLException("Unsupported CoreVBO.DataType (" + dataType + ")");
+		}
+		gl.checkGLError("glBufferData(GL_ARRAY_BUFFER)");
 	}
 
 	/**
@@ -202,5 +216,11 @@ public class CoreVBO < T extends Buffer > {
 		int id = idbuff.get();
 		gl.checkGLError("glGenBuffers");
 		return id;
+	}
+	
+	static void initUsageTypeMap(final CoreGL gl) {
+	    usageTypeMap.put(UsageType.DYNAMIC_DRAW, gl.GL_DYNAMIC_DRAW());
+	    usageTypeMap.put(UsageType.STATIC_DRAW, gl.GL_STATIC_DRAW());
+	    usageTypeMap.put(UsageType.STREAM_DRAW, gl.GL_STREAM_DRAW());
 	}
 }

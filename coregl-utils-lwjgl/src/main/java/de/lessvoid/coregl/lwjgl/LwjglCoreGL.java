@@ -11,11 +11,15 @@ import org.lwjgl.util.glu.GLU;
 
 import de.lessvoid.coregl.*;
 
+/**
+ * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
+ * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ */
 public class LwjglCoreGL implements CoreGL {
 
 	private static Logger log = Logger.getLogger(LwjglCoreGL.class.getName());
-	
-	private LwjglCoreUtil util = new LwjglCoreUtil();
+
+	private final CoreUtil util = new LwjglCoreUtil();
 
 	@Override
 	public int GL_ALPHA() {
@@ -496,6 +500,31 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_UNSIGNED_INT_8_8_8_8_REV() {
 		return GL12.GL_UNSIGNED_INT_8_8_8_8_REV;
 	}
+	
+	@Override
+	public int GL_HALF_FLOAT() {
+		return GL30.GL_HALF_FLOAT;
+	}
+
+	@Override
+	public int GL_DOUBLE() {
+		return GL11.GL_DOUBLE;
+	}
+
+	@Override
+	public int GL_FIXED() {
+		return GL41.GL_FIXED;
+	}
+
+	@Override
+	public int GL_INT_2_10_10_10_REV() {
+		return GL33.GL_INT_2_10_10_10_REV;
+	}
+
+	@Override
+	public int GL_UNSIGNED_INT_10F_11F_11F_REV() {
+		return GL30.GL_UNSIGNED_INT_10F_11F_11F_REV;
+	}
 
 	@Override
 	public int GL_UNSIGNED_SHORT_5_6_5_REV() {
@@ -520,6 +549,146 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public int GL_WRITE_ONLY() {
 		return GL15.GL_WRITE_ONLY;
+	}
+
+	@Override
+	public int GL_UNIFORM_OFFSET() {
+		return GL31.GL_UNIFORM_OFFSET;
+	}
+
+	@Override
+	public int GL_UNIFORM_ARRAY_STRIDE() {
+		return GL31.GL_UNIFORM_ARRAY_STRIDE;
+	}
+
+	@Override
+	public int GL_UNIFORM_MATRIX_STRIDE() {
+		return GL31.GL_UNIFORM_MATRIX_STRIDE;
+	}
+
+	@Override
+	public int GL_LINE_STRIP() {
+		return GL11.GL_LINE_STRIP;
+	}
+
+	@Override
+	public int GL_LINE_STRIP_ADJACENCY() {
+		return GL32.GL_LINE_STRIP_ADJACENCY;
+	}
+
+	@Override
+	public int GL_PACK_ALIGNMENT() {
+		return GL11.GL_PACK_ALIGNMENT;
+	}
+
+	@Override
+	public int GL_STENCIL_INDEX() {
+		return GL11.GL_STENCIL_INDEX;
+	}
+
+	@Override
+	public int GL_TEXTURE_BUFFER() {
+		return GL31.GL_TEXTURE_BUFFER;
+	}
+
+	@Override
+	public int GL_R32F() {
+		return GL30.GL_R32F;
+	}
+	
+	@Override
+	public int GL_TEXTURE_2D_ARRAY() {
+		return GL30.GL_TEXTURE_2D_ARRAY;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER() {
+		return GL30.GL_FRAMEBUFFER;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_COMPLETE() {
+		return GL30.GL_FRAMEBUFFER_COMPLETE;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_UNDEFINED() {
+		return GL30.GL_FRAMEBUFFER_UNDEFINED;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT() {
+		return GL30.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT() {
+		return GL30.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER() {
+		return GL30.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER() {
+		return GL30.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_UNSUPPORTED() {
+		return GL30.GL_FRAMEBUFFER_UNSUPPORTED;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE() {
+		return GL30.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
+	}
+
+	@Override
+	public int GL_COLOR_ATTACHMENT0() {
+		return GL30.GL_COLOR_ATTACHMENT0;
+	}
+
+	@Override
+	public int GL_RENDERBUFFER() {
+		return GL30.GL_RENDERBUFFER;
+	}
+
+	@Override
+	public int GL_STENCIL_INDEX8() {
+		return GL30.GL_STENCIL_INDEX8;
+	}
+
+	@Override
+	public int GL_STENCIL_ATTACHMENT() {
+		return GL30.GL_STENCIL_ATTACHMENT;
+	}
+	
+	@Override
+	public int GL_VERSION() {
+		return GL11.GL_VERSION;
+	}
+
+	@Override
+	public int GL_VENDOR() {
+		return GL11.GL_VENDOR;
+	}
+
+	@Override
+	public int GL_RENDERER() {
+		return GL11.GL_RENDERER;
+	}
+
+	@Override
+	public int GL_MAX_VERTEX_ATTRIBS() {
+		return GL20.GL_MAX_VERTEX_ATTRIBS;
+	}
+
+	@Override
+	public int GL_MAX_3D_TEXTURE_SIZE() {
+		return GL12.GL_MAX_3D_TEXTURE_SIZE;
 	}
 
 	@Override
@@ -612,6 +781,15 @@ public class LwjglCoreGL implements CoreGL {
 		GL11.glGetInteger(pname, params);
 	}
 
+	public int glGetInteger(int pname) {
+		return GL11.glGetInteger(pname);
+	}
+	
+	@Override
+	public String glGetString(int pname) {
+		return GL11.glGetString(pname);
+	}
+	
 	@Override
 	public boolean glIsEnabled(int cap) {
 		return GL11.glIsEnabled(cap);
@@ -661,6 +839,31 @@ public class LwjglCoreGL implements CoreGL {
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ShortBuffer pixels) {
 		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
+	
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) {
+		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+	
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, DoubleBuffer pixels) {
+		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+	
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, FloatBuffer pixels) {
+		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+	
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, IntBuffer pixels) {
+		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+	
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ShortBuffer pixels) {
+		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
 
 	@Override
 	public void glTexParameterf(int target, int pname, float param) {
@@ -675,6 +878,11 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels) {
 		GL11.glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+	}
+
+	@Override
+	public void glTexBuffer(int arg0, int arg1, int arg2) {
+		GL31.glTexBuffer(arg0, arg1, arg2);
 	}
 
 	@Override
@@ -728,6 +936,11 @@ public class LwjglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public void glBufferData(int target, ShortBuffer data, int usage) {
+		GL15.glBufferData(target, data, usage);
+	}
+	
+	@Override
 	public void glCompileShader(int shader) {
 		GL20.glCompileShader(shader);
 	}
@@ -760,6 +973,21 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public void glEnableVertexAttribArray(int index) {
 		GL20.glEnableVertexAttribArray(index);
+	}
+	
+	@Override
+	public void glVertexAttribDivisorARB(int index, int divisor) {
+		GL33.glVertexAttribDivisor(index, divisor);
+	}
+
+	@Override
+	public void glDisableVertexAttribArray(int index) {
+		GL20.glDisableVertexAttribArray(index);
+	}
+
+	@Override
+	public void glVertexAttribIPointer(int index, int size, int type, int stride, int buffer) {
+		GL30.glVertexAttribIPointer(index, size, type, stride, buffer);
 	}
 
 	@Override
@@ -894,6 +1122,100 @@ public class LwjglCoreGL implements CoreGL {
 		GL20.glVertexAttribPointer(index, size, type, normalized, stride, offset);
 	}
 
+	@Override
+	public void glGetUniformIndices(int program, String[] uniformNames,
+			IntBuffer indexBuffer) {
+		GL31.glGetUniformIndices(program, uniformNames, indexBuffer);
+	}
+
+	@Override
+	public void glGetActiveUniforms(int program, int uniformCount,
+			IntBuffer indices, int pname, IntBuffer params) {
+		GL31.glGetActiveUniforms(program, indices, pname, params);
+	}
+
+	@Override
+	public int glGetUniformBlockIndex(int program, String name) {
+		return GL31.glGetUniformBlockIndex(program, name);
+	}
+
+	@Override
+	public void glUniformBlockBinding(int prog, int blockIndex, int blockBinding) {
+		GL31.glUniformBlockBinding(prog, blockIndex, blockBinding);
+	}
+
+	@Override
+	public void glPixelStorei(int param, int n) {
+		GL11.glPixelStorei(param, n);
+	}
+
+	@Override
+	public void glReadPixels(int x, int y, int width, int height, int format,
+			int type, ByteBuffer pixelBuffer) {
+		GL11.glReadPixels(x, y, width, height, format, type, pixelBuffer);
+	}
+	
+	@Override
+	public void glGenFramebuffers(int n, IntBuffer frameBuffs) {
+		GL30.glGenFramebuffers(frameBuffs);
+	}
+
+	@Override
+	public int glCheckFramebufferStatus(int target) {
+		return GL30.glCheckFramebufferStatus(target);
+	}
+
+	@Override
+	public void glBindFramebuffer(int target, int fbo) {
+		GL30.glBindFramebuffer(target, fbo);
+	}
+
+	@Override
+	public void glDeleteFramebuffers(int fboCount, IntBuffer fboIds) {
+		GL30.glDeleteFramebuffers(fboIds);
+	}
+
+	@Override
+	public void glFramebufferTexture2D(int target, int attachment,
+			int textarget, int texture, int level) {
+		GL30.glFramebufferTexture2D(target, attachment, textarget, texture, level);
+	}
+
+	@Override
+	public void glFramebufferTextureLayer(int target, int attachment,
+			int texture, int level, int layer) {
+		GL30.glFramebufferTextureLayer(target, attachment, texture, level, layer);
+	}
+
+	@Override
+	public void glDrawBuffer(int mode) {
+		GL11.glDrawBuffer(mode);
+	}
+
+	@Override
+	public void glGenRenderBuffers(int buffCount, IntBuffer buffer) {
+		GL30.glGenRenderbuffers(buffer);
+	}
+
+	@Override
+	public void glBindRenderbuffer(int target, int renderBuffer) {
+		GL30.glBindRenderbuffer(target, renderBuffer);
+	}
+
+	@Override
+	public void glRenderbufferStorage(int target, int internalFormat,
+			int width, int height) {
+		GL30.glRenderbufferStorage(target, internalFormat, width, height);
+	}
+
+	@Override
+	public void glFramebufferRenderbuffer(int target, int attachment,
+			int renderBufferTarget, int renderBuffer) {
+		GL30.glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
+	}
+
+	private boolean errorCheckingEnabled = true;
+
 	/*
 	 * (non-Javadoc)
 	 * @see de.lessvoid.coregl.CoreCheckGL#checkGLError()
@@ -915,6 +1237,8 @@ public class LwjglCoreGL implements CoreGL {
 	 * @see de.lessvoid.coregl.CoreCheckGL#checkGLError(java.lang.String, boolean)
 	 */
 	public void checkGLError(final String message, final boolean throwException) {
+		if(!errorCheckingEnabled)
+			return;
 		int error = glGetError();
 		boolean hasError = false;
 		while (error != GL_NO_ERROR) {
@@ -934,9 +1258,22 @@ public class LwjglCoreGL implements CoreGL {
 		}
 	}
 
+	public void setErrorChecksEnabled(boolean enabled) {
+		this.errorCheckingEnabled = enabled;
+	}
+
 	@Override
 	public CoreUtil getUtil() {
 		return util;
 	}
 
+	@Override
+	public int getDisplayWidth() {
+		return Display.getWidth();
+	}
+
+	@Override
+	public int getDisplayHeight() {
+		return Display.getHeight();
+	}
 }

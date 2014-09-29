@@ -26,117 +26,191 @@
  */
 package de.lessvoid.coregl;
 
+import java.nio.IntBuffer;
+import java.util.*;
+
 
 /**
  * A Vertex Array Object (VAO).
  * @author void
  */
-public interface CoreVAO {
+public class CoreVAO {
+	
+	private final static Map<IntType, Integer> intTypeMap = new Hashtable<IntType, Integer>();
+	private final static Map<FloatType, Integer> floatTypeMap = new Hashtable<FloatType, Integer>();
+	
+	private final CoreGL gl;
 
-  public enum IntType {
-    BYTE,
-    UNSIGNED_BYTE,
-    SHORT,
-    UNSIGNED_SHORT,
-    INT,
-    UNSIGNED_INT
-  }
+	private int vao;
+	
+	CoreVAO(final CoreGL gl) {
+		this.gl = gl;
+		IntBuffer vaoBuff = gl.getUtil().createIntBuffer(1);
+		gl.glGenVertexArrays(1, vaoBuff);
+		gl.checkGLError("glGenVertexArrays");
+		vao = vaoBuff.get(0);
+	}
 
-  public enum FloatType {
-    BYTE,
-    UNSIGNED_BYTE,
-    SHORT,
-    UNSIGNED_SHORT,
-    INT,
-    UNSIGNED_INT,
-    HALF_FLOAT,
-    FLOAT,
-    DOUBLE,
-    FIXED,
-    INT_2_10_10_10_REV,
-    UNSIGNED_INT_2_10_10_10_REV,
-    UNSIGNED_INT_10F_11F_11F_REV
-  }
+	/**
+	 * Bind this VAO to make it the current VAO.
+	 */
+	public void bind() {
+		gl.glBindVertexArray(vao);
+		gl.checkGLError("glBindVertexArray");
+	}
 
-  /**
-   * Bind this VAO to make it the current VAO.
-   */
-  void bind();
+	/**
+	 * Unbinds this VAO which makes the VAO with id 0 the active one.
+	 */
+	public void unbind() {
+		gl.glBindVertexArray(0);
+		gl.checkGLError("glBindVertexArray(0)");
+	}
 
-  /**
-   * Unbinds this VAO which makes the VAO with id 0 the active one.
-   */
-  void unbind();
+	/**
+	 * Delete all resources for this VAO.
+	 */
+	public void delete() {
+		gl.glDeleteVertexArrays(1, gl.getUtil().createIntBuffer(new int[] {vao}));
+		gl.checkGLError("glDeleteVertexArrays");
+	}
 
-  /**
-   * Delete all resources for this VAO.
-   */
-  void delete();
+	/**
+	 * Configure the vertex attribute with the given data. The type of the data will be
+	 * GL_FLOAT.
+	 *
+	 * @param index the index of the vertex attribute to modify
+	 * @param size the size of the data for this vertex attribute
+	 *        (the number of GL_FLOAT to use)
+	 * @param stride the stride between the data
+	 * @param offset the offset of the data
+	 */
+	public void vertexAttribPointer(int index, int size, FloatType vertexType, int stride, int offset) {
+		gl.glVertexAttribPointer(index, size, floatTypeMap.get(vertexType), false, stride * 4, offset * 4);
+		gl.checkGLError("glVertexAttribPointer (" + index + ")");
+	}
 
-  /**
-   * Configure the vertex attribute with the given data. The type of the data will be
-   * GL_FLOAT.
-   *
-   * @param index the index of the vertex attribute to modify
-   * @param size the size of the data for this vertex attribute
-   *        (the number of GL_FLOAT to use)
-   * @param stride the stride between the data
-   * @param offset the offset of the data
-   */
-  void vertexAttribPointer(int index, int size, FloatType vertexType, int stride, int offset);
+	/**
+	 * Configure the vertex attribute with the given data. The type of the data will be
+	 * GL_FLOAT. This will additionally call glVertexAttribDivisorARB to change the
+	 * frequency this data will be sent.
+	 *
+	 * @param index the index of the vertex attribute to modify
+	 * @param size the size of the data for this vertex attribute
+	 *        (the number of GL_FLOAT to use)
+	 * @param stride the stride between the data
+	 * @param offset the offset of the data
+	 * @param divisor Specify the number of instances that will pass between updates of the generic attribute at slot
+	 *        index.
+	 */
+	public void enableVertexAttributeDivisorf(int index, int size, FloatType vertexType, int stride, int offset, int divisor) {
+		gl.glVertexAttribPointer(index, size, floatTypeMap.get(vertexType), false, stride * 4, offset * 4);
+		gl.glVertexAttribDivisorARB(index, divisor);
+		gl.glEnableVertexAttribArray(index);
+		gl.checkGLError("glVertexAttribPointer (" + index + ")");
+	}
 
-  /**
-   * Configure the vertex attribute with the given data. The type of the data will be
-   * GL_FLOAT. This will additionally call glVertexAttribDivisorARB to change the
-   * frequency this data will be sent.
-   *
-   * @param index the index of the vertex attribute to modify
-   * @param size the size of the data for this vertex attribute
-   *        (the number of GL_FLOAT to use)
-   * @param stride the stride between the data
-   * @param offset the offset of the data
-   * @param divisor Specify the number of instances that will pass between updates of the generic attribute at slot
-   *        index.
-   */
-  void enableVertexAttributeDivisorf(int index, int size, FloatType vertexType, int stride, int offset, int divisor);
+	/**
+	 * Enable the vertex attribute with the given index.
+	 *
+	 * @param index the index of the vertex attribute to modify
+	 */
+	public void enableVertexAttribute(int index) {
+		gl.glEnableVertexAttribArray(index);
+		gl.checkGLError("glEnableVertexAttribArray (" + index + ")");
+	}
 
-  /**
-   * Enable the vertex attribute with the given index.
-   *
-   * @param index the index of the vertex attribute to modify
-   */
-  void enableVertexAttribute(int index);
+	/**
+	 * Configure the vertex attribute with the given data. The type of the data will be
+	 * GL_FLOAT.
+	 *
+	 * @param index the index of the vertex attribute to modify
+	 * @param size the size of the data for this vertex attribute
+	 *        (the number of GL_FLOAT to use)
+	 * @param stride the stride between the data
+	 * @param offset the offset of the data
+	 */
+	public void vertexAttribIPointer(int index, int size, IntType vertexType, int stride, int offset) {
+		gl.glVertexAttribIPointer(index, size, intTypeMap.get(vertexType), stride * 4, offset * 4);
+		gl.checkGLError("glVertexAttribIPointer (" + index + ")");
+	}
 
-  /**
-   * Configure the vertex attribute with the given data. The type of the data will be
-   * GL_FLOAT.
-   *
-   * @param index the index of the vertex attribute to modify
-   * @param size the size of the data for this vertex attribute
-   *        (the number of GL_FLOAT to use)
-   * @param stride the stride between the data
-   * @param offset the offset of the data
-   */
-  void vertexAttribIPointer(int index, int size, IntType vertexType, int stride, int offset);
+	/**
+	 * Configure the vertex attribute with the given data. The type of the data will be
+	 * GL_FLOAT. This will additionally call glVertexAttribDivisorARB to change the
+	 * frequency this data will be sent.
+	 *
+	 * @param index the index of the vertex attribute to modify
+	 * @param size the size of the data for this vertex attribute
+	 *        (the number of GL_FLOAT to use)
+	 * @param stride the stride between the data
+	 * @param offset the offset of the data
+	 * @param divisor Specify the number of instances that will pass between updates of the generic attribute at slot
+	 *        index.
+	 */
+	public void enableVertexAttributeDivisori(int index, int size, IntType vertexType, int stride, int offset, int divisor) {
+	    gl.glVertexAttribIPointer(index, size, intTypeMap.get(vertexType), stride * 4, offset * 4);
+	    gl.glVertexAttribDivisorARB(index, divisor);
+	    gl.glEnableVertexAttribArray(index);
+	    gl.checkGLError("glVertexAttribPointer (" + index + ")");
+	}
 
-  /**
-   * Configure the vertex attribute with the given data. The type of the data will be
-   * GL_FLOAT. This will additionally call glVertexAttribDivisorARB to change the
-   * frequency this data will be sent.
-   *
-   * @param index the index of the vertex attribute to modify
-   * @param size the size of the data for this vertex attribute
-   *        (the number of GL_FLOAT to use)
-   * @param stride the stride between the data
-   * @param offset the offset of the data
-   * @param divisor Specify the number of instances that will pass between updates of the generic attribute at slot
-   *        index.
-   */
-  void enableVertexAttributeDivisori(int index, int size, IntType vertexType, int stride, int offset, int divisor);
+	/**
+	 * Disable thegiven vertex attribute index.
+	 * @param index the index of the vertex attribute to disable
+	 */
+	public void disableVertexAttribute(int index) {
+	    gl.glDisableVertexAttribArray(index);
+	    gl.checkGLError("glDisableVertexAttribArray (" + index + ")");
+	}
+	
+	public enum IntType {
+		BYTE,
+		UNSIGNED_BYTE,
+		SHORT,
+		UNSIGNED_SHORT,
+		INT,
+		UNSIGNED_INT
+	}
 
-  /**
-   * Disable thegiven vertex attribute index.
-   * @param index the index of the vertex attribute to disable
-   */
-  void disableVertexAttribute(int index);
+	public enum FloatType {
+		BYTE,
+		UNSIGNED_BYTE,
+		SHORT,
+		UNSIGNED_SHORT,
+		INT,
+		UNSIGNED_INT,
+		HALF_FLOAT,
+		FLOAT,
+		DOUBLE,
+		FIXED,
+		INT_2_10_10_10_REV,
+		UNSIGNED_INT_2_10_10_10_REV,
+		UNSIGNED_INT_10F_11F_11F_REV
+	}
+	
+	static void initIntTypeMap(final CoreGL gl) {
+	    intTypeMap.put(IntType.BYTE, gl.GL_BYTE());
+	    intTypeMap.put(IntType.UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE());
+	    intTypeMap.put(IntType.SHORT, gl.GL_SHORT());
+	    intTypeMap.put(IntType.UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT());
+	    intTypeMap.put(IntType.INT, gl.GL_INT());
+	    intTypeMap.put(IntType.UNSIGNED_INT, gl.GL_UNSIGNED_INT());
+	}
+	
+	static void initFloatTypeMap(final CoreGL gl) {
+	    floatTypeMap.put(FloatType.BYTE, gl.GL_BYTE());
+	    floatTypeMap.put(FloatType.UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE());
+	    floatTypeMap.put(FloatType.SHORT, gl.GL_SHORT());
+	    floatTypeMap.put(FloatType.UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT());
+	    floatTypeMap.put(FloatType.INT, gl.GL_INT());
+	    floatTypeMap.put(FloatType.UNSIGNED_INT, gl.GL_UNSIGNED_INT());
+	    floatTypeMap.put(FloatType.HALF_FLOAT, gl.GL_HALF_FLOAT());
+	    floatTypeMap.put(FloatType.FLOAT, gl.GL_FLOAT());
+	    floatTypeMap.put(FloatType.DOUBLE, gl.GL_DOUBLE());
+	    floatTypeMap.put(FloatType.FIXED, gl.GL_FIXED());
+	    floatTypeMap.put(FloatType.INT_2_10_10_10_REV, gl.GL_INT_2_10_10_10_REV());
+	    floatTypeMap.put(FloatType.UNSIGNED_INT_2_10_10_10_REV, gl.GL_UNSIGNED_INT_2_10_10_10_REV());
+	    floatTypeMap.put(FloatType.UNSIGNED_INT_10F_11F_11F_REV, gl.GL_UNSIGNED_INT_10F_11F_11F_REV());
+	}
 }

@@ -26,133 +26,181 @@
  */
 package de.lessvoid.coregl;
 
-
 /**
  * Simple helper methods to render vertex arrays.
  * @author void
  */
-public interface CoreRender {
+public class CoreRender {
 
-  // Lines
+	private final CoreGL gl;
 
-  /**
-   * Render lines.
-   * @param count number of vertices
-   */
-  void renderLines(final int count);
+	public CoreRender(final CoreGL gl) {
+		this.gl = gl;
+	}
 
-  /**
-   * Render adjacent lines.
-   * @param count number of vertices
-   */
-  void renderLinesAdjacent(int count);
+	// Lines
 
-  // Triangle Strip
+	/**
+	 * Render lines.
+	 * @param count number of vertices
+	 */
+	public void renderLines(final int count) {
+		gl.glDrawArrays(gl.GL_LINE_STRIP(), 0, count);
+		gl.checkGLError("glDrawArrays");
+	}
 
-  /**
-   * Render the currently active VAO using triangle strips with the given
-   * number of vertices.
-   *
-   * @param count number of vertices to render as triangle strips
-   */
-  void renderTriangleStrip(int count);
+	/**
+	 * Render adjacent lines.
+	 * @param count number of vertices
+	 */
+	public void renderLinesAdjacent(final int count) {
+		gl.glDrawArrays(gl.GL_LINE_STRIP_ADJACENCY(), 0, count);
+		gl.checkGLError("glDrawArrays");
+	}
 
-  /**
-   * Render the currently active VAO using triangle strips, sending the given number of indizes.
-   *
-   * @param count number of indizes to render as triangle strips
-   */
-  void renderTriangleStripIndexed(int count);
+	// Triangle Strip
 
-  /**
-   * Render the currently active VAO using triangle strips with the given
-   * number of vertices AND do that primCount times.
-   *
-   * @param count number of vertices to render as triangle strips per primitve
-   * @param primCount number of primitives to render
-   */
-  void renderTriangleStripInstances(int count, int primCount);
+	/**
+	 * Render the currently active VAO using triangle strips with the given
+	 * number of vertices.
+	 *
+	 * @param count number of vertices to render as triangle strips
+	 */
+	public void renderTriangleStrip(final int count) {
+		gl.glDrawArrays(gl.GL_TRIANGLE_STRIP(), 0, count);
+		gl.checkGLError("glDrawArrays");
+	}
 
-  // Triangle Fan
+	/**
+	 * Render the currently active VAO using triangle strips, sending the given number of indizes.
+	 *
+	 * @param count number of indizes to render as triangle strips
+	 */
+	public void renderTriangleStripIndexed(final int count) {
+		gl.glDrawElements(gl.GL_TRIANGLE_STRIP(), count, gl.GL_UNSIGNED_INT(), 0);
+		gl.checkGLError("glDrawElements(GL_TRIANGLE_STRIP)");
+	}
 
-  /**
-   * Render the currently active VAO using triangle fan with the given number of vertices.
-   *
-   * @param count number of vertices to render as triangle fan
-   */
-  void renderTriangleFan(int count);
+	/**
+	 * Render the currently active VAO using triangle strips with the given
+	 * number of vertices AND do that primCount times.
+	 *
+	 * @param count number of vertices to render as triangle strips per primitve
+	 * @param primCount number of primitives to render
+	 */
+	public void renderTriangleStripInstances(final int count, final int primCount) {
+		gl.glDrawArraysInstanced(gl.GL_TRIANGLE_STRIP(), 0, count, primCount);
+		gl.checkGLError("glDrawArraysInstanced(GL_TRIANGLE_STRIP)");
+	}
 
-  /**
-   * Render the currently active VAO using triangle fans, sending the given number of indizes.
-   *
-   * @param count number of indizes to render as triangle fans.
-   */
-  void renderTriangleFanIndexed(int count);
+	// Triangle Fan
 
-  // Individual Triangles
+	/**
+	 * Render the currently active VAO using triangle fan with the given number of vertices.
+	 *
+	 * @param count number of vertices to render as triangle fan
+	 */
+	public void renderTriangleFan(final int count) {
+		gl.glDrawArrays(gl.GL_TRIANGLE_FAN(), 0, count);
+		gl.checkGLError("glDrawArrays");
+	}
 
-  /**
-   * Render the currently active VAO using triangles with the given number of vertices.
-   * @param vertexCount number of vertices to render as triangle strips
-   */
-  void renderTriangles(int vertexCount);
+	/**
+	 * Render the currently active VAO using triangle fans, sending the given number of indizes.
+	 *
+	 * @param count number of indizes to render as triangle fans.
+	 */
+	public void renderTriangleFanIndexed(final int count) {
+		gl.glDrawElements(gl.GL_TRIANGLE_FAN(), count, gl.GL_UNSIGNED_INT(), 0);
+		gl.checkGLError("glDrawElements(GL_TRIANGLE_FAN)");
+	}
 
-  /**
-   * Render the currently active VAO using triangles with the given number of vertices starting at the given offset.
-   * @param offset offset to start sending vertices
-   * @param vertexCount number of vertices to render as triangle strips
-   */
-  void renderTrianglesOffset(int offset, int vertexCount);
+	// Individual Triangles
 
-  /**
-   * Render the currently active VAO using triangles with the given
-   * number of vertices.
-   *
-   * @param count number of vertices to render as triangles
-   */
-  void renderTrianglesIndexed(int count);
+	/**
+	 * Render the currently active VAO using triangles with the given number of vertices.
+	 * @param vertexCount number of vertices to render as triangle strips
+	 */
+	public void renderTriangles(final int vertexCount) {
+		gl.glDrawArrays(gl.GL_TRIANGLES(), 0, vertexCount);
+		gl.checkGLError("glDrawArrays");
+	}
 
-  /**
-   * Render the currently active VAO using triangles with the given number of vertices AND do that primCount times.
-   *
-   * @param count number of vertices to render as triangles per primitve
-   * @param primCount number of primitives to render
-   */
-  void renderTrianglesInstances(int count, int primCount);
+	/**
+	 * Render the currently active VAO using triangles with the given number of vertices starting at the given offset.
+	 * @param offset offset to start sending vertices
+	 * @param vertexCount number of vertices to render as triangle strips
+	 */
+	public void renderTrianglesOffset(final int offset, final int vertexCount) {
+		gl.glDrawArrays(gl.GL_TRIANGLES(), offset, vertexCount);
+		gl.checkGLError("glDrawArrays");
+	}
 
-  // Points
+	/**
+	 * Render the currently active VAO using triangles with the given
+	 * number of vertices.
+	 *
+	 * @param count number of vertices to render as triangles
+	 */
+	public void renderTrianglesIndexed(final int count) {
+		gl.glDrawElements(gl.GL_TRIANGLES(), count, gl.GL_UNSIGNED_INT(), 0);
+		gl.checkGLError("glDrawElements");
+	}
 
-  /**
-   * Render the currently active VAO using points with the given
-   * number of vertices.
-   *
-   * @param count number of vertices to render as points
-   */
-  void renderPoints(int count);
+	/**
+	 * Render the currently active VAO using triangles with the given number of vertices AND do that primCount times.
+	 *
+	 * @param count number of vertices to render as triangles per primitve
+	 * @param primCount number of primitives to render
+	 */
+	public void renderTrianglesInstances(final int count, final int primCount) {
+		gl.glDrawArraysInstanced(gl.GL_TRIANGLES(), 0, count, primCount);
+		gl.checkGLError("glDrawArraysInstanced(GL_TRIANGLES)");
+	}
 
-  /**
-   * Render the currently active VAO using points with the given
-   * number of vertices AND do that primCount times.
-   *
-   * @param count number of vertices to render as points per primitive
-   * @param primCount number of primitives to render
-   */
-  void renderPointsInstances(int count, int primCount);
+	// Points
 
-  // Utils
+	/**
+	 * Render the currently active VAO using points with the given
+	 * number of vertices.
+	 *
+	 * @param count number of vertices to render as points
+	 */
+	public void renderPoints(final int count) {
+		gl.glDrawArrays(gl.GL_POINTS(), 0, count);
+		gl.checkGLError("glDrawArrays(GL_POINTS)");
+	}
 
-  /**
-   * Set the clear color.
-   * @param r red
-   * @param g green
-   * @param b blue
-   * @param a alpha
-   */
-  void clearColor(float r, float g, float b, float a);
+	/**
+	 * Render the currently active VAO using points with the given
+	 * number of vertices AND do that primCount times.
+	 *
+	 * @param count number of vertices to render as points per primitive
+	 * @param primCount number of primitives to render
+	 */
+	public void renderPointsInstances(final int count, final int primCount) {
+		gl.glDrawArraysInstanced(gl.GL_POINTS(), 0, count, primCount);
+		gl.checkGLError("glDrawArraysInstanced(GL_POINTS)");
+	}
 
-  /**
-   * Clear the color buffer.
-   */
-  void clearColorBuffer();
+	// Utils
+
+	/**
+	 * Set the clear color.
+	 * @param r red
+	 * @param g green
+	 * @param b blue
+	 * @param a alpha
+	 */
+	public void clearColor(final float r, final float g, final float b, final float a) {
+		gl.glClearColor(r, g, b, a);
+	}
+
+	/**
+	 * Clear the color buffer.
+	 */
+	public void clearColorBuffer() {
+		gl.glClear(gl.GL_COLOR_BUFFER_BIT());
+	}
 
 }

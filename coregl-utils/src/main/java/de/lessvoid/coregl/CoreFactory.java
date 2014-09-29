@@ -28,14 +28,14 @@ package de.lessvoid.coregl;
 
 import java.nio.*;
 
-import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
-import de.lessvoid.coregl.CoreTexture2D.Type;
+import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
+import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
+import de.lessvoid.coregl.CoreTexture2DConstants.Type;
 import de.lessvoid.coregl.CoreVBO.UsageType;
 
 public class CoreFactory {
 	
-	private final CoreCheckGL checkGL;
+	private final CoreTexture2DConstants texConsts;
 	
 	private CoreGL gl;
 	
@@ -43,7 +43,7 @@ public class CoreFactory {
 	 * Equivalent to <code>CoreFactory(gl, true)</code>
 	 * @param gl
 	 */
-	public CoreFactory(CoreGL gl) {
+	public CoreFactory(final CoreGL gl) {
 		this(gl, true);
 	}
 
@@ -52,10 +52,13 @@ public class CoreFactory {
 	 * @param gl
 	 * @param errorChecksEnabled true if error checking should be enabeld, false otherwise
 	 */
-	public CoreFactory(CoreGL gl, boolean errorChecksEnabled) {
+	public CoreFactory(final CoreGL gl, final boolean errorChecksEnabled) {
 		this.gl = gl;
-		checkGL = new CoreCheckGL(gl);
-		checkGL.setEnabled(errorChecksEnabled);
+		gl.setErrorChecksEnabled(errorChecksEnabled);
+		texConsts = new CoreTexture2DConstants(gl);
+		CoreVAO.initIntTypeMap(gl);
+		CoreVAO.initFloatTypeMap(gl);
+		CoreVBO.initUsageTypeMap(gl);
 	}
 
 	// CoreTexture2D /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +78,9 @@ public class CoreFactory {
 			Type dataType,
 			int width,
 			int height,
-			ResizeFilter filter);
+			ResizeFilter filter) {
+		return CoreTexture2D.createEmptyTexture(format, dataType, width, height, filter);
+	}
 
 	/**
 	 * Create an empty texture.
@@ -197,8 +202,10 @@ public class CoreFactory {
 	 * Create a new Shader.
 	 * @return the new CoreShader instance
 	 */
-	CoreShader newShader();
-
+	public CoreShader newShader() {
+		return new CoreShader(gl);
+	}
+	
 	/**
 	 * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indices in
 	 * ascending order beginning with 0. This method can be used when you want to control the vertex attribute binding
@@ -208,7 +215,9 @@ public class CoreFactory {
 	 *        second String gets generic attribute index 1 and so on.
 	 * @return the CoreShader instance
 	 */
-	CoreShader newShaderWithVertexAttributes(String ... vertexAttributes);
+	public CoreShader newShaderWithVertexAttributes(String ... vertexAttributes) {
+		return new CoreShader(gl, vertexAttributes);
+	}
 
 	// CoreVBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -222,7 +231,9 @@ public class CoreFactory {
 	 * @param size the size of the buffer
 	 * @return the CoreVBO instance
 	 */
-	<T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, int size);
+	public <T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, int size) {
+		return new CoreVBO<T>(gl, dataType, usageType, size);
+	}
 
 	/**
 	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
@@ -234,7 +245,9 @@ public class CoreFactory {
 	 * @param size the size of the buffer
 	 * @return the CoreVBO instance
 	 */
-	<T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, Object[] data);
+	public <T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, Object[] data) {
+		return new CoreVBO<T>(gl, dataType, usageType, data);
+	}
 
 	// CoreVAO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -242,7 +255,9 @@ public class CoreFactory {
 	 * Create a new CoreVAO.
 	 * @return the CoreVAO instance created
 	 */
-	CoreVAO createVAO();
+	public CoreVAO createVAO() {
+		return new CoreVAO(gl);
+	}
 
 	// CoreFBO ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -250,7 +265,9 @@ public class CoreFactory {
 	 * Create a new CoreFBO.
 	 * @return the CoreFBO instance created
 	 */
-	CoreFBO createCoreFBO();
+	public CoreFBO createCoreFBO() {
+		return new CoreFBO(gl);
+	}
 
 	// CoreTextureBuffer /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -258,16 +275,6 @@ public class CoreFactory {
 	CoreTextureBuffer createCoreTextureBuffer(short[] data);
 	CoreTextureBuffer createCoreTextureBuffer(int[] data);
 	CoreTextureBuffer createCoreTextureBuffer(float[] data);
-
-	// CoreCheckGL ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Create the helper class to check for GL errors.
-	 * @return CoreCheckGL instance
-	 */
-	CoreCheckGL createCoreCheckGL() {
-		return new CoreCheckGL(gl);
-	}
 
 	// CoreElementVBO ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -280,7 +287,9 @@ public class CoreFactory {
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
 	 */
-	CoreElementVBO createStatic(int[] data);
+	public CoreElementVBO createStatic(int[] data) {
+		return new CoreElementVBO(gl, gl.GL_STATIC_DRAW(), data);
+	}
 
 	/**
 	 * This provides the same functionality as createStaticVBO() but automatically
@@ -289,7 +298,11 @@ public class CoreFactory {
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
 	 */
-	CoreElementVBO createStaticAndSend(int[] data);
+	public CoreElementVBO createStaticAndSend(int[] data) {
+		CoreElementVBO result = new CoreElementVBO(gl, gl.GL_STATIC_DRAW(), data);
+		result.send();
+		return result;
+	}
 
 	/**
 	 * This provides the same functionality as createStatic() but automatically
@@ -298,7 +311,11 @@ public class CoreFactory {
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
 	 */
-	CoreElementVBO createStaticAndSend(IntBuffer data);
+	public CoreElementVBO createStaticAndSend(IntBuffer data) {
+		CoreElementVBO result = new CoreElementVBO(gl, gl.GL_STATIC_DRAW(), data);
+		result.send();
+		return result;
+	}
 
 	/**
 	 * This works exactly as createStaticVBO() but will use GL_DYNAMIC_DRAW instead.
@@ -306,7 +323,9 @@ public class CoreFactory {
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
 	 */
-	CoreElementVBO createDynamic(int[] data);
+	public CoreElementVBO createDynamic(int[] data) {
+		return new CoreElementVBO(gl, gl.GL_DYNAMIC_DRAW(), data);
+	}
 
 	/**
 	 * This works exactly as createStaticVBO() but will use GL_STREAM_DRAW instead.
@@ -314,7 +333,9 @@ public class CoreFactory {
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
 	 */
-	CoreElementVBO createStream(int[] data);
+	public CoreElementVBO createStream(int[] data) {
+		return new CoreElementVBO(gl, gl.GL_STREAM_DRAW(), data);
+	}
 
 	// CoreDisplaySetup //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -322,7 +343,9 @@ public class CoreFactory {
 	 * Create the CoreDisplaySetup class that is completely optional but a handy tool to setup the rendering system.
 	 * @return
 	 */
-	CoreSetup createSetup();
+	public CoreSetup createSetup() {
+		return null; // FIXME !!!! CoreSetup needs implementation
+	}
 
 	// CoreRender ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -330,10 +353,14 @@ public class CoreFactory {
 	 * Create the CoreRender class.
 	 * @return CoreRender instance
 	 */
-	CoreRender getCoreRender();
+	public CoreRender getCoreRender() {
+		return new CoreRender(gl);
+	}
 
 	// CoreScreenshot ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	CoreScreenshot createCoreScreenshot();
+	public CoreScreenshot createCoreScreenshot() {
+		return new CoreScreenshot(gl);
+	}
 
 }

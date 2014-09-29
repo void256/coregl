@@ -6,13 +6,29 @@ import java.util.logging.Logger;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.GLU;
 
+import com.jogamp.newt.opengl.GLWindow;
+
 import de.lessvoid.coregl.*;
 
+/**
+ * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
+ * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ */
 public class JoglCoreGL implements CoreGL {
 
 	private static Logger log = Logger.getLogger(JoglCoreGL.class.getName());
-	
-	private JoglCoreUtil util = new JoglCoreUtil();
+
+	private final CoreUtil util = new JoglCoreUtil();
+
+	private GLWindow glWin;
+
+	public JoglCoreGL(GLWindow glWin) {
+		this.glWin = glWin;
+	}
+
+	public void setGLWindow(GLWindow glWin) {
+		this.glWin = glWin;
+	}
 
 	@Override
 	public int GL_ALPHA() {
@@ -212,6 +228,11 @@ public class JoglCoreGL implements CoreGL {
 	@Override
 	public int GL_TEXTURE_2D() {
 		return GL2.GL_TEXTURE_2D;
+	}
+
+	@Override
+	public int GL_TEXTURE_2D_ARRAY() {
+		return GL2.GL_TEXTURE_2D_ARRAY;
 	}
 
 	@Override
@@ -495,6 +516,31 @@ public class JoglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public int GL_HALF_FLOAT() {
+		return GL.GL_HALF_FLOAT;
+	}
+
+	@Override
+	public int GL_DOUBLE() {
+		return GL2.GL_DOUBLE;
+	}
+
+	@Override
+	public int GL_FIXED() {
+		return GL.GL_FIXED;
+	}
+
+	@Override
+	public int GL_INT_2_10_10_10_REV() {
+		return GL3.GL_INT_2_10_10_10_REV;
+	}
+
+	@Override
+	public int GL_UNSIGNED_INT_10F_11F_11F_REV() {
+		return GL.GL_UNSIGNED_INT_10F_11F_11F_REV;
+	}
+
+	@Override
 	public int GL_UNSIGNED_SHORT_5_6_5_REV() {
 		return GL2.GL_UNSIGNED_SHORT_5_6_5_REV;
 	}
@@ -517,6 +563,142 @@ public class JoglCoreGL implements CoreGL {
 	@Override
 	public int GL_WRITE_ONLY() {
 		return GL.GL_WRITE_ONLY;
+	}
+
+	@Override
+	public int GL_UNIFORM_OFFSET() {
+		return GL2.GL_UNIFORM_OFFSET;
+	}
+
+	@Override
+	public int GL_UNIFORM_ARRAY_STRIDE() {
+		return GL2.GL_UNIFORM_ARRAY_STRIDE;
+	}
+
+	@Override
+	public int GL_UNIFORM_MATRIX_STRIDE() {
+		return GL2.GL_UNIFORM_MATRIX_STRIDE;
+	}
+
+	@Override
+	public int GL_LINE_STRIP() {
+		return GL.GL_LINE_STRIP;
+	}
+
+	@Override
+	public int GL_LINE_STRIP_ADJACENCY() {
+		return GL3.GL_LINE_STRIP_ADJACENCY;
+	}
+
+	@Override
+	public int GL_PACK_ALIGNMENT() {
+		return GL.GL_PACK_ALIGNMENT;
+	}
+
+	@Override
+	public int GL_STENCIL_INDEX() {
+		return GL2.GL_STENCIL_INDEX;
+	}
+
+	@Override
+	public int GL_TEXTURE_BUFFER() {
+		return GL2.GL_TEXTURE_BUFFER;
+	}
+
+	@Override
+	public int GL_R32F() {
+		return GL2.GL_R32F;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER() {
+		return GL2.GL_FRAMEBUFFER;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_COMPLETE() {
+		return GL2.GL_FRAMEBUFFER_COMPLETE;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_UNDEFINED() {
+		return GL2.GL_FRAMEBUFFER_UNDEFINED;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT() {
+		return GL2.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT() {
+		return GL2.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER() {
+		return GL2.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER() {
+		return GL2.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_UNSUPPORTED() {
+		return GL2.GL_FRAMEBUFFER_UNSUPPORTED;
+	}
+
+	@Override
+	public int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE() {
+		return GL2.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
+	}
+
+	@Override
+	public int GL_COLOR_ATTACHMENT0() {
+		return GL.GL_COLOR_ATTACHMENT0;
+	}
+
+	@Override
+	public int GL_RENDERBUFFER() {
+		return GL.GL_RENDERBUFFER;
+	}
+
+	@Override
+	public int GL_STENCIL_INDEX8() {
+		return GL.GL_STENCIL_INDEX8;
+	}
+
+	@Override
+	public int GL_STENCIL_ATTACHMENT() {
+		return GL.GL_STENCIL_ATTACHMENT;
+	}
+	
+
+	@Override
+	public int GL_VERSION() {
+		return GL.GL_VERSION;
+	}
+
+	@Override
+	public int GL_VENDOR() {
+		return GL.GL_VENDOR;
+	}
+
+	@Override
+	public int GL_RENDERER() {
+		return GL.GL_RENDERER;
+	}
+
+	@Override
+	public int GL_MAX_VERTEX_ATTRIBS() {
+		return GL2.GL_MAX_VERTEX_ATTRIBS;
+	}
+
+	@Override
+	public int GL_MAX_3D_TEXTURE_SIZE() {
+		return GL2.GL_MAX_3D_TEXTURE_SIZE;
 	}
 
 	@Override
@@ -604,6 +786,15 @@ public class JoglCoreGL implements CoreGL {
 		GLContext.getCurrentGL().getGL2().glGetIntegerv(pname, params);
 	}
 
+	public int glGetInteger(int pname) {
+		return JoglCoreUtil.glGetInteger(GLContext.getCurrentGL(), pname);
+	}
+	
+	@Override
+	public String glGetString(int pname) {
+		return GLContext.getCurrentGL().glGetString(pname);
+	}
+	
 	@Override
 	public boolean glIsEnabled(int cap) {
 		return GLContext.getCurrentGL().getGL2().glIsEnabled(cap);
@@ -653,6 +844,30 @@ public class JoglCoreGL implements CoreGL {
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ShortBuffer pixels) {
 		GLContext.getCurrentGL().getGL2().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) {
+		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, DoubleBuffer pixels) {
+		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, FloatBuffer pixels) {
+		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, IntBuffer pixels) {
+		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
+
+	@Override
+	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ShortBuffer pixels) {
+		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+	}
 
 	@Override
 	public void glTexParameterf(int target, int pname, float param) {
@@ -667,6 +882,11 @@ public class JoglCoreGL implements CoreGL {
 	@Override
 	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels) {
 		GLContext.getCurrentGL().getGL2().glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+	}
+
+	@Override
+	public void glTexBuffer(int arg0, int arg1, int arg2) {
+		GLContext.getCurrentGL().getGL2().glTexBuffer(arg0, arg1, arg2);
 	}
 
 	@Override
@@ -720,6 +940,11 @@ public class JoglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public void glBufferData(int target, ShortBuffer data, int usage) {
+		GLContext.getCurrentGL().getGL3().glBufferData(target, data.remaining() * 2, data, usage);
+	}
+
+	@Override
 	public void glCompileShader(int shader) {
 		GLContext.getCurrentGL().getGL3().glCompileShader(shader);
 	}
@@ -752,6 +977,21 @@ public class JoglCoreGL implements CoreGL {
 	@Override
 	public void glEnableVertexAttribArray(int index) {
 		GLContext.getCurrentGL().getGL3().glEnableVertexAttribArray(index);
+	}
+	
+	@Override
+	public void glDisableVertexAttribArray(int index) {
+		GLContext.getCurrentGL().getGL2().glDisableVertexAttribArray(index);
+	}
+	
+	@Override
+	public void glVertexAttribDivisorARB(int index, int divisor) {
+		GLContext.getCurrentGL().getGL3().glVertexAttribDivisor(index, divisor);
+	}
+
+	@Override
+	public void glVertexAttribIPointer(int index, int size, int type, int stride, int buffer) {
+		GLContext.getCurrentGL().getGL2().glVertexAttribIPointer(index, size, type, stride, buffer);
 	}
 
 	@Override
@@ -895,6 +1135,101 @@ public class JoglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public void glGetUniformIndices(int program, String[] uniformNames,
+			IntBuffer indexBuffer) {
+		GLContext.getCurrentGL().getGL3().glGetUniformIndices(program, uniformNames.length, uniformNames, indexBuffer);
+	}
+
+	@Override
+	public void glGetActiveUniforms(int program, int uniformCount, IntBuffer indices, int pname,
+			IntBuffer params) {
+		GLContext.getCurrentGL().getGL3().glGetActiveUniformsiv(program, uniformCount, indices, pname, params);
+	}
+
+	@Override
+	public int glGetUniformBlockIndex(int program, String name) {
+		return GLContext.getCurrentGL().getGL3().glGetUniformBlockIndex(program, name);
+	}
+
+	@Override
+	public void glUniformBlockBinding(int prog, int blockIndex, int blockBinding) {
+		GLContext.getCurrentGL().getGL3().glUniformBlockBinding(prog, blockIndex, blockBinding);
+	}
+
+	@Override
+	public void glPixelStorei(int param, int n) {
+		GLContext.getCurrentGL().getGL().glPixelStorei(param, n);
+	}
+
+	@Override
+	public void glReadPixels(int x, int y, int width, int height, int format,
+			int type, ByteBuffer pixelBuffer) {
+		GLContext.getCurrentGL().getGL().glReadPixels(x, y, width, height, format, type, pixelBuffer);
+	}
+
+	@Override
+	public void glGenFramebuffers(int n, IntBuffer frameBuffs) {
+		GLContext.getCurrentGL().getGL().glGenFramebuffers(n, frameBuffs);
+	}
+
+	@Override
+	public int glCheckFramebufferStatus(int target) {
+		return GLContext.getCurrentGL().glCheckFramebufferStatus(target);
+	}
+
+	@Override
+	public void glBindFramebuffer(int target, int fbo) {
+		GLContext.getCurrentGL().glBindBuffer(target, fbo);
+	}
+
+	@Override
+	public void glDeleteFramebuffers(int fboCount, IntBuffer fboIds) {
+		GLContext.getCurrentGL().glDeleteFramebuffers(fboCount, fboIds);
+	}
+
+	@Override
+	public void glFramebufferTexture2D(int target, int attachment, int textarget,
+			int texture, int level) {
+		GLContext.getCurrentGL().glFramebufferTexture2D(target, attachment, textarget, texture, level);
+	}
+
+	@Override
+	public void glFramebufferTextureLayer(int target, int attachment,
+			int texture, int level, int layer) {
+		GLContext.getCurrentGL().getGL2().glFramebufferTextureLayer(target, attachment, texture, level, layer);
+	}
+
+	@Override
+	public void glDrawBuffer(int mode) {
+		GLContext.getCurrentGL().getGL2().glDrawBuffer(mode);
+	}
+
+	@Override
+	public void glGenRenderBuffers(int buffCount, IntBuffer buffer) {
+		GLContext.getCurrentGL().glGenRenderbuffers(buffCount, buffer);
+
+	}
+
+	@Override
+	public void glBindRenderbuffer(int target, int renderBuffer) {
+		GLContext.getCurrentGL().glBindRenderbuffer(target, renderBuffer);
+	}
+
+	@Override
+	public void glRenderbufferStorage(int target, int internalFormat, int width,
+			int height) {
+		GLContext.getCurrentGL().glRenderbufferStorage(target, internalFormat, width, height);
+	}
+
+	@Override
+	public void glFramebufferRenderbuffer(int target, int attachment,
+			int renderBufferTarget, int renderBuffer) {
+		GLContext.getCurrentGL().glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
+	}
+
+	private boolean errorChecksEnabled = true;
+
+	@Override
 	public void checkGLError() {
 		checkGLError("");
 	}
@@ -906,6 +1241,8 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public void checkGLError(String msg, boolean throwException) {
+		if(!errorChecksEnabled)
+			return;
 		int error = glGetError();
 		boolean hasError = false;
 		while (error != GL2.GL_NO_ERROR) {
@@ -926,7 +1263,22 @@ public class JoglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public void setErrorChecksEnabled(boolean enabled) {
+		this.errorChecksEnabled = enabled;
+	}
+
+	@Override
 	public CoreUtil getUtil() {
 		return util;
+	}
+
+	@Override
+	public int getDisplayWidth() {
+		return glWin.getWidth();
+	}
+
+	@Override
+	public int getDisplayHeight() {
+		return glWin.getHeight();
 	}
 }

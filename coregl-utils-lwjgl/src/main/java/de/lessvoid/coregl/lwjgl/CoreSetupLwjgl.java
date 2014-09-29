@@ -26,58 +26,32 @@
  */
 package de.lessvoid.coregl.lwjgl;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_RENDERER;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_VENDOR;
-import static org.lwjgl.opengl.GL11.GL_VERSION;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glGetInteger;
-import static org.lwjgl.opengl.GL11.glGetString;
-import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_MAX_3D_TEXTURE_SIZE;
 import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
 
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.logging.*;
 import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.LWJGLUtil;
-import org.lwjgl.opengl.ContextAttribs;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.*;
+import org.lwjgl.opengl.*;
 
-import de.lessvoid.coregl.CoreCheckGL;
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreSetup;
+import de.lessvoid.coregl.*;
 
 public class CoreSetupLwjgl implements CoreSetup {
   private static final Logger log = Logger.getLogger(CoreSetupLwjgl.class.getName());
   private static final Comparator<DisplayMode> DisplayModeFrequencyComparator = new DisplayModeFrequencyComparator();
   private final StringBuilder fpsText = new StringBuilder();
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
-  private final CoreCheckGL checkGL;
+  private final CoreGL gl;
   private CoreFactory coreFactory;
   private String lastFPS = "";
 
-  public CoreSetupLwjgl(final CoreFactoryLwjgl coreFactory, final CoreCheckGL checkGL) {
+  public CoreSetupLwjgl(final CoreFactory coreFactory, final CoreGL gl) {
     this.coreFactory = coreFactory;
-    this.checkGL = checkGL;
+    this.gl = gl;
   }
 
   /*
@@ -251,7 +225,7 @@ public class CoreSetupLwjgl implements CoreSetup {
     IntBuffer maxVertexAttribts = BufferUtils.createIntBuffer(4 * 4);
     glGetInteger(GL_MAX_VERTEX_ATTRIBS, maxVertexAttribts);
     log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
-    checkGL.checkGLError("init phase 1");
+    gl.checkGLError("init phase 1");
 
     log.info("GL_MAX_3D_TEXTURE_SIZE: " + glGetInteger(GL_MAX_3D_TEXTURE_SIZE));
     
@@ -261,7 +235,7 @@ public class CoreSetupLwjgl implements CoreSetup {
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    checkGL.checkGLError("initialized");
+    gl.checkGLError("initialized");
   }
 
   private void createWindow(final String title) throws LWJGLException {
