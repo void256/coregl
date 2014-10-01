@@ -1,4 +1,4 @@
-package de.lessvoid.coregl;
+package de.lessvoid.coregl.spi;
 
 import java.nio.*;
 

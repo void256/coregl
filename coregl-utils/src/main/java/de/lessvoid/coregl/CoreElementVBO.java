@@ -28,6 +28,8 @@ package de.lessvoid.coregl;
 
 import java.nio.IntBuffer;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 
 /**
  * The CoreElementVBO class represents a VBO bound to GL_ELEMENT_BUFFER.

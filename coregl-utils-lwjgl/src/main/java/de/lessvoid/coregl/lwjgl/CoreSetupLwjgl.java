@@ -39,6 +39,7 @@ import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.spi.CoreGL;
 
 public class CoreSetupLwjgl implements CoreSetup {
   private static final Logger log = Logger.getLogger(CoreSetupLwjgl.class.getName());

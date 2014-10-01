@@ -36,6 +36,7 @@ import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilterInfo;
 import de.lessvoid.coregl.CoreTexture2DConstants.Type;
 import de.lessvoid.coregl.CoreTexture2DConstants.TypeInfo;
+import de.lessvoid.coregl.spi.CoreGL;
 
 
 /**
@@ -831,7 +832,7 @@ public class CoreTexture2D {
 			if (textureArray) {
 				glTexImage3D(target, level, internalFormat, width, height, depth, border, format, usedType, data);
 			} else if (isCreatingMipMaps(level, minFilter)) {
-				if (GLContext.getCapabilities().OpenGL30) {
+				if (gl.) {
 					glTexImage2D(target, 0, internalFormat, width, height, border, format, usedType, data);
 					gl.glGenerateMipmap(target);
 					checkGLError("glGenerateMipmap", true);

@@ -9,6 +9,7 @@ import javax.media.opengl.glu.GLU;
 import com.jogamp.newt.opengl.GLWindow;
 
 import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.spi.*;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;

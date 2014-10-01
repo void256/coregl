@@ -26,6 +26,8 @@
  */
 package de.lessvoid.coregl;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 /**
  * Simple helper methods to render vertex arrays.
  * @author void

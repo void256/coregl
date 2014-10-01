@@ -13,6 +13,7 @@ import com.jogamp.newt.*;
 import com.jogamp.newt.opengl.GLWindow;
 
 import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.spi.CoreGL;
 
 public class CoreSetupJogl implements CoreSetup {
 	private static final Logger log = Logger.getLogger(CoreSetupJogl.class.getName());

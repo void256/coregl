@@ -2,11 +2,14 @@ package de.lessvoid.coregl.jogl;
 
 import java.nio.*;
 
-import javax.media.opengl.GL;
+import javax.media.opengl.*;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.common.util.VersionNumber;
+import com.jogamp.newt.*;
+import com.jogamp.newt.opengl.GLWindow;
 
-import de.lessvoid.coregl.CoreUtil;
+import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Brian Groenke
@@ -120,5 +123,40 @@ class JoglCoreUtil implements CoreUtil {
 		float[] store = new float[1];
 		gl.glGetFloatv(pname, store, 0);
 		return store[0];
+	}
+
+	@Override
+	public String getGLVersionString() {
+		VersionNumber version = GLContext.getCurrent().getGLVersionNumber();
+		return version.getMajor() + "." + version.getMinor();
+	}
+
+	@Override
+	public String getGLSLVersionString() {
+		VersionNumber version = GLContext.getCurrent().getGLSLVersionNumber();
+		return version.getMajor() + "." + version.getMinor();
+	}
+
+	@Override
+	public boolean isGLVersion(String version) {
+		VersionNumber query = new VersionNumber(version);
+		return query.compareTo(new VersionNumber(getGLVersionString())) >= 0;
+	}
+	
+	@Override
+	public boolean isGLSLVersion(String version) {
+		VersionNumber query = new VersionNumber(version);
+		return query.compareTo(new VersionNumber(getGLSLVersionString())) >= 0;
+	}
+	
+	public static void main(String[] args) {
+		GLProfile glp = GLProfile.getDefault();
+		GLCapabilities glc = new GLCapabilities(glp);
+		Display disp = NewtFactory.createDisplay(null);
+		Screen screen = NewtFactory.createScreen(disp, 0);
+		GLWindow glwin = GLWindow.create(screen, glc);
+		glwin.setVisible(true);
+		System.out.println(new VersionNumber("1.30"));
+		glwin.destroy();
 	}
 }

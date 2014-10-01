@@ -2,7 +2,7 @@ package de.lessvoid.coregl.lwjgl;
 
 import java.nio.*;
 
-import de.lessvoid.coregl.CoreUtil;
+import de.lessvoid.coregl.spi.CoreUtil;
 
 import org.lwjgl.BufferUtils;
 

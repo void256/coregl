@@ -29,6 +29,8 @@ package de.lessvoid.coregl;
 import java.nio.IntBuffer;
 import java.util.*;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 
 /**
  * A Vertex Array Object (VAO).

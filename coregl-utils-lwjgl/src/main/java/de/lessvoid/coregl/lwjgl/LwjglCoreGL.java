@@ -10,6 +10,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 
 import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.spi.*;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;

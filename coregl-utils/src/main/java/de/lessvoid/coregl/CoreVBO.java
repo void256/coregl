@@ -30,6 +30,8 @@ import java.lang.reflect.Array;
 import java.nio.*;
 import java.util.*;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 /**
  * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
  * @author void

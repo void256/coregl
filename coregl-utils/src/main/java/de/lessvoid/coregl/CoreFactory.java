@@ -32,6 +32,7 @@ import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
 import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
 import de.lessvoid.coregl.CoreTexture2DConstants.Type;
 import de.lessvoid.coregl.CoreVBO.UsageType;
+import de.lessvoid.coregl.spi.CoreGL;
 
 public class CoreFactory {
 	

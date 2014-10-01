@@ -28,6 +28,8 @@ package de.lessvoid.coregl;
 
 import java.nio.*;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 
 /**
  * CoreTextureBuffer - texture buffer support (work in progress)

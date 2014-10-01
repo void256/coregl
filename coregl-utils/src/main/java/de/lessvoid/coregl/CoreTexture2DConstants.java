@@ -2,6 +2,8 @@ package de.lessvoid.coregl;
 
 import java.util.*;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 class CoreTexture2DConstants {
 	/**
 	 * Image resizing mode. This enumerator is used in simple and defines the used filter for the magnifying and

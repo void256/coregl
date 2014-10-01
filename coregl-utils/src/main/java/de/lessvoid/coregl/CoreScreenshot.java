@@ -32,6 +32,8 @@ import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 /**
  * This is not really OpenGL core profile specific. It's just a helper class to save the content of
  * the color or stencil buffer to a file. I always wanted to have a class like that ... and now I have one ;D

@@ -28,6 +28,8 @@ package de.lessvoid.coregl;
 
 import java.nio.IntBuffer;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 /**
  * Helper class to use a frame buffer object. This will take care of all the necessary setup. Currently this class only
  * supports texture and not yet render buffer objects.

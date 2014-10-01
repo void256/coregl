@@ -32,6 +32,8 @@ import java.nio.*;
 import java.util.*;
 import java.util.logging.*;
 
+import de.lessvoid.coregl.spi.CoreGL;
+
 /**
  * Helper class that represents a shader (actually the combination of a vertex
  * and a fragment shader - what GL actually calls a program).
