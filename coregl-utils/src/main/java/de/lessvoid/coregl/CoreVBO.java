@@ -147,6 +147,34 @@ public class CoreVBO < T extends Buffer > {
 		vertexBuffer.rewind();
 		send();
 	}
+	
+	/**
+	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
+	 * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
+	 * the buffer data to the GPU.
+	 *
+	 * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
+	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
+	 * @param size the size of the buffer
+	 * @return the CoreVBO instance
+	 */
+	public static <T extends Buffer> CoreVBO<T> createCoreVBO(final CoreGL gl, CoreVBO.DataType dataType, CoreVBO.UsageType usageType, int size) {
+		return new CoreVBO<T>(gl, dataType, usageType, size);
+	}
+
+	/**
+	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
+	 * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
+	 * the buffer data to the GPU.
+	 *
+	 * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
+	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
+	 * @param size the size of the buffer
+	 * @return the CoreVBO instance
+	 */
+	public static <T extends Buffer> CoreVBO<T> createCoreVBO(final CoreGL gl, CoreVBO.DataType dataType, CoreVBO.UsageType usageType, Object[] data) {
+		return new CoreVBO<T>(gl, dataType, usageType, data);
+	}
 
 	/**
 	 * Allows access to the internally kept nio Buffer that contains the original
@@ -156,7 +184,7 @@ public class CoreVBO < T extends Buffer > {
 	 *
 	 * @return the Buffer with the original buffer data (stored in main memory not GPU memory)
 	 */
-	T getBuffer() {
+	public T getBuffer() {
 		return vertexBuffer;
 	}
 
@@ -164,7 +192,7 @@ public class CoreVBO < T extends Buffer > {
 	 * Maps the buffer object that this represents into client space and returns the buffer
 	 * @return the FloatBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
 	 */
-	T getMappedBuffer() {
+	public T getMappedBuffer() {
 		ByteBuffer dataBuffer = gl.glMapBuffer(gl.GL_ARRAY_BUFFER(), gl.GL_WRITE_ONLY(), byteLength, mappedBufferCache);
 		gl.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
 		mappedBufferCache = dataBuffer;
@@ -174,14 +202,14 @@ public class CoreVBO < T extends Buffer > {
 	/**
 	 * You'll need to call that when you're done writing data into a mapped buffer to return access back to the GPU.
 	 */
-	void unmapBuffer() {
+	public void unmapBuffer() {
 		gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER());
 	}
 
 	/**
 	 * bind the buffer object as GL_ARRAY_BUFFER
 	 */
-	void bind() {
+	public void bind() {
 		gl.glBindBuffer(gl.GL_ARRAY_BUFFER(), id);
 		gl.checkGLError("glBindBuffer(GL_ARRAY_BUFFER)");
 	}
@@ -189,7 +217,7 @@ public class CoreVBO < T extends Buffer > {
 	/**
 	 * Send the content of the Buffer to the GPU.
 	 */
-	void send() {
+	public void send() {
 		gl.glBindBuffer(gl.GL_ARRAY_BUFFER(), id);
 		if (DataType.FLOAT.equals(dataType)) {
 			gl.glBufferData(gl.GL_ARRAY_BUFFER(), (FloatBuffer) vertexBuffer, usage);
@@ -204,7 +232,7 @@ public class CoreVBO < T extends Buffer > {
 	/**
 	 * Delete all resources for this VBO.
 	 */
-	void delete() {
+	public void delete() {
 		IntBuffer idbuff = IntBuffer.allocate(1);
 		idbuff.put(id);
 		idbuff.flip();

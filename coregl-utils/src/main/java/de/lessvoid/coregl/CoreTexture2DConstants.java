@@ -4,12 +4,16 @@ import java.util.*;
 
 import de.lessvoid.coregl.spi.CoreGL;
 
-class CoreTexture2DConstants {
+/**
+ * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ */
+public class CoreTexture2DConstants {
+	
 	/**
 	 * Image resizing mode. This enumerator is used in simple and defines the used filter for the magnifying and
 	 * minimizing automatically.
 	 */
-	enum ResizeFilter {
+	public enum ResizeFilter {
 		/**
 		 * Nearest filter. This filter applies the nearest filter to both the magnifying and the minimizing filter.
 		 */
@@ -50,7 +54,7 @@ class CoreTexture2DConstants {
 	/**
 	 * This enumerator contains the default settings for different color values the texture could be stored as.
 	 */
-	enum ColorFormat {
+	public enum ColorFormat {
 		/**
 		 * In case this format is used the pixel data is expected to contain only one color channel. This color channel is
 		 * used as the <b>red</b> color of the newly created RGB texture.
@@ -113,7 +117,7 @@ class CoreTexture2DConstants {
 		LuminanceAlpha;
 	}
 
-	enum Type {
+	public enum Type {
 		UNSIGNED_BYTE,
 		BYTE,
 		UNSIGNED_SHORT,
@@ -139,12 +143,12 @@ class CoreTexture2DConstants {
 		/**
 		 * The value of the minimizing filter.
 		 */
-		private int minFilter;
+		int minFilter;
 
 		/**
 		 * The value of the magnifying filter.
 		 */
-		private int magFilter;
+		int magFilter;
 
 		ResizeFilterInfo(final int minFilter, final int magFilter) {
 			this.minFilter = minFilter;
@@ -156,22 +160,22 @@ class CoreTexture2DConstants {
 		/**
 		 * The pixel data format.
 		 */
-		private final int format;
+		final int format;
 
 		/**
 		 * The texture format.
 		 */
-		private final int internalFormat;
+		final int internalFormat;
 
 		/**
 		 * The compressed kind of the texture format.
 		 */
-		private final int compressedInternalFormat;
+		final int compressedInternalFormat;
 
 		/**
 		 * Number of components per pixels
 		 */
-		private final int componentsPerPixel;
+		final int componentsPerPixel;
 
 		/**GL11
 		 * Default constructor.

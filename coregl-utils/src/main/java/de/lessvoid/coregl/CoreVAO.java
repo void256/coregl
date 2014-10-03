@@ -52,6 +52,14 @@ public class CoreVAO {
 		gl.checkGLError("glGenVertexArrays");
 		vao = vaoBuff.get(0);
 	}
+	
+	/**
+	 * Create a new CoreVAO.
+	 * @return the CoreVAO instance created
+	 */
+	public static CoreVAO createCoreVAO(final CoreGL gl) {
+		return new CoreVAO(gl);
+	}
 
 	/**
 	 * Bind this VAO to make it the current VAO.

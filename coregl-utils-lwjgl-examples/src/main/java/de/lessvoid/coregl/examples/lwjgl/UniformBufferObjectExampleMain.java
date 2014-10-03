@@ -52,7 +52,7 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
   public UniformBufferObjectExampleMain(final CoreFactory factory) {
     coreRender = factory.getCoreRender();
 
-    shader = factory.newShaderWithVertexAttributes("vVertex", "vColor");
+    shader = factory.createShaderWithVertexAttributes("vVertex", "vColor");
     shader.vertexShader("ubo/ubo.vs");
     shader.fragmentShader("ubo/ubo.fs");
     shader.link();

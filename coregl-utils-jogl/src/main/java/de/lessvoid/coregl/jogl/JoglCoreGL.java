@@ -598,57 +598,57 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_STENCIL_INDEX() {
-		return GL2.GL_STENCIL_INDEX;
+		return GL2ES2.GL_STENCIL_INDEX;
 	}
 
 	@Override
 	public int GL_TEXTURE_BUFFER() {
-		return GL2.GL_TEXTURE_BUFFER;
+		return GL2GL3.GL_TEXTURE_BUFFER;
 	}
 
 	@Override
 	public int GL_R32F() {
-		return GL2.GL_R32F;
+		return GL2ES2.GL_R32F;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER() {
-		return GL2.GL_FRAMEBUFFER;
+		return GL.GL_FRAMEBUFFER;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER_COMPLETE() {
-		return GL2.GL_FRAMEBUFFER_COMPLETE;
+		return GL.GL_FRAMEBUFFER_COMPLETE;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER_UNDEFINED() {
-		return GL2.GL_FRAMEBUFFER_UNDEFINED;
+		return GL2ES3.GL_FRAMEBUFFER_UNDEFINED;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT() {
-		return GL2.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
+		return GL.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT() {
-		return GL2.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT;
+		return GL.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER() {
-		return GL2.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER;
+		return GL2GL3.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER() {
-		return GL2.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER;
+		return GL2GL3.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER;
 	}
 
 	@Override
 	public int GL_FRAMEBUFFER_UNSUPPORTED() {
-		return GL2.GL_FRAMEBUFFER_UNSUPPORTED;
+		return GL.GL_FRAMEBUFFER_UNSUPPORTED;
 	}
 
 	@Override
@@ -694,12 +694,17 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_MAX_VERTEX_ATTRIBS() {
-		return GL2.GL_MAX_VERTEX_ATTRIBS;
+		return GL2ES2.GL_MAX_VERTEX_ATTRIBS;
 	}
 
 	@Override
 	public int GL_MAX_3D_TEXTURE_SIZE() {
-		return GL2.GL_MAX_3D_TEXTURE_SIZE;
+		return GL2ES2.GL_MAX_3D_TEXTURE_SIZE;
+	}
+	
+	@Override
+	public int GL_UNIFORM_BUFFER() {
+		return GL2ES3.GL_UNIFORM_BUFFER;
 	}
 
 	@Override
@@ -1226,6 +1231,11 @@ public class JoglCoreGL implements CoreGL {
 	public void glFramebufferRenderbuffer(int target, int attachment,
 			int renderBufferTarget, int renderBuffer) {
 		GLContext.getCurrentGL().glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
+	}
+	
+	@Override
+	public void glBindBufferBase(int target, int bindingPoint, int id) {
+		GLContext.getCurrentGL().getGL2GL3().glBindBufferBase(target, bindingPoint, id);
 	}
 
 	private boolean errorChecksEnabled = true;

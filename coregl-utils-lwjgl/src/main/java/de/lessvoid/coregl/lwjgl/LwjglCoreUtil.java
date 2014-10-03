@@ -2,14 +2,25 @@ package de.lessvoid.coregl.lwjgl;
 
 import java.nio.*;
 
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.*;
+import org.lwjgl.util.glu.GLU;
+
+import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.CoreVersion.GLSLVersion;
+import de.lessvoid.coregl.CoreVersion.GLVersion;
 import de.lessvoid.coregl.spi.CoreUtil;
 
-import org.lwjgl.BufferUtils;
-
 /**
- * @author Brian Groenkes
+ * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
  */
 public class LwjglCoreUtil implements CoreUtil {
+	
+	@Override
+	public int gluBuild2DMipmaps(int target, int internalFormat, int width,
+			int height, int format, int type, ByteBuffer data) {
+		return GLU.gluBuild2DMipmaps(target, internalFormat, width, height, format, type, data);
+	}
 
 	@Override
 	public ByteBuffer createByteBuffer(byte[] data) {
@@ -114,5 +125,17 @@ public class LwjglCoreUtil implements CoreUtil {
 	@Override
 	public DoubleBuffer createDoubleBuffer(int size) {
 		return BufferUtils.createDoubleBuffer(size);
+	}
+	
+	@Override
+	public GLVersion getGLVersion() {
+		String glVersionString = GL11.glGetString(GL11.GL_VERSION);
+		return CoreVersion.getGLVersionFromString(glVersionString);
+	}
+	
+	@Override
+	public GLSLVersion getGLSLVersion() {
+		String glslVersionString = GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION);
+		return CoreVersion.getGLSLVersionFromString(glslVersionString);
 	}
 }

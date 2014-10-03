@@ -142,6 +142,7 @@ public interface CoreGL {
 	public int GL_RENDERER();
 	public int GL_MAX_VERTEX_ATTRIBS();
 	public int GL_MAX_3D_TEXTURE_SIZE();
+	public int GL_UNIFORM_BUFFER();
 
 	// OpenGL methods
 	public void glAlphaFunc (int func, float ref);
@@ -246,6 +247,7 @@ public interface CoreGL {
 	public void glBindRenderbuffer(int target, int renderBuffer);
 	public void glRenderbufferStorage(int target, int internalFormat, int width, int height);
 	public void glFramebufferRenderbuffer(int target, int attachment, int renderBufferTarget, int renderBuffer);
+	public void glBindBufferBase(int target, int bindingPoint, int id);
 	
 	public void checkGLError();
 	public void checkGLError(String msg);

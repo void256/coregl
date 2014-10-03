@@ -50,7 +50,7 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
   public SuperSimpleExampleMain(final CoreFactory factory) {
     coreRender = factory.getCoreRender();
 
-    CoreShader shader = factory.newShaderWithVertexAttributes("vVertex", "vColor");
+    CoreShader shader = factory.createShaderWithVertexAttributes("vVertex", "vColor");
     shader.vertexShader("super-simple/super-simple.vs");
     shader.fragmentShader("super-simple/super-simple.fs");
     shader.link();

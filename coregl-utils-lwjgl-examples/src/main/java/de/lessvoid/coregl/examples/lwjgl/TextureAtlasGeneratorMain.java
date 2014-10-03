@@ -65,7 +65,7 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
   public TextureAtlasGeneratorMain(final CoreFactory factory) throws Exception {
     this.factory = factory;
 
-    shader = factory.newShaderWithVertexAttributes("aVertex", "aUV");
+    shader = factory.createShaderWithVertexAttributes("aVertex", "aUV");
     shader.vertexShader("texture-atlas/texture.vs");
     shader.fragmentShader("texture-atlas/texture.fs");
     shader.link();

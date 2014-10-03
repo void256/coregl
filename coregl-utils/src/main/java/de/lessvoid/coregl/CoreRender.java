@@ -36,8 +36,12 @@ public class CoreRender {
 
 	private final CoreGL gl;
 
-	public CoreRender(final CoreGL gl) {
+	CoreRender(final CoreGL gl) {
 		this.gl = gl;
+	}
+	
+	public static CoreRender createCoreRender(final CoreGL gl) {
+		return new CoreRender(gl);
 	}
 
 	// Lines

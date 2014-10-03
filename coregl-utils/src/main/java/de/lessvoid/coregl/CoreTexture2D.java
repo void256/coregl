@@ -31,11 +31,9 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormatInfo;
 import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
-import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilterInfo;
 import de.lessvoid.coregl.CoreTexture2DConstants.Type;
-import de.lessvoid.coregl.CoreTexture2DConstants.TypeInfo;
+import de.lessvoid.coregl.CoreVersion.GLVersion;
 import de.lessvoid.coregl.spi.CoreGL;
 
 
@@ -77,12 +75,12 @@ public class CoreTexture2D {
 	 * collector consumes this class while the assigned texture was not disposed.
 	 */
 	private boolean isDisposed;
-	
+
 	/**
 	 * The instance of CoreGL that this CoreTexture2D uses to access OpenGL functions.
 	 */
 	private final CoreGL gl;
-	
+
 	/**
 	 * Used for looking up static CoreTexture2D constant values.
 	 */
@@ -132,32 +130,35 @@ public class CoreTexture2D {
 	 * @param filter the ResizeFilter to use
 	 * @return the new allocated CoreTexture2D
 	 */
-	static CoreTexture2D createEmptyTexture(
+	public static CoreTexture2D createEmptyTexture(
 			final CoreGL gl,
 			final ColorFormat format,
 			final Type dataType,
 			final int width,
 			final int height,
 			final ResizeFilter filter) {
-		ByteBuffer buffer = gl.getUtil().createByteBuffer(width*height*formatMap.get(format).componentsPerPixel);
-		byte[] data = new byte[width*height*formatMap.get(format).componentsPerPixel];
+		CoreTexture2DConstants texMapConsts = new CoreTexture2DConstants(gl);
+
+		ByteBuffer buffer = gl.getUtil().createByteBuffer(width*height*texMapConsts.getColorInfo(format).componentsPerPixel);
+		byte[] data = new byte[width*height*texMapConsts.getColorInfo(format).componentsPerPixel];
 		buffer.put(data);
 		buffer.flip();
 
 		return new CoreTexture2D(
 				gl,
+				texMapConsts,
 				AUTO,
 				gl.GL_TEXTURE_2D(),
 				0,
-				formatMap.get(format).internalFormat,
+				texMapConsts.getColorInfo(format).internalFormat,
 				width,
 				height,
 				0,
-				formatMap.get(format).format,
-				typeMap.get(dataType).internalType,
+				texMapConsts.getColorInfo(format).format,
+				texMapConsts.getTypeInfo(dataType).internalType,
 				buffer,
-				resizeFilterMap.get(filter).magFilter,
-				resizeFilterMap.get(filter).minFilter);
+				texMapConsts.getResizeFilter(filter).magFilter,
+				texMapConsts.getResizeFilter(filter).minFilter);
 	}
 
 	/**
@@ -170,7 +171,7 @@ public class CoreTexture2D {
 	 * @param filter the ResizeFilter to use
 	 * @return the new allocated CoreTexture2D
 	 */
-	static CoreTexture2D createEmptyTextureArray(
+	public static CoreTexture2D createEmptyTextureArray(
 			final CoreGL gl,
 			final ColorFormat format,
 			final Type dataType,
@@ -184,19 +185,23 @@ public class CoreTexture2D {
 		buffer.put(data);
 		buffer.flip();
 
+		CoreTexture2DConstants texMaps = new CoreTexture2DConstants(gl);
+
 		return new CoreTexture2D(
+				gl,
+				texMaps,
 				AUTO,
 				gl.GL_TEXTURE_2D_ARRAY(),
 				0,
-				formatMap.get(format).internalFormat,
+				texMaps.getColorInfo(format).internalFormat,
 				width,
 				height,
 				0,
-				formatMap.get(format).format,
+				texMaps.getColorInfo(format).format,
 				dataType,
 				buffer,
-				resizeFilterMap.get(filter).magFilter,
-				resizeFilterMap.get(filter).minFilter,
+				texMaps.getResizeFilter(filter).magFilter,
+				texMaps.getResizeFilter(filter).minFilter,
 				true,
 				num);    
 	}
@@ -212,15 +217,15 @@ public class CoreTexture2D {
 	 * @param filter the used filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	// PUBLIC
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final ColorFormat format,
 			final int width,
 			final int height,
 			final Buffer data,
 			final ResizeFilter filter) {
-		this(gl, format, false, width, height, data, filter);
+		this(gl, texMaps, format, false, width, height, data, filter);
 	}
 
 	/**
@@ -234,8 +239,9 @@ public class CoreTexture2D {
 	 * @param filter the used filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final int internalFormat,
 			final int width,
 			final int height,
@@ -244,6 +250,7 @@ public class CoreTexture2D {
 			final ResizeFilter filter) {
 		this(
 				gl,
+				texMaps,
 				AUTO,
 				gl.GL_TEXTURE_2D(),
 				0,
@@ -254,8 +261,8 @@ public class CoreTexture2D {
 				format,
 				AUTO,
 				data,
-				resizeFilterMap.get(filter).magFilter,
-				resizeFilterMap.get(filter).minFilter);
+				texMaps.getResizeFilter(filter).magFilter,
+				texMaps.getResizeFilter(filter).minFilter);
 	}
 
 	/**
@@ -270,8 +277,9 @@ public class CoreTexture2D {
 	 * @param filter the used filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final ColorFormat format,
 			final boolean compressed,
 			final int width,
@@ -280,10 +288,11 @@ public class CoreTexture2D {
 			final ResizeFilter filter) {
 		this(
 				gl,
-				formatMap.get(format).internalFormat,
+				texMaps,
+				texMaps.getColorInfo(format).internalFormat,
 				width,
 				height,
-				(compressed ? formatMap.get(format).compressedInternalFormat : formatMap.get(format).format),
+				(compressed ? texMaps.getColorInfo(format).compressedInternalFormat : texMaps.getColorInfo(format).format),
 				data,
 				filter);
 	}
@@ -300,9 +309,9 @@ public class CoreTexture2D {
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	// PUBLIC
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final ColorFormat internalFormat,
 			final int width,
 			final int height,
@@ -310,7 +319,7 @@ public class CoreTexture2D {
 			final Buffer data,
 			final int magFilter,
 			final int minFilter) {
-		this(gl, gl.GL_TEXTURE_2D(), internalFormat, width, height, format, data, magFilter, minFilter);
+		this(gl, texMaps, gl.GL_TEXTURE_2D(), internalFormat, width, height, format, data, magFilter, minFilter);
 	}
 
 	/**
@@ -325,8 +334,9 @@ public class CoreTexture2D {
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final int internalFormat,
 			final int width,
 			final int height,
@@ -336,6 +346,7 @@ public class CoreTexture2D {
 			final int minFilter) {
 		this(
 				gl,
+				texMaps,
 				AUTO,
 				gl.GL_TEXTURE_2D(),
 				0,
@@ -343,7 +354,7 @@ public class CoreTexture2D {
 				width,
 				height,
 				0,
-				formatMap.get(format).format,
+				texMaps.getColorInfo(format).format,
 				AUTO,
 				data,
 				magFilter,
@@ -363,9 +374,9 @@ public class CoreTexture2D {
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	// PUBLIC
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final int target,
 			final ColorFormat internalFormat,
 			final int width,
@@ -376,14 +387,15 @@ public class CoreTexture2D {
 			final int minFilter) {
 		this(
 				gl,
+				texMaps,
 				AUTO,
 				target,
 				0,
-				formatMap.get(internalFormat).internalFormat,
+				texMaps.getColorInfo(internalFormat).internalFormat,
 				width,
 				height,
 				0,
-				formatMap.get(format).format,
+				texMaps.getColorInfo(format).format,
 				AUTO,
 				data,
 				magFilter,
@@ -410,9 +422,9 @@ public class CoreTexture2D {
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	// PUBLIC
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final int textureId,
 			final int target,
 			final int level,
@@ -427,14 +439,15 @@ public class CoreTexture2D {
 			final int minFilter) {
 		this(
 				gl,
+				texMaps,
 				textureId,
 				target,
 				level,
-				formatMap.get(internalFormat).internalFormat,
+				texMaps.getColorInfo(internalFormat).internalFormat,
 				width,
 				height,
 				border,
-				formatMap.get(format).format,
+				texMaps.getColorInfo(format).format,
 				type,
 				data,
 				magFilter,
@@ -463,8 +476,9 @@ public class CoreTexture2D {
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
 	 */
-	CoreTexture2D(
+	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final int textureId,
 			final int target,
 			final int level,
@@ -479,6 +493,7 @@ public class CoreTexture2D {
 			final int minFilter) {
 		this(
 				gl,
+				texMaps,
 				textureId,
 				target,
 				level,
@@ -497,6 +512,7 @@ public class CoreTexture2D {
 
 	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final int textureId,
 			final int target,
 			final int level,
@@ -512,7 +528,7 @@ public class CoreTexture2D {
 			final boolean textureArray,
 			final int depth) {
 		this.gl = gl;
-		this.texMaps = new CoreTexture2DConstants(gl);
+		this.texMaps = texMaps;
 		this.textureId = createTexture(
 				textureId,
 				target,
@@ -535,6 +551,7 @@ public class CoreTexture2D {
 
 	private CoreTexture2D(
 			final CoreGL gl,
+			final CoreTexture2DConstants texMaps,
 			final int textureId,
 			final int target,
 			final int level,
@@ -550,7 +567,7 @@ public class CoreTexture2D {
 			final boolean textureArray,
 			final int depth) {
 		this.gl = gl;
-		this.texMaps = new CoreTexture2DConstants(gl);
+		this.texMaps = texMaps;
 		this.textureId = createTexture(
 				textureId,
 				target,
@@ -602,7 +619,7 @@ public class CoreTexture2D {
 		gl.glBindTexture(textureTarget, textureId);
 		checkGLError("glBindTexture", true);
 	}
-	
+
 	public void dispose() {
 		gl.glDeleteTextures(1, gl.getUtil().createIntBuffer(new int[] {textureId}));
 		checkGLError("dispose", true);
@@ -701,7 +718,7 @@ public class CoreTexture2D {
 		if (type == gl.GL_BITMAP() && format != gl.GL_COLOR_INDEX()) {
 			throw new CoreGLException("GL_BITMAP requires the format to be GL_COLOR_INDEX");
 		}
-		
+
 		if(checkEqualsInts(type, gl.GL_UNSIGNED_BYTE(), gl.GL_BYTE(), gl.GL_BITMAP(), gl.GL_UNSIGNED_BYTE_3_3_2(), gl.GL_UNSIGNED_BYTE_2_3_3_REV())) {
 			if (!(data instanceof ByteBuffer)) {
 				throw new CoreGLException("The selected type requires its data as byte values.");
@@ -831,20 +848,21 @@ public class CoreTexture2D {
 
 			if (textureArray) {
 				glTexImage3D(target, level, internalFormat, width, height, depth, border, format, usedType, data);
-			} else if (isCreatingMipMaps(level, minFilter)) {
-				if (gl.) {
+			} else if (isCreatingMipMaps(gl, level, minFilter)) {
+				if (gl.getUtil().getGLVersion().checkAgainst(GLVersion.GL30)) {
 					glTexImage2D(target, 0, internalFormat, width, height, border, format, usedType, data);
 					gl.glGenerateMipmap(target);
 					checkGLError("glGenerateMipmap", true);
-				} else if (GLContext.getCapabilities().GL_EXT_framebuffer_object) {
+				/*} else if (//FIXME Check for: 'EXT_framebuffer_object' ) {
 					glTexImage2D(target, 0, internalFormat, width, height, border, format, usedType, data);
-					EXTFramebufferObject.glGenerateMipmapEXT(target);
+					//FIXME JOGL impl needed for: EXTFramebufferObject.glGenerateMipmapEXT(target);
 					checkGLError("glGenerateMipmapEXT", true);
-				} else if (GLContext.getCapabilities().GL_SGIS_generate_mipmap &&
+				} else if (//FIXME Check for: GL_SGIS_generate_mipmap &&
 						((isPowerOfTwo(height) && isPowerOfTwo(width)) || isNPOTHardwareSupported())) {
-					gl.glTexParameteri(target, SGISGenerateMipmap.GL_GENERATE_MIPMAP_SGIS, GL11.GL_TRUE);
+					//FIXME JOGL impl needed for: gl.glTexParameteri(target, SGISGenerateMipmap.GL_GENERATE_MIPMAP_SGIS, GL11.GL_TRUE);
 					checkGLError("glTexParameteri", true);
 					glTexImage2D(target, 0, internalFormat, width, height, border, format, usedType, data);
+					*/
 				} else {
 					gluBuild2DMipmaps(target, internalFormat, width, height, format, usedType, data);
 				}
@@ -1041,7 +1059,7 @@ public class CoreTexture2D {
 	private void gluBuild2DMipmaps(final int target, final int components, final int width, final int height,
 			final int format, final int type, final Buffer data) {
 		if (data instanceof ByteBuffer) {
-			gl.gluBuild2DMipmaps(target, components, width, height, format, type, (ByteBuffer) data);
+			gl.getUtil().gluBuild2DMipmaps(target, components, width, height, format, type, (ByteBuffer) data);
 			checkGLError("gluBuild2DMipmaps", true);
 		} else {
 			throw new CoreGLException("MipMap creation not supported on this platform for non-byte buffers.");
@@ -1076,7 +1094,7 @@ public class CoreTexture2D {
 	private static boolean isPowerOfTwo(final int n) {
 		return ((n != 0) && (n & (n - 1)) == 0);
 	}
-	
+
 	private static boolean checkEqualsInts(final int val, final int...ints) {
 		Arrays.sort(ints);
 		int ind = Arrays.binarySearch(ints, val);

@@ -46,7 +46,7 @@ public class CurveExampleMain implements RenderLoopCallback {
 
   public CurveExampleMain(final CoreFactory factory) {
     this.factory = factory;
-    shader = factory.newShaderWithVertexAttributes("vVertex", "vTexture");
+    shader = factory.createShaderWithVertexAttributes("vVertex", "vTexture");
     shader.vertexShader("curve/curve.vs");
     shader.fragmentShader("curve/curve.fs");
     shader.link();

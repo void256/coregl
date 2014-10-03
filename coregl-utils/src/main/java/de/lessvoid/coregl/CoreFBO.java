@@ -52,6 +52,11 @@ public class CoreFBO {
 		this.gl = gl;
 		initialize();
 	}
+	
+	public static CoreFBO createCoreFBO(final CoreGL gl) {
+		return new CoreFBO(gl);
+	}
+	
 	/**
 	 * Enable this FBO (glBindFramebuffer)
 	 */

@@ -26,15 +26,17 @@
  */
 package de.lessvoid.coregl;
 
-import java.nio.*;
-
-import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
-import de.lessvoid.coregl.CoreTexture2DConstants.Type;
-import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.spi.CoreGL;
+/*
+ * >>>>>>>> DEPRECATION NOTICE <<<<<<<<<
+ * This class is deprecated and will be removed soon. It exists currently
+ * for refactoring purposes only.
+ * <<<<<<<<<<< END NOTICE >>>>>>>>>>>>>
+ */
 
 public class CoreFactory {
+	
+	private CoreFactory() {} // temporary block usage
+	/*
 	
 	private final CoreTexture2DConstants texConsts;
 	
@@ -43,7 +45,7 @@ public class CoreFactory {
 	/**
 	 * Equivalent to <code>CoreFactory(gl, true)</code>
 	 * @param gl
-	 */
+	 * /
 	public CoreFactory(final CoreGL gl) {
 		this(gl, true);
 	}
@@ -52,7 +54,7 @@ public class CoreFactory {
 	 * Creates a new CoreFactory using the CoreGL interface provided and with optional error checking.
 	 * @param gl
 	 * @param errorChecksEnabled true if error checking should be enabeld, false otherwise
-	 */
+	 * /
 	public CoreFactory(final CoreGL gl, final boolean errorChecksEnabled) {
 		this.gl = gl;
 		gl.setErrorChecksEnabled(errorChecksEnabled);
@@ -73,7 +75,7 @@ public class CoreFactory {
 	 * @param height the height of the texture
 	 * @param filter the ResizeFilter to use
 	 * @return the new allocated CoreTexture2D
-	 */
+	 * /
 	CoreTexture2D createEmptyTexture(
 			ColorFormat format,
 			Type dataType,
@@ -92,7 +94,7 @@ public class CoreFactory {
 	 * @param height the height of the texture
 	 * @param filter the ResizeFilter to use
 	 * @return the new allocated CoreTexture2D
-	 */
+	 * /
 	CoreTexture2D createEmptyTextureArray(
 			ColorFormat format,
 			Type dataType,
@@ -111,7 +113,7 @@ public class CoreFactory {
 	 * @param data the pixel data
 	 * @param filter the used filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
-	 */
+	 * /
 	CoreTexture2D createTexture(
 			ColorFormat format,
 			int width,
@@ -130,7 +132,7 @@ public class CoreFactory {
 	 * @param magFilter the magnifying filter
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
-	 */
+	 * /
 	CoreTexture2D createTexture(
 			ColorFormat internalFormat,
 			int width,
@@ -152,7 +154,7 @@ public class CoreFactory {
 	 * @param magFilter the magnifying filter
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
-	 */
+	 * /
 	CoreTexture2D createTexture(
 			int target,
 			ColorFormat internalFormat,
@@ -182,7 +184,7 @@ public class CoreFactory {
 	 * @param magFilter the magnifying filter
 	 * @param minFilter the minimizing filter
 	 * @throws CoreGLException in case the creation of the texture fails for any reason
-	 */
+	 * /
 	CoreTexture2D createTexture(
 			int textureId,
 			int target,
@@ -202,7 +204,7 @@ public class CoreFactory {
 	/**
 	 * Create a new Shader.
 	 * @return the new CoreShader instance
-	 */
+	 * /
 	public CoreShader newShader() {
 		return new CoreShader(gl);
 	}
@@ -215,7 +217,7 @@ public class CoreFactory {
 	 * @param vertexAttributes the name of the vertex attribute. The first String gets generic attribute index 0. the
 	 *        second String gets generic attribute index 1 and so on.
 	 * @return the CoreShader instance
-	 */
+	 * /
 	public CoreShader newShaderWithVertexAttributes(String ... vertexAttributes) {
 		return new CoreShader(gl, vertexAttributes);
 	}
@@ -231,7 +233,7 @@ public class CoreFactory {
 	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
 	 * @param size the size of the buffer
 	 * @return the CoreVBO instance
-	 */
+	 * /
 	public <T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, int size) {
 		return new CoreVBO<T>(gl, dataType, usageType, size);
 	}
@@ -245,7 +247,7 @@ public class CoreFactory {
 	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
 	 * @param size the size of the buffer
 	 * @return the CoreVBO instance
-	 */
+	 * /
 	public <T extends Buffer> CoreVBO<T> createVBO(CoreVBO.DataType dataType, CoreVBO.UsageType usageType, Object[] data) {
 		return new CoreVBO<T>(gl, dataType, usageType, data);
 	}
@@ -255,7 +257,7 @@ public class CoreFactory {
 	/**
 	 * Create a new CoreVAO.
 	 * @return the CoreVAO instance created
-	 */
+	 * /
 	public CoreVAO createVAO() {
 		return new CoreVAO(gl);
 	}
@@ -265,7 +267,7 @@ public class CoreFactory {
 	/**
 	 * Create a new CoreFBO.
 	 * @return the CoreFBO instance created
-	 */
+	 * /
 	public CoreFBO createCoreFBO() {
 		return new CoreFBO(gl);
 	}
@@ -287,7 +289,7 @@ public class CoreFactory {
 	 * 
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
-	 */
+	 * /
 	public CoreElementVBO createStatic(int[] data) {
 		return new CoreElementVBO(gl, gl.GL_STATIC_DRAW(), data);
 	}
@@ -298,7 +300,7 @@ public class CoreFactory {
 	 * 
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
-	 */
+	 * /
 	public CoreElementVBO createStaticAndSend(int[] data) {
 		CoreElementVBO result = new CoreElementVBO(gl, gl.GL_STATIC_DRAW(), data);
 		result.send();
@@ -311,7 +313,7 @@ public class CoreFactory {
 	 * 
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
-	 */
+	 * /
 	public CoreElementVBO createStaticAndSend(IntBuffer data) {
 		CoreElementVBO result = new CoreElementVBO(gl, gl.GL_STATIC_DRAW(), data);
 		result.send();
@@ -323,7 +325,7 @@ public class CoreFactory {
 	 *
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
-	 */
+	 * /
 	public CoreElementVBO createDynamic(int[] data) {
 		return new CoreElementVBO(gl, gl.GL_DYNAMIC_DRAW(), data);
 	}
@@ -333,7 +335,7 @@ public class CoreFactory {
 	 *
 	 * @param data float array of buffer data
 	 * @return the CoreVBO instance created
-	 */
+	 * /
 	public CoreElementVBO createStream(int[] data) {
 		return new CoreElementVBO(gl, gl.GL_STREAM_DRAW(), data);
 	}
@@ -343,7 +345,7 @@ public class CoreFactory {
 	/**
 	 * Create the CoreDisplaySetup class that is completely optional but a handy tool to setup the rendering system.
 	 * @return
-	 */
+	 * /
 	public CoreSetup createSetup() {
 		return null; // FIXME !!!! CoreSetup needs implementation
 	}
@@ -353,7 +355,7 @@ public class CoreFactory {
 	/**
 	 * Create the CoreRender class.
 	 * @return CoreRender instance
-	 */
+	 * /
 	public CoreRender getCoreRender() {
 		return new CoreRender(gl);
 	}
@@ -363,5 +365,5 @@ public class CoreFactory {
 	public CoreScreenshot createCoreScreenshot() {
 		return new CoreScreenshot(gl);
 	}
-
+	*/
 }

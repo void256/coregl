@@ -24,39 +24,23 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.lessvoid.coregl.lwjgl;
+package de.lessvoid.coregl;
 
-
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL30.glBindBufferBase;
-import static org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER;
-
-import java.nio.ByteBuffer;
+import java.nio.*;
 import java.util.Map;
 
-import org.lwjgl.BufferUtils;
+import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.math.*;
 
-import de.lessvoid.coregl.CoreCheckGL;
-import de.lessvoid.coregl.CoreGLException;
-import de.lessvoid.coregl.lwjgl.CoreShaderLwjgl.UniformBlockInfo;
-import de.lessvoid.math.Mat3;
-import de.lessvoid.math.Mat4;
-import de.lessvoid.math.Vec2;
-import de.lessvoid.math.Vec3;
-import de.lessvoid.math.Vec4;
-
-public class CoreUBOLwjgl{
+public class CoreUBO {
+	
   @Override
   protected void finalize() throws Throwable {
     super.finalize();
     System.out.println("HJSAHDKJAHSD");
   }
-
-  private final CoreCheckGL checkGL;
+  
+  private final CoreGL gl;
 
   private final int id;
   private final int usage;
@@ -64,25 +48,27 @@ public class CoreUBOLwjgl{
   private final ByteBuffer byteBuffer;
   private final Map<String, UniformBlockInfo> blockInfos;
 
-  public static CoreUBOLwjgl createStatic(
-      final CoreCheckGL checkGL,
+  public static CoreUBO createCoreUBO (
+      final CoreGL gl,
       final int length,
       final Map<String, UniformBlockInfo> infos) {
-    return new CoreUBOLwjgl(checkGL, GL_STATIC_DRAW, length, infos);
+    return new CoreUBO(gl, gl.GL_STATIC_DRAW(), length, infos);
   }
 
-  CoreUBOLwjgl(
-      final CoreCheckGL checkGLParam,
+  CoreUBO (
+      final CoreGL gl,
       final int usageType,
       final int length,
       final Map<String, UniformBlockInfo> infos) {
-    checkGL = checkGLParam;
+    this.gl = gl;
     usage = usageType;
     byteLength = length;
-    byteBuffer = BufferUtils.createByteBuffer(length);
+    byteBuffer = gl.getUtil().createByteBuffer(length);
     blockInfos = infos;
-    id = glGenBuffers();
-    checkGL.checkGLError("glGenBuffers");
+    IntBuffer idbuff = gl.getUtil().createIntBuffer(1);
+    gl.glGenBuffers(1, idbuff);
+    id = idbuff.get(0);
+    gl.checkGLError("glGenBuffers");
   }
 
   public void setVec2(final String name, final Vec2 vec) {
@@ -185,8 +171,8 @@ public class CoreUBOLwjgl{
   }
 
   public void bindBufferBase(final int bindingPoint) {
-    glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, id);
-    checkGL.checkGLError("glBindBufferBase");
+    gl.glBindBufferBase(gl.GL_UNIFORM_BUFFER(), bindingPoint, id);
+    gl.checkGLError("glBindBufferBase");
   }
 
   public ByteBuffer getBuffer() {
@@ -198,13 +184,13 @@ public class CoreUBOLwjgl{
       System.out.print(String.format("%02X ", byteBuffer.get(i)));
     }
     byteBuffer.rewind();
-    glBindBuffer(GL_UNIFORM_BUFFER, id);
-    glBufferData(GL_UNIFORM_BUFFER, byteBuffer, usage);
-    checkGL.checkGLError("glBufferData(GL_UNIFORM_BUFFER)");
+    gl.glBindBuffer(gl.GL_UNIFORM_BUFFER(), id);
+    gl.glBufferData(gl.GL_UNIFORM_BUFFER(), byteBuffer.asIntBuffer(), usage);
+    gl.checkGLError("glBufferData(GL_UNIFORM_BUFFER)");
   }
 
   public void delete() {
-    glDeleteBuffers(id);
-    checkGL.checkGLError("glDeleteBuffers");
+    gl.glDeleteBuffers(1, gl.getUtil().createIntBuffer(new int[] {id}));
+    gl.checkGLError("glDeleteBuffers");
   }
 }

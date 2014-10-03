@@ -84,7 +84,7 @@ public class LineMain implements RenderLoopCallback {
   public LineMain(final CoreFactory factory) throws Exception {
     this.factory = factory;
 
-    texture = factory.newShaderWithVertexAttributes("aVertex", "aUV");
+    texture = factory.createShaderWithVertexAttributes("aVertex", "aUV");
     texture.vertexShader("line/line-pass2.vs");
     texture.fragmentShader("line/line-pass2.fs");
     texture.link();
@@ -119,7 +119,7 @@ public class LineMain implements RenderLoopCallback {
     fboTexture = factory.createEmptyTexture(ColorFormat.Red, Type.UNSIGNED_BYTE, Display.getWidth(), Display.getHeight(), ResizeFilter.Linear);
     fbo.attachTexture(fboTexture.getTextureId(), 0);
 
-    backgroundShader = factory.newShaderWithVertexAttributes("aVertex", "aColor");
+    backgroundShader = factory.createShaderWithVertexAttributes("aVertex", "aColor");
     backgroundShader.vertexShader("background-gradient.vs");
     backgroundShader.fragmentShader("background-gradient.fs");
     backgroundShader.link();

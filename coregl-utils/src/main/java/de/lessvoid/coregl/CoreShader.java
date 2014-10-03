@@ -48,7 +48,35 @@ public class CoreShader {
 	private final String[] attributes;
 
 	private final CoreGL gl;
+	
+	/**
+	 * Create a new Shader.
+	 * @return the new CoreShader instance
+	 */
+	public static CoreShader createShader(final CoreGL gl) {
+		return new CoreShader(gl);
+	}
+	
+	/**
+	 * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indices in
+	 * ascending order beginning with 0. This method can be used when you want to control the vertex attribute binding
+	 * on your own.
+	 *
+	 * @param vertexAttributes the name of the vertex attribute. The first String gets generic attribute index 0. the
+	 *        second String gets generic attribute index 1 and so on.
+	 * @return the CoreShader instance
+	 */
+	public static CoreShader createShaderWithVertexAttributes(final CoreGL gl, String ... vertexAttributes) {
+		return new CoreShader(gl, vertexAttributes);
+	}
 
+	CoreShader(final CoreGL gl, final String ... vertexAttributes) {
+		this.gl = gl;
+		this.attributes = vertexAttributes;
+		this.program = gl.glCreateProgram();
+		checkGLError("glCreateProgram");
+	}
+	
 	public int vertexShader(final String filename) {
 		return vertexShader(filename, getStream(filename));
 	}
@@ -174,38 +202,38 @@ public class CoreShader {
 	}
 
 	public void setUniformi(final String name, final int...values) {
-		setUniform(name, UniformTypeLwjgl.INT, toObjectArray(values));
+		setUniform(name, UniformType.INT, toObjectArray(values));
 	}
 
 	public void setUniformf(final String name, final float...values) {
-		setUniform(name, UniformTypeLwjgl.FLOAT, toObjectArray(values));
+		setUniform(name, UniformType.FLOAT, toObjectArray(values));
 	}
 
 	public void setUniformd(final String name, final double...values) {
-		setUniform(name, UniformTypeLwjgl.DOUBLE, toObjectArray(values));
+		setUniform(name, UniformType.DOUBLE, toObjectArray(values));
 	}
 
 	public void setUniformiv(final String name, final int componentNum, final int... values) {
 		IntBuffer buff = gl.getUtil().createIntBuffer(values.length);
 		buff.put(values);
 		buff.flip();
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, buff);
+		setUniformv(name, componentNum, UniformType.INT, buff);
 	}
 
 	public void setUniformiv(final String name, final int componentNum, final IntBuffer values) {
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, values);
+		setUniformv(name, componentNum, UniformType.INT, values);
 	}
 
 	public void setUniformfv(final String name, final int componentNum, final float... values) {
 		FloatBuffer buff = gl.getUtil().createFloatBuffer(values.length);
 		buff.put(values);
 		buff.flip();
-		setUniformv(name, componentNum, UniformTypeLwjgl.FLOAT, buff);
+		setUniformv(name, componentNum, UniformType.FLOAT, buff);
 
 	}
 
 	public void setUniformfv(final String name, final int componentNum, final FloatBuffer values) {
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, values);
+		setUniformv(name, componentNum, UniformType.INT, values);
 
 	}
 
@@ -213,12 +241,12 @@ public class CoreShader {
 		DoubleBuffer buff = gl.getUtil().createDoubleBuffer(values.length);
 		buff.put(values);
 		buff.flip();
-		setUniformv(name, componentNum, UniformTypeLwjgl.FLOAT, buff);
+		setUniformv(name, componentNum, UniformType.FLOAT, buff);
 
 	}
 
 	public void setUniformdv(final String name, final int componentNum, final DoubleBuffer values) {
-		setUniformv(name, componentNum, UniformTypeLwjgl.INT, values);
+		setUniformv(name, componentNum, UniformType.INT, values);
 	}
 
 	public void setUniformMatrix(final String name, final int componentNum, final float... values) {
@@ -228,15 +256,15 @@ public class CoreShader {
 		matBuffer.clear();
 		matBuffer.put(values);
 		matBuffer.flip();
-		setUniformMatrix(name, componentNum, UniformTypeLwjgl.FLOAT, matBuffer);
+		setUniformMatrix(name, componentNum, UniformType.FLOAT, matBuffer);
 	}
 
 	public void setUniformMatrix(final String name, final int componentNum,
 			FloatBuffer values) {
-		setUniformMatrix(name, componentNum, UniformTypeLwjgl.FLOAT, values);
+		setUniformMatrix(name, componentNum, UniformType.FLOAT, values);
 	}
 
-	private void setUniform(final String name, final UniformTypeLwjgl type, final Object...values) {
+	private void setUniform(final String name, final UniformType type, final Object...values) {
 		int loc = getLocation(name);
 		String method = "glUniform"+values.length+type.suffix;
 		try {
@@ -278,7 +306,7 @@ public class CoreShader {
 	}
 
 	private void setUniformv(final String name, final int componentNum, 
-			final UniformTypeLwjgl type, final Buffer data) {
+			final UniformType type, final Buffer data) {
 		int loc = getLocation(name);
 		if(componentNum < 1 || componentNum > 4)
 			throw(new IllegalArgumentException("illegal number of compoments for setUniform"+type.suffix+"v"));
@@ -300,7 +328,7 @@ public class CoreShader {
 	}
 
 	private void setUniformMatrix(final String name, final int componentNum,
-			final UniformTypeLwjgl type, final Buffer data) {
+			final UniformType type, final Buffer data) {
 		int loc = getLocation(name);
 		if(componentNum < 2 || componentNum > 4)
 			throw(new IllegalArgumentException("illegal number of compoments for setUniformMatrix"));
@@ -330,24 +358,6 @@ public class CoreShader {
 	public void bindAttribLocation(final String name, final int index) {
 		gl.glBindAttribLocation(program, index, name);
 		checkGLError("glBindAttribLocation");
-	}
-
-	public static class UniformBlockInfo {
-		public String name;
-		int offset;
-		int arrayStride;
-		int matrixStride;
-
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("[");
-			builder.append("name: ").append(name).append(", ");
-			builder.append("offset: ").append(offset).append(", ");
-			builder.append("arrayStride: ").append(arrayStride).append(", ");
-			builder.append("matrixStride: ").append(matrixStride);
-			builder.append("]");
-			return builder.toString();
-		}
 	}
 
 	public Map<String, UniformBlockInfo> getUniformIndices(final String ... uniformNames) {
@@ -390,13 +400,6 @@ public class CoreShader {
 	public void activate() {
 		gl.glUseProgram(program);
 		checkGLError("glUseProgram");
-	}
-
-	CoreShader(final CoreGL gl, final String ... vertexAttributes) {
-		this.gl = gl;
-		this.attributes = vertexAttributes;
-		this.program = gl.glCreateProgram();
-		checkGLError("glCreateProgram");
 	}
 
 	private int registerParameter(final String name) {
@@ -521,7 +524,7 @@ public class CoreShader {
 		return intObjs;
 	}
 
-	enum UniformTypeLwjgl {
+	enum UniformType {
 		INT("i", int.class, IntBuffer.class),
 		FLOAT("f", float.class, FloatBuffer.class),
 		DOUBLE("d", double.class, DoubleBuffer.class);
@@ -529,7 +532,7 @@ public class CoreShader {
 		String suffix;
 		Class<?> value, buffer;
 
-		UniformTypeLwjgl(String suffix, Class<?> value, Class<?> buffer) {
+		UniformType(String suffix, Class<?> value, Class<?> buffer) {
 			this.suffix = suffix;
 			this.buffer = buffer;
 			this.value = value;

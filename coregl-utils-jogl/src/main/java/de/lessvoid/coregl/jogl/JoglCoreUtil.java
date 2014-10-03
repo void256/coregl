@@ -3,18 +3,32 @@ package de.lessvoid.coregl.jogl;
 import java.nio.*;
 
 import javax.media.opengl.*;
+import javax.media.opengl.glu.GLU;
+
+import org.junit.Test;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.common.util.VersionNumber;
 import com.jogamp.newt.*;
 import com.jogamp.newt.opengl.GLWindow;
 
+import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.CoreVersion.GLSLVersion;
+import de.lessvoid.coregl.CoreVersion.GLVersion;
 import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
- * @author Brian Groenke
+ * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
  */
-class JoglCoreUtil implements CoreUtil {
+public class JoglCoreUtil implements CoreUtil {
+	
+	private final GLU glu = new GLU();
+	
+	@Override
+	public int gluBuild2DMipmaps(int target, int internalFormat, int width,
+			int height, int format, int type, ByteBuffer data) {
+		return glu.gluBuild2DMipmaps(target, internalFormat, width, height, format, type, data);
+	}
 	
 	@Override
 	public ByteBuffer createByteBuffer(byte[] data) {
@@ -124,39 +138,51 @@ class JoglCoreUtil implements CoreUtil {
 		gl.glGetFloatv(pname, store, 0);
 		return store[0];
 	}
-
-	@Override
-	public String getGLVersionString() {
-		VersionNumber version = GLContext.getCurrent().getGLVersionNumber();
-		return version.getMajor() + "." + version.getMinor();
-	}
-
-	@Override
-	public String getGLSLVersionString() {
-		VersionNumber version = GLContext.getCurrent().getGLSLVersionNumber();
-		return version.getMajor() + "." + version.getMinor();
-	}
-
-	@Override
-	public boolean isGLVersion(String version) {
-		VersionNumber query = new VersionNumber(version);
-		return query.compareTo(new VersionNumber(getGLVersionString())) >= 0;
+	
+	public GLVersion getGLVersion() {
+		VersionNumber glVersion = GLContext.getCurrent().getGLVersionNumber();
+		return CoreVersion.getGLVersion(glVersion.getMajor(), glVersion.getMinor());
 	}
 	
-	@Override
-	public boolean isGLSLVersion(String version) {
-		VersionNumber query = new VersionNumber(version);
-		return query.compareTo(new VersionNumber(getGLSLVersionString())) >= 0;
+	public GLSLVersion getGLSLVersion() {
+		VersionNumber glslVersion = GLContext.getCurrent().getGLSLVersionNumber();
+		return CoreVersion.getGLSLVersionFromString(glslVersion.toString());
 	}
-	
-	public static void main(String[] args) {
+
+	@Test
+	public void test() {
 		GLProfile glp = GLProfile.getDefault();
 		GLCapabilities glc = new GLCapabilities(glp);
-		Display disp = NewtFactory.createDisplay(null);
-		Screen screen = NewtFactory.createScreen(disp, 0);
-		GLWindow glwin = GLWindow.create(screen, glc);
-		glwin.setVisible(true);
-		System.out.println(new VersionNumber("1.30"));
-		glwin.destroy();
+		Display newtDisp = NewtFactory.createDisplay(null);
+		Screen newtScreen = NewtFactory.createScreen(newtDisp, 0);
+		GLWindow glWin = GLWindow.create(newtScreen, glc);
+		glWin.addGLEventListener(new GLEventListener() {
+
+			@Override
+			public void display(GLAutoDrawable arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void dispose(GLAutoDrawable arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void init(GLAutoDrawable arg0) {
+				System.out.println(GLContext.getCurrentGL().glGetString(GL.GL_VERSION));
+			}
+
+			@Override
+			public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
+					int arg4) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		glWin.setVisible(true);
 	}
 }

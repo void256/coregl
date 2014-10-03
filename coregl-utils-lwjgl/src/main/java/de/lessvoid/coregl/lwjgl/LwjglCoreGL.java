@@ -691,6 +691,11 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_MAX_3D_TEXTURE_SIZE() {
 		return GL12.GL_MAX_3D_TEXTURE_SIZE;
 	}
+	
+	@Override
+	public int GL_UNIFORM_BUFFER() {
+		return GL31.GL_UNIFORM_BUFFER;
+	}
 
 	@Override
 	public void glAlphaFunc(int func, float ref) {
@@ -1213,6 +1218,12 @@ public class LwjglCoreGL implements CoreGL {
 	public void glFramebufferRenderbuffer(int target, int attachment,
 			int renderBufferTarget, int renderBuffer) {
 		GL30.glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
+	}
+	
+
+	@Override
+	public void glBindBufferBase(int target, int bindingPoint, int id) {
+		GL30.glBindBufferBase(target, bindingPoint, id);
 	}
 
 	private boolean errorCheckingEnabled = true;

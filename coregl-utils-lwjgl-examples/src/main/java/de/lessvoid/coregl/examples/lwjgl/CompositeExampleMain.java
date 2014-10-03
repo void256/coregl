@@ -59,7 +59,7 @@ public class CompositeExampleMain implements RenderLoopCallback {
 
   public CompositeExampleMain(final CoreFactory factory) {
     this.factory = factory;
-    shader = factory.newShaderWithVertexAttributes("aVertex", "aColor");
+    shader = factory.createShaderWithVertexAttributes("aVertex", "aColor");
     shader.vertexShader("plain-color.vs");
     shader.fragmentShader("plain-color.fs");
     shader.link();
