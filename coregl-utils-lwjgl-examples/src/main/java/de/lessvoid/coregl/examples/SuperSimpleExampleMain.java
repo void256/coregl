@@ -120,4 +120,19 @@ public class SuperSimpleExampleMain implements RenderLoopCallback, CoreExample {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void main(String[] args) {
+		if (args.length == 0) {
+			System.out.println("no test arguments supplied: defaulting to JOGL");
+			new SuperSimpleExampleMain().runJogl();
+		} else {
+			if (args[0].equals("jogl")) {
+				System.out.println("running SuperSimpleExampleMain: backend=JOGL");
+				new SuperSimpleExampleMain().runJogl();
+			} else if (args[0].equals("lwjgl")) {
+				System.out.println("running SuperSimpleExampleMain: backend=LWJGL");
+				new SuperSimpleExampleMain().runLwjgl();
+			}
+		}
+	}
 }

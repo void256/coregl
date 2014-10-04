@@ -73,8 +73,8 @@ public class CoreVBO < T extends Buffer > {
 			return size << byteSizeFactor;
 		}
 
-		public <T extends Buffer> T createBuffer(final int size) {
-			ByteBuffer byteBuffer = createByteBuffer(calcByteLength(size));
+		public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
+			ByteBuffer byteBuffer = gl.getUtil().createByteBuffer(calcByteLength(size));
 			if (FLOAT.equals(this)) {
 				return (T) byteBuffer.asFloatBuffer();
 			} else if (SHORT.equals(this)) {
@@ -100,10 +100,6 @@ public class CoreVBO < T extends Buffer > {
 			} else {
 				throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
 			}
-		}
-
-		private static ByteBuffer createByteBuffer(final int size) {
-			return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
 		}
 
 		private static float[] toFloatArray(final Object[] data) {
@@ -136,7 +132,7 @@ public class CoreVBO < T extends Buffer > {
 		dataType = dataTypeParam;
 		byteLength = dataType.calcByteLength(size);
 
-		vertexBuffer = dataType.createBuffer(size);
+		vertexBuffer = dataType.createBuffer(gl, size);
 		vertexBuffer.rewind();
 
 		id = initBuffer();

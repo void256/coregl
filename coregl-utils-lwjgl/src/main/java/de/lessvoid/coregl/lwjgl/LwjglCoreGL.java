@@ -675,6 +675,11 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_VERSION() {
 		return GL11.GL_VERSION;
 	}
+	
+	@Override
+	public int GL_SHADING_LANGUAGE_VERSION() {
+		return GL20.GL_SHADING_LANGUAGE_VERSION;
+	}
 
 	@Override
 	public int GL_VENDOR() {
