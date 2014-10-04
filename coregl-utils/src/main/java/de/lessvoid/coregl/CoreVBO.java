@@ -230,7 +230,7 @@ public class CoreVBO < T extends Buffer > {
 	 * Delete all resources for this VBO.
 	 */
 	public void delete() {
-		IntBuffer idbuff = IntBuffer.allocate(1);
+		IntBuffer idbuff = gl.getUtil().createIntBuffer(1);
 		idbuff.put(id);
 		idbuff.flip();
 		gl.glDeleteBuffers(1, idbuff);
