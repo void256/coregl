@@ -795,7 +795,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public void glDrawArrays(int mode, int first, int count) {
-		GLContext.getCurrentGL().getGL2().glDrawArrays(mode, first, count);
+		GLContext.getCurrentGL().glDrawArrays(mode, first, count);
 	}
 
 	@Override

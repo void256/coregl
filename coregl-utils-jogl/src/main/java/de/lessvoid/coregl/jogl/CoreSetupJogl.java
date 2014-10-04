@@ -137,7 +137,7 @@ public class CoreSetupJogl implements CoreSetup {
 	}
 
 	private void initGraphics(final String title, final int requestedWidth, final int requestedHeight) throws Exception {
-		GLProfile profile = GLProfile.getDefault();
+		GLProfile profile = GLProfile.getMaxProgrammableCore(true);
 		GLCapabilities glc = new GLCapabilities(profile);
 		newtDisp = NewtFactory.createDisplay(null);
 		
