@@ -6,9 +6,7 @@ import java.util.logging.Logger;
 import javax.media.opengl.*;
 import javax.media.opengl.glu.GLU;
 
-import com.jogamp.newt.opengl.GLWindow;
-
-import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.CoreGLException;
 import de.lessvoid.coregl.spi.*;
 
 /**
@@ -21,199 +19,205 @@ public class JoglCoreGL implements CoreGL {
 
 	private final CoreUtil util = new JoglCoreUtil();
 
-	private GLWindow glWin;
-
-	public JoglCoreGL(GLWindow glWin) {
-		this.glWin = glWin;
-	}
-
-	public void setGLWindow(GLWindow glWin) {
-		this.glWin = glWin;
-	}
-
 	@Override
 	public int GL_ALPHA() {
-		return GL2.GL_ALPHA;
+		return GL.GL_ALPHA;
 	}
 
 	@Override
 	public int GL_ALPHA_TEST() {
-		return GL2.GL_ALPHA_TEST;
+		return GL2ES1.GL_ALPHA_TEST;
 	}
 
 	@Override
 	public int GL_BLEND() {
-		return GL2.GL_BLEND;
+		return GL.GL_BLEND;
 	}
 
 	@Override
 	public int GL_BLEND_DST() {
-		return GL2.GL_BLEND_DST;
+		return GL.GL_BLEND_DST;
 	}
 
 	@Override
 	public int GL_BLEND_SRC() {
-		return GL2.GL_BLEND_SRC;
+		return GL.GL_BLEND_SRC;
 	}
 
 	@Override
 	public int GL_BYTE() {
-		return GL2.GL_BYTE;
+		return GL.GL_BYTE;
 	}
+
+	// TODO -- Remove fixed func -- //
 
 	@Override
 	public int GL_COLOR_ARRAY() {
 		return GL2.GL_COLOR_ARRAY;
 	}
 
+	// ------- //
+
 	@Override
 	public int GL_COLOR_BUFFER_BIT() {
-		return GL2.GL_COLOR_BUFFER_BIT;
+		return GL.GL_COLOR_BUFFER_BIT;
 	}
 
 	@Override
 	public int GL_CULL_FACE() {
-		return GL2.GL_CULL_FACE;
+		return GL.GL_CULL_FACE;
 	}
 
 	@Override
 	public int GL_DEPTH_TEST() {
-		return GL2.GL_DEPTH_TEST;
+		return GL.GL_DEPTH_TEST;
 	}
 
 	@Override
 	public int GL_DST_COLOR() {
-		return GL2.GL_DST_COLOR;
+		return GL.GL_DST_COLOR;
 	}
 
 	@Override
 	public int GL_FALSE() {
-		return GL2.GL_FALSE;
+		return GL.GL_FALSE;
 	}
 
 	@Override
 	public int GL_FLOAT() {
-		return GL2.GL_FLOAT;
+		return GL.GL_FLOAT;
 	}
 
 	@Override
 	public int GL_INVALID_ENUM() {
-		return GL2.GL_INVALID_ENUM;
+		return GL.GL_INVALID_ENUM;
 	}
 
 	@Override
 	public int GL_INVALID_OPERATION() {
-		return GL2.GL_INVALID_OPERATION;
+		return GL.GL_INVALID_OPERATION;
 	}
 
 	@Override
 	public int GL_INVALID_VALUE() {
-		return GL2.GL_INVALID_VALUE;
+		return GL.GL_INVALID_VALUE;
 	}
+
+	// TODO -- Remove fixed func -- //
 
 	@Override
 	public int GL_LIGHTING() {
 		return GL2.GL_LIGHTING;
 	}
 
+	// ------- //
+
 	@Override
 	public int GL_LINEAR() {
-		return GL2.GL_LINEAR;
+		return GL.GL_LINEAR;
 	}
 
 	@Override
 	public int GL_LINEAR_MIPMAP_LINEAR() {
-		return GL2.GL_LINEAR_MIPMAP_LINEAR;
+		return GL.GL_LINEAR_MIPMAP_LINEAR;
 	}
 
 	@Override
 	public int GL_LINEAR_MIPMAP_NEAREST() {
-		return GL2.GL_LINEAR_MIPMAP_NEAREST;
+		return GL.GL_LINEAR_MIPMAP_NEAREST;
 	}
 
 	@Override
 	public int GL_LUMINANCE() {
-		return GL2.GL_LUMINANCE;
+		return GL.GL_LUMINANCE;
 	}
 
 	@Override
 	public int GL_LUMINANCE_ALPHA() {
-		return GL2.GL_LUMINANCE_ALPHA;
+		return GL.GL_LUMINANCE_ALPHA;
 	}
 
 	@Override
 	public int GL_MAX_TEXTURE_SIZE() {
-		return GL2.GL_MAX_TEXTURE_SIZE;
+		return GL.GL_MAX_TEXTURE_SIZE;
 	}
+
+	// TODO -- Remove non-core -- //
 
 	@Override
 	public int GL_MODELVIEW() {
 		return GL2.GL_MODELVIEW;
 	}
 
+	// ------- //
+
 	@Override
 	public int GL_NEAREST() {
-		return GL2.GL_NEAREST;
+		return GL.GL_NEAREST;
 	}
 
 	@Override
 	public int GL_NEAREST_MIPMAP_LINEAR() {
-		return GL2.GL_NEAREST_MIPMAP_LINEAR;
+		return GL.GL_NEAREST_MIPMAP_LINEAR;
 	}
 
 	@Override
 	public int GL_NEAREST_MIPMAP_NEAREST() {
-		return GL2.GL_NEAREST_MIPMAP_NEAREST;
+		return GL.GL_NEAREST_MIPMAP_NEAREST;
 	}
 
 	@Override
 	public int GL_NO_ERROR() {
-		return GL2.GL_NO_ERROR;
+		return GL.GL_NO_ERROR;
 	}
 
 	@Override
 	public int GL_NOTEQUAL() {
-		return GL2.GL_NOTEQUAL;
+		return GL.GL_NOTEQUAL;
 	}
 
 	@Override
 	public int GL_ONE_MINUS_SRC_ALPHA() {
-		return GL2.GL_ONE_MINUS_SRC_ALPHA;
+		return GL.GL_ONE_MINUS_SRC_ALPHA;
 	}
 
 	@Override
 	public int GL_OUT_OF_MEMORY() {
-		return GL2.GL_OUT_OF_MEMORY;
+		return GL.GL_OUT_OF_MEMORY;
 	}
 
 	@Override
 	public int GL_POINTS() {
-		return GL2.GL_POINTS;
+		return GL.GL_POINTS;
 	}
+
+	// TODO -- Remove non-core -- //
 
 	@Override
 	public int GL_PROJECTION() {
 		return GL2.GL_PROJECTION;
 	}
 
+	// ------- //
+
 	@Override
 	public int GL_RGB() {
-		return GL2.GL_RGB;
+		return GL.GL_RGB;
 	}
 
 	@Override
 	public int GL_RGBA() {
-		return GL2.GL_RGBA;
+		return GL.GL_RGBA;
 	}
 
 	@Override
 	public int GL_SHORT() {
-		return GL2.GL_SHORT;
+		return GL.GL_SHORT;
 	}
 
 	@Override
 	public int GL_SRC_ALPHA() {
-		return GL2.GL_SRC_ALPHA;
+		return GL.GL_SRC_ALPHA;
 	}
 
 	@Override
@@ -233,87 +237,95 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_TEXTURE_2D_ARRAY() {
-		return GL2.GL_TEXTURE_2D_ARRAY;
+		return GL.GL_TEXTURE_2D_ARRAY;
 	}
 
 	@Override
 	public int GL_TEXTURE_BINDING_2D() {
-		return GL2.GL_TEXTURE_BINDING_2D;
+		return GL.GL_TEXTURE_BINDING_2D;
 	}
+
+	// TODO -- Remove non-core -- //
 
 	@Override
 	public int GL_TEXTURE_COORD_ARRAY() {
 		return GL2.GL_TEXTURE_COORD_ARRAY;
 	}
 
+	// -------- //
+
 	@Override
 	public int GL_TEXTURE_MAG_FILTER() {
-		return GL2.GL_TEXTURE_MAG_FILTER;
+		return GL.GL_TEXTURE_MAG_FILTER;
 	}
 
 	@Override
 	public int GL_TEXTURE_MIN_FILTER() {
-		return GL2.GL_TEXTURE_MIN_FILTER;
+		return GL.GL_TEXTURE_MIN_FILTER;
 	}
 
 	@Override
 	public int GL_TRIANGLES() {
-		return GL2.GL_TRIANGLES;
+		return GL.GL_TRIANGLES;
 	}
 
 	@Override
 	public int GL_TRIANGLE_STRIP() {
-		return GL2.GL_TRIANGLE_STRIP;
+		return GL.GL_TRIANGLE_STRIP;
 	}
 
 	@Override
 	public int GL_TRIANGLE_FAN() {
-		return GL2.GL_TRIANGLE_FAN;
+		return GL.GL_TRIANGLE_FAN;
 	}
 
 	@Override
 	public int GL_TRUE() {
-		return GL2.GL_TRUE;
+		return GL.GL_TRUE;
 	}
 
 	@Override
 	public int GL_UNSIGNED_BYTE() {
-		return GL2.GL_UNSIGNED_BYTE;
+		return GL.GL_UNSIGNED_BYTE;
 	}
 
 	@Override
 	public int GL_UNSIGNED_SHORT() {
-		return GL2.GL_UNSIGNED_SHORT;
+		return GL.GL_UNSIGNED_SHORT;
 	}
 
 	@Override
 	public int GL_UNSIGNED_SHORT_4_4_4_4() {
-		return GL2.GL_UNSIGNED_SHORT_4_4_4_4;
+		return GL.GL_UNSIGNED_SHORT_4_4_4_4;
 	}
 
 	@Override
 	public int GL_UNSIGNED_SHORT_5_5_5_1() {
-		return GL2.GL_UNSIGNED_SHORT_5_5_5_1;
+		return GL.GL_UNSIGNED_SHORT_5_5_5_1;
 	}
 
 	@Override
 	public int GL_UNSIGNED_SHORT_5_6_5() {
-		return GL2.GL_UNSIGNED_SHORT_5_6_5;
+		return GL.GL_UNSIGNED_SHORT_5_6_5;
 	}
+
+	// TODO -- Remove fixed func -- //
 
 	@Override
 	public int GL_VERTEX_ARRAY() {
 		return GL2.GL_VERTEX_ARRAY;
 	}
 
+	// --------- //
+
 	@Override
 	public int GL_VIEWPORT() {
-		return GL2.GL_VIEWPORT;
+		return GL.GL_VIEWPORT;
 	}
 
 	@Override
 	public int GL_ZERO() {
-		return GL2.GL_ZERO;
+		return GL.GL_ZERO;
 	}
 
 	@Override
@@ -326,14 +338,18 @@ public class JoglCoreGL implements CoreGL {
 		return GL.GL_ARRAY_BUFFER;
 	}
 
+	// TODO -- Remove non-core //
+
 	@Override
 	public int GL_BITMAP() {
 		return GL2.GL_BITMAP;
 	}
 
+	// ------- //
+
 	@Override
 	public int GL_BGR() {
-		return GL2.GL_BGR;
+		return GL2GL3.GL_BGR;
 	}
 
 	@Override
@@ -343,18 +359,24 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_BLUE() {
-		return GL2.GL_BLUE;
+		return GL2ES3.GL_BLUE;
 	}
+
+	// TODO -- Remove non-core -- //
 
 	@Override
 	public int GL_COLOR_INDEX() {
 		return GL2.GL_COLOR_INDEX;
 	}
 
+	// -------- //
+
 	@Override
 	public int GL_COMPILE_STATUS() {
-		return GL2.GL_COMPILE_STATUS;
+		return GL2ES2.GL_COMPILE_STATUS;
 	}
+
+	// TODO -- Remove non-core -- //
 
 	@Override
 	public int GL_COMPRESSED_ALPHA() {
@@ -371,19 +393,21 @@ public class JoglCoreGL implements CoreGL {
 		return GL2.GL_COMPRESSED_LUMINANCE_ALPHA;
 	}
 
+	// -------- //
+
 	@Override
 	public int GL_COMPRESSED_RGB() {
-		return GL2.GL_COMPRESSED_RGB;
+		return GL2GL3.GL_COMPRESSED_RGB;
 	}
 
 	@Override
 	public int GL_COMPRESSED_RGBA() {
-		return GL2.GL_COMPRESSED_RGBA;
+		return GL2GL3.GL_COMPRESSED_RGBA;
 	}
 
 	@Override
 	public int GL_CURRENT_PROGRAM() {
-		return GL2.GL_CURRENT_PROGRAM;
+		return GL2ES2.GL_CURRENT_PROGRAM;
 	}
 
 	@Override
@@ -398,7 +422,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_FRAGMENT_SHADER() {
-		return GL2.GL_FRAGMENT_SHADER;
+		return GL2ES2.GL_FRAGMENT_SHADER;
 	}
 
 	@Override
@@ -408,32 +432,32 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_GREEN() {
-		return GL2.GL_GREEN;
+		return GL2ES3.GL_GREEN;
 	}
 
 	@Override
 	public int GL_INT() {
-		return GL2.GL_INT;
+		return GL2ES2.GL_INT;
 	}
 
 	@Override
 	public int GL_LINK_STATUS() {
-		return GL2.GL_LINK_STATUS;
+		return GL2ES2.GL_LINK_STATUS;
 	}
 
 	@Override
 	public int GL_PRIMITIVE_RESTART() {
-		return GL2.GL_PRIMITIVE_RESTART;
+		return GL2GL3.GL_PRIMITIVE_RESTART;
 	}
 
 	@Override
 	public int GL_PRIMITIVE_RESTART_INDEX() {
-		return GL2.GL_PRIMITIVE_RESTART_INDEX;
+		return GL2GL3.GL_PRIMITIVE_RESTART_INDEX;
 	}
 
 	@Override
 	public int GL_RED() {
-		return GL2.GL_RED;
+		return GL2ES2.GL_RED;
 	}
 
 	@Override
@@ -443,7 +467,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_STREAM_DRAW() {
-		return GL2.GL_STREAM_DRAW;
+		return GL2ES2.GL_STREAM_DRAW;
 	}
 
 	@Override
@@ -483,12 +507,12 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_UNSIGNED_BYTE_2_3_3_REV() {
-		return GL2.GL_UNSIGNED_BYTE_2_3_3_REV;
+		return GL2GL3.GL_UNSIGNED_BYTE_2_3_3_REV;
 	}
 
 	@Override
 	public int GL_UNSIGNED_BYTE_3_3_2() {
-		return GL2.GL_UNSIGNED_BYTE_3_3_2;
+		return GL2GL3.GL_UNSIGNED_BYTE_3_3_2;
 	}
 
 	@Override
@@ -498,22 +522,22 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_UNSIGNED_INT_10_10_10_2() {
-		return GL2.GL_UNSIGNED_INT_10_10_10_2;
+		return GL2ES2.GL_UNSIGNED_INT_10_10_10_2;
 	}
 
 	@Override
 	public int GL_UNSIGNED_INT_2_10_10_10_REV() {
-		return GL2.GL_UNSIGNED_INT_2_10_10_10_REV;
+		return GL2ES2.GL_UNSIGNED_INT_2_10_10_10_REV;
 	}
 
 	@Override
 	public int GL_UNSIGNED_INT_8_8_8_8() {
-		return GL2.GL_UNSIGNED_INT_8_8_8_8;
+		return GL2GL3.GL_UNSIGNED_INT_8_8_8_8;
 	}
 
 	@Override
 	public int GL_UNSIGNED_INT_8_8_8_8_REV() {
-		return GL2.GL_UNSIGNED_INT_8_8_8_8_REV;
+		return GL2GL3.GL_UNSIGNED_INT_8_8_8_8_REV;
 	}
 
 	@Override
@@ -523,7 +547,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_DOUBLE() {
-		return GL2.GL_DOUBLE;
+		return GL2GL3.GL_DOUBLE;
 	}
 
 	@Override
@@ -533,7 +557,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_INT_2_10_10_10_REV() {
-		return GL3.GL_INT_2_10_10_10_REV;
+		return GL3ES3.GL_INT_2_10_10_10_REV;
 	}
 
 	@Override
@@ -543,22 +567,22 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_UNSIGNED_SHORT_5_6_5_REV() {
-		return GL2.GL_UNSIGNED_SHORT_5_6_5_REV;
+		return GL2GL3.GL_UNSIGNED_SHORT_5_6_5_REV;
 	}
 
 	@Override
 	public int GL_UNSIGNED_SHORT_4_4_4_4_REV() {
-		return GL2.GL_UNSIGNED_SHORT_4_4_4_4_REV;
+		return GL2GL3.GL_UNSIGNED_SHORT_4_4_4_4_REV;
 	}
 
 	@Override
 	public int GL_UNSIGNED_SHORT_1_5_5_5_REV() {
-		return GL2.GL_UNSIGNED_SHORT_1_5_5_5_REV;
+		return GL2GL3.GL_UNSIGNED_SHORT_1_5_5_5_REV;
 	}
 
 	@Override
 	public int GL_VERTEX_SHADER() {
-		return GL2.GL_VERTEX_SHADER;
+		return GL2ES2.GL_VERTEX_SHADER;
 	}
 
 	@Override
@@ -568,17 +592,17 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_UNIFORM_OFFSET() {
-		return GL2.GL_UNIFORM_OFFSET;
+		return GL2ES3.GL_UNIFORM_OFFSET;
 	}
 
 	@Override
 	public int GL_UNIFORM_ARRAY_STRIDE() {
-		return GL2.GL_UNIFORM_ARRAY_STRIDE;
+		return GL2ES3.GL_UNIFORM_ARRAY_STRIDE;
 	}
 
 	@Override
 	public int GL_UNIFORM_MATRIX_STRIDE() {
-		return GL2.GL_UNIFORM_MATRIX_STRIDE;
+		return GL2ES3.GL_UNIFORM_MATRIX_STRIDE;
 	}
 
 	@Override
@@ -653,7 +677,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE() {
-		return GL2.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
+		return GL2ES3.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
 	}
 
 	@Override
@@ -675,11 +699,16 @@ public class JoglCoreGL implements CoreGL {
 	public int GL_STENCIL_ATTACHMENT() {
 		return GL.GL_STENCIL_ATTACHMENT;
 	}
-	
+
 
 	@Override
 	public int GL_VERSION() {
 		return GL.GL_VERSION;
+	}
+	
+	@Override
+	public int GL_SHADING_LANGUAGE_VERSION() {
+		return GL2ES2.GL_SHADING_LANGUAGE_VERSION;
 	}
 
 	@Override
@@ -701,56 +730,68 @@ public class JoglCoreGL implements CoreGL {
 	public int GL_MAX_3D_TEXTURE_SIZE() {
 		return GL2ES2.GL_MAX_3D_TEXTURE_SIZE;
 	}
-	
+
 	@Override
 	public int GL_UNIFORM_BUFFER() {
 		return GL2ES3.GL_UNIFORM_BUFFER;
 	}
 
+	// TODO -- Remove non-core -- //
+
 	@Override
 	public void glAlphaFunc(int func, float ref) {
-		GLContext.getCurrentGL().getGL2().glAlphaFunc(func, ref);
+		GLContext.getCurrentGL().getGL2ES1().glAlphaFunc(func, ref);
 	}
+
+	// ----- //
 
 	@Override
 	public void glBindTexture(int target, int texture) {
-		GLContext.getCurrentGL().getGL2().glBindTexture(target, texture);
+		GLContext.getCurrentGL().glBindTexture(target, texture);
 	}
 
 	@Override
 	public void glBlendFunc(int sfactor, int dfactor) {
-		GLContext.getCurrentGL().getGL2().glBlendFunc(sfactor, dfactor);
+		GLContext.getCurrentGL().glBlendFunc(sfactor, dfactor);
 	}
 
 	@Override
 	public void glClear(int mask) {
-		GLContext.getCurrentGL().getGL2().glClear(mask);
+		GLContext.getCurrentGL().glClear(mask);
 	}
 
 	@Override
 	public void glClearColor(float red, float green, float blue, float alpha) {
-		GLContext.getCurrentGL().getGL2().glClearColor(red, green, blue, alpha);
+		GLContext.getCurrentGL().glClearColor(red, green, blue, alpha);
 	}
+
+	// TODO -- Remove fixed func -- //
 
 	@Override
 	public void glColorPointer(int size, int type, int stride, FloatBuffer pointer) {
 		GLContext.getCurrentGL().getGL2().glColorPointer(size, type, stride, pointer);
 	}
 
+	// ------- //
+
 	@Override
 	public void glDeleteTextures(int n, IntBuffer textures) {
-		GLContext.getCurrentGL().getGL2().glDeleteTextures(n, textures);
+		GLContext.getCurrentGL().glDeleteTextures(n, textures);
 	}
 
 	@Override
 	public void glDisable(int cap) {
-		GLContext.getCurrentGL().getGL2().glDisable(cap);
+		GLContext.getCurrentGL().glDisable(cap);
 	}
+
+	// TODO -- Remove non-core -- //
 
 	@Override
 	public void glDisableClientState(int array) {
 		GLContext.getCurrentGL().getGL2().glDisableClientState(array);
 	}
+
+	// ------- //
 
 	@Override
 	public void glDrawArrays(int mode, int first, int count) {
@@ -759,52 +800,54 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public void glDrawElements(int mode, int count, int type, int indices) {
-		GLContext.getCurrentGL().getGL2().glDrawElements(mode, count, type, indices);
+		GLContext.getCurrentGL().glDrawElements(mode, count, type, indices);
 	}
 
 	@Override
 	public void glEnable(int cap) {
-		GLContext.getCurrentGL().getGL2().glEnable(cap);
+		GLContext.getCurrentGL().glEnable(cap);
 	}
 
 	@Override
 	public void glEnableClientState(int array) {
-		GLContext.getCurrentGL().getGL2().glEnableClientState(array);
+		GLContext.getCurrentGL().getGL2GL3().glEnableClientState(array);
 	}
 
 	@Override
 	public void glGenTextures(int n, IntBuffer textures) {
-		GLContext.getCurrentGL().getGL2().glGenTextures(n, textures);
+		GLContext.getCurrentGL().glGenTextures(n, textures);
 	}
 
 	@Override
 	public int glGetError() {
-		return GLContext.getCurrentGL().getGL2().glGetError();
+		return GLContext.getCurrentGL().glGetError();
 	}
 
 	@Override
 	public void glGetIntegerv(int pname, int[] params, int offset) {
-		GLContext.getCurrentGL().getGL2().glGetIntegerv(pname, params, offset);
+		GLContext.getCurrentGL().glGetIntegerv(pname, params, offset);
 	}
 
 	@Override
 	public void glGetIntegerv(int pname, IntBuffer params) {
-		GLContext.getCurrentGL().getGL2().glGetIntegerv(pname, params);
+		GLContext.getCurrentGL().glGetIntegerv(pname, params);
 	}
 
 	public int glGetInteger(int pname) {
 		return JoglCoreUtil.glGetInteger(GLContext.getCurrentGL(), pname);
 	}
-	
+
 	@Override
 	public String glGetString(int pname) {
 		return GLContext.getCurrentGL().glGetString(pname);
 	}
-	
+
 	@Override
 	public boolean glIsEnabled(int cap) {
-		return GLContext.getCurrentGL().getGL2().glIsEnabled(cap);
+		return GLContext.getCurrentGL().glIsEnabled(cap);
 	}
+
+	// TODO ---- Remove fixed func ---- //
 
 	@Override
 	public void glLoadIdentity() {
@@ -826,74 +869,78 @@ public class JoglCoreGL implements CoreGL {
 		GLContext.getCurrentGL().getGL2().glTexCoordPointer(size, type, stride, pointer);
 	}
 
+	// ------ //
+
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ByteBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+		GLContext.getCurrentGL().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, DoubleBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+		GLContext.getCurrentGL().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, FloatBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+		GLContext.getCurrentGL().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, IntBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+		GLContext.getCurrentGL().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ShortBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+		GLContext.getCurrentGL().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+		GLContext.getCurrentGL().getGL2ES2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, DoubleBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+		GLContext.getCurrentGL().getGL2ES2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, FloatBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+		GLContext.getCurrentGL().getGL2ES2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, IntBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+		GLContext.getCurrentGL().getGL2ES2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ShortBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
+		GLContext.getCurrentGL().getGL2ES2().glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
 
 	@Override
 	public void glTexParameterf(int target, int pname, float param) {
-		GLContext.getCurrentGL().getGL2().glTexParameterf(target, pname, param);
+		GLContext.getCurrentGL().glTexParameterf(target, pname, param);
 	}
 
 	@Override
 	public void glTexParameteri(int target, int pname, int param) {
-		GLContext.getCurrentGL().getGL2().glTexParameteri(target, pname, param);
+		GLContext.getCurrentGL().glTexParameteri(target, pname, param);
 	}
 
 	@Override
 	public void glTexSubImage2D(int target, int level, int xoffset, int yoffset, int width, int height, int format, int type, ByteBuffer pixels) {
-		GLContext.getCurrentGL().getGL2().glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
+		GLContext.getCurrentGL().glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
 	}
 
 	@Override
 	public void glTexBuffer(int arg0, int arg1, int arg2) {
-		GLContext.getCurrentGL().getGL2().glTexBuffer(arg0, arg1, arg2);
+		GLContext.getCurrentGL().getGL2GL3().glTexBuffer(arg0, arg1, arg2);
 	}
+
+	// TODO -- Remove fixed func -- //
 
 	@Override
 	public void glTranslatef(float x, float y, float z) {
@@ -905,261 +952,267 @@ public class JoglCoreGL implements CoreGL {
 		GLContext.getCurrentGL().getGL2().glVertexPointer(size, type, stride, pointer);
 	}
 
+	// ---------- //
+
 	@Override
 	public void glViewport(int x, int y, int width, int height) {
-		GLContext.getCurrentGL().getGL2().glViewport(x, y, width, height);
+		GLContext.getCurrentGL().glViewport(x, y, width, height);
 	}
 
 	@Override
 	public void glActiveTexture(int texture) {
-		GLContext.getCurrentGL().getGL3().glActiveTexture(texture);
+		GLContext.getCurrentGL().glActiveTexture(texture);
 	}
 
 	@Override
 	public void glAttachShader(int program, int shader) {
-		GLContext.getCurrentGL().getGL3().glAttachShader(program, shader);
+		GLContext.getCurrentGL().getGL2ES2().glAttachShader(program, shader);
 	}
 
 	@Override
 	public void glBindAttribLocation(int program, int index, String name) {
-		GLContext.getCurrentGL().getGL3().glBindAttribLocation(program, index, name);
+		GLContext.getCurrentGL().getGL2ES2().glBindAttribLocation(program, index, name);
 	}
 
 	@Override
 	public void glBindBuffer(int target, int buffer) {
-		GLContext.getCurrentGL().getGL3().glBindBuffer(target, buffer);
+		GLContext.getCurrentGL().glBindBuffer(target, buffer);
 	}
 
 	@Override
 	public void glBindVertexArray(int array) {
-		GLContext.getCurrentGL().getGL3().glBindVertexArray(array);
+		GLContext.getCurrentGL().getGL2ES3().glBindVertexArray(array);
 	}
 
 	@Override
 	public void glBufferData(int target, IntBuffer data, int usage) {
-		GLContext.getCurrentGL().getGL3().glBufferData(target, data.remaining() * 4, data, usage);
+		GLContext.getCurrentGL().glBufferData(target, data.remaining() * 4, data, usage);
 	}
 
 	@Override
 	public void glBufferData(int target, FloatBuffer data, int usage) {
-		GLContext.getCurrentGL().getGL3().glBufferData(target, data.remaining() * 4, data, usage);
+		GLContext.getCurrentGL().glBufferData(target, data.remaining() * 4, data, usage);
 	}
 
 	@Override
 	public void glBufferData(int target, ShortBuffer data, int usage) {
-		GLContext.getCurrentGL().getGL3().glBufferData(target, data.remaining() * 2, data, usage);
+		GLContext.getCurrentGL().glBufferData(target, data.remaining() * 2, data, usage);
 	}
 
 	@Override
 	public void glCompileShader(int shader) {
-		GLContext.getCurrentGL().getGL3().glCompileShader(shader);
+		GLContext.getCurrentGL().getGL2ES2().glCompileShader(shader);
 	}
 
 	@Override
 	public int glCreateProgram() {
-		return GLContext.getCurrentGL().getGL3().glCreateProgram();
+		return GLContext.getCurrentGL().getGL2ES2().glCreateProgram();
 	}
 
 	@Override
 	public int glCreateShader(int type) {
-		return GLContext.getCurrentGL().getGL3().glCreateShader(type);
+		return GLContext.getCurrentGL().getGL2ES2().glCreateShader(type);
 	}
 
 	@Override
 	public void glDeleteBuffers(int n, IntBuffer buffers) {
-		GLContext.getCurrentGL().getGL3().glDeleteBuffers(n, buffers);
+		GLContext.getCurrentGL().glDeleteBuffers(n, buffers);
 	}
 
 	@Override
 	public void glDeleteVertexArrays(int n, IntBuffer arrays) {
-		GLContext.getCurrentGL().getGL3().glDeleteVertexArrays(n, arrays);
+		GLContext.getCurrentGL().getGL2ES3().glDeleteVertexArrays(n, arrays);
 	}
 
 	@Override
 	public void glDrawArraysInstanced(int mode, int first, int count, int primcount) {
-		GLContext.getCurrentGL().getGL3().glDrawArraysInstanced(mode, first, count, primcount);
+		GLContext.getCurrentGL().getGL2ES3().glDrawArraysInstanced(mode, first, count, primcount);
 	}
 
 	@Override
 	public void glEnableVertexAttribArray(int index) {
-		GLContext.getCurrentGL().getGL3().glEnableVertexAttribArray(index);
+		GLContext.getCurrentGL().getGL2ES2().glEnableVertexAttribArray(index);
 	}
-	
+
 	@Override
 	public void glDisableVertexAttribArray(int index) {
-		GLContext.getCurrentGL().getGL2().glDisableVertexAttribArray(index);
+		GLContext.getCurrentGL().getGL2ES2().glDisableVertexAttribArray(index);
 	}
-	
+
 	@Override
 	public void glVertexAttribDivisorARB(int index, int divisor) {
-		GLContext.getCurrentGL().getGL3().glVertexAttribDivisor(index, divisor);
+		GLContext.getCurrentGL().getGL3ES3().glVertexAttribDivisor(index, divisor);
 	}
 
 	@Override
 	public void glVertexAttribIPointer(int index, int size, int type, int stride, int buffer) {
-		GLContext.getCurrentGL().getGL2().glVertexAttribIPointer(index, size, type, stride, buffer);
+		GLContext.getCurrentGL().getGL2ES3().glVertexAttribIPointer(index, size, type, stride, buffer);
 	}
 
 	@Override
 	public void glGenBuffers(int n, IntBuffer buffers) {
-		GLContext.getCurrentGL().getGL3().glGenBuffers(n, buffers);
+		GLContext.getCurrentGL().glGenBuffers(n, buffers);
 	}
 
 	@Override
 	public void glGenerateMipmap(int target) {
-		GLContext.getCurrentGL().getGL3().glGenerateMipmap(target);
+		GLContext.getCurrentGL().glGenerateMipmap(target);
 	}
 
 	@Override
 	public void glGenVertexArrays(int n, IntBuffer arrays) {
-		GLContext.getCurrentGL().getGL3().glGenVertexArrays(n, arrays);
+		GLContext.getCurrentGL().getGL2ES3().glGenVertexArrays(n, arrays);
 	}
 
 	@Override
 	public int glGetAttribLocation(int program, String name) {
-		return GLContext.getCurrentGL().getGL3().glGetAttribLocation(program, name);
+		return GLContext.getCurrentGL().getGL2ES2().glGetAttribLocation(program, name);
 	}
 
 	@Override
 	public void glGetProgramiv(int program, int pname, IntBuffer params) {
-		GLContext.getCurrentGL().getGL3().glGetProgramiv(program, pname, params);
+		GLContext.getCurrentGL().getGL2ES2().glGetProgramiv(program, pname, params);
 	}
 
 	@Override
 	public String glGetProgramInfoLog(int program) {
 		int[] logLength = new int[1];
-		GLContext.getCurrentGL().getGL3().glGetProgramiv(program, GL2.GL_INFO_LOG_LENGTH, logLength, 0);
+		GLContext.getCurrentGL().getGL2ES2().glGetProgramiv(program, GL2.GL_INFO_LOG_LENGTH, logLength, 0);
 		byte[] log = new byte[logLength[0]];
-		GLContext.getCurrentGL().getGL3().glGetProgramInfoLog(program, logLength[0], null, 0, log, 0);
+		GLContext.getCurrentGL().getGL2ES2().glGetShaderInfoLog(program, logLength[0], null, 0, log, 0);
 		return new String(log);
 	}
 
 	@Override
 	public void glGetShaderiv(int shader, int pname, IntBuffer params) {
-		GLContext.getCurrentGL().getGL3().glGetShaderiv(shader, pname, params);
+		GLContext.getCurrentGL().getGL2ES2().glGetShaderiv(shader, pname, params);
 	}
 
 	@Override
 	public String glGetShaderInfoLog(int shader) {
 		int[] logLength = new int[1];
-		GLContext.getCurrentGL().getGL3().glGetShaderiv(shader, GL2.GL_INFO_LOG_LENGTH, logLength, 0);
-		byte[] log = new byte[logLength[0]];
-		GLContext.getCurrentGL().getGL3().glGetShaderInfoLog(shader, logLength[0], null, 0, log, 0);
-		return new String(log);
+		GLContext.getCurrentGL().getGL2ES2().glGetShaderiv(shader, GL2.GL_INFO_LOG_LENGTH, logLength, 0);
+		String logStr = "";
+		if (logLength[0] > 1) {
+			byte[] log = new byte[logLength[0]];
+			GLContext.getCurrentGL().getGL2ES2().glGetShaderInfoLog(shader, logLength[0], null, 0, log, 0);
+			logStr = new String(log);
+		}
+		return logStr;
 	}
 
 	@Override
 	public int glGetUniformLocation(int program, String name) {
-		return GLContext.getCurrentGL().getGL3().glGetUniformLocation(program, name);
+		return GLContext.getCurrentGL().getGL2ES2().glGetUniformLocation(program, name);
 	}
 
 	@Override
 	public void glLinkProgram(int program) {
-		GLContext.getCurrentGL().getGL3().glLinkProgram(program);
+		GLContext.getCurrentGL().getGL2ES2().glLinkProgram(program);
 	}
 
 	@Override
 	public ByteBuffer glMapBuffer(int target, int access, long length, ByteBuffer oldBuffer) {
-		return GLContext.getCurrentGL().getGL3().glMapBuffer(target, access);
+		return GLContext.getCurrentGL().glMapBuffer(target, access);
 	}
 
 	@Override
 	public void glPrimitiveRestartIndex(int index) {
-		GLContext.getCurrentGL().getGL3().glPrimitiveRestartIndex(index);
+		GLContext.getCurrentGL().getGL2GL3().glPrimitiveRestartIndex(index);
 	}
 
 	@Override
 	public void glShaderSource(int shader, String string) {
 		String[] sources = new String[]{string};
 		int[] sourceLengths = new int[]{sources[0].length()};
-		GLContext.getCurrentGL().getGL3().glShaderSource(shader, sources.length, sources, sourceLengths, 0);
+		GLContext.getCurrentGL().getGL2ES2().glShaderSource(shader, sources.length, sources, sourceLengths, 0);
 	}
 
 	@Override
 	public void glUniform1(int location, FloatBuffer values) {
-		GLContext.getCurrentGL().getGL3().glUniform1fv(location, values.remaining(), values);
+		GLContext.getCurrentGL().getGL2ES2().glUniform1fv(location, values.remaining(), values);
 	}
 
 	@Override
 	public void glUniform1f(int location, float v0) {
-		GLContext.getCurrentGL().getGL3().glUniform1f(location, v0);
+		GLContext.getCurrentGL().getGL2ES2().glUniform1f(location, v0);
 	}
 
 	@Override
 	public void glUniform2f(int location, float v0, float v1) {
-		GLContext.getCurrentGL().getGL3().glUniform2f(location, v0, v1);
+		GLContext.getCurrentGL().getGL2ES2().glUniform2f(location, v0, v1);
 	}
 
 	@Override
 	public void glUniform3f(int location, float v0, float v1, float v2) {
-		GLContext.getCurrentGL().getGL3().glUniform3f(location, v0, v1, v2);
+		GLContext.getCurrentGL().getGL2ES2().glUniform3f(location, v0, v1, v2);
 	}
 
 	@Override
 	public void glUniform4f(int location, float v0, float v1, float v2, float v3) {
-		GLContext.getCurrentGL().getGL3().glUniform4f(location, v0, v1, v2, v3);
+		GLContext.getCurrentGL().getGL2ES2().glUniform4f(location, v0, v1, v2, v3);
 	}
 
 	@Override
 	public void glUniform1i(int location, int v0) {
-		GLContext.getCurrentGL().getGL3().glUniform1i(location, v0);
+		GLContext.getCurrentGL().getGL2ES2().glUniform1i(location, v0);
 	}
 
 	@Override
 	public void glUniform2i(int location, int v0, int v1) {
-		GLContext.getCurrentGL().getGL3().glUniform2i(location, v0, v1);
+		GLContext.getCurrentGL().getGL2ES2().glUniform2i(location, v0, v1);
 	}
 
 	@Override
 	public void glUniform3i(int location, int v0, int v1, int v2) {
-		GLContext.getCurrentGL().getGL3().glUniform3i(location, v0, v1, v2);
+		GLContext.getCurrentGL().getGL2ES2().glUniform3i(location, v0, v1, v2);
 	}
 
 	@Override
 	public void glUniform4i(int location, int v0, int v1, int v2, int v3) {
-		GLContext.getCurrentGL().getGL3().glUniform4i(location, v0, v1, v2, v3);
+		GLContext.getCurrentGL().getGL2ES2().glUniform4i(location, v0, v1, v2, v3);
 	}
 
 	@Override
 	public void glUniformMatrix4(int location, boolean transpose, FloatBuffer matrices) {
-		GLContext.getCurrentGL().getGL3().glUniformMatrix4fv(location, matrices.remaining(), transpose, matrices);
+		GLContext.getCurrentGL().getGL2ES2().glUniformMatrix4fv(location, matrices.remaining(), transpose, matrices);
 	}
 
 	@Override
 	public boolean glUnmapBuffer(int target) {
-		return GLContext.getCurrentGL().getGL3().glUnmapBuffer(target);
+		return GLContext.getCurrentGL().glUnmapBuffer(target);
 	}
 
 	@Override
 	public void glUseProgram(int program) {
-		GLContext.getCurrentGL().getGL3().glUseProgram(program);
+		GLContext.getCurrentGL().getGL2ES2().glUseProgram(program);
 	}
 
 	@Override
 	public void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long offset) {
-		GLContext.getCurrentGL().getGL3().glVertexAttribPointer(index, size, type, normalized, stride, offset);
+		GLContext.getCurrentGL().getGL2ES2().glVertexAttribPointer(index, size, type, normalized, stride, offset);
 	}
 
 	@Override
 	public void glGetUniformIndices(int program, String[] uniformNames,
 			IntBuffer indexBuffer) {
-		GLContext.getCurrentGL().getGL3().glGetUniformIndices(program, uniformNames.length, uniformNames, indexBuffer);
+		GLContext.getCurrentGL().getGL2ES3().glGetUniformIndices(program, uniformNames.length, uniformNames, indexBuffer);
 	}
 
 	@Override
 	public void glGetActiveUniforms(int program, int uniformCount, IntBuffer indices, int pname,
 			IntBuffer params) {
-		GLContext.getCurrentGL().getGL3().glGetActiveUniformsiv(program, uniformCount, indices, pname, params);
+		GLContext.getCurrentGL().getGL2ES3().glGetActiveUniformsiv(program, uniformCount, indices, pname, params);
 	}
 
 	@Override
 	public int glGetUniformBlockIndex(int program, String name) {
-		return GLContext.getCurrentGL().getGL3().glGetUniformBlockIndex(program, name);
+		return GLContext.getCurrentGL().getGL2ES3().glGetUniformBlockIndex(program, name);
 	}
 
 	@Override
 	public void glUniformBlockBinding(int prog, int blockIndex, int blockBinding) {
-		GLContext.getCurrentGL().getGL3().glUniformBlockBinding(prog, blockIndex, blockBinding);
+		GLContext.getCurrentGL().getGL2ES3().glUniformBlockBinding(prog, blockIndex, blockBinding);
 	}
 
 	@Override
@@ -1202,12 +1255,12 @@ public class JoglCoreGL implements CoreGL {
 	@Override
 	public void glFramebufferTextureLayer(int target, int attachment,
 			int texture, int level, int layer) {
-		GLContext.getCurrentGL().getGL2().glFramebufferTextureLayer(target, attachment, texture, level, layer);
+		GLContext.getCurrentGL().getGL2ES3().glFramebufferTextureLayer(target, attachment, texture, level, layer);
 	}
 
 	@Override
 	public void glDrawBuffer(int mode) {
-		GLContext.getCurrentGL().getGL2().glDrawBuffer(mode);
+		GLContext.getCurrentGL().getGL2GL3().glDrawBuffer(mode);
 	}
 
 	@Override
@@ -1232,7 +1285,7 @@ public class JoglCoreGL implements CoreGL {
 			int renderBufferTarget, int renderBuffer) {
 		GLContext.getCurrentGL().glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
 	}
-	
+
 	@Override
 	public void glBindBufferBase(int target, int bindingPoint, int id) {
 		GLContext.getCurrentGL().getGL2GL3().glBindBufferBase(target, bindingPoint, id);
@@ -1281,15 +1334,5 @@ public class JoglCoreGL implements CoreGL {
 	@Override
 	public CoreUtil getUtil() {
 		return util;
-	}
-
-	@Override
-	public int getDisplayWidth() {
-		return glWin.getWidth();
-	}
-
-	@Override
-	public int getDisplayHeight() {
-		return glWin.getHeight();
 	}
 }

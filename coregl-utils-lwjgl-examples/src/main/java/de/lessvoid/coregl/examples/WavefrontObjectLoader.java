@@ -1,4 +1,4 @@
-package de.lessvoid.coregl.examples.lwjgl;
+package de.lessvoid.coregl.examples;
 
 /**
  ** Wavefront .obj mesh loader with vertices, face and normal support. The code is slightly modified copypasta from

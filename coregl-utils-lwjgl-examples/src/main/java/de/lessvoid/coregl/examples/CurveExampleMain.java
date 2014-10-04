@@ -24,78 +24,68 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.lessvoid.coregl.examples.lwjgl;
+package de.lessvoid.coregl.examples;
 
-import java.util.Map;
-
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
 import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreSetup;
-import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.lwjgl.CoreCheckGLLwjgl;
+import de.lessvoid.coregl.CoreShader;
+import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.coregl.lwjgl.CoreShaderLwjgl;
-import de.lessvoid.coregl.lwjgl.CoreShaderLwjgl.UniformBlockInfo;
-import de.lessvoid.coregl.lwjgl.CoreUBOLwjgl;
+import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-public class UniformBufferObjectExampleMain implements RenderLoopCallback {
-  private final CoreRender coreRender;
-  private CoreUBOLwjgl ubo;
+public class CurveExampleMain implements RenderLoopCallback {
   private CoreShader shader;
-  private CoreVAO vao;
+  private float r = 0.f;
+  private CoreFactory factory;
 
-  public UniformBufferObjectExampleMain(final CoreFactory factory) {
-    coreRender = factory.getCoreRender();
-
-    shader = factory.createShaderWithVertexAttributes("vVertex", "vColor");
-    shader.vertexShader("ubo/ubo.vs");
-    shader.fragmentShader("ubo/ubo.fs");
+  public CurveExampleMain(final CoreFactory factory) {
+    this.factory = factory;
+    shader = factory.createShaderWithVertexAttributes("vVertex", "vTexture");
+    shader.vertexShader("curve/curve.vs");
+    shader.fragmentShader("curve/curve.fs");
     shader.link();
 
-    vao = factory.createVAO();
+    CoreVAO vao = factory.createVAO();
     vao.bind();
 
+    float aspect = 4.f/3.f;
     factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
-        -0.5f, -0.5f,    1.0f, 0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f,    0.0f, 1.0f, 0.0f, 1.0f,
-         0.5f, -0.5f,    0.0f, 0.0f, 1.0f, 1.0f,
-         0.5f,  0.5f,    1.0f, 1.0f, 1.0f, 1.0f,
+        -0.4f, -0.4f * aspect,    0.0f, 0.0f, 
+         0.4f, -0.4f * aspect,    1.0f, 0.0f, 
+        -0.4f,  0.4f * aspect,    0.0f, 1.0f, 
+         0.4f,  0.4f * aspect,    1.0f, 1.0f, 
     });
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
-    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
-    vao.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
     vao.enableVertexAttribute(0);
+    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
     vao.enableVertexAttribute(1);
-
-    CoreShaderLwjgl bla = (CoreShaderLwjgl) shader;
-    Map<String, UniformBlockInfo> blockInfos = bla.getUniformIndices("TransformBlock.off");
-
-    ubo = CoreUBOLwjgl.createStatic(new CoreCheckGLLwjgl(), 256, blockInfos);
-    ubo.setFloatArray("TransformBlock.off", new float[]{ -0.4f, 0.2f, 0.3f, 0.4f });
-    ubo.send();
-    bla.uniformBlockBinding("TransformBlock", 2);
-    ubo.bindBufferBase(2);
+    vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
 
     // we only use a single shader and a single vao so we can activate both here
     // and let them stay active the whole time.
-    vao.bind();
     shader.activate();
+    vao.bind();
   }
 
   @Override
   public boolean render(final float deltaTime) {
-    // We don't have to use coreRender though but it's kinda easier that way
-    coreRender.clearColor(.1f, .1f, .3f, 0.f);
-    coreRender.clearColorBuffer();
-    shader.activate();
-    coreRender.renderTriangleStripInstances(4, 4);
+    glClearColor(.1f, .1f, .3f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    shader.setUniformf("r", r);
+    r += deltaTime / 10000.f;
+    System.out.println(r);
+
+    // render all the data in the currently active vao using triangle strips
+    factory.getCoreRender().renderTriangleStrip(4);
     return false;
   }
 
@@ -104,6 +94,6 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Hello Lwjgl Core GL", 1024, 768);
-    setup.renderLoop(new UniformBufferObjectExampleMain(factory));
+    setup.renderLoop(new CurveExampleMain(factory));
   }
 }

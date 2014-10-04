@@ -38,8 +38,7 @@ import java.util.logging.Formatter;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
-import de.lessvoid.coregl.*;
-import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.coregl.spi.*;
 
 public class CoreSetupLwjgl implements CoreSetup {
   private static final Logger log = Logger.getLogger(CoreSetupLwjgl.class.getName());
@@ -47,11 +46,9 @@ public class CoreSetupLwjgl implements CoreSetup {
   private final StringBuilder fpsText = new StringBuilder();
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
   private final CoreGL gl;
-  private CoreFactory coreFactory;
   private String lastFPS = "";
 
-  public CoreSetupLwjgl(final CoreFactory coreFactory, final CoreGL gl) {
-    this.coreFactory = coreFactory;
+  public CoreSetupLwjgl(final CoreGL gl) {
     this.gl = gl;
   }
 
@@ -122,9 +119,10 @@ public class CoreSetupLwjgl implements CoreSetup {
     long now = System.currentTimeMillis();
     long prevTime = System.nanoTime();
 
+    renderLoop.init(gl);
     while (!Display.isCloseRequested() && !done) {
       long nanoTime = System.nanoTime();
-      done = renderLoop.render((nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
+      done = renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
       prevTime = nanoTime;
       Display.update();
 
@@ -138,45 +136,6 @@ public class CoreSetupLwjgl implements CoreSetup {
         frameCounter = 0;
       }
     }
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreDisplaySetup#renderLoop2(de.lessvoid.coregl.CoreDisplaySetup.RenderLoopCallback2)
-   */
-  @Override
-  public void renderLoop2(final RenderLoopCallback2 renderLoop) {
-    boolean done = false;
-    long frameCounter = 0;
-    long now = System.currentTimeMillis();
-    long prevTime = System.nanoTime();
-
-    while (!Display.isCloseRequested() && !done) {
-      long nanoTime = System.nanoTime();
-      boolean newFrame = renderLoop.render((nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
-      prevTime = nanoTime;
-      if (newFrame) {
-        Display.update();
-      }
-
-      done = renderLoop.shouldEnd();
-      frameCounter++;
-      long diff = System.currentTimeMillis() - now;
-      if (diff >= 1000) {
-        now += diff;
-        log.info(buildFpsText(frameCounter));
-        frameCounter = 0;
-      }
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see de.lessvoid.coregl.CoreSetup#getFactory()
-   */
-  @Override
-  public CoreFactory getFactory() {
-    return coreFactory;
   }
 
   /*
@@ -328,4 +287,10 @@ public class CoreSetupLwjgl implements CoreSetup {
       }
     }
   }
+
+@Override
+public void enableFullscreen(boolean enable) {
+	// TODO Auto-generated method stub
+	
+}
 }

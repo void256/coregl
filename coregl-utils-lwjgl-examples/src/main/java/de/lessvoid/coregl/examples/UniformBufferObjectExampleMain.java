@@ -24,38 +24,40 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.lessvoid.coregl.examples.lwjgl;
+package de.lessvoid.coregl.examples;
+
+import java.util.Map;
 
 import de.lessvoid.coregl.CoreFactory;
 import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreSetup;
-import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
-import de.lessvoid.coregl.CoreVAO.FloatType;
-import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.CoreVAO.FloatType;
+import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
+import de.lessvoid.coregl.lwjgl.CoreCheckGLLwjgl;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
+import de.lessvoid.coregl.lwjgl.CoreShaderLwjgl;
+import de.lessvoid.coregl.lwjgl.CoreShaderLwjgl.UniformBlockInfo;
+import de.lessvoid.coregl.lwjgl.CoreUBOLwjgl;
+import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-/**
- * The SuperSimpleExampleMain just renders a single quad using a triangle strip
- * with a very basic vertex and fragment shader. It demonstrates the use of the
- * core-utils classes.
- *
- * @author void
- */
-public class SuperSimpleExampleMain implements RenderLoopCallback {
+public class UniformBufferObjectExampleMain implements RenderLoopCallback {
   private final CoreRender coreRender;
+  private CoreUBOLwjgl ubo;
+  private CoreShader shader;
+  private CoreVAO vao;
 
-  public SuperSimpleExampleMain(final CoreFactory factory) {
+  public UniformBufferObjectExampleMain(final CoreFactory factory) {
     coreRender = factory.getCoreRender();
 
-    CoreShader shader = factory.createShaderWithVertexAttributes("vVertex", "vColor");
-    shader.vertexShader("super-simple/super-simple.vs");
-    shader.fragmentShader("super-simple/super-simple.fs");
+    shader = factory.createShaderWithVertexAttributes("vVertex", "vColor");
+    shader.vertexShader("ubo/ubo.vs");
+    shader.fragmentShader("ubo/ubo.fs");
     shader.link();
 
-    CoreVAO vao = factory.createVAO();
+    vao = factory.createVAO();
     vao.bind();
 
     factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
@@ -67,15 +69,24 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
-    vao.enableVertexAttribute(0);
     vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
-    vao.enableVertexAttribute(1);
     vao.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
+    vao.enableVertexAttribute(0);
+    vao.enableVertexAttribute(1);
+
+    CoreShaderLwjgl bla = (CoreShaderLwjgl) shader;
+    Map<String, UniformBlockInfo> blockInfos = bla.getUniformIndices("TransformBlock.off");
+
+    ubo = CoreUBOLwjgl.createStatic(new CoreCheckGLLwjgl(), 256, blockInfos);
+    ubo.setFloatArray("TransformBlock.off", new float[]{ -0.4f, 0.2f, 0.3f, 0.4f });
+    ubo.send();
+    bla.uniformBlockBinding("TransformBlock", 2);
+    ubo.bindBufferBase(2);
 
     // we only use a single shader and a single vao so we can activate both here
     // and let them stay active the whole time.
-    shader.activate();
     vao.bind();
+    shader.activate();
   }
 
   @Override
@@ -83,7 +94,8 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
     // We don't have to use coreRender though but it's kinda easier that way
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
-    coreRender.renderTriangleStrip(4);
+    shader.activate();
+    coreRender.renderTriangleStripInstances(4, 4);
     return false;
   }
 
@@ -92,6 +104,6 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
     CoreSetup setup = factory.createSetup();
     setup.initializeLogging(); // optional to get jdk14 to better format the log
     setup.initialize("Hello Lwjgl Core GL", 1024, 768);
-    setup.renderLoop(new SuperSimpleExampleMain(factory));
+    setup.renderLoop(new UniformBufferObjectExampleMain(factory));
   }
 }

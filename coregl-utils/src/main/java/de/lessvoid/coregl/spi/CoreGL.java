@@ -138,6 +138,7 @@ public interface CoreGL {
 	public int GL_STENCIL_INDEX8();
 	public int GL_STENCIL_ATTACHMENT();
 	public int GL_VERSION();
+	public int GL_SHADING_LANGUAGE_VERSION();
 	public int GL_VENDOR();
 	public int GL_RENDERER();
 	public int GL_MAX_VERTEX_ATTRIBS();
@@ -253,9 +254,6 @@ public interface CoreGL {
 	public void checkGLError(String msg);
 	public void checkGLError(String msg, boolean throwException);
 	public void setErrorChecksEnabled(boolean enabled);
-	
-	public int getDisplayWidth();
-	public int getDisplayHeight();
 	
 	public CoreUtil getUtil();
 }

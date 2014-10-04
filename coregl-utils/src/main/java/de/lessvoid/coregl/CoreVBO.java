@@ -37,7 +37,7 @@ import de.lessvoid.coregl.spi.CoreGL;
  * @author void
  */
 public class CoreVBO < T extends Buffer > {
-	
+
 	private static Map<UsageType, Integer> usageTypeMap = new Hashtable<UsageType, Integer>();
 
 	private CoreGL gl;
@@ -130,6 +130,7 @@ public class CoreVBO < T extends Buffer > {
 	}
 
 	CoreVBO(final CoreGL gl, final DataType dataTypeParam, final UsageType usageType, final int size) {
+		checkLazyInit(gl);
 		this.gl = gl;
 		usage = usageTypeMap.get(usageType);
 		dataType = dataTypeParam;
@@ -147,7 +148,7 @@ public class CoreVBO < T extends Buffer > {
 		vertexBuffer.rewind();
 		send();
 	}
-	
+
 	/**
 	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
 	 * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
@@ -247,10 +248,16 @@ public class CoreVBO < T extends Buffer > {
 		gl.checkGLError("glGenBuffers");
 		return id;
 	}
-	
+
 	static void initUsageTypeMap(final CoreGL gl) {
-	    usageTypeMap.put(UsageType.DYNAMIC_DRAW, gl.GL_DYNAMIC_DRAW());
-	    usageTypeMap.put(UsageType.STATIC_DRAW, gl.GL_STATIC_DRAW());
-	    usageTypeMap.put(UsageType.STREAM_DRAW, gl.GL_STREAM_DRAW());
+		usageTypeMap.put(UsageType.DYNAMIC_DRAW, gl.GL_DYNAMIC_DRAW());
+		usageTypeMap.put(UsageType.STATIC_DRAW, gl.GL_STATIC_DRAW());
+		usageTypeMap.put(UsageType.STREAM_DRAW, gl.GL_STREAM_DRAW());
+	}
+
+	private static void checkLazyInit(final CoreGL gl) {
+		if (usageTypeMap.size() == 0) {
+			initUsageTypeMap(gl);
+		}
 	}
 }

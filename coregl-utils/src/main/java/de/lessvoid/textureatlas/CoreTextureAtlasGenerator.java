@@ -93,7 +93,7 @@ public class CoreTextureAtlasGenerator {
     coreRender.clearColor(0.f, 0.f, 0.f, 0.f);
     coreRender.clearColorBuffer();
 
-    renderToTexture.disableAndResetViewport();
+    renderToTexture.disableAndResetViewport(width, height);
 
     vao.unbind();
 
@@ -176,6 +176,6 @@ public class CoreTextureAtlasGenerator {
 
     coreRender.renderTriangleStrip(4);
     vao.unbind();
-    renderToTexture.disableAndResetViewport();
+    renderToTexture.disableAndResetViewport(source.getWidth(), source.getHeight());
   }
 }

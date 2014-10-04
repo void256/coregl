@@ -24,14 +24,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.lessvoid.coregl.examples.lwjgl;
+package de.lessvoid.coregl.examples;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreSetup;
-import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreTexture2D;
 import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
@@ -42,6 +40,8 @@ import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
+import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.Mat4;
 import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.math.Vec4;

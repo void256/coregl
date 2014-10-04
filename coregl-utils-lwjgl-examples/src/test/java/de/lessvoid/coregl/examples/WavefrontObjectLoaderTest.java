@@ -8,7 +8,7 @@ import java.nio.charset.Charset;
 
 import org.junit.Test;
 
-import de.lessvoid.coregl.examples.lwjgl.WavefrontObjectLoader;
+import de.lessvoid.coregl.examples.WavefrontObjectLoader;
 
 public class WavefrontObjectLoaderTest {
   private static final float EPSILON = 0.00000001f;

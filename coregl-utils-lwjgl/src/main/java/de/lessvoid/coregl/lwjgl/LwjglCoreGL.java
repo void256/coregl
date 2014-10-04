@@ -21,6 +21,10 @@ public class LwjglCoreGL implements CoreGL {
 	private static Logger log = Logger.getLogger(LwjglCoreGL.class.getName());
 
 	private final CoreUtil util = new LwjglCoreUtil();
+	
+	public LwjglCoreGL() {
+		
+	}
 
 	@Override
 	public int GL_ALPHA() {
@@ -1277,15 +1281,5 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public CoreUtil getUtil() {
 		return util;
-	}
-
-	@Override
-	public int getDisplayWidth() {
-		return Display.getWidth();
-	}
-
-	@Override
-	public int getDisplayHeight() {
-		return Display.getHeight();
 	}
 }

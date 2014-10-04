@@ -24,7 +24,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.lessvoid.coregl.examples.lwjgl;
+package de.lessvoid.coregl.examples;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -40,14 +40,14 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreSetup;
-import de.lessvoid.coregl.CoreSetup.RenderLoopCallback;
 import de.lessvoid.coregl.CoreShader;
 import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
 import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
+import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.MatrixFactory;
 
 public class CompositeExampleMain implements RenderLoopCallback {

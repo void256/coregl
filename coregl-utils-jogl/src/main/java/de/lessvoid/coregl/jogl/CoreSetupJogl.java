@@ -1,19 +1,17 @@
 package de.lessvoid.coregl.jogl;
 
-import java.awt.DisplayMode;
 import java.nio.IntBuffer;
-import java.util.*;
 import java.util.logging.*;
-import java.util.logging.Formatter;
 
+import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import javax.media.nativewindow.util.Rectangle;
 import javax.media.opengl.*;
 
 import com.jogamp.newt.*;
+import com.jogamp.newt.event.*;
 import com.jogamp.newt.opengl.GLWindow;
 
-import de.lessvoid.coregl.*;
-import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.coregl.spi.*;
 
 public class CoreSetupJogl implements CoreSetup {
 	private static final Logger log = Logger.getLogger(CoreSetupJogl.class.getName());
@@ -26,13 +24,11 @@ public class CoreSetupJogl implements CoreSetup {
 	private Screen newtScreen;
 	private Display newtDisp;
 	private GLWindow glWin;
-	private CoreFactory coreFactory;
 	private String lastFPS = "";
 	
 	private volatile boolean closeRequested;
 
-	public CoreSetupJogl(final CoreFactory coreFactory, final CoreGL gl) {
-		this.coreFactory = coreFactory;
+	public CoreSetupJogl(final CoreGL gl) {
 		this.gl = gl;
 	}
 
@@ -100,66 +96,25 @@ public class CoreSetupJogl implements CoreSetup {
 	 */
 	@Override
 	public void renderLoop(final RenderLoopCallback renderLoop) {
-		boolean done = false;
-		long frameCounter = 0;
-		long now = System.currentTimeMillis();
-		long prevTime = System.nanoTime();
+		int frames = 0;
+		long lastPrintTime = System.currentTimeMillis();
+		
+		GLEventReceiver receiver = new GLEventReceiver(renderLoop);
+		glWin.addGLEventListener(receiver);
 
-		while (!closeRequested && !done) {
-			long nanoTime = System.nanoTime();
-			done = renderLoop.render((nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
-			prevTime = nanoTime;
+		while (!closeRequested && !receiver.shouldStop()) {
 			glWin.display();
-
-			frameCounter++;
-			long diff = System.currentTimeMillis() - now;
-			if (diff >= 1000) {
-				now += diff;
-				String fpsText = buildFpsText(frameCounter);
-				lastFPS = fpsText;
+			frames++;
+			long now = System.currentTimeMillis();
+			if (now - lastPrintTime > 1000) {
+				lastPrintTime = now;
+				String fpsText = buildFpsText(frames);
 				log.fine(fpsText);
-				frameCounter = 0;
+				lastFPS = fpsText;
 			}
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.lessvoid.coregl.CoreDisplaySetup#renderLoop2(de.lessvoid.coregl.CoreDisplaySetup.RenderLoopCallback2)
-	 */
-	@Override
-	public void renderLoop2(final RenderLoopCallback2 renderLoop) {
-		boolean done = false;
-		long frameCounter = 0;
-		long now = System.currentTimeMillis();
-		long prevTime = System.nanoTime();
-
-		while (!closeRequested && !done) {
-			long nanoTime = System.nanoTime();
-			boolean newFrame = renderLoop.render((nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
-			prevTime = nanoTime;
-			if (newFrame) {
-				glWin.display();
-			}
-
-			done = renderLoop.shouldEnd();
-			frameCounter++;
-			long diff = System.currentTimeMillis() - now;
-			if (diff >= 1000) {
-				now += diff;
-				log.info(buildFpsText(frameCounter));
-				frameCounter = 0;
-			}
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see de.lessvoid.coregl.CoreSetup#getFactory()
-	 */
-	@Override
-	public CoreFactory getFactory() {
-		return coreFactory;
+		
+		glWin.removeGLEventListener(receiver);
 	}
 
 	/*
@@ -169,6 +124,11 @@ public class CoreSetupJogl implements CoreSetup {
 	@Override
 	public void enableVSync(final boolean enable) {
 		glWin.getGL().setSwapInterval((enable) ? 1:0);
+	}
+	
+	@Override
+	public void enableFullscreen(boolean enable) {
+		glWin.setFullscreen(enable);
 	}
 
 	@Override
@@ -182,104 +142,32 @@ public class CoreSetupJogl implements CoreSetup {
 		newtDisp = NewtFactory.createDisplay(null);
 		
 		// get current Screen
-		Screen curr = NewtFactory.createScreen(newtDisp, Screen.getActiveScreenNumber());
-		MonitorDevice device = curr.getMainMonitor(new Rectangle(0, 0, requestedWidth, requestedHeight));
-		log.fine("using device: " + device.toString());
-		MonitorMode mode = device.queryCurrentMode();
-		int bitDepth = mode.getSurfaceSize().getBitsPerPixel();
-		logMode("currentMode: ", mode);
-
-		// find a matching DisplayMode by size
-		MonitorMode[] matchingModes = sizeMatch(device, requestedWidth, requestedHeight, bitDepth);
-
-		// match by frequency
-		MonitorMode selectedMode = frequencyMatch(matchingModes, mode.getRefreshRate());
-		if (selectedMode == null) {
-			selectedMode = fallbackMode(matchingModes);
-		}
-
-		// change the current mode to selectedMode
-		device.setCurrentMode(selectedMode);
-
-		// make sure we center the display
-		centerDisplay(mode);
+		newtScreen = NewtFactory.createScreen(newtDisp, Screen.getActiveScreenNumber());
+		newtScreen.addReference();
 
 		// Create the actual window
-		createWindow(title, glc);
-		logMode("current mode: ", mode);
-
-		// just output some infos about the system we're on
-		log.info("plattform: " + System.getProperty("os.name"));
-		log.info("opengl version: " + gl.glGetString(gl.GL_VERSION()));
-		log.info("opengl vendor: " + gl.glGetString(gl.GL_VENDOR()));
-		log.info("opengl renderer: " + gl.glGetString(gl.GL_RENDERER()));
-		IntBuffer maxVertexAttribts = gl.getUtil().createIntBuffer(4 * 4);
-		gl.glGetIntegerv(gl.GL_MAX_VERTEX_ATTRIBS(), maxVertexAttribts);
-		log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
-		gl.checkGLError("init phase 1");
-
-		log.info("GL_MAX_3D_TEXTURE_SIZE: " + gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
-
-		gl.glViewport(0, 0, glWin.getWidth(), glWin.getHeight());
-
-		gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		gl.glClear(gl.GL_COLOR_BUFFER_BIT());
-		gl.glEnable(gl.GL_BLEND());
-		gl.glBlendFunc(gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
-		gl.checkGLError("initialized");
+		createWindow(title, requestedWidth, requestedHeight, glc);
+		centerWindow();
+		newtScreen.removeReference();
+		glWin.setVisible(true);
+		logMode("current mode: ", newtScreen.getMainMonitor(new Rectangle(0,0,requestedWidth,requestedHeight)).getCurrentMode());
 	}
 
-	private void createWindow(final String title, final GLCapabilities glc) {
+	private void createWindow(final String title, int width, int height, final GLCapabilities glc) {
 		glWin = GLWindow.create(newtScreen, glc);
 		glWin.setFullscreen(false);
-	}
-	
-	private MonitorMode[] sizeMatch(final MonitorDevice device, final int requestedWidth, final int requestedHeight, 
-			final int requestedBitDepth) {
-		List<MonitorMode> modes = device.getSupportedModes();
-		log.fine("Found " + modes.size() + " display modes supported by current MonitorDevice");
-
-		List<MonitorMode> matching = new ArrayList<MonitorMode>();
-		for (int i = 0; i < modes.size(); i++) {
-			MonitorMode mode = modes.get(i);
-			if (matchesRequestedMode(requestedWidth, requestedHeight, requestedBitDepth, mode)) {
-				logMode("matching mode: ", mode);
-				matching.add(mode);
+		glWin.setSize(width, height);
+		glWin.setDefaultCloseOperation(WindowClosingMode.DISPOSE_ON_CLOSE);
+		glWin.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowDestroyNotify(WindowEvent event) {
+				closeRequested = true;
 			}
-		}
-
-		MonitorMode[] matchingModes = matching.toArray(new MonitorMode[matching.size()]);
-		return matchingModes;
+		});
 	}
 
-	private MonitorMode frequencyMatch(final MonitorMode[] matchingModes, final float frequency) {
-		for (int i = 0; i < matchingModes.length; i++) {
-			if (matchingModes[i].getRefreshRate() == frequency) {
-				logMode("using frequency matching mode: ", matchingModes[i]);
-				return matchingModes[i];
-			}
-		}
-		return null;
-	}
-
-	private MonitorMode fallbackMode(final MonitorMode[] matchingModes) {
-		Arrays.sort(matchingModes);
-		logMode("using fallback mode: ", matchingModes[0]);
-		return matchingModes[0];
-	}
-
-	private void centerDisplay(final MonitorMode currentMode) {
-		int x = (currentMode.getRotatedWidth() - glWin.getWidth()) / 2;
-		int y = (currentMode.getRotatedHeight() - glWin.getHeight()) / 2;
-		glWin.setPosition(x, y);
-	}
-
-	private boolean matchesRequestedMode(final int requestedWidth, final int requestedHeight, 
-			final int requestedBitDepth, final MonitorMode mode) {
-		return
-				mode.getRotatedWidth() == requestedWidth &&
-				mode.getRotatedHeight() == requestedHeight &&
-				mode.getSurfaceSize().getBitsPerPixel() == requestedBitDepth;
+	private void centerWindow() {
+		glWin.setPosition((newtScreen.getWidth() - glWin.getWidth()) / 2, (newtScreen.getHeight() - glWin.getHeight()) / 2);
 	}
 
 	private void logMode(final String message, final MonitorMode currentMode) {
@@ -303,5 +191,63 @@ public class CoreSetupJogl implements CoreSetup {
 		fpsText.append(1000 / (float) frameCounter);
 		fpsText.append(" ms)");
 		return fpsText.toString();
+	}
+	
+	private class GLEventReceiver implements GLEventListener {
+		
+		final RenderLoopCallback callback;
+		
+		long prevTime = System.nanoTime();
+		boolean done;
+		
+		GLEventReceiver(RenderLoopCallback callback) {
+			this.callback = callback;
+		}
+
+		@Override
+		public void init(GLAutoDrawable drawable) {
+			// just output some info about the system we're on
+			log.info("platform: " + System.getProperty("os.name"));
+			log.info("opengl version: " + gl.glGetString(gl.GL_VERSION()));
+			log.info("opengl vendor: " + gl.glGetString(gl.GL_VENDOR()));
+			log.info("opengl renderer: " + gl.glGetString(gl.GL_RENDERER()));
+			IntBuffer maxVertexAttribts = gl.getUtil().createIntBuffer(4 * 4);
+			gl.glGetIntegerv(gl.GL_MAX_VERTEX_ATTRIBS(), maxVertexAttribts);
+			log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
+			gl.checkGLError("init phase 1");
+
+			log.info("GL_MAX_3D_TEXTURE_SIZE: " + gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
+
+			gl.glViewport(0, 0, glWin.getWidth(), glWin.getHeight());
+
+			gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			gl.glClear(gl.GL_COLOR_BUFFER_BIT());
+			gl.glEnable(gl.GL_BLEND());
+			gl.glBlendFunc(gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
+			gl.checkGLError("initialized");
+			callback.init(gl);
+		}
+
+		@Override
+		public void dispose(GLAutoDrawable drawable) {
+			
+		}
+
+		@Override
+		public void display(GLAutoDrawable drawable) {
+			long now = System.nanoTime();
+			done = callback.render(gl, (now - prevTime) / NANO_TO_MS_CONVERSION);
+			prevTime = now;
+		}
+
+		@Override
+		public void reshape(GLAutoDrawable drawable, int x, int y, int width,
+				int height) {
+			
+		}
+		
+		boolean shouldStop() {
+			return done;
+		}
 	}
 }

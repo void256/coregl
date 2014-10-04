@@ -37,22 +37,23 @@ import de.lessvoid.coregl.spi.CoreGL;
  * @author void
  */
 public class CoreVAO {
-	
+
 	private final static Map<IntType, Integer> intTypeMap = new Hashtable<IntType, Integer>();
 	private final static Map<FloatType, Integer> floatTypeMap = new Hashtable<FloatType, Integer>();
-	
+
 	private final CoreGL gl;
 
 	private int vao;
-	
+
 	CoreVAO(final CoreGL gl) {
+		checkLazyInit(gl);
 		this.gl = gl;
 		IntBuffer vaoBuff = gl.getUtil().createIntBuffer(1);
 		gl.glGenVertexArrays(1, vaoBuff);
 		gl.checkGLError("glGenVertexArrays");
 		vao = vaoBuff.get(0);
 	}
-	
+
 	/**
 	 * Create a new CoreVAO.
 	 * @return the CoreVAO instance created
@@ -159,10 +160,10 @@ public class CoreVAO {
 	 *        index.
 	 */
 	public void enableVertexAttributeDivisori(int index, int size, IntType vertexType, int stride, int offset, int divisor) {
-	    gl.glVertexAttribIPointer(index, size, intTypeMap.get(vertexType), stride * 4, offset * 4);
-	    gl.glVertexAttribDivisorARB(index, divisor);
-	    gl.glEnableVertexAttribArray(index);
-	    gl.checkGLError("glVertexAttribPointer (" + index + ")");
+		gl.glVertexAttribIPointer(index, size, intTypeMap.get(vertexType), stride * 4, offset * 4);
+		gl.glVertexAttribDivisorARB(index, divisor);
+		gl.glEnableVertexAttribArray(index);
+		gl.checkGLError("glVertexAttribPointer (" + index + ")");
 	}
 
 	/**
@@ -170,10 +171,10 @@ public class CoreVAO {
 	 * @param index the index of the vertex attribute to disable
 	 */
 	public void disableVertexAttribute(int index) {
-	    gl.glDisableVertexAttribArray(index);
-	    gl.checkGLError("glDisableVertexAttribArray (" + index + ")");
+		gl.glDisableVertexAttribArray(index);
+		gl.checkGLError("glDisableVertexAttribArray (" + index + ")");
 	}
-	
+
 	public enum IntType {
 		BYTE,
 		UNSIGNED_BYTE,
@@ -198,29 +199,41 @@ public class CoreVAO {
 		UNSIGNED_INT_2_10_10_10_REV,
 		UNSIGNED_INT_10F_11F_11F_REV
 	}
-	
+
 	static void initIntTypeMap(final CoreGL gl) {
-	    intTypeMap.put(IntType.BYTE, gl.GL_BYTE());
-	    intTypeMap.put(IntType.UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE());
-	    intTypeMap.put(IntType.SHORT, gl.GL_SHORT());
-	    intTypeMap.put(IntType.UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT());
-	    intTypeMap.put(IntType.INT, gl.GL_INT());
-	    intTypeMap.put(IntType.UNSIGNED_INT, gl.GL_UNSIGNED_INT());
+		intTypeMap.put(IntType.BYTE, gl.GL_BYTE());
+		intTypeMap.put(IntType.UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE());
+		intTypeMap.put(IntType.SHORT, gl.GL_SHORT());
+		intTypeMap.put(IntType.UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT());
+		intTypeMap.put(IntType.INT, gl.GL_INT());
+		intTypeMap.put(IntType.UNSIGNED_INT, gl.GL_UNSIGNED_INT());
 	}
-	
+
 	static void initFloatTypeMap(final CoreGL gl) {
-	    floatTypeMap.put(FloatType.BYTE, gl.GL_BYTE());
-	    floatTypeMap.put(FloatType.UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE());
-	    floatTypeMap.put(FloatType.SHORT, gl.GL_SHORT());
-	    floatTypeMap.put(FloatType.UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT());
-	    floatTypeMap.put(FloatType.INT, gl.GL_INT());
-	    floatTypeMap.put(FloatType.UNSIGNED_INT, gl.GL_UNSIGNED_INT());
-	    floatTypeMap.put(FloatType.HALF_FLOAT, gl.GL_HALF_FLOAT());
-	    floatTypeMap.put(FloatType.FLOAT, gl.GL_FLOAT());
-	    floatTypeMap.put(FloatType.DOUBLE, gl.GL_DOUBLE());
-	    floatTypeMap.put(FloatType.FIXED, gl.GL_FIXED());
-	    floatTypeMap.put(FloatType.INT_2_10_10_10_REV, gl.GL_INT_2_10_10_10_REV());
-	    floatTypeMap.put(FloatType.UNSIGNED_INT_2_10_10_10_REV, gl.GL_UNSIGNED_INT_2_10_10_10_REV());
-	    floatTypeMap.put(FloatType.UNSIGNED_INT_10F_11F_11F_REV, gl.GL_UNSIGNED_INT_10F_11F_11F_REV());
+		floatTypeMap.put(FloatType.BYTE, gl.GL_BYTE());
+		floatTypeMap.put(FloatType.UNSIGNED_BYTE, gl.GL_UNSIGNED_BYTE());
+		floatTypeMap.put(FloatType.SHORT, gl.GL_SHORT());
+		floatTypeMap.put(FloatType.UNSIGNED_SHORT, gl.GL_UNSIGNED_SHORT());
+		floatTypeMap.put(FloatType.INT, gl.GL_INT());
+		floatTypeMap.put(FloatType.UNSIGNED_INT, gl.GL_UNSIGNED_INT());
+		floatTypeMap.put(FloatType.HALF_FLOAT, gl.GL_HALF_FLOAT());
+		floatTypeMap.put(FloatType.FLOAT, gl.GL_FLOAT());
+		floatTypeMap.put(FloatType.DOUBLE, gl.GL_DOUBLE());
+		floatTypeMap.put(FloatType.FIXED, gl.GL_FIXED());
+		floatTypeMap.put(FloatType.INT_2_10_10_10_REV, gl.GL_INT_2_10_10_10_REV());
+		floatTypeMap.put(FloatType.UNSIGNED_INT_2_10_10_10_REV, gl.GL_UNSIGNED_INT_2_10_10_10_REV());
+		floatTypeMap.put(FloatType.UNSIGNED_INT_10F_11F_11F_REV, gl.GL_UNSIGNED_INT_10F_11F_11F_REV());
+	}
+
+	/*
+	 * Lazy initialization of static maps (init requires instance of CoreGL)
+	 */
+	private static void checkLazyInit(final CoreGL gl) {
+		if(intTypeMap.size() == 0) {
+			initIntTypeMap(gl);
+		}
+		if(floatTypeMap.size() == 0) {
+			initFloatTypeMap(gl);
+		}
 	}
 }

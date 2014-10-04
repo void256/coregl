@@ -24,7 +24,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.lessvoid.coregl;
+package de.lessvoid.coregl.spi;
+
+
 /**
  * Helper to initialize a display and manages the render loop. This is a completely optional interface/class that you
  * can use if you see it fits. Most actual programs that'll use the coregl-utils will use their own setup code and have
@@ -46,30 +48,15 @@ public interface CoreSetup {
 		 * @param deltaTime the time past since the last call in ms
 		 * @return true when the render loop should be stopped and false if you want it to continue.
 		 */
-		boolean render(float deltaTime);
-	}
-	/**
-	 * You can implement this interface when you use the renderLoop() method. This will be called each frame and allows
-	 * you to actually draw.
-	 * @author void
-	 */
-	public interface RenderLoopCallback2 {
-		/**
-		 * Do some awesome stuff in here!
-		 * @param deltaTime the time past since the last call in ms
-		 * @return true when the render actually rendered a new frame and false otherwise
-		 */
-		boolean render(float deltaTime);
-		/**
-		 * Might return true when the render loop should stop.
-		 * @return true when the render loop should stop and false if it should continue
-		 */
-		boolean shouldEnd();
+		boolean render(CoreGL gl, float deltaTime);
+		
+		void init(CoreGL gl);
 	}
 	/**
 	 * (optional) This method will just set a new jdk14 Formatter that is more readable then the defaults.
 	 */
 	void initializeLogging();
+	
 	/**
 	 * (optional) This method will just set a new jdk14 Formatter that is more readable then the defaults and
 	 * additionally reads the given loggingProperties from the Classpath and uses it to initialize the LogManager.
@@ -77,6 +64,7 @@ public interface CoreSetup {
 	 * @parameter loggingProperties a jdk14 configuration file available in the Classpath
 	 */
 	void initializeLogging(String loggingProperties);
+	
 	/**
 	 * Initialize.
 	 * @param title The title of the window
@@ -85,30 +73,30 @@ public interface CoreSetup {
 	 * @throws Exception in case of any errors
 	 */
 	void initialize(String title, int width, int height) throws Exception;
+	
 	/**
 	 * Destroy LWJGL and free resources.
 	 */
 	void destroy();
+	
 	/**
-	 * The renderLoop will keep calling Display.update() and calls the RenderLoopCallback each frame.
+	 * The renderLoop will keep updating the display and calls the RenderLoopCallback each frame.
 	 * @param renderLoop the RenderLoopCallback implementation
 	 */
 	void renderLoop(RenderLoopCallback renderLoop);
-	/**
-	 * FIXME need a better name ;)
-	 * @param renderLoop
-	 */
-	void renderLoop2(RenderLoopCallback2 renderLoop);
-	/**
-	 * Convenience Method to get a CoreFactory directly from this class.
-	 * @return a CoreFactory
-	 */
-	CoreFactory getFactory();
+	
 	/**
 	 * Enable vsync.
 	 * @param enable true to enable and false to disable
 	 */
 	void enableVSync(boolean enable);
+	
+	/**
+	 * Enable native fullscreen.
+	 * @param enable true if native fullscreen window should be requested, false otherwise
+	 */
+	void enableFullscreen(boolean enable);
+	
 	/**
 	 * Returns the last measured FPS and frametime info String.
 	 * @return

@@ -73,10 +73,13 @@ public class CoreFBO {
 
 	/**
 	 * Disable rendering to this FBO and reset the Viewport back to screen size.
+	 * 
+	 * @param viewWidth the width to which the viewport should be reset
+	 * @param viewHeight the height to which the viewport should be reset
 	 */
-	public void disableAndResetViewport() {
+	public void disableAndResetViewport(int viewWidth, int viewHeight) {
 		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER(), 0);
-		gl.glViewport(0, 0, gl.getDisplayWidth(), gl.getDisplayHeight());
+		gl.glViewport(0, 0, viewWidth, viewHeight);
 	}
 
 	/**

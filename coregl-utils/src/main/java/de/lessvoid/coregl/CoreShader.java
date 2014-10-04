@@ -48,7 +48,7 @@ public class CoreShader {
 	private final String[] attributes;
 
 	private final CoreGL gl;
-	
+
 	/**
 	 * Create a new Shader.
 	 * @return the new CoreShader instance
@@ -56,7 +56,7 @@ public class CoreShader {
 	public static CoreShader createShader(final CoreGL gl) {
 		return new CoreShader(gl);
 	}
-	
+
 	/**
 	 * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indices in
 	 * ascending order beginning with 0. This method can be used when you want to control the vertex attribute binding
@@ -76,7 +76,7 @@ public class CoreShader {
 		this.program = gl.glCreateProgram();
 		checkGLError("glCreateProgram");
 	}
-	
+
 	public int vertexShader(final String filename) {
 		return vertexShader(filename, getStream(filename));
 	}
@@ -445,44 +445,26 @@ public class CoreShader {
 	}
 
 	private String loadShader(final InputStream ... sources) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		StringBuilder srcbuff = new StringBuilder();
 		for (InputStream source : sources) {
-			out.write(read(source));
+			InputStreamReader streamReader = new InputStreamReader(source);
+			BufferedReader buffReader = new BufferedReader(streamReader);
+			String nextLine = null;
+			while((nextLine = buffReader.readLine()) != null) {
+				srcbuff.append(nextLine + "\n");
+			}
+			buffReader.close();
 		}
 
-		byte[] data = out.toByteArray();
-		ByteBuffer result = gl.getUtil().createByteBuffer(data.length);
-		result.put(data);
-		result.flip();
-		return result.asCharBuffer().toString();
-	}
-
-	private byte[] read(final InputStream dataStream) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-		byte[] readBuffer = new byte[1024];
-		int bytesRead = -1;
-		try {
-			while ((bytesRead = dataStream.read(readBuffer)) > 0) {
-				out.write(readBuffer, 0, bytesRead);
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				dataStream.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		return out.toByteArray();
+		return srcbuff.toString();
 	}
 
 	private void printLogInfo(final int obj) {
 		String logInfoMsg = gl.glGetShaderInfoLog(obj);
 		checkGLError("glGetShaderInfoLog");
-		log.info(getLoggingPrefix() + "Info log:\n" + logInfoMsg);
+		if (!logInfoMsg.isEmpty()) {
+			log.info(getLoggingPrefix() + "Info log:\n" + logInfoMsg);
+		}
 		checkGLError("printLogInfo");
 	}
 
@@ -496,7 +478,7 @@ public class CoreShader {
 
 	private InputStream getStream(final File file) throws FileNotFoundException {
 		log.fine("loading shader file [" + file + "]");
-		return new ByteArrayInputStream(read(new FileInputStream(file)));
+		return new FileInputStream(file);
 	}
 
 	private InputStream getStream(final String filename) {
