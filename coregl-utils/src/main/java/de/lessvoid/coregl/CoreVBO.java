@@ -237,7 +237,7 @@ public class CoreVBO < T extends Buffer > {
 	}
 
 	private int initBuffer() {
-		IntBuffer idbuff = IntBuffer.allocate(1);
+		IntBuffer idbuff = gl.getUtil().createIntBuffer(1);
 		gl.glGenBuffers(1, idbuff);
 		idbuff.rewind();
 		int id = idbuff.get();
