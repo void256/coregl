@@ -61,9 +61,6 @@ public class SuperSimpleExampleMain implements RenderLoopCallback, CoreExample {
 	@Override
 	public void init(CoreGL gl) {
 		coreRender = CoreRender.createCoreRender(gl);
-		
-		System.out.println("VERSION: " + CoreVersion.getGLVersionFromString(gl.glGetString(gl.GL_VERSION())));
-		//System.out.println(CoreVersion.getGLSLVersionFromString(gl.glGetString(gl.GL_SHADING_LANGUAGE_VERSION())));
 
 		CoreShader shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");
 		shader.vertexShader("super-simple/super-simple.vs");
@@ -101,7 +98,7 @@ public class SuperSimpleExampleMain implements RenderLoopCallback, CoreExample {
 		setup.initializeLogging(); // optional to get jdk14 to better format the log
 		try {
 			setup.initialize("Hello JOGL Core GL", 1024, 768);
-			setup.renderLoop(new SuperSimpleExampleMain());
+			setup.renderLoop(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -115,24 +112,14 @@ public class SuperSimpleExampleMain implements RenderLoopCallback, CoreExample {
 		setup.initializeLogging(); // optional to get jdk14 to better format the log
 		try {
 			setup.initialize("Hello LWJGL Core GL", 1024, 768);
-			setup.renderLoop(new SuperSimpleExampleMain());
+			setup.renderLoop(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public static void main(String[] args) {
-		if (args.length == 0) {
-			System.out.println("no test arguments supplied: defaulting to JOGL");
-			new SuperSimpleExampleMain().runJogl();
-		} else {
-			if (args[0].equals("jogl")) {
-				System.out.println("running SuperSimpleExampleMain: backend=JOGL");
-				new SuperSimpleExampleMain().runJogl();
-			} else if (args[0].equals("lwjgl")) {
-				System.out.println("running SuperSimpleExampleMain: backend=LWJGL");
-				new SuperSimpleExampleMain().runLwjgl();
-			}
-		}
+		CoreExample superSimpleExample = new SuperSimpleExampleMain();
+		ExampleMain.runExample(superSimpleExample, args);
 	}
 }

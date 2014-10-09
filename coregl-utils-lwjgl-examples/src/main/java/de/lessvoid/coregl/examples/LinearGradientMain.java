@@ -26,27 +26,30 @@
  */
 package de.lessvoid.coregl.examples;
 
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreVAO;
+import org.junit.Test;
+
+import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.examples.spi.CoreExample;
+import de.lessvoid.coregl.jogl.*;
+import de.lessvoid.coregl.lwjgl.*;
+import de.lessvoid.coregl.spi.*;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.MatrixFactory;
 
-public class LinearGradientMain implements RenderLoopCallback {
-  private final CoreRender coreRender;
+public class LinearGradientMain implements RenderLoopCallback, CoreExample {
+	
+  private CoreRender coreRender;
   private float time;
   private CoreShader shader;
+  
+	@Override
+	public void init(CoreGL gl) {
+    coreRender = CoreRender.createCoreRender(gl);
 
-  public LinearGradientMain(final CoreFactory factory) {
-    coreRender = factory.getCoreRender();
-
-    shader = factory.newShaderWithVertexAttributes("aVertex");
+    shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
     shader.vertexShader("linear-gradient/linear-gradient.vs");
     shader.fragmentShader("linear-gradient/linear-gradient.fs");
     shader.link();
@@ -60,10 +63,10 @@ public class LinearGradientMain implements RenderLoopCallback {
     shader.setUniformi("numStops", 3);
     shader.setUniformf("gradient", 100.0f, 100.0f, 500.0f, 500.0f );
 
-    CoreVAO vao = factory.createVAO();
+    CoreVAO vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
+    CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
         100.f, 100.f,
         100.f, 500.f,
         500.f, 100.f,
@@ -79,11 +82,11 @@ public class LinearGradientMain implements RenderLoopCallback {
     // and let them stay active the whole time.
     shader.activate();
     vao.bind();
-  }
+	}
 
-  @Override
-  public boolean render(final float deltaTime) {
-    // We don't have to use coreRender though but it's kinda easier that way
+	@Override
+	public boolean render(final CoreGL gl, final float deltaTime) {
+    // We don't have to use coreRender, but it's kinda easier that way
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
     coreRender.renderTriangleStrip(4);
@@ -92,14 +95,38 @@ public class LinearGradientMain implements RenderLoopCallback {
     shader.setUniformfv("gradientStop", 1, new float[] { 0.0f, (float) (Math.sin(time / 2000) + 1.0) / 2.0f, 1.0f });
 
     return false;
-  }
+	}
+  
+	@Override
+	@Test
+	public void runJogl() {
+		CoreGL gl = new JoglCoreGL();
+		CoreSetup setup = new CoreSetupJogl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello JOGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	@Test
+	public void runLwjgl() {
+		CoreGL gl = new LwjglCoreGL();
+		CoreSetup setup = new CoreSetupLwjgl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello LWJGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = CoreFactoryLwjgl.create();
-    CoreSetup setup = factory.createSetup();
-    setup.enableVSync(true);
-    setup.initializeLogging(); // optional to get jdk14 to better format the log
-    setup.initialize("Hello Lwjgl Core GL", 1024, 768);
-    setup.renderLoop(new LinearGradientMain(factory));
+    CoreExample linearGradientExample = new LinearGradientMain();
+    ExampleMain.runExample(linearGradientExample, args);
   }
 }

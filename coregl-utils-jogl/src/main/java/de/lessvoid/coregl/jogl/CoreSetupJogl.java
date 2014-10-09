@@ -16,16 +16,16 @@ import de.lessvoid.coregl.spi.*;
 public class CoreSetupJogl implements CoreSetup {
 	private static final Logger log = Logger.getLogger(CoreSetupJogl.class.getName());
 	private static final float NANO_TO_MS_CONVERSION = 1000000.f;
-	
+
 	private final StringBuilder fpsText = new StringBuilder();
-	
+
 	private final CoreGL gl;
-	
+
 	private Screen newtScreen;
 	private Display newtDisp;
 	private GLWindow glWin;
 	private String lastFPS = "";
-	
+
 	private volatile boolean closeRequested;
 
 	public CoreSetupJogl(final CoreGL gl) {
@@ -98,7 +98,7 @@ public class CoreSetupJogl implements CoreSetup {
 	public void renderLoop(final RenderLoopCallback renderLoop) {
 		int frames = 0;
 		long lastPrintTime = System.currentTimeMillis();
-		
+
 		GLEventReceiver receiver = new GLEventReceiver(renderLoop);
 		glWin.addGLEventListener(receiver);
 
@@ -113,7 +113,7 @@ public class CoreSetupJogl implements CoreSetup {
 				lastFPS = fpsText;
 			}
 		}
-		
+
 		glWin.removeGLEventListener(receiver);
 	}
 
@@ -125,7 +125,7 @@ public class CoreSetupJogl implements CoreSetup {
 	public void enableVSync(final boolean enable) {
 		glWin.getGL().setSwapInterval((enable) ? 1:0);
 	}
-	
+
 	@Override
 	public void enableFullscreen(boolean enable) {
 		glWin.setFullscreen(enable);
@@ -140,7 +140,7 @@ public class CoreSetupJogl implements CoreSetup {
 		GLProfile profile = GLProfile.getMaxProgrammableCore(true);
 		GLCapabilities glc = new GLCapabilities(profile);
 		newtDisp = NewtFactory.createDisplay(null);
-		
+
 		// get current Screen
 		newtScreen = NewtFactory.createScreen(newtDisp, Screen.getActiveScreenNumber());
 		newtScreen.addReference();
@@ -174,9 +174,9 @@ public class CoreSetupJogl implements CoreSetup {
 		log.info(
 				message +
 				currentMode.getRotatedWidth() + ", " +
-						currentMode.getRotatedHeight() + ", " +
-						currentMode.getSurfaceSize().getBitsPerPixel() + ", " +
-						currentMode.getRefreshRate() + " Hz");
+				currentMode.getRotatedHeight() + ", " +
+				currentMode.getSurfaceSize().getBitsPerPixel() + ", " +
+				currentMode.getRefreshRate() + " Hz");
 	}
 
 	private void initInput() throws Exception {
@@ -192,14 +192,14 @@ public class CoreSetupJogl implements CoreSetup {
 		fpsText.append(" ms)");
 		return fpsText.toString();
 	}
-	
+
 	private class GLEventReceiver implements GLEventListener {
-		
+
 		final RenderLoopCallback callback;
-		
+
 		long prevTime = System.nanoTime();
 		boolean done;
-		
+
 		GLEventReceiver(RenderLoopCallback callback) {
 			this.callback = callback;
 		}
@@ -230,7 +230,7 @@ public class CoreSetupJogl implements CoreSetup {
 
 		@Override
 		public void dispose(GLAutoDrawable drawable) {
-			
+
 		}
 
 		@Override
@@ -243,9 +243,9 @@ public class CoreSetupJogl implements CoreSetup {
 		@Override
 		public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 				int height) {
-			
+
 		}
-		
+
 		boolean shouldStop() {
 			return done;
 		}

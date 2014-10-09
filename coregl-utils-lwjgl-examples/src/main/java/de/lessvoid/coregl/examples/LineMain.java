@@ -26,130 +26,115 @@
  */
 package de.lessvoid.coregl.examples;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL14.GL_FUNC_ADD;
-import static org.lwjgl.opengl.GL14.GL_MAX;
-import static org.lwjgl.opengl.GL20.glBlendEquationSeparate;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
 
-import org.lwjgl.opengl.Display;
+import org.junit.Test;
 
-import de.lessvoid.coregl.CoreFBO;
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreTexture2D;
-import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
-import de.lessvoid.coregl.CoreTexture2D.Type;
-import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
+import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
+import de.lessvoid.coregl.CoreTexture2DConstants.Type;
 import de.lessvoid.coregl.CoreVAO.FloatType;
-import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.examples.spi.CoreExample;
+import de.lessvoid.coregl.jogl.*;
+import de.lessvoid.coregl.lwjgl.*;
+import de.lessvoid.coregl.spi.*;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
-import de.lessvoid.math.Mat4;
-import de.lessvoid.math.MatrixFactory;
+import de.lessvoid.math.*;
 
-public class LineMain implements RenderLoopCallback {
-  private static final Mat4 ORTHO = MatrixFactory.createOrtho(0, 1024.f, 768.f, 0);
-  private final CoreShader texture;
-  private final CoreShader lineShader1;
-  private final CoreShader lineShader2;
-  private final CoreVAO src;
-  private final CoreVBO<FloatBuffer> vbo;
-  private final CoreVBO<FloatBuffer> vboQuad;
-  private final CoreVBO<FloatBuffer> vboBackground;
-  private final CoreFBO fbo;
+public class LineMain implements RenderLoopCallback, CoreExample {
+	
+	private static final int WINDOW_WIDTH = 1024, WINDOW_HEIGHT = 768;
+	
+  private static final Mat4 ORTHO = MatrixFactory.createOrtho(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+  
+  private CoreRender coreRender;
+  private CoreShader texture;
+  private CoreShader lineShader1;
+  private CoreShader lineShader2;
+  private CoreVAO src;
+  private CoreVBO<FloatBuffer> vbo;
+  private CoreVBO<FloatBuffer> vboQuad;
+  private CoreVBO<FloatBuffer> vboBackground;
+  private CoreFBO fbo;
   private float totalTime;
-  private final CoreTexture2D fboTexture;
-  private final CoreShader backgroundShader;
+  private CoreTexture2D fboTexture;
+  private CoreShader backgroundShader;
   private float time;
-  private CoreFactory factory;
 
-  public LineMain(final CoreFactory factory) throws Exception {
-    this.factory = factory;
+  public void init(final CoreGL gl) {
+  	coreRender = CoreRender.createCoreRender(gl);
 
-    texture = factory.createShaderWithVertexAttributes("aVertex", "aUV");
+    texture = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");
     texture.vertexShader("line/line-pass2.vs");
     texture.fragmentShader("line/line-pass2.fs");
     texture.link();
 
-    lineShader1 = factory.newShaderWithVertexAttributes("aVertex");
+    lineShader1 = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
     lineShader1.vertexShader("line/line.vs");
-    lineShader1.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"), resource("line/line.gs"));
+    try {
+			lineShader1.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"), resource("line/line.gs"));
+		} catch (FileNotFoundException e) {
+			System.err.println("error loading geometry shader: " + e.toString());
+		}
     lineShader1.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"), resource("line/line.fs"));
     lineShader1.link();
 
-    lineShader2 = factory.newShaderWithVertexAttributes("aVertex");
+    lineShader2 = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
     lineShader2.vertexShader("line/line.vs");
-    lineShader2.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"), resource("line/line.gs"));
+    try {
+			lineShader2.geometryShader("line/line.gs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"), resource("line/line.gs"));
+		} catch (FileNotFoundException e) {
+			System.err.println("error loading geometry shader: " + e.toString());
+		}
     lineShader2.fragmentShader("line/line.fs", stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"), resource("line/line.fs"));
     lineShader2.link();
 
-    src = factory.createVAO();
+    src = CoreVAO.createCoreVAO(gl);
     src.bind();
 
-    vbo = factory.createVBO(DataType.FLOAT, UsageType.DYNAMIC_DRAW, 2*5);
+    vbo = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.DYNAMIC_DRAW, 2*5);
     vbo.bind();
     src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
     totalTime = 0;
 
-    vboQuad = factory.createVBO(DataType.FLOAT, UsageType.DYNAMIC_DRAW, 4*4);
-    vboBackground = factory.createVBO(DataType.FLOAT, UsageType.DYNAMIC_DRAW, 5*4);
+    vboQuad = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.DYNAMIC_DRAW, 4*4);
+    vboBackground = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.DYNAMIC_DRAW, 5*4);
 
-    fbo = factory.createCoreFBO();
+    fbo = CoreFBO.createCoreFBO(gl);
     fbo.bindFramebuffer();
 
-    fboTexture = factory.createEmptyTexture(ColorFormat.Red, Type.UNSIGNED_BYTE, Display.getWidth(), Display.getHeight(), ResizeFilter.Linear);
+    fboTexture = CoreTexture2D.createEmptyTexture(gl, ColorFormat.Red, Type.UNSIGNED_BYTE, WINDOW_WIDTH, WINDOW_HEIGHT, ResizeFilter.Linear);
     fbo.attachTexture(fboTexture.getTextureId(), 0);
 
-    backgroundShader = factory.createShaderWithVertexAttributes("aVertex", "aColor");
+    backgroundShader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aColor");
     backgroundShader.vertexShader("background-gradient.vs");
     backgroundShader.fragmentShader("background-gradient.fs");
     backgroundShader.link();
   }
-
-  private InputStream resource(final String name) {
-    return Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-  }
-
-  private InputStream stream(final String data) {
-    return new ByteArrayInputStream(data.getBytes(Charset.forName("ISO-8859-1")));
-  }
-
-  @Override
-  public boolean render(final float deltaTime) {
+  
+	@Override
+	public boolean render(final CoreGL gl, final float deltaTime) {
     time += deltaTime;
 
     fbo.bindFramebuffer();
-    glViewport(0, 0, Display.getWidth(), Display.getHeight());
+    gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    gl.glClearColor(0.f, 0.f, 0.f, 0.f);
+    gl.glClear(gl.GL_COLOR_BUFFER_BIT());
 //    glClearStencil(0);
 //    glStencilFuncSeparate(GL_FRONT_AND_BACK, GL_EQUAL, 0, 0xff);
 //    glStencilOpSeparate(GL_FRONT_AND_BACK, GL_KEEP, GL_KEEP, GL_INCR);
 //    glStencilMask(0xFF);
 //    glEnable(GL_STENCIL_TEST);
     
-    glEnable(GL_BLEND);
-    glBlendEquationSeparate(GL_MAX, GL_MAX);
+    gl.glEnable(gl.GL_BLEND());
+    gl.glBlendEquationSeparate(gl.GL_MAX(), gl.GL_MAX());
 
     totalTime += deltaTime;
     float w = 100.f;
@@ -177,11 +162,11 @@ public class LineMain implements RenderLoopCallback {
     src.enableVertexAttribute(0);
     src.disableVertexAttribute(1);
     src.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
-    factory.getCoreRender().renderLinesAdjacent(5);
+    coreRender.renderLinesAdjacent(5);
     fbo.disable();
 
     // Render background
-    glDisable(GL_BLEND);
+    gl.glDisable(gl.GL_BLEND());
 
     FloatBuffer background = vboBackground.getBuffer();
     background.put(0.f);
@@ -216,16 +201,16 @@ public class LineMain implements RenderLoopCallback {
     src.enableVertexAttribute(1);
     src.vertexAttribPointer(1, 3, FloatType.FLOAT, 5, 2);
 
-    glViewport(0, 0, Display.getWidth(), Display.getHeight());
+    gl.glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     backgroundShader.activate();
     backgroundShader.setUniformMatrix("uMvp", 4, ORTHO.toBuffer());
-    factory.getCoreRender().renderTriangleStrip(4);
+    coreRender.renderTriangleStrip(4);
 
     // Render lines fbo
 
-    glEnable(GL_BLEND);
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+    gl.glEnable(gl.GL_BLEND());
+    gl.glBlendFunc (gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
+    gl.glBlendEquationSeparate(gl.GL_FUNC_ADD(), gl.GL_FUNC_ADD());
 
     FloatBuffer quad = vboQuad.getBuffer();
     quad.put(0.f);
@@ -261,15 +246,48 @@ public class LineMain implements RenderLoopCallback {
     texture.setUniformMatrix("uMvp", 4, ORTHO.toBuffer());
     texture.setUniformi("uTexture", 0);
     texture.setUniformf("lineColor", 1.f, 1.f, 1.f, 1.f);
-    factory.getCoreRender().renderTriangleStrip(4);
+    coreRender.renderTriangleStrip(4);
     return false;
+	}
+
+  private InputStream resource(final String name) {
+    return Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
   }
 
+  private InputStream stream(final String data) {
+    return new ByteArrayInputStream(data.getBytes(Charset.forName("ISO-8859-1")));
+  }
+
+	@Override
+	@Test
+	public void runJogl() {
+		CoreGL gl = new JoglCoreGL();
+		CoreSetup setup = new CoreSetupJogl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello JOGL Core GL", WINDOW_WIDTH, WINDOW_HEIGHT);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	@Test
+	public void runLwjgl() {
+		CoreGL gl = new LwjglCoreGL();
+		CoreSetup setup = new CoreSetupLwjgl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello LWJGL Core GL", WINDOW_WIDTH, WINDOW_HEIGHT);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = CoreFactoryLwjgl.create();
-    CoreSetup setup = factory.createSetup();
-    setup.initializeLogging();
-    setup.initialize("Hello line caps", 1024, 768);
-    setup.renderLoop(new LineMain(factory));
+    CoreExample lineExample = new LineMain();
+    ExampleMain.runExample(lineExample, args);
   }
 }

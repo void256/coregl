@@ -26,214 +26,230 @@
  */
 package de.lessvoid.coregl.examples;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DST_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_ONE;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_ZERO;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreVAO;
+import org.junit.Test;
+
+import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.examples.spi.CoreExample;
+import de.lessvoid.coregl.jogl.*;
+import de.lessvoid.coregl.lwjgl.*;
+import de.lessvoid.coregl.spi.*;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.MatrixFactory;
 
-public class CompositeExampleMain implements RenderLoopCallback {
-  private final CoreShader shader;
-  private final CoreVAO src;
-  private final CoreVAO dst;
-  private final CoreVAO white;
-  private CoreFactory factory;
+public class CompositeExampleMain implements RenderLoopCallback, CoreExample {
 
-  public CompositeExampleMain(final CoreFactory factory) {
-    this.factory = factory;
-    shader = factory.createShaderWithVertexAttributes("aVertex", "aColor");
-    shader.vertexShader("plain-color.vs");
-    shader.fragmentShader("plain-color.fs");
-    shader.link();
+	private CoreRender coreRender;
+	private CoreShader shader;
+	private CoreVAO src;
+	private CoreVAO dst;
+	private CoreVAO white;
 
-    src = factory.createVAO();
-    src.bind();
+	@Override
+	public void init(final CoreGL gl) {
+		coreRender = CoreRender.createCoreRender(gl);
+		shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aColor");
+		shader.vertexShader("plain-color.vs");
+		shader.fragmentShader("plain-color.fs");
+		shader.link();
 
-    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
-          0.f,   0.f,    1.f, 1.f, 0.f, 1.f,
-        100.f,   0.f,    1.f, 1.f, 0.f, 1.f,
-          0.f, 100.f,    1.f, 1.f, 0.f, 1.f,
-        100.f,   0.f,    0.f, 0.f, 0.f, 0.f,
-          0.f, 100.f,    0.f, 0.f, 0.f, 0.f,
-        100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
-    });
+		src = CoreVAO.createCoreVAO(gl);
+		src.bind();
 
-    src.enableVertexAttribute(0);
-    src.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
-    src.enableVertexAttribute(1);
-    src.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
+		CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
+				0.f,   0.f,    1.f, 1.f, 0.f, 1.f,
+				100.f,   0.f,    1.f, 1.f, 0.f, 1.f,
+				0.f, 100.f,    1.f, 1.f, 0.f, 1.f,
+				100.f,   0.f,    0.f, 0.f, 0.f, 0.f,
+				0.f, 100.f,    0.f, 0.f, 0.f, 0.f,
+				100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
+		});
 
-    dst = factory.createVAO();
-    dst.bind();
+		src.enableVertexAttribute(0);
+		src.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+		src.enableVertexAttribute(1);
+		src.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
-    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
-          0.f,   0.f,    0.f, 0.f, 1.f, 1.f,
-        100.f,   0.f,    0.f, 0.f, 1.f, 1.f,
-        100.f, 100.f,    0.f, 0.f, 1.f, 1.f,
-          0.f,   0.f,    0.f, 0.f, 0.f, 0.f,
-          0.f, 100.f,    0.f, 0.f, 0.f, 0.f,
-        100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
-    });
+		dst = CoreVAO.createCoreVAO(gl);
+		dst.bind();
 
-    dst.enableVertexAttribute(0);
-    dst.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
-    dst.enableVertexAttribute(1);
-    dst.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
+		CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
+				0.f,   0.f,    0.f, 0.f, 1.f, 1.f,
+				100.f,   0.f,    0.f, 0.f, 1.f, 1.f,
+				100.f, 100.f,    0.f, 0.f, 1.f, 1.f,
+				0.f,   0.f,    0.f, 0.f, 0.f, 0.f,
+				0.f, 100.f,    0.f, 0.f, 0.f, 0.f,
+				100.f, 100.f,    0.f, 0.f, 0.f, 0.f,
+		});
 
-    white = factory.createVAO();
-    white.bind();
+		dst.enableVertexAttribute(0);
+		dst.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+		dst.enableVertexAttribute(1);
+		dst.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
-    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
-          0.f,   0.f,    1.f, 1.f, 1.f, 1.f,
-        100.f,   0.f,    1.f, 1.f, 1.f, 1.f,
-        100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
-          0.f,   0.f,    1.f, 1.f, 1.f, 1.f,
-          0.f, 100.f,    1.f, 1.f, 1.f, 1.f,
-        100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
-    });
+		white = CoreVAO.createCoreVAO(gl);
+		white.bind();
 
-    white.enableVertexAttribute(0);
-    white.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
-    white.enableVertexAttribute(1);
-    white.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
+		CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
+				0.f,   0.f,    1.f, 1.f, 1.f, 1.f,
+				100.f,   0.f,    1.f, 1.f, 1.f, 1.f,
+				100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
+				0.f,   0.f,    1.f, 1.f, 1.f, 1.f,
+				0.f, 100.f,    1.f, 1.f, 1.f, 1.f,
+				100.f, 100.f,    1.f, 1.f, 1.f, 1.f,
+		});
 
-    shader.activate();
-    shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
+		white.enableVertexAttribute(0);
+		white.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
+		white.enableVertexAttribute(1);
+		white.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
 
-    glEnable(GL_BLEND);
-  }
+		shader.activate();
+		shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
 
-  @Override
-  public boolean render(final float deltaTime) {
-    glClearColor(1.f, 1.f, 1.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+		gl.glEnable(gl.GL_BLEND());
+	}
 
-    float x = 100.f;
-    float y = 100.f;
+	@Override
+	public boolean render(CoreGL gl, float deltaTime) {
+		gl.glClearColor(1.f, 1.f, 1.f, 1.f);
+		gl.glClear(gl.GL_COLOR_BUFFER_BIT());
 
-    // first row
-    renderDst(x, y);
-    glBlendFunc(GL_ZERO, GL_ZERO);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		float x = 100.f;
+		float y = 100.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ONE, GL_ZERO);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		// first row
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ZERO(), gl.GL_ZERO());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ZERO, GL_ONE);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ONE(), gl.GL_ZERO());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ZERO(), gl.GL_ONE());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ONE(), gl.GL_ONE_MINUS_SRC_ALPHA());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_DST_ALPHA, GL_ZERO);
-    renderSrc(x, y);
-    renderWhite(x, y);
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ONE_MINUS_DST_ALPHA(), gl.GL_ONE());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    x  = 100.f;
-    y += 150.f;
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_DST_ALPHA(), gl.GL_ZERO());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
 
-    // second row
-    renderDst(x, y);
-    glBlendFunc(GL_ZERO, GL_SRC_ALPHA);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		x  = 100.f;
+		y += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ZERO);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		// second row
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ZERO(), gl.GL_SRC_ALPHA());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ONE_MINUS_DST_ALPHA(), gl.GL_ZERO());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ZERO(), gl.GL_ONE_MINUS_SRC_ALPHA());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_SRC_ALPHA);
-    renderSrc(x, y);
-    renderWhite(x, y);
-    x += 150.f;
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_DST_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    renderDst(x, y);
-    glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    renderSrc(x, y);
-    renderWhite(x, y);
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ONE_MINUS_DST_ALPHA(), gl.GL_SRC_ALPHA());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
+		x += 150.f;
 
-    return false;
-  }
+		renderDst(gl, x, y);
+		gl.glBlendFunc(gl.GL_ONE_MINUS_DST_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
+		renderSrc(gl, x, y);
+		renderWhite(gl, x, y);
 
-  private void renderDst(final float x, final float y) {
-    shader.setUniformf("uOffset", x, y);
-    glDisable(GL_BLEND);
-    dst.bind();
-    factory.getCoreRender().renderTriangles(6);
-  }
+		return false;
+	}
 
-  private void renderWhite(final float x, final float y) {
-    shader.setUniformf("uOffset", x, y);
-    glBlendFunc(GL_ONE_MINUS_DST_ALPHA, GL_ONE);
-    white.bind();
-    factory.getCoreRender().renderTriangles(6);
-  }
+	@Override
+	@Test
+	public void runJogl() {
+		CoreGL gl = new JoglCoreGL();
+		CoreSetup setup = new CoreSetupJogl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello JOGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-  private void renderSrc(final float x, final float y) {
-    shader.setUniformf("uOffset", x, y);
+	@Override
+	@Test
+	public void runLwjgl() {
+		CoreGL gl = new LwjglCoreGL();
+		CoreSetup setup = new CoreSetupLwjgl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello LWJGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void renderDst(final CoreGL gl, final float x, final float y) {
+		shader.setUniformf("uOffset", x, y);
+		gl.glDisable(gl.GL_BLEND());
+		dst.bind();
+		coreRender.renderTriangles(6);
+	}
 
-    glEnable(GL_BLEND);
-    src.bind();
-    factory.getCoreRender().renderTriangles(6);
-  }
+	private void renderWhite(final CoreGL gl, final float x, final float y) {
+		shader.setUniformf("uOffset", x, y);
+		gl.glBlendFunc(gl.GL_ONE_MINUS_DST_ALPHA(), gl.GL_ONE());
+		white.bind();
+		coreRender.renderTriangles(6);
+	}
 
-  public static void main(final String[] args) throws Exception {
-    CoreFactory factory = CoreFactoryLwjgl.create();
-    CoreSetup setup = factory.createSetup();
-    setup.initializeLogging(); // optional to get jdk14 to better format the log
-    setup.initialize("Hello Compositing", 1024, 768);
-    setup.renderLoop(new CompositeExampleMain(factory));
-  }
+	private void renderSrc(final CoreGL gl, final float x, final float y) {
+		shader.setUniformf("uOffset", x, y);
+
+		gl.glEnable(gl.GL_BLEND());
+		src.bind();
+		coreRender.renderTriangles(6);
+	}
+
+	public static void main(final String[] args) throws Exception {
+		CoreExample compositeExample = new CompositeExampleMain();
+		ExampleMain.runExample(compositeExample, args);
+	}
 }

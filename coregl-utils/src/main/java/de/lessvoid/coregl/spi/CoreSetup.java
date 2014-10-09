@@ -43,14 +43,20 @@ public interface CoreSetup {
 	 * @author void
 	 */
 	public interface RenderLoopCallback {
+		
+		/**
+		 * Called once after the OpenGL context has been initialized and before any calls are made to {@link #render(CoreGL, float)}.
+		 * Use this method to initialize any and all necessary Core components.
+		 * @param gl
+		 */
+		void init(final CoreGL gl);
+		
 		/**
 		 * Do some awesome stuff in here!
 		 * @param deltaTime the time past since the last call in ms
 		 * @return true when the render loop should be stopped and false if you want it to continue.
 		 */
-		boolean render(CoreGL gl, float deltaTime);
-		
-		void init(CoreGL gl);
+		boolean render(final CoreGL gl, float deltaTime);
 	}
 	/**
 	 * (optional) This method will just set a new jdk14 Formatter that is more readable then the defaults.

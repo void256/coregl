@@ -82,11 +82,6 @@ public class CoreTexture2D {
 	private final CoreGL gl;
 
 	/**
-	 * Used for looking up static CoreTexture2D constant values.
-	 */
-	private final CoreTexture2DConstants texMaps;
-
-	/**
 	 * The target type of the texture.
 	 */
 	private final int textureTarget;
@@ -204,6 +199,16 @@ public class CoreTexture2D {
 				texMaps.getResizeFilter(filter).minFilter,
 				true,
 				num);    
+	}
+	
+	public static CoreTexture2D createCoreTexture(
+			final CoreGL gl, 
+			final ColorFormat rgba,
+			final int width, 
+			final int height, 
+			final ByteBuffer data, 
+			final ResizeFilter linear) {
+		return new CoreTexture2D(gl, new CoreTexture2DConstants(gl), rgba, width, height, data, linear);
 	}
 
 	/**
@@ -528,7 +533,6 @@ public class CoreTexture2D {
 			final boolean textureArray,
 			final int depth) {
 		this.gl = gl;
-		this.texMaps = texMaps;
 		this.textureId = createTexture(
 				textureId,
 				target,
@@ -567,7 +571,6 @@ public class CoreTexture2D {
 			final boolean textureArray,
 			final int depth) {
 		this.gl = gl;
-		this.texMaps = texMaps;
 		this.textureId = createTexture(
 				textureId,
 				target,
@@ -638,6 +641,7 @@ public class CoreTexture2D {
 		return width;
 	}
 
+	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append(CoreTexture2D.class.getName()).append('(');
@@ -647,6 +651,7 @@ public class CoreTexture2D {
 		return builder.toString();
 	}
 
+	@Override
 	protected void finalize() throws Throwable {
 		if (!isDisposed) {
 			LOG.warning("Memory Leak: Texture " + Integer.toString(textureId) +
@@ -849,7 +854,7 @@ public class CoreTexture2D {
 			if (textureArray) {
 				glTexImage3D(target, level, internalFormat, width, height, depth, border, format, usedType, data);
 			} else if (isCreatingMipMaps(gl, level, minFilter)) {
-				if (gl.getUtil().getGLVersion().checkAgainst(GLVersion.GL30)) {
+				if (CoreVersion.checkCurrentGLVersion(gl, GLVersion.GL30)) {
 					glTexImage2D(target, 0, internalFormat, width, height, border, format, usedType, data);
 					gl.glGenerateMipmap(target);
 					checkGLError("glGenerateMipmap", true);

@@ -26,125 +26,147 @@
  */
 package de.lessvoid.coregl.examples;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-
-import java.io.File;
-import java.io.FilenameFilter;
+import java.io.*;
 import java.nio.FloatBuffer;
 
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreTexture2D;
-import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
-import de.lessvoid.coregl.CoreVAO;
+import org.junit.Test;
+
+import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
+import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
 import de.lessvoid.coregl.CoreVAO.FloatType;
-import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.examples.spi.CoreExample;
+import de.lessvoid.coregl.jogl.*;
+import de.lessvoid.coregl.lwjgl.*;
+import de.lessvoid.coregl.spi.*;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.MatrixFactory;
-import de.lessvoid.simpleimageloader.ImageData;
-import de.lessvoid.simpleimageloader.SimpleImageLoader;
-import de.lessvoid.simpleimageloader.SimpleImageLoaderConfig;
+import de.lessvoid.simpleimageloader.*;
 import de.lessvoid.textureatlas.CoreTextureAtlasGenerator;
 
-public class TextureAtlasGeneratorMain implements RenderLoopCallback {
-  private SimpleImageLoader loader = new SimpleImageLoader();
+public class TextureAtlasGeneratorMain implements RenderLoopCallback, CoreExample {
+	private SimpleImageLoader loader = new SimpleImageLoader();
 
-  private CoreVAO vao;
-  private CoreVBO<FloatBuffer> vbo;
-  private CoreShader shader;
-  private CoreTexture2D textureAtlas;
-  private CoreFactory factory;
+	private CoreRender coreRender;
+	private CoreVAO vao;
+	private CoreVBO<FloatBuffer> vbo;
+	private CoreShader shader;
+	private CoreTexture2D textureAtlas;
 
-  public TextureAtlasGeneratorMain(final CoreFactory factory) throws Exception {
-    this.factory = factory;
+	@Override
+	public void init(final CoreGL gl) {
 
-    shader = factory.createShaderWithVertexAttributes("aVertex", "aUV");
-    shader.vertexShader("texture-atlas/texture.vs");
-    shader.fragmentShader("texture-atlas/texture.fs");
-    shader.link();
-    shader.activate();
-    shader.setUniformi("uTexture", 0);
+		shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");
+		shader.vertexShader("texture-atlas/texture.vs");
+		shader.fragmentShader("texture-atlas/texture.fs");
+		shader.link();
+		shader.activate();
+		shader.setUniformi("uTexture", 0);
 
-    vao = factory.createVAO();
-    vao.bind();
+		vao = CoreVAO.createCoreVAO(gl);
+		vao.bind();
 
-    vbo = factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, 4*4);
-    vbo.bind();
+		vbo = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, 4*4);
+		vbo.bind();
 
-    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
-    vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
-    vao.enableVertexAttribute(0);
-    vao.enableVertexAttribute(1);
+		vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
+		vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
+		vao.enableVertexAttribute(0);
+		vao.enableVertexAttribute(1);
 
-    CoreTextureAtlasGenerator generator = new CoreTextureAtlasGenerator(factory, 1024, 1024);
-    File base = new File("src/main/resources/texture-atlas");
-    for (String f : base.list(new PNGFileFilter())) {
-      String filename = "/texture-atlas/" + f;
-      ImageData imageData = loader.load(filename, GeometryShaderExampleMain.class.getResourceAsStream(filename), new SimpleImageLoaderConfig().forceAlpha());
-      CoreTexture2D texture = factory.createTexture(ColorFormat.RGBA, imageData.getWidth(), imageData.getHeight(), imageData.getData(),  ResizeFilter.Linear);
-      if (null == generator.addImage(texture, filename, 5)) {
-        System.out.println("failed to add image: " + filename);
-      }
-    }
-    textureAtlas = generator.getTargetTexture();
-  }
+		CoreTextureAtlasGenerator generator = new CoreTextureAtlasGenerator(gl, 1024, 1024);
+		File base = new File("src/main/resources/texture-atlas");
+		for (String f : base.list(new PNGFileFilter())) {
+			String filename = "/texture-atlas/" + f;
+			try {
+				ImageData imageData = loader.load(filename, GeometryShaderExampleMain.class.getResourceAsStream(filename), new SimpleImageLoaderConfig().forceAlpha());
+				CoreTexture2D texture = CoreTexture2D.createCoreTexture(gl, ColorFormat.RGBA, imageData.getWidth(), imageData.getHeight(), imageData.getData(),  ResizeFilter.Linear);
+				if (null == generator.addImage(texture, filename, 5)) {
+					System.out.println("failed to add image: " + filename);
+				}
+			} catch (IOException e) {
+				System.err.println("error loading texture data from " + filename + " -- " + e.toString());
+			}
+		}
+		textureAtlas = generator.getTargetTexture();
+	}
 
-  @Override
-  public boolean render(final float deltaTime) {
-    glClearColor(.1f, .1f, .3f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+	@Override
+	public boolean render(final CoreGL gl, final float deltaTime) {
+		gl.glClearColor(.1f, .1f, .3f, 0.f);
+		gl.glClear(gl.GL_COLOR_BUFFER_BIT());
 
-    textureAtlas.bind();
+		textureAtlas.bind();
 
-    FloatBuffer buffer = vbo.getBuffer();
-    buffer.put(0.f);
-    buffer.put(0.f);
-    buffer.put(0.0f);
-    buffer.put(0.0f);
+		FloatBuffer buffer = vbo.getBuffer();
+		buffer.put(0.f);
+		buffer.put(0.f);
+		buffer.put(0.0f);
+		buffer.put(0.0f);
 
-    buffer.put(0.f);
-    buffer.put(0.f + 768);
-    buffer.put(0.0f);
-    buffer.put(1.0f);
-    
-    buffer.put(0.f + 1024);
-    buffer.put(0.f);
-    buffer.put(1.0f);
-    buffer.put(0.0f);
-    
-    buffer.put(0.f + 1024);
-    buffer.put(0.f + 768);
-    buffer.put(1.0f);
-    buffer.put(1.0f);
-    buffer.rewind();
+		buffer.put(0.f);
+		buffer.put(0.f + 768);
+		buffer.put(0.0f);
+		buffer.put(1.0f);
 
-    vbo.send();
-    vao.bind();
+		buffer.put(0.f + 1024);
+		buffer.put(0.f);
+		buffer.put(1.0f);
+		buffer.put(0.0f);
 
-    shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
-    factory.getCoreRender().renderTriangleStrip(4);
-    return false;
-  }
+		buffer.put(0.f + 1024);
+		buffer.put(0.f + 768);
+		buffer.put(1.0f);
+		buffer.put(1.0f);
+		buffer.rewind();
 
-  public static void main(final String[] args) throws Exception {
-    CoreFactory factory = CoreFactoryLwjgl.create();
-    CoreSetup setup = factory.createSetup();
-    setup.initializeLogging(); // optional to get jdk14 to better format the log
-    setup.initialize("Texture Atlas Generator", 1024, 768);
-    setup.renderLoop(new TextureAtlasGeneratorMain(factory));
-  }
+		vbo.send();
+		vao.bind();
 
-  private static class PNGFileFilter implements FilenameFilter {
-    @Override
-    public boolean accept(File dir, String name) {
-      return name.endsWith(".png");
-    }
-  }
+		shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
+		coreRender.renderTriangleStrip(4);
+		return false;
+	}
+
+	@Override
+	@Test
+	public void runJogl() {
+		CoreGL gl = new JoglCoreGL();
+		CoreSetup setup = new CoreSetupJogl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello JOGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	@Test
+	public void runLwjgl() {
+		CoreGL gl = new LwjglCoreGL();
+		CoreSetup setup = new CoreSetupLwjgl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello LWJGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(final String[] args) throws Exception {
+		CoreExample texAtlasGenExample = new TextureAtlasGeneratorMain();
+		ExampleMain.runExample(texAtlasGenExample, args);
+	}
+
+	private static class PNGFileFilter implements FilenameFilter {
+		@Override
+		public boolean accept(File dir, String name) {
+			return name.endsWith(".png");
+		}
+	}
 }

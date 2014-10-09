@@ -281,6 +281,7 @@ public class Vec4 implements Serializable {
 		return this;
 	}
 
+	@Override
 	public String toString() {
 		return "Vector4f: " + x + " " + y + " " + z + " " + w;
 	}

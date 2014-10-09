@@ -43,8 +43,12 @@ public class CoreScreenshot {
 
 	private final CoreGL gl;
 
-	public CoreScreenshot(final CoreGL gl) {
+	CoreScreenshot(final CoreGL gl) {
 		this.gl = gl;
+	}
+	
+	public static CoreScreenshot createCoreScreenshot(final CoreGL gl) {
+		return new CoreScreenshot(gl);
 	}
 
 	/**

@@ -229,7 +229,6 @@ public class CoreShader {
 		buff.put(values);
 		buff.flip();
 		setUniformv(name, componentNum, UniformType.FLOAT, buff);
-
 	}
 
 	public void setUniformfv(final String name, final int componentNum, final FloatBuffer values) {
@@ -294,7 +293,7 @@ public class CoreShader {
 						+ "setUniform"+type.suffix));
 			}
 		} catch (NoSuchMethodException e) {
-			throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
+			throw(new CoreGLException("failed to locate set uniform method: " + method));
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -310,13 +309,13 @@ public class CoreShader {
 		int loc = getLocation(name);
 		if(componentNum < 1 || componentNum > 4)
 			throw(new IllegalArgumentException("illegal number of compoments for setUniform"+type.suffix+"v"));
-		String method = "glUniform"+componentNum;
+		String method = "glUniform"+componentNum+type.suffix+"v";
 		try {
 			Method m = CoreGL.class.getMethod(method, int.class, type.buffer);
 			m.setAccessible(true);
 			m.invoke(gl, loc, data);
 		} catch (NoSuchMethodException e) {
-			throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
+			throw(new CoreGLException("failed to locate set uniform method: " + method));
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
@@ -338,7 +337,7 @@ public class CoreShader {
 			m.setAccessible(true);
 			m.invoke(gl, loc, false, data);
 		} catch (NoSuchMethodException e) {
-			throw(new IllegalArgumentException("failed to locate set uniform method: " + method));
+			throw(new CoreGLException("failed to locate set uniform method: " + method));
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

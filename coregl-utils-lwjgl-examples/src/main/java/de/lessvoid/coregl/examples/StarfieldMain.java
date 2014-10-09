@@ -30,35 +30,69 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.nio.FloatBuffer;
 
+import org.junit.Test;
+
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.examples.spi.CoreExample;
+import de.lessvoid.coregl.jogl.*;
+import de.lessvoid.coregl.lwjgl.*;
+import de.lessvoid.coregl.spi.*;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.*;
 
-public class StarfieldMain implements RenderLoopCallback {
+public class StarfieldMain implements RenderLoopCallback, CoreExample {
+	
   private static final int STAR_COUNT = 20000;
   private CoreRender coreRender;
   private CoreShader shader;
   private float z = 5.0f;
   private float angleX = 0.f;
   private float angleY = 0.f;
+  
+	@Override
+	@Test
+	public void runJogl() {
+		CoreGL gl = new JoglCoreGL();
+		CoreSetup setup = new CoreSetupJogl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello JOGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-  public StarfieldMain(final CoreFactory factory) {
-    coreRender = factory.getCoreRender();
+	@Override
+	@Test
+	public void runLwjgl() {
+		CoreGL gl = new LwjglCoreGL();
+		CoreSetup setup = new CoreSetupLwjgl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello LWJGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-    shader = factory.newShader();
+	@Override
+	public void init(final CoreGL gl) {
+    coreRender = CoreRender.createCoreRender(gl);
+
+    shader = CoreShader.createShader(gl);
     shader.vertexShader("starfield/star.vs");
     shader.fragmentShader("starfield/star.fs");
     shader.link();
 
-    CoreVAO vao = factory.createVAO();
+    CoreVAO vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
+    CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
         -0.025f, -0.025f,
         -0.025f,  0.025f,
         0.025f, -0.025f,
@@ -66,7 +100,7 @@ public class StarfieldMain implements RenderLoopCallback {
     });
     vao.vertexAttribPointer(shader.getAttribLocation("aVertex"), 2, FloatType.FLOAT, 0, 0);
 
-    CoreVBO<FloatBuffer> starPosBuffer = factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, STAR_COUNT * 3);
+    CoreVBO<FloatBuffer> starPosBuffer = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, STAR_COUNT * 3);
     FloatBuffer buffer = starPosBuffer.getBuffer();
     float size = 20.f;
 
@@ -85,15 +119,15 @@ public class StarfieldMain implements RenderLoopCallback {
 
     shader.activate();
     vao.bind();
-    glPointSize(2);
+    gl.glPointSize(2);
 
-    glEnable(GL_DEPTH_TEST);
-  }
+    gl.glEnable(GL_DEPTH_TEST);
+	}
 
-  @Override
-  public boolean render(final float deltaTime) {
-    glClearColor(.1f, .1f, .3f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	@Override
+	public boolean render(final CoreGL gl, final float deltaTime) {
+    gl.glClearColor(.1f, .1f, .3f, 0.f);
+    gl.glClear(gl.GL_COLOR_BUFFER_BIT() | gl.GL_DEPTH_BUFFER_BIT());
 
     // render all the data in the currently active vao using triangle strips
     coreRender.renderTriangleStripInstances(4, STAR_COUNT);
@@ -111,13 +145,10 @@ public class StarfieldMain implements RenderLoopCallback {
     shader.setUniformMatrix("uModelViewProjection", 4, modelViewProjection.toBuffer());
 
     return false;
-  }
+	}
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = CoreFactoryLwjgl.create();
-    CoreSetup setup = factory.createSetup();
-    setup.initializeLogging(); // optional to get jdk14 to better format the log
-    setup.initialize("Hello Lwjgl Core GL", 1024, 768);
-    setup.renderLoop(new StarfieldMain(factory));
+    CoreExample starfieldExample = new StarfieldMain();
+    ExampleMain.runExample(starfieldExample, args);
   }
 }

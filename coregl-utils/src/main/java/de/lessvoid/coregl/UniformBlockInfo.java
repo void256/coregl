@@ -6,6 +6,7 @@ public class UniformBlockInfo {
 	int arrayStride;
 	int matrixStride;
 
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[");

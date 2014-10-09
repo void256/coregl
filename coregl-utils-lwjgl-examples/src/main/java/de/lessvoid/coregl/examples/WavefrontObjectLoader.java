@@ -57,7 +57,8 @@ public class WavefrontObjectLoader {
     loadOBJModel(stream);
   }
 
-  public String toString() {
+  @Override
+	public String toString() {
     StringBuilder result = new StringBuilder();
     result.append("faceCount:");
     result.append(faceCount);

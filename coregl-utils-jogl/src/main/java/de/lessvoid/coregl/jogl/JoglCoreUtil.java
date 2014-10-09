@@ -139,14 +139,16 @@ public class JoglCoreUtil implements CoreUtil {
 		return store[0];
 	}
 	
+	@Override
 	public GLVersion getGLVersion() {
 		VersionNumber glVersion = GLContext.getCurrent().getGLVersionNumber();
 		return CoreVersion.getGLVersion(glVersion.getMajor(), glVersion.getMinor());
 	}
 	
+	@Override
 	public GLSLVersion getGLSLVersion() {
 		VersionNumber glslVersion = GLContext.getCurrent().getGLSLVersionNumber();
-		return CoreVersion.getGLSLVersionFromString(glslVersion.toString());
+		return CoreVersion.getGLSLVersion(glslVersion.getMajor() * 100 + glslVersion.getMinor());
 	}
 
 	@Test

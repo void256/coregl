@@ -1,5 +1,7 @@
 package de.lessvoid.coregl.lwjgl;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import java.nio.*;
 import java.util.logging.Logger;
 
@@ -7,7 +9,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.glu.GLU;
 
-import de.lessvoid.coregl.CoreGLException;
+import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.spi.*;
 
 /**
@@ -55,13 +57,13 @@ public class LwjglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public int GL_COLOR_ARRAY() {
+		return GL11.GL_COLOR_ARRAY;
+	}
+
+	@Override
 	public int GL_COLOR_BUFFER_BIT() {
 		return GL11.GL_COLOR_BUFFER_BIT;
-	}
-	
-	@Override
-	public int GL_DEPTH_BUFFER_BIT() {
-		return GL11.GL_DEPTH_BUFFER_BIT;
 	}
 
 	@Override
@@ -105,6 +107,11 @@ public class LwjglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public int GL_LIGHTING() {
+		return GL11.GL_LIGHTING;
+	}
+
+	@Override
 	public int GL_LINEAR() {
 		return GL11.GL_LINEAR;
 	}
@@ -132,6 +139,11 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public int GL_MAX_TEXTURE_SIZE() {
 		return GL11.GL_MAX_TEXTURE_SIZE;
+	}
+
+	@Override
+	public int GL_MODELVIEW() {
+		return GL11.GL_MODELVIEW;
 	}
 
 	@Override
@@ -175,6 +187,11 @@ public class LwjglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public int GL_PROJECTION() {
+		return GL11.GL_PROJECTION;
+	}
+
+	@Override
 	public int GL_RGB() {
 		return GL11.GL_RGB;
 	}
@@ -212,6 +229,11 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public int GL_TEXTURE_BINDING_2D() {
 		return GL11.GL_TEXTURE_BINDING_2D;
+	}
+
+	@Override
+	public int GL_TEXTURE_COORD_ARRAY() {
+		return GL11.GL_TEXTURE_COORD_ARRAY;
 	}
 
 	@Override
@@ -270,6 +292,11 @@ public class LwjglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public int GL_VERTEX_ARRAY() {
+		return GL11.GL_VERTEX_ARRAY;
+	}
+
+	@Override
 	public int GL_VIEWPORT() {
 		return GL11.GL_VIEWPORT;
 	}
@@ -277,31 +304,6 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public int GL_ZERO() {
 		return GL11.GL_ZERO;
-	}
-	
-	@Override
-	public int GL_ONE() {
-		return GL11.GL_ONE;
-	}
-
-	@Override
-	public int GL_ONE_MINUS_DST_ALPHA() {
-		return GL11.GL_ONE_MINUS_DST_ALPHA;
-	}
-
-	@Override
-	public int GL_DST_ALPHA() {
-		return GL11.GL_DST_ALPHA;
-	}
-	
-	@Override
-	public int GL_MAX() {
-		return GL14.GL_MAX;
-	}
-
-	@Override
-	public int GL_FUNC_ADD() {
-		return GL14.GL_FUNC_ADD;
 	}
 
 	@Override
@@ -705,6 +707,11 @@ public class LwjglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public void glAlphaFunc(int func, float ref) {
+		GL11.glAlphaFunc(func, ref);
+	}
+
+	@Override
 	public void glBindTexture(int target, int texture) {
 		GL11.glBindTexture(target, texture);
 	}
@@ -725,6 +732,11 @@ public class LwjglCoreGL implements CoreGL {
 	}
 
 	@Override
+	public void glColorPointer(int size, int type, int stride, FloatBuffer pointer) {
+		GL11.glColorPointer(size, stride, pointer);
+	}
+
+	@Override
 	public void glDeleteTextures(int n, IntBuffer textures) {
 		GL11.glDeleteTextures(textures);
 	}
@@ -732,6 +744,11 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public void glDisable(int cap) {
 		GL11.glDisable(cap);
+	}
+
+	@Override
+	public void glDisableClientState(int array) {
+		GL11.glDisableClientState(array);
 	}
 
 	@Override
@@ -747,6 +764,11 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public void glEnable(int cap) {
 		GL11.glEnable(cap);
+	}
+
+	@Override
+	public void glEnableClientState(int array) {
+		GL11.glEnableClientState(array);
 	}
 
 	@Override
@@ -774,7 +796,6 @@ public class LwjglCoreGL implements CoreGL {
 		GL11.glGetInteger(pname, params);
 	}
 
-	@Override
 	public int glGetInteger(int pname) {
 		return GL11.glGetInteger(pname);
 	}
@@ -787,6 +808,26 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public boolean glIsEnabled(int cap) {
 		return GL11.glIsEnabled(cap);
+	}
+
+	@Override
+	public void glLoadIdentity() {
+		GL11.glLoadIdentity();
+	}
+
+	@Override
+	public void glMatrixMode(int mode) {
+		GL11.glMatrixMode(mode);
+	}
+
+	@Override
+	public void glOrthof(float left, float right, float bottom, float top, float zNear, float zFar) {
+		GL11.glOrtho(left, right, bottom, top, zNear, zFar);
+	}
+
+	@Override
+	public void glTexCoordPointer(int size, int type, int stride, FloatBuffer pointer) {
+		GL11.glTexCoordPointer(size, stride, pointer);
 	}
 
 	@Override
@@ -857,6 +898,16 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public void glTexBuffer(int arg0, int arg1, int arg2) {
 		GL31.glTexBuffer(arg0, arg1, arg2);
+	}
+
+	@Override
+	public void glTranslatef(float x, float y, float z) {
+		GL11.glTranslatef(x, y, z);
+	}
+
+	@Override
+	public void glVertexPointer(int size, int type, int stride, FloatBuffer pointer) {
+		GL11.glVertexPointer(size, stride, pointer);
 	}
 
 	@Override
@@ -1045,26 +1096,6 @@ public class LwjglCoreGL implements CoreGL {
 	public void glUniform4f(int location, float v0, float v1, float v2, float v3) {
 		GL20.glUniform4f(location, v0, v1, v2, v3);
 	}
-	
-	@Override
-	public void glUniform1fv(int location, FloatBuffer ubuff) {
-		GL20.glUniform1(location, ubuff);
-	}
-	
-	@Override
-	public void glUniform2fv(int location, FloatBuffer ubuff) {
-		GL20.glUniform2(location, ubuff);
-	}
-	
-	@Override
-	public void glUniform3fv(int location, FloatBuffer ubuff) {
-		GL20.glUniform3(location, ubuff);
-	}
-	
-	@Override
-	public void glUniform4fv(int location, FloatBuffer ubuff) {
-		GL20.glUniform4(location, ubuff);
-	}
 
 	@Override
 	public void glUniform1i(int location, int v0) {
@@ -1084,26 +1115,6 @@ public class LwjglCoreGL implements CoreGL {
 	@Override
 	public void glUniform4i(int location, int v0, int v1, int v2, int v3) {
 		GL20.glUniform4i(location, v0, v1, v2, v3);
-	}
-	
-	@Override
-	public void glUniform1iv(int location, IntBuffer ubuff) {
-		GL20.glUniform1(location, ubuff);
-	}
-	
-	@Override
-	public void glUniform2iv(int location, IntBuffer ubuff) {
-		GL20.glUniform2(location, ubuff);
-	}
-	
-	@Override
-	public void glUniform3iv(int location, IntBuffer ubuff) {
-		GL20.glUniform3(location, ubuff);
-	}
-	
-	@Override
-	public void glUniform4iv(int location, IntBuffer ubuff) {
-		GL20.glUniform4(location, ubuff);
 	}
 
 	@Override
@@ -1223,16 +1234,6 @@ public class LwjglCoreGL implements CoreGL {
 	public void glBindBufferBase(int target, int bindingPoint, int id) {
 		GL30.glBindBufferBase(target, bindingPoint, id);
 	}
-	
-	@Override
-	public void glPointSize(int psize) {
-		GL11.glPointSize(psize);
-	}
-	
-	@Override
-	public void glBlendEquationSeparate(int e1, int e2) {
-		GL20.glBlendEquationSeparate(e1, e2);
-	}
 
 	private boolean errorCheckingEnabled = true;
 
@@ -1240,7 +1241,6 @@ public class LwjglCoreGL implements CoreGL {
 	 * (non-Javadoc)
 	 * @see de.lessvoid.coregl.CoreCheckGL#checkGLError()
 	 */
-	@Override
 	public void checkGLError() {
 		checkGLError("");
 	}
@@ -1249,7 +1249,6 @@ public class LwjglCoreGL implements CoreGL {
 	 * (non-Javadoc)
 	 * @see de.lessvoid.coregl.CoreCheckGL#checkGLError(java.lang.String)
 	 */
-	@Override
 	public void checkGLError(final String message) {
 		checkGLError(message, false);
 	}
@@ -1258,13 +1257,12 @@ public class LwjglCoreGL implements CoreGL {
 	 * (non-Javadoc)
 	 * @see de.lessvoid.coregl.CoreCheckGL#checkGLError(java.lang.String, boolean)
 	 */
-	@Override
 	public void checkGLError(final String message, final boolean throwException) {
 		if(!errorCheckingEnabled)
 			return;
 		int error = glGetError();
 		boolean hasError = false;
-		while (error != GL11.GL_NO_ERROR) {
+		while (error != GL_NO_ERROR) {
 			hasError = true;
 			String glerrmsg = GLU.gluErrorString(error);
 			StringBuilder stacktrace = new StringBuilder();
@@ -1281,7 +1279,6 @@ public class LwjglCoreGL implements CoreGL {
 		}
 	}
 
-	@Override
 	public void setErrorChecksEnabled(boolean enabled) {
 		this.errorCheckingEnabled = enabled;
 	}

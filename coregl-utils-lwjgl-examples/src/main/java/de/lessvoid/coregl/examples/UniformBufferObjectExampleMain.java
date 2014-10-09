@@ -28,39 +28,38 @@ package de.lessvoid.coregl.examples;
 
 import java.util.Map;
 
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreVAO;
+import org.junit.Test;
+
+import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.lwjgl.CoreCheckGLLwjgl;
-import de.lessvoid.coregl.lwjgl.CoreFactoryLwjgl;
-import de.lessvoid.coregl.lwjgl.CoreShaderLwjgl;
-import de.lessvoid.coregl.lwjgl.CoreShaderLwjgl.UniformBlockInfo;
-import de.lessvoid.coregl.lwjgl.CoreUBOLwjgl;
-import de.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.examples.spi.CoreExample;
+import de.lessvoid.coregl.jogl.*;
+import de.lessvoid.coregl.lwjgl.*;
+import de.lessvoid.coregl.spi.*;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-public class UniformBufferObjectExampleMain implements RenderLoopCallback {
-  private final CoreRender coreRender;
-  private CoreUBOLwjgl ubo;
+public class UniformBufferObjectExampleMain implements RenderLoopCallback, CoreExample {
+	
+  private CoreRender coreRender;
+  private CoreUBO ubo;
   private CoreShader shader;
   private CoreVAO vao;
+  
+	@Override
+	public void init(final CoreGL gl) {
+    coreRender = CoreRender.createCoreRender(gl);
 
-  public UniformBufferObjectExampleMain(final CoreFactory factory) {
-    coreRender = factory.getCoreRender();
-
-    shader = factory.createShaderWithVertexAttributes("vVertex", "vColor");
+    shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");
     shader.vertexShader("ubo/ubo.vs");
     shader.fragmentShader("ubo/ubo.fs");
     shader.link();
 
-    vao = factory.createVAO();
+    vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    factory.createVBO(DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
+    CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
         -0.5f, -0.5f,    1.0f, 0.0f, 0.0f, 1.0f,
         -0.5f,  0.5f,    0.0f, 1.0f, 0.0f, 1.0f,
          0.5f, -0.5f,    0.0f, 0.0f, 1.0f, 1.0f,
@@ -74,36 +73,60 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
     vao.enableVertexAttribute(0);
     vao.enableVertexAttribute(1);
 
-    CoreShaderLwjgl bla = (CoreShaderLwjgl) shader;
-    Map<String, UniformBlockInfo> blockInfos = bla.getUniformIndices("TransformBlock.off");
+    Map<String, UniformBlockInfo> blockInfos = shader.getUniformIndices("TransformBlock.off");
 
-    ubo = CoreUBOLwjgl.createStatic(new CoreCheckGLLwjgl(), 256, blockInfos);
+    ubo = CoreUBO.createCoreUBO(gl, 256, blockInfos);
     ubo.setFloatArray("TransformBlock.off", new float[]{ -0.4f, 0.2f, 0.3f, 0.4f });
     ubo.send();
-    bla.uniformBlockBinding("TransformBlock", 2);
+    shader.uniformBlockBinding("TransformBlock", 2);
     ubo.bindBufferBase(2);
 
     // we only use a single shader and a single vao so we can activate both here
     // and let them stay active the whole time.
     vao.bind();
     shader.activate();
-  }
+	}
 
-  @Override
-  public boolean render(final float deltaTime) {
+	@Override
+	public boolean render(CoreGL gl, float deltaTime) {
     // We don't have to use coreRender though but it's kinda easier that way
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
     shader.activate();
     coreRender.renderTriangleStripInstances(4, 4);
     return false;
-  }
+	}
+	
+	@Override
+	@Test
+	public void runJogl() {
+		CoreGL gl = new JoglCoreGL();
+		CoreSetup setup = new CoreSetupJogl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello JOGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	@Test
+	public void runLwjgl() {
+		CoreGL gl = new LwjglCoreGL();
+		CoreSetup setup = new CoreSetupLwjgl(gl);
+		setup.initializeLogging(); // optional to get jdk14 to better format the log
+		try {
+			setup.initialize("Hello LWJGL Core GL", 1024, 768);
+			setup.renderLoop(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
   public static void main(final String[] args) throws Exception {
-    CoreFactory factory = CoreFactoryLwjgl.create();
-    CoreSetup setup = factory.createSetup();
-    setup.initializeLogging(); // optional to get jdk14 to better format the log
-    setup.initialize("Hello Lwjgl Core GL", 1024, 768);
-    setup.renderLoop(new UniformBufferObjectExampleMain(factory));
+    CoreExample uboExample = new UniformBufferObjectExampleMain();
+    ExampleMain.runExample(uboExample, args);
   }
 }
