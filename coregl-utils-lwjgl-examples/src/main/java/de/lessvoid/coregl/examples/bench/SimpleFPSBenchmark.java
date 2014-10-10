@@ -11,7 +11,7 @@ import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
 public class SimpleFPSBenchmark {
 	
-	static final int DURATION_SECONDS = 20;
+	static final int DURATION_SECONDS = 30;
 	
 	@Test
 	public void benchTestJogl() {
@@ -19,7 +19,7 @@ public class SimpleFPSBenchmark {
 		CoreSetup setup = new CoreSetupJogl(gl);
 		try {
 			setup.initialize("CoreGL JOGL Benchmark", 1024, 768);
-			CoreExample example = new UniformBufferObjectExampleMain();
+			CoreExample example = new StarfieldMain();
 			runBenchmark(example, setup, DURATION_SECONDS);
 			setup.destroy();
 		} catch (Exception e) {
@@ -33,7 +33,7 @@ public class SimpleFPSBenchmark {
 		CoreSetup setup = new CoreSetupLwjgl(gl);
 		try {
 			setup.initialize("CoreGL LWJGL Benchmark", 1024, 768);
-			CoreExample example = new UniformBufferObjectExampleMain();
+			CoreExample example = new StarfieldMain();
 			runBenchmark(example, setup, DURATION_SECONDS);
 			setup.destroy();
 		} catch (Exception e) {

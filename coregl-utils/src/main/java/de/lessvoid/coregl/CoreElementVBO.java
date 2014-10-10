@@ -71,6 +71,14 @@ public class CoreElementVBO {
 		bind();
 		send();
 	}
+	
+	public static CoreElementVBO createCoreElementVBO(final CoreGL gl, final int usageType, final int[] data) {
+		return new CoreElementVBO(gl, usageType, data);
+	}
+	
+	public static CoreElementVBO createCoreElementVBO(final CoreGL gl, final int usageType, final IntBuffer data) {
+		return new CoreElementVBO(gl, usageType, data);
+	}
 
 
 	/**

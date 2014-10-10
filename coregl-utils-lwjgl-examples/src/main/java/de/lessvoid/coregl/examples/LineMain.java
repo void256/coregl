@@ -33,9 +33,6 @@ import java.nio.charset.Charset;
 import org.junit.Test;
 
 import de.lessvoid.coregl.*;
-import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
-import de.lessvoid.coregl.CoreTexture2DConstants.Type;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;

@@ -30,9 +30,6 @@ import java.nio.*;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import de.lessvoid.coregl.CoreTexture2DConstants.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2DConstants.ResizeFilter;
-import de.lessvoid.coregl.CoreTexture2DConstants.Type;
 import de.lessvoid.coregl.CoreVersion.GLVersion;
 import de.lessvoid.coregl.spi.CoreGL;
 
