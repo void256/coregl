@@ -36,9 +36,8 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-public class BackgroundMain implements RenderLoopCallback, CoreExample {
+public class BackgroundMain implements CoreExample {
 	
   private CoreShader shader;
   private long startTime = System.currentTimeMillis();
@@ -95,6 +94,14 @@ public class BackgroundMain implements RenderLoopCallback, CoreExample {
 		setup.initializeLogging(); // optional to get jdk14 to better format the log
 		try {
 			setup.initialize("Hello JOGL Core GL", 1024, 768);
+			
+			// init PrintFrames
+			PrintFrames printFrames = new PrintFrames(setup);
+			Thread t = new Thread(printFrames);
+			t.setDaemon(true);
+			t.start();
+			// -----
+			
 			setup.renderLoop(this);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -109,6 +116,14 @@ public class BackgroundMain implements RenderLoopCallback, CoreExample {
 		setup.initializeLogging(); // optional to get jdk14 to better format the log
 		try {
 			setup.initialize("Hello LWJGL Core GL", 1024, 768);
+			
+			// init PrintFrames
+			PrintFrames printFrames = new PrintFrames(setup);
+			Thread t = new Thread(printFrames);
+			t.setDaemon(true);
+			t.start();
+			// -----
+			
 			setup.renderLoop(this);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,5 +133,28 @@ public class BackgroundMain implements RenderLoopCallback, CoreExample {
   public static void main(final String[] args) throws Exception {
     CoreExample backgroundExample = new BackgroundMain();
     ExampleMain.runExample(backgroundExample, args);
+  }
+  
+  private class PrintFrames implements Runnable {
+  	
+  	final CoreSetup setup;
+  	
+  	volatile boolean stop = false;
+  	
+  	PrintFrames(CoreSetup setup) {
+  		this.setup = setup;
+  	}
+
+		@Override
+		public void run() {
+			long now, last = 0;
+			while (!stop) {
+				now = System.currentTimeMillis();
+				if (now - last > 1000) {
+					System.out.println(setup.getFPS());
+					last = now;
+				}
+			}
+		}
   }
 }

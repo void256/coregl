@@ -1,6 +1,8 @@
 package de.lessvoid.coregl.examples.spi;
 
-public interface CoreExample {
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+
+public interface CoreExample extends RenderLoopCallback {
 	
 	void runJogl();
 	void runLwjgl();

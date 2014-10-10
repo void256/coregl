@@ -116,7 +116,7 @@ public class CoreVAO {
 	 */
 	public void enableVertexAttributeDivisorf(int index, int size, FloatType vertexType, int stride, int offset, int divisor) {
 		gl.glVertexAttribPointer(index, size, floatTypeMap.get(vertexType), false, stride * 4, offset * 4);
-		gl.glVertexAttribDivisorARB(index, divisor);
+		gl.glVertexAttribDivisor(index, divisor);
 		gl.glEnableVertexAttribArray(index);
 		gl.checkGLError("glVertexAttribPointer (" + index + ")");
 	}
@@ -161,7 +161,7 @@ public class CoreVAO {
 	 */
 	public void enableVertexAttributeDivisori(int index, int size, IntType vertexType, int stride, int offset, int divisor) {
 		gl.glVertexAttribIPointer(index, size, intTypeMap.get(vertexType), stride * 4, offset * 4);
-		gl.glVertexAttribDivisorARB(index, divisor);
+		gl.glVertexAttribDivisor(index, divisor);
 		gl.glEnableVertexAttribArray(index);
 		gl.checkGLError("glVertexAttribPointer (" + index + ")");
 	}

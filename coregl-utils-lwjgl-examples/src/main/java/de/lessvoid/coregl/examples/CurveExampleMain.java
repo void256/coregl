@@ -83,7 +83,6 @@ public class CurveExampleMain implements RenderLoopCallback, CoreExample {
 
     shader.setUniformf("r", r);
     r += deltaTime / 10000.f;
-    System.out.println(r);
 
     // render all the data in the currently active vao using triangle strips
     coreRender.renderTriangleStrip(4);

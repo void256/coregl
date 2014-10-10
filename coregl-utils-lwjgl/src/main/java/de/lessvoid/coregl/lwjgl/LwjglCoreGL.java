@@ -940,7 +940,7 @@ public class LwjglCoreGL implements CoreGL {
 	}
 	
 	@Override
-	public void glVertexAttribDivisorARB(int index, int divisor) {
+	public void glVertexAttribDivisor(int index, int divisor) {
 		GL33.glVertexAttribDivisor(index, divisor);
 	}
 

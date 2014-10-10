@@ -36,7 +36,6 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
 /**
  * The SuperSimpleExampleMain just renders a single quad using a triangle strip
@@ -45,7 +44,7 @@ import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
  *
  * @author void
  */
-public class SuperSimpleExampleMain implements RenderLoopCallback, CoreExample {
+public class SuperSimpleExampleMain implements CoreExample {
 	
 	private CoreRender coreRender;
 

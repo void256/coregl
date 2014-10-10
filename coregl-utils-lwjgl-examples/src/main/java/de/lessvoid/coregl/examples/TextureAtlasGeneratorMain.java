@@ -41,12 +41,11 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.simpleimageloader.*;
 import de.lessvoid.textureatlas.CoreTextureAtlasGenerator;
 
-public class TextureAtlasGeneratorMain implements RenderLoopCallback, CoreExample {
+public class TextureAtlasGeneratorMain implements CoreExample {
 	private SimpleImageLoader loader = new SimpleImageLoader();
 
 	private CoreRender coreRender;

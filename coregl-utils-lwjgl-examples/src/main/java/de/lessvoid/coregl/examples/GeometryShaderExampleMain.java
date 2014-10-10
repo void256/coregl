@@ -40,7 +40,6 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.*;
 import de.lessvoid.simpleimageloader.*;
 
@@ -50,7 +49,7 @@ import de.lessvoid.simpleimageloader.*;
  *
  * @author void
  */
-public class GeometryShaderExampleMain implements RenderLoopCallback, CoreExample {
+public class GeometryShaderExampleMain implements CoreExample {
 	
 	int vertexCount = 1000;
 	int dataPerVertex = 28;

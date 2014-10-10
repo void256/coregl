@@ -26,7 +26,7 @@ public class CoreSetupJogl implements CoreSetup {
 	private GLWindow glWin;
 	private String lastFPS = "";
 
-	private volatile boolean closeRequested;
+	private volatile boolean closeRequested, vsync, updateVsync;
 
 	public CoreSetupJogl(final CoreGL gl) {
 		this.gl = gl;
@@ -86,8 +86,6 @@ public class CoreSetupJogl implements CoreSetup {
 	@Override
 	public void destroy() {
 		glWin.destroy();
-		newtScreen.destroy();
-		newtDisp.destroy();
 	}
 
 	/*
@@ -111,6 +109,7 @@ public class CoreSetupJogl implements CoreSetup {
 				String fpsText = buildFpsText(frames);
 				log.fine(fpsText);
 				lastFPS = fpsText;
+				frames = 0;
 			}
 		}
 
@@ -123,7 +122,8 @@ public class CoreSetupJogl implements CoreSetup {
 	 */
 	@Override
 	public void enableVSync(final boolean enable) {
-		glWin.getGL().setSwapInterval((enable) ? 1:0);
+		vsync = enable;
+		updateVsync = true;
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class CoreSetupJogl implements CoreSetup {
 
 	private void createWindow(final String title, int width, int height, final GLCapabilities glc) {
 		glWin = GLWindow.create(newtScreen, glc);
-		glWin.setFullscreen(false);
+		glWin.setTitle(title);
 		glWin.setSize(width, height);
 		glWin.setDefaultCloseOperation(WindowClosingMode.DISPOSE_ON_CLOSE);
 		glWin.addWindowListener(new WindowAdapter() {
@@ -164,6 +164,8 @@ public class CoreSetupJogl implements CoreSetup {
 				closeRequested = true;
 			}
 		});
+		enableVSync(false);
+		enableFullscreen(false);
 	}
 
 	private void centerWindow() {
@@ -230,11 +232,15 @@ public class CoreSetupJogl implements CoreSetup {
 
 		@Override
 		public void dispose(GLAutoDrawable drawable) {
-
+			
 		}
 
 		@Override
 		public void display(GLAutoDrawable drawable) {
+			if (updateVsync) {
+				glWin.getGL().setSwapInterval((vsync) ? 1:0);
+				updateVsync = false;
+			}
 			long now = System.nanoTime();
 			done = callback.render(gl, (now - prevTime) / NANO_TO_MS_CONVERSION);
 			prevTime = now;

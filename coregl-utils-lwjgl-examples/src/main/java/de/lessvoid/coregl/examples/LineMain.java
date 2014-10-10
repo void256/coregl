@@ -43,10 +43,9 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.*;
 
-public class LineMain implements RenderLoopCallback, CoreExample {
+public class LineMain implements CoreExample {
 	
 	private static final int WINDOW_WIDTH = 1024, WINDOW_HEIGHT = 768;
 	

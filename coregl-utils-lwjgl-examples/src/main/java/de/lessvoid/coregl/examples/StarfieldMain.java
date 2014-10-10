@@ -26,8 +26,6 @@
  */
 package de.lessvoid.coregl.examples;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import java.nio.FloatBuffer;
 
 import org.junit.Test;
@@ -40,10 +38,9 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.*;
 
-public class StarfieldMain implements RenderLoopCallback, CoreExample {
+public class StarfieldMain implements CoreExample {
 	
   private static final int STAR_COUNT = 20000;
   private CoreRender coreRender;
@@ -121,7 +118,7 @@ public class StarfieldMain implements RenderLoopCallback, CoreExample {
     vao.bind();
     gl.glPointSize(2);
 
-    gl.glEnable(GL_DEPTH_TEST);
+    gl.glEnable(gl.GL_DEPTH_TEST());
 	}
 
 	@Override

@@ -38,9 +38,8 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-public class UniformBufferObjectExampleMain implements RenderLoopCallback, CoreExample {
+public class UniformBufferObjectExampleMain implements CoreExample {
 	
   private CoreRender coreRender;
   private CoreUBO ubo;

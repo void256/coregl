@@ -937,7 +937,7 @@ public class JoglCoreGL implements CoreGL {
 	}
 
 	@Override
-	public void glVertexAttribDivisorARB(int index, int divisor) {
+	public void glVertexAttribDivisor(int index, int divisor) {
 		GLContext.getCurrentGL().getGL3ES3().glVertexAttribDivisor(index, divisor);
 	}
 

@@ -36,10 +36,9 @@ import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
-import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.MatrixFactory;
 
-public class LinearGradientMain implements RenderLoopCallback, CoreExample {
+public class LinearGradientMain implements CoreExample {
 	
   private CoreRender coreRender;
   private float time;

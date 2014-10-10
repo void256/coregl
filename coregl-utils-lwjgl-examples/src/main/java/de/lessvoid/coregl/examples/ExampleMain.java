@@ -16,10 +16,10 @@ class ExampleMain {
 			printUsageString();
 		}
 		if (backendName.equalsIgnoreCase("jogl")) {
-			System.err.println("running SuperSimpleExampleMain: backend=JOGL");
+			System.err.println("running " + example.getClass().getName() + ": " + "backend=JOGL");
 			example.runJogl();
 		} else if (backendName.equalsIgnoreCase("lwjgl")) {
-			System.err.println("running SuperSimpleExampleMain: backend=LWJGL");
+			System.err.println("running " + example.getClass().getName() + ": " + "backend=LWJGL");
 			example.runLwjgl();
 		} else {
 			System.err.println("unrecognized backend name: " + mainArgs[0]);

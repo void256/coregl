@@ -177,7 +177,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 			selectedMode = fallbackMode(matchingModes);
 		} else if (selectedMode == null) {
 			log.warning("failed to match requested display mode: falling back to default");
-			selectedMode = currentMode;
+			selectedMode = new DisplayMode(requestedWidth, requestedHeight);
 		}
 
 		// change the DisplayMode to the selectedMode
@@ -213,7 +213,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 
 	private void createWindow(final String title) throws LWJGLException {
 		Display.setFullscreen(false);
-		Display.create(new PixelFormat().withStencilBits(8), new ContextAttribs(3, 2).withProfileCore(true));
+		Display.create(new PixelFormat().withStencilBits(8), new ContextAttribs());
 		Display.setVSyncEnabled(false);
 		Display.setTitle(title);
 	}

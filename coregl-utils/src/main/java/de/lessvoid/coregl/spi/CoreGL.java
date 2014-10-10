@@ -187,7 +187,7 @@ public interface CoreGL {
 	public void glBindAttribLocation(int program, int index, String name);
 	public void glBindBuffer(int target, int buffer);
 	public void glBindVertexArray(int array);
-	public void glVertexAttribDivisorARB (int index, int divisor);
+	public void glVertexAttribDivisor (int index, int divisor);
 	public void glBufferData(int target, IntBuffer data, int usage);
 	public void glBufferData(int target, FloatBuffer data, int usage);
 	public void glBufferData(int target, ShortBuffer data, int usage);
