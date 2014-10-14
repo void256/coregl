@@ -26,16 +26,12 @@
  */
 package de.lessvoid.coregl.examples;
 
-import org.junit.Test;
-
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.examples.spi.CoreExample;
-import de.lessvoid.coregl.jogl.*;
-import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
 /**
  * The SuperSimpleExampleMain just renders a single quad using a triangle strip
@@ -44,7 +40,7 @@ import de.lessvoid.coregl.spi.*;
  *
  * @author void
  */
-public class SuperSimpleExampleMain implements CoreExample {
+public class SuperSimpleExampleMain implements RenderLoopCallback {
 	
 	private CoreRender coreRender;
 
@@ -58,7 +54,7 @@ public class SuperSimpleExampleMain implements CoreExample {
 	}
 
 	@Override
-	public void init(CoreGL gl) {
+	public void init(final CoreGL gl) {
 		coreRender = CoreRender.createCoreRender(gl);
 
 		CoreShader shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");
@@ -88,37 +84,9 @@ public class SuperSimpleExampleMain implements CoreExample {
 		shader.activate();
 		vao.bind();
 	}
-
-	@Override
-	@Test
-	public void runJogl() {
-		CoreGL gl = new JoglCoreGL();
-		CoreSetup setup = new CoreSetupJogl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello JOGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	@Test
-	public void runLwjgl() {
-		CoreGL gl = new LwjglCoreGL();
-		CoreSetup setup = new CoreSetupLwjgl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello LWJGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public static void main(String[] args) {
-		CoreExample superSimpleExample = new SuperSimpleExampleMain();
-		ExampleMain.runExample(superSimpleExample, args);
+		RenderLoopCallback superSimpleExample = new SuperSimpleExampleMain();
+		CoreExampleMain.runExample(superSimpleExample, args);
 	}
 }

@@ -30,19 +30,15 @@ import java.io.*;
 import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
 
-import org.junit.Test;
-
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.examples.spi.CoreExample;
-import de.lessvoid.coregl.jogl.*;
-import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.*;
 
-public class LineMain implements CoreExample {
+public class LineMain implements RenderLoopCallback {
 	
 	private static final int WINDOW_WIDTH = 1024, WINDOW_HEIGHT = 768;
 	
@@ -254,36 +250,8 @@ public class LineMain implements CoreExample {
     return new ByteArrayInputStream(data.getBytes(Charset.forName("ISO-8859-1")));
   }
 
-	@Override
-	@Test
-	public void runJogl() {
-		CoreGL gl = new JoglCoreGL();
-		CoreSetup setup = new CoreSetupJogl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello JOGL Core GL", WINDOW_WIDTH, WINDOW_HEIGHT);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	@Test
-	public void runLwjgl() {
-		CoreGL gl = new LwjglCoreGL();
-		CoreSetup setup = new CoreSetupLwjgl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello LWJGL Core GL", WINDOW_WIDTH, WINDOW_HEIGHT);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
   public static void main(final String[] args) throws Exception {
-    CoreExample lineExample = new LineMain();
-    ExampleMain.runExample(lineExample, args);
+  	RenderLoopCallback lineExample = new LineMain();
+    CoreExampleMain.runExample(lineExample, args);
   }
 }

@@ -28,19 +28,15 @@ package de.lessvoid.coregl.examples;
 
 import java.nio.FloatBuffer;
 
-import org.junit.Test;
-
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.examples.spi.CoreExample;
-import de.lessvoid.coregl.jogl.*;
-import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.*;
 
-public class StarfieldMain implements CoreExample {
+public class StarfieldMain implements RenderLoopCallback {
 	
   private static final int STAR_COUNT = 20000;
   private CoreRender coreRender;
@@ -48,34 +44,6 @@ public class StarfieldMain implements CoreExample {
   private float z = 5.0f;
   private float angleX = 0.f;
   private float angleY = 0.f;
-  
-	@Override
-	@Test
-	public void runJogl() {
-		CoreGL gl = new JoglCoreGL();
-		CoreSetup setup = new CoreSetupJogl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello JOGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	@Test
-	public void runLwjgl() {
-		CoreGL gl = new LwjglCoreGL();
-		CoreSetup setup = new CoreSetupLwjgl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello LWJGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	@Override
 	public void init(final CoreGL gl) {
@@ -145,7 +113,7 @@ public class StarfieldMain implements CoreExample {
 	}
 
   public static void main(final String[] args) throws Exception {
-    CoreExample starfieldExample = new StarfieldMain();
-    ExampleMain.runExample(starfieldExample, args);
+  	RenderLoopCallback starfieldExample = new StarfieldMain();
+    CoreExampleMain.runExample(starfieldExample, args);
   }
 }

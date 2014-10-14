@@ -28,16 +28,12 @@ package de.lessvoid.coregl.examples;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.examples.spi.CoreExample;
-import de.lessvoid.coregl.jogl.*;
-import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.*;
 import de.lessvoid.simpleimageloader.*;
 
@@ -47,7 +43,7 @@ import de.lessvoid.simpleimageloader.*;
  *
  * @author void
  */
-public class GeometryShaderExampleMain implements CoreExample {
+public class GeometryShaderExampleMain implements RenderLoopCallback {
 	
 	int vertexCount = 1000;
 	int dataPerVertex = 28;
@@ -173,41 +169,9 @@ public class GeometryShaderExampleMain implements CoreExample {
 		coreRender.renderPoints(vertexCount);
 		return false;
 	}
-	
-	@Override
-	@Test
-	public void runJogl() {
-		CoreGL gl = new JoglCoreGL();
-		CoreSetup setup = new CoreSetupJogl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello JOGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	@Test
-	public void runLwjgl() {
-		CoreGL gl = new LwjglCoreGL();
-		CoreSetup setup = new CoreSetupLwjgl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello LWJGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public GeometryShaderExampleMain() throws Exception {
-
-	}
 
 	public static void main(final String[] args) throws Exception {
-		CoreExample geomShaderExample = new GeometryShaderExampleMain();
-		ExampleMain.runExample(geomShaderExample, args);
+		RenderLoopCallback geomShaderExample = new GeometryShaderExampleMain();
+		CoreExampleMain.runExample(geomShaderExample, args);
 	}
 }

@@ -26,135 +26,66 @@
  */
 package de.lessvoid.coregl.examples;
 
-import org.junit.Test;
-
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.examples.spi.CoreExample;
-import de.lessvoid.coregl.jogl.*;
-import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-public class BackgroundMain implements CoreExample {
+public class CurveExampleMain implements RenderLoopCallback {
 	
+	private CoreRender coreRender;
   private CoreShader shader;
-  private long startTime = System.currentTimeMillis();
-  private CoreRender coreRender;
+  private float r = 0.f;
   
 	@Override
 	public void init(final CoreGL gl) {
 		coreRender = CoreRender.createCoreRender(gl);
-    shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex");
-    shader.vertexShader("background/background.vs");
-    shader.fragmentShader("background/background.fs");
+    shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vTexture");
+    shader.vertexShader("curve/curve.vs");
+    shader.fragmentShader("curve/curve.fs");
     shader.link();
 
     CoreVAO vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
+    float aspect = 4.f/3.f;
     CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, new Float[] {
-        -1.0f, -1.0f,
-        -1.0f,  1.0f,
-         1.0f, -1.0f,
-         1.0f,  1.0f,
+        -0.4f, -0.4f * aspect,    0.0f, 0.0f, 
+         0.4f, -0.4f * aspect,    1.0f, 0.0f, 
+        -0.4f,  0.4f * aspect,    0.0f, 1.0f, 
+         0.4f,  0.4f * aspect,    1.0f, 1.0f, 
     });
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
     vao.enableVertexAttribute(0);
-    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 2, 0);
+    vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
+    vao.enableVertexAttribute(1);
+    vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
 
     // we only use a single shader and a single vao so we can activate both here
     // and let them stay active the whole time.
     shader.activate();
     vao.bind();
 	}
-  
+
 	@Override
 	public boolean render(final CoreGL gl, final float deltaTime) {
     gl.glClearColor(.1f, .1f, .3f, 0.f);
     gl.glClear(gl.GL_COLOR_BUFFER_BIT());
 
-    float time = (System.currentTimeMillis() - startTime) / 1000.f;
-    shader.setUniformf("time", time);
-    shader.setUniformf("resolution", 1024.f, 768.f);
+    shader.setUniformf("r", r);
+    r += deltaTime / 10000.f;
 
     // render all the data in the currently active vao using triangle strips
     coreRender.renderTriangleStrip(4);
     return false;
 	}
-	
-	@Override
-	@Test
-	public void runJogl() {
-		CoreGL gl = new JoglCoreGL();
-		CoreSetup setup = new CoreSetupJogl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello JOGL Core GL", 1024, 768);
-			
-			// init PrintFrames
-			PrintFrames printFrames = new PrintFrames(setup);
-			Thread t = new Thread(printFrames);
-			t.setDaemon(true);
-			t.start();
-			// -----
-			
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	@Test
-	public void runLwjgl() {
-		CoreGL gl = new LwjglCoreGL();
-		CoreSetup setup = new CoreSetupLwjgl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello LWJGL Core GL", 1024, 768);
-			
-			// init PrintFrames
-			PrintFrames printFrames = new PrintFrames(setup);
-			Thread t = new Thread(printFrames);
-			t.setDaemon(true);
-			t.start();
-			// -----
-			
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
   public static void main(final String[] args) throws Exception {
-    CoreExample backgroundExample = new BackgroundMain();
-    ExampleMain.runExample(backgroundExample, args);
-  }
-  
-  private class PrintFrames implements Runnable {
-  	
-  	final CoreSetup setup;
-  	
-  	volatile boolean stop = false;
-  	
-  	PrintFrames(CoreSetup setup) {
-  		this.setup = setup;
-  	}
-
-		@Override
-		public void run() {
-			long now, last = 0;
-			while (!stop) {
-				now = System.currentTimeMillis();
-				if (now - last > 1000) {
-					System.out.println(setup.getFPS());
-					last = now;
-				}
-			}
-		}
+  	RenderLoopCallback curveEample = new CurveExampleMain();
+    CoreExampleMain.runExample(curveEample, args);
   }
 }

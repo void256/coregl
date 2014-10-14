@@ -22,12 +22,10 @@ import de.lessvoid.coregl.spi.CoreUtil;
  */
 public class JoglCoreUtil implements CoreUtil {
 	
-	private final GLU glu = new GLU();
-	
 	@Override
 	public int gluBuild2DMipmaps(int target, int internalFormat, int width,
 			int height, int format, int type, ByteBuffer data) {
-		return glu.gluBuild2DMipmaps(target, internalFormat, width, height, format, type, data);
+		return GLU.createGLU().gluBuild2DMipmaps(target, internalFormat, width, height, format, type, data);
 	}
 	
 	@Override

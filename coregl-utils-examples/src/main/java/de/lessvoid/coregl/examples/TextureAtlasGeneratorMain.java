@@ -29,21 +29,17 @@ package de.lessvoid.coregl.examples;
 import java.io.*;
 import java.nio.FloatBuffer;
 
-import org.junit.Test;
-
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
-import de.lessvoid.coregl.examples.spi.CoreExample;
-import de.lessvoid.coregl.jogl.*;
-import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.simpleimageloader.*;
 import de.lessvoid.textureatlas.CoreTextureAtlasGenerator;
 
-public class TextureAtlasGeneratorMain implements CoreExample {
+public class TextureAtlasGeneratorMain implements RenderLoopCallback {
 	private SimpleImageLoader loader = new SimpleImageLoader();
 
 	private CoreRender coreRender;
@@ -127,37 +123,9 @@ public class TextureAtlasGeneratorMain implements CoreExample {
 		return false;
 	}
 
-	@Override
-	@Test
-	public void runJogl() {
-		CoreGL gl = new JoglCoreGL();
-		CoreSetup setup = new CoreSetupJogl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello JOGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	@Test
-	public void runLwjgl() {
-		CoreGL gl = new LwjglCoreGL();
-		CoreSetup setup = new CoreSetupLwjgl(gl);
-		setup.initializeLogging(); // optional to get jdk14 to better format the log
-		try {
-			setup.initialize("Hello LWJGL Core GL", 1024, 768);
-			setup.renderLoop(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public static void main(final String[] args) throws Exception {
-		CoreExample texAtlasGenExample = new TextureAtlasGeneratorMain();
-		ExampleMain.runExample(texAtlasGenExample, args);
+		RenderLoopCallback texAtlasGenExample = new TextureAtlasGeneratorMain();
+		CoreExampleMain.runExample(texAtlasGenExample, args);
 	}
 
 	private static class PNGFileFilter implements FilenameFilter {

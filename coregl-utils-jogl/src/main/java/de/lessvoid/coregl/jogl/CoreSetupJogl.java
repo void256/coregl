@@ -93,12 +93,13 @@ public class CoreSetupJogl implements CoreSetup {
 	 * @see de.lessvoid.coregl.CoreDisplaySetup#renderLoop(de.lessvoid.coregl.CoreDisplaySetup.RenderLoopCallback)
 	 */
 	@Override
-	public void renderLoop(final RenderLoopCallback renderLoop) {
+	public void renderLoop(final RenderLoopCallback renderCallback) {
 		int frames = 0;
 		long lastPrintTime = System.currentTimeMillis();
 
-		GLEventReceiver receiver = new GLEventReceiver(renderLoop);
+		GLEventReceiver receiver = new GLEventReceiver(renderCallback);
 		glWin.addGLEventListener(receiver);
+		glWin.setExclusiveContextThread(Thread.currentThread());
 
 		while (!closeRequested && !receiver.shouldStop()) {
 			glWin.display();

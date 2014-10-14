@@ -3,7 +3,6 @@ package de.lessvoid.coregl.examples.bench;
 import org.junit.Test;
 
 import de.lessvoid.coregl.examples.*;
-import de.lessvoid.coregl.examples.spi.CoreExample;
 import de.lessvoid.coregl.jogl.*;
 import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
@@ -11,67 +10,83 @@ import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
 public class SimpleFPSBenchmark {
 	
-	static final int DURATION_SECONDS = 30;
+	static final int DURATION_SECONDS = 20;
+	
+	public static void main(String[] args) {
+		new SimpleFPSBenchmark().benchTestAll();
+	}
 	
 	@Test
-	public void benchTestJogl() {
+	public double benchTestJogl() {
 		CoreGL gl = new JoglCoreGL();
 		CoreSetup setup = new CoreSetupJogl(gl);
 		try {
 			setup.initialize("CoreGL JOGL Benchmark", 1024, 768);
-			CoreExample example = new StarfieldMain();
-			runBenchmark(example, setup, DURATION_SECONDS);
+			RenderLoopCallback example = new SuperSimpleExampleMain();
+			TimedBenchmark results = runBenchmark(example, setup, DURATION_SECONDS);
+			System.err.println("average fps (JOGL): " + results.totalFrames / (results.duration / 1000));
 			setup.destroy();
+			return results.renderTimeSum / results.totalFrames;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return -1;
 	}
 	
 	@Test
-	public void benchTestLwjgl() {
+	public double benchTestLwjgl() {
 		CoreGL gl = new LwjglCoreGL();
 		CoreSetup setup = new CoreSetupLwjgl(gl);
 		try {
 			setup.initialize("CoreGL LWJGL Benchmark", 1024, 768);
-			CoreExample example = new StarfieldMain();
-			runBenchmark(example, setup, DURATION_SECONDS);
+			RenderLoopCallback example = new SuperSimpleExampleMain();
+			TimedBenchmark results = runBenchmark(example, setup, DURATION_SECONDS);
+			System.err.println("average fps (LWJGL): " + results.totalFrames / (results.duration / 1000));
 			setup.destroy();
+			return results.renderTimeSum / results.totalFrames;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return -1;
 	}
 	
 	@Test
 	public void benchTestAll() {
 		System.err.println("running benchmark (JOGL): ");
-		benchTestJogl();
-		System.err.println("waiting...");
+		double joglAvg = benchTestJogl();
 		try {
-			Thread.sleep(1500);
+			System.err.println("invoking garbage collector...");
+			System.runFinalization();
+			System.gc();
+			System.err.println("pausing for gc...");
+			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		System.err.println("running benchmark (LWJGL): ");
-		benchTestLwjgl();
+		double lwjglAvg = benchTestLwjgl();
+		System.err.println("Average frame render time (JOGL) = " + joglAvg / 1E6 + "ms");
+		System.err.println("Average frame render time (LWJGL) = " + lwjglAvg / 1E6 + "ms");
 	}
 	
-	public static void runBenchmark(CoreExample example, CoreSetup setup, int duration) {
+	public static TimedBenchmark runBenchmark(RenderLoopCallback example, CoreSetup setup, int duration) {
 		TimedBenchmark timedBench = new TimedBenchmark(example, duration);
 		setup.renderLoop(timedBench);
-		double avgFrameRenderTime = timedBench.renderTimeSum / timedBench.totalFrames;
-		System.err.println("average render time: " + avgFrameRenderTime / 1E6 + "ms per frame");
-		System.err.println("average frames-per-second: " + timedBench.totalFrames / duration + " fps");
+		//double avgFrameRenderTime = timedBench.renderTimeSum / timedBench.totalFrames;
+		//System.err.println("average render time: " + avgFrameRenderTime / 1E6 + "ms per frame");
+		//System.err.println("average frames-per-second: " + timedBench.totalFrames / duration + " fps");
+		return timedBench;
 	}
 	
 	private static class TimedBenchmark implements RenderLoopCallback {
 		
-		final CoreExample example;
+		final RenderLoopCallback example;
 		final long duration;
 		long elapsed, lastMilliTime = System.currentTimeMillis();
 		
 		double renderTimeSum, totalFrames;
 		
-		TimedBenchmark(final CoreExample example, final int duration) {
+		TimedBenchmark(final RenderLoopCallback example, final int duration) {
 			this.example = example;
 			this.duration = duration * 1000;
 		}
