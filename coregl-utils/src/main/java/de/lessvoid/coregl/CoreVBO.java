@@ -26,133 +26,234 @@
  */
 package de.lessvoid.coregl;
 
-
 import java.lang.reflect.Array;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
+import java.util.*;
+
+import de.lessvoid.coregl.spi.CoreGL;
 
 /**
  * The CoreArrayVBO class represents a VBO bound to GL_ARRAY_BUFFER.
  * @author void
  */
-public interface CoreVBO < T extends Buffer > {
+public class CoreVBO < T extends Buffer > {
 
-  /**
-   * Type of the VBO.
-   * @author void
-   */
-  public enum UsageType {
-    DYNAMIC_DRAW,
-    STATIC_DRAW,
-    STREAM_DRAW 
-  }
+	private static Map<UsageType, Integer> usageTypeMap = new Hashtable<UsageType, Integer>();
 
-  public enum DataType {
-    FLOAT(2),
-    SHORT(1);
+	private CoreGL gl;
+	private final int id;
+	private final int usage;
+	private final DataType dataType;
+	private final int byteLength;
 
-    private final int byteSizeFactor;
+	private T vertexBuffer;
+	private ByteBuffer mappedBufferCache;
 
-    private DataType(final int byteSizeFactor) {
-      this.byteSizeFactor = byteSizeFactor;
-    }
+	/**
+	 * Type of the VBO.
+	 * @author void
+	 */
+	public enum UsageType {
+		DYNAMIC_DRAW,
+		STATIC_DRAW,
+		STREAM_DRAW
+	}
 
-    public int calcByteLength(final int size) {
-      return size << byteSizeFactor;
-    }
+	public enum DataType {
+		FLOAT(2),
+		SHORT(1);
 
-    public <T extends Buffer> T createBuffer(final int size) {
-      ByteBuffer byteBuffer = createByteBuffer(calcByteLength(size));
-      if (FLOAT.equals(this)) {
-        return (T) byteBuffer.asFloatBuffer();
-      } else if (SHORT.equals(this)) {
-        return (T) byteBuffer.asShortBuffer();
-      }
-      throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
-    }
+		private final int byteSizeFactor;
 
-    public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
-      if (FLOAT.equals(this)) {
-        return (T)  dataBuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
-      } else if (SHORT.equals(this)) {
-        return (T)  dataBuffer.order(ByteOrder.nativeOrder()).asShortBuffer();
-      }
-      throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
-    }
+		private DataType(final int byteSizeFactor) {
+			this.byteSizeFactor = byteSizeFactor;
+		}
 
-    public void putArray(final Buffer b, final Object[] data) {
-      if (DataType.FLOAT.equals(this)) {
-        ((FloatBuffer) b).put(toFloatArray(data));
-      } else if (DataType.SHORT.equals(this)) {
-        ((ShortBuffer) b).put(toShortArray(data));
-      } else {
-        throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
-      }
-    }
+		public int calcByteLength(final int size) {
+			return size << byteSizeFactor;
+		}
 
-    private static ByteBuffer createByteBuffer(final int size) {
-      return ByteBuffer.allocateDirect(size).order(ByteOrder.nativeOrder());
-    }
+		public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
+			ByteBuffer byteBuffer = gl.getUtil().createByteBuffer(calcByteLength(size));
+			if (FLOAT.equals(this)) {
+				return (T) byteBuffer.asFloatBuffer();
+			} else if (SHORT.equals(this)) {
+				return (T) byteBuffer.asIntBuffer();
+			}
+			throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
+		}
 
-    private static float[] toFloatArray(final Object[] data) {
-      int arrlength = Array.getLength(data);
-      float[] outputArray = new float[arrlength];
-      for(int i = 0; i < arrlength; ++i){
-        if (data[i] != null) {
-          outputArray[i] = (Float) data[i];
-        }
-      }
-      return outputArray;
-    }
+		public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
+			if (FLOAT.equals(this)) {
+				return (T)  dataBuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
+			} else if (SHORT.equals(this)) {
+				return (T)  dataBuffer.order(ByteOrder.nativeOrder()).asIntBuffer();
+			}
+			throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
+		}
 
-    private static short[] toShortArray(final Object[] data) {
-      int arrlength = Array.getLength(data);
-      short[] outputArray = new short[arrlength];
-      for(int i = 0; i < arrlength; ++i){
-        if (data[i] != null) {
-          outputArray[i] = (Short) data[i];
-        }
-      }
-      return outputArray;
-    }
-  }
+		public void putArray(final Buffer b, final Object[] data) {
+			if (DataType.FLOAT.equals(this)) {
+				((FloatBuffer) b).put(toFloatArray(data));
+			} else if (DataType.SHORT.equals(this)) {
+				((ShortBuffer) b).put(toShortArray(data));
+			} else {
+				throw new CoreGLException("Unsupported CoreVBO.DataType (" + this + ")");
+			}
+		}
 
-  /**
-   * Allows access to the internally kept nio Buffer that contains the original
-   * buffer data. You can access and change this buffer if you want to update the
-   * buffer content. Just make sure that you call rewind() before sending your new
-   * data to the GPU with the send() method.
-   *
-   * @return the Buffer with the original buffer data (stored in main memory not GPU memory)
-   */
-  T getBuffer();
+		private static float[] toFloatArray(final Object[] data) {
+			int arrlength = Array.getLength(data);
+			float[] outputArray = new float[arrlength];
+			for(int i = 0; i < arrlength; ++i){
+				if (data[i] != null) {
+					outputArray[i] = (Float) data[i];
+				}
+			}
+			return outputArray;
+		}
 
-  /**
-   * Maps the buffer object that this represents into client space and returns the buffer
-   * @return the FloatBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
-   */
-  T getMappedBuffer();
+		private static short[] toShortArray(final Object[] data) {
+			int arrlength = Array.getLength(data);
+			short[] outputArray = new short[arrlength];
+			for(int i = 0; i < arrlength; ++i){
+				if (data[i] != null) {
+					outputArray[i] = (Short) data[i];
+				}
+			}
+			return outputArray;
+		}
+	}
 
-  /**
-   * You'll need to call that when you're done writing data into a mapped buffer to return access back to the GPU.
-   */
-  void unmapBuffer();
+	CoreVBO(final CoreGL gl, final DataType dataTypeParam, final UsageType usageType, final int size) {
+		checkLazyInit(gl);
+		this.gl = gl;
+		usage = usageTypeMap.get(usageType);
+		dataType = dataTypeParam;
+		byteLength = dataType.calcByteLength(size);
 
-  /**
-   * bind the buffer object as GL_ARRAY_BUFFER
-   */
-  void bind();
+		vertexBuffer = dataType.createBuffer(gl, size);
+		vertexBuffer.rewind();
 
-  /**
-   * Send the content of the Buffer to the GPU.
-   */
-  void send();
+		id = initBuffer();
+	}
 
-  /**
-   * Delete all resources for this VBO.
-   */
-  void delete();
+	CoreVBO(final CoreGL gl, final DataType dataTypeParam, final UsageType usageType, final Object[] data) {
+		this(gl, dataTypeParam, usageType, data.length);
+		dataType.putArray(vertexBuffer, data);
+		vertexBuffer.rewind();
+		send();
+	}
+
+	/**
+	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
+	 * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
+	 * the buffer data to the GPU.
+	 *
+	 * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
+	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
+	 * @param size the size of the buffer
+	 * @return the CoreVBO instance
+	 */
+	public static <T extends Buffer> CoreVBO<T> createCoreVBO(final CoreGL gl, CoreVBO.DataType dataType, CoreVBO.UsageType usageType, int size) {
+		return new CoreVBO<T>(gl, dataType, usageType, size);
+	}
+
+	/**
+	 * Create a new VBO with the given Type containing float data. This will create the buffer object but does not bind
+	 * or send the data to the GPU. You'll need to call bind() to bind this VBO and you'll need to call send() to transmit
+	 * the buffer data to the GPU.
+	 *
+	 * @param dataType the CoreVBO.DataType of the NIO Buffer that the CoreVBO instance should contain
+	 * @param usageType the GL usage type for the buffer @see {@link UsageType}
+	 * @param size the size of the buffer
+	 * @return the CoreVBO instance
+	 */
+	public static <T extends Buffer> CoreVBO<T> createCoreVBO(final CoreGL gl, CoreVBO.DataType dataType, CoreVBO.UsageType usageType, Object[] data) {
+		return new CoreVBO<T>(gl, dataType, usageType, data);
+	}
+
+	/**
+	 * Allows access to the internally kept nio Buffer that contains the original
+	 * buffer data. You can access and change this buffer if you want to update the
+	 * buffer content. Just make sure that you call rewind() before sending your new
+	 * data to the GPU with the send() method.
+	 *
+	 * @return the Buffer with the original buffer data (stored in main memory not GPU memory)
+	 */
+	public T getBuffer() {
+		return vertexBuffer;
+	}
+
+	/**
+	 * Maps the buffer object that this represents into client space and returns the buffer
+	 * @return the FloatBuffer to directly write data into (mapped into client space but is actual memory on the GPU)
+	 */
+	public T getMappedBuffer() {
+		ByteBuffer dataBuffer = gl.glMapBuffer(gl.GL_ARRAY_BUFFER(), gl.GL_WRITE_ONLY(), byteLength, mappedBufferCache);
+		gl.checkGLError("getMappedBuffer(GL_ARRAY_BUFFER)");
+		mappedBufferCache = dataBuffer;
+		return dataType.asBuffer(dataBuffer);
+	}
+
+	/**
+	 * You'll need to call that when you're done writing data into a mapped buffer to return access back to the GPU.
+	 */
+	public void unmapBuffer() {
+		gl.glUnmapBuffer(gl.GL_ARRAY_BUFFER());
+	}
+
+	/**
+	 * bind the buffer object as GL_ARRAY_BUFFER
+	 */
+	public void bind() {
+		gl.glBindBuffer(gl.GL_ARRAY_BUFFER(), id);
+		gl.checkGLError("glBindBuffer(GL_ARRAY_BUFFER)");
+	}
+
+	/**
+	 * Send the content of the Buffer to the GPU.
+	 */
+	public void send() {
+		gl.glBindBuffer(gl.GL_ARRAY_BUFFER(), id);
+		if (DataType.FLOAT.equals(dataType)) {
+			gl.glBufferData(gl.GL_ARRAY_BUFFER(), (FloatBuffer) vertexBuffer, usage);
+		} else if (DataType.SHORT.equals(dataType)) {
+			gl.glBufferData(gl.GL_ARRAY_BUFFER(), (IntBuffer) vertexBuffer, usage); //FIXME illegal cast short buffer -> int buffer
+		} else {
+			throw new CoreGLException("Unsupported CoreVBO.DataType (" + dataType + ")");
+		}
+		gl.checkGLError("glBufferData(GL_ARRAY_BUFFER)");
+	}
+
+	/**
+	 * Delete all resources for this VBO.
+	 */
+	public void delete() {
+		IntBuffer idbuff = gl.getUtil().createIntBuffer(1);
+		idbuff.put(id);
+		idbuff.flip();
+		gl.glDeleteBuffers(1, idbuff);
+	}
+
+	private int initBuffer() {
+		IntBuffer idbuff = gl.getUtil().createIntBuffer(1);
+		gl.glGenBuffers(1, idbuff);
+		idbuff.rewind();
+		int id = idbuff.get();
+		gl.checkGLError("glGenBuffers");
+		return id;
+	}
+
+	static void initUsageTypeMap(final CoreGL gl) {
+		usageTypeMap.put(UsageType.DYNAMIC_DRAW, gl.GL_DYNAMIC_DRAW());
+		usageTypeMap.put(UsageType.STATIC_DRAW, gl.GL_STATIC_DRAW());
+		usageTypeMap.put(UsageType.STREAM_DRAW, gl.GL_STREAM_DRAW());
+	}
+
+	private static void checkLazyInit(final CoreGL gl) {
+		if (usageTypeMap.size() == 0) {
+			initUsageTypeMap(gl);
+		}
+	}
 }

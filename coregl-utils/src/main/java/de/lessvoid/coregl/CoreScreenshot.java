@@ -26,28 +26,87 @@
  */
 package de.lessvoid.coregl;
 
+import java.awt.image.*;
+import java.io.*;
+import java.nio.ByteBuffer;
+
+import javax.imageio.ImageIO;
+
+import de.lessvoid.coregl.spi.CoreGL;
+
 /**
  * This is not really OpenGL core profile specific. It's just a helper class to save the content of
  * the color or stencil buffer to a file. I always wanted to have a class like that ... and now I have one ;D
  * @author void
  */
-public interface CoreScreenshot {
+public class CoreScreenshot {
 
-  /**
-   * Save the color buffer to a disk file. Since this is really meant for development purpose it will catch
-   * any IOExceptions and throws a RuntimeException if it fails for easy drop-in use.
-   * @param filename target filename to save
-   * @param width the width of the image to save
-   * @param height the height of the image to save
-   */
-  void color(String filename, int width, int height);
+	private final CoreGL gl;
 
-  /**
-   * Save the stencil buffer to a disk file. Since this is really meant for development purpose it will catch
-   * any IOExceptions and throws a RuntimeException if it fails for easy drop-in use.
-   * @param filename target filename to save
-   * @param width the width of the image to save
-   * @param height the height of the image to save
-   */
-  void stencil(String filename, int width, int height);
+	CoreScreenshot(final CoreGL gl) {
+		this.gl = gl;
+	}
+	
+	public static CoreScreenshot createCoreScreenshot(final CoreGL gl) {
+		return new CoreScreenshot(gl);
+	}
+
+	/**
+	 * Save the color buffer to a disk file. Since this is really meant for development purpose it will catch
+	 * any IOExceptions and throws a RuntimeException if it fails for easy drop-in use.
+	 * @param filename target filename to save
+	 * @param width the width of the image to save
+	 * @param height the height of the image to save
+	 */
+	public void color(final String filename, final int width, final int height) {
+		try {
+			BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+			ByteBuffer pixels = gl.getUtil().createByteBuffer(width*height*3);
+			gl.glPixelStorei(gl.GL_PACK_ALIGNMENT(), 1);
+			gl.glReadPixels(0, 0, width, height, gl.GL_RGB(), gl.GL_UNSIGNED_BYTE(), pixels);
+			gl.checkGLError("glReadPixels");
+
+			WritableRaster raster = bi.getRaster();
+			int[] buffer = new int[width*height*3];
+			for (int i=0; i<width*height*3; i++) {
+				buffer[i] = pixels.get(i);
+			}
+			raster.setPixels(0, 0, width, height, buffer);
+
+			File outputfile = new File(filename);
+			ImageIO.write(bi, "png", outputfile);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Save the stencil buffer to a disk file. Since this is really meant for development purpose it will catch
+	 * any IOExceptions and throws a RuntimeException if it fails for easy drop-in use.
+	 * @param filename target filename to save
+	 * @param width the width of the image to save
+	 * @param height the height of the image to save
+	 */
+	public void stencil(final String filename, final int width, final int height) {
+		try {
+			BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+			ByteBuffer pixels = gl.getUtil().createByteBuffer(width*height);
+			gl.glPixelStorei(gl.GL_PACK_ALIGNMENT(), 1);
+			gl.glReadPixels(0, 0, width, height, gl.GL_STENCIL_INDEX(), gl.GL_UNSIGNED_BYTE(), pixels);
+			gl.checkGLError("glReadPixels");
+
+			WritableRaster raster = bi.getRaster();
+			int[] pixel = new int[1];
+			for (int y=0; y<height; y++) {
+				for (int x=0; x<width; x++) {
+					pixel[0] = pixels.get(y*width+x)*255;
+					raster.setPixel(x, y, pixel);
+				}
+			}
+			File outputfile = new File(filename);
+			ImageIO.write(bi, "png", outputfile);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

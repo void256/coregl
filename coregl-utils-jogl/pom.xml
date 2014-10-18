@@ -7,7 +7,7 @@
   </parent>
   <artifactId>coregl-utils-jogl</artifactId>
   <properties>
-    <jogamp.version>2.0.2-rc12</jogamp.version>
+    <jogamp.version>2.2.4</jogamp.version>
   </properties>
   <dependencies>
     <dependency>

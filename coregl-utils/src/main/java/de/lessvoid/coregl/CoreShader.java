@@ -26,218 +26,497 @@
  */
 package de.lessvoid.coregl;
 
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.lang.reflect.*;
 import java.nio.*;
+import java.util.*;
+import java.util.logging.*;
+
+import de.lessvoid.coregl.spi.CoreGL;
 
 /**
  * Helper class that represents a shader (actually the combination of a vertex
  * and a fragment shader - what GL actually calls a program).
  * @author void
  */
-public interface CoreShader {
+public class CoreShader {
 
-	// vertex shader
+	private static final Logger log = Logger.getLogger(CoreShader.class.getName());
+	private int program;
+	private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
+	private FloatBuffer matBuffer;
+	private final String[] attributes;
 
-	/**
-	 * Attach the given vertex shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param resourcename the filename of the shader
-	 */
-	int vertexShader(String resourcename);
-
-	/**
-	 * Attach the given vertex shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param filename the file of the shader
-	 */
-	int vertexShader(File file) throws FileNotFoundException;
+	private final CoreGL gl;
 
 	/**
-	 * Attach the given vertex shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param streamName a name for the InputStream that will be logged if any compile errors occur
-	 * @param filename the file of the shader
+	 * Create a new Shader.
+	 * @return the new CoreShader instance
 	 */
-	int vertexShader(String streamName, InputStream ... sources);
+	public static CoreShader createShader(final CoreGL gl) {
+		return new CoreShader(gl);
+	}
 
 	/**
-	 * Attach the given vertex shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param resourcename the resourcename of the shader
+	 * Create a new Shader with the given vertex attributes automatically bind to the generic attribute indices in
+	 * ascending order beginning with 0. This method can be used when you want to control the vertex attribute binding
+	 * on your own.
+	 *
+	 * @param vertexAttributes the name of the vertex attribute. The first String gets generic attribute index 0. the
+	 *        second String gets generic attribute index 1 and so on.
+	 * @return the CoreShader instance
 	 */
-	void vertexShader(int shaderId, String resourcename);
+	public static CoreShader createShaderWithVertexAttributes(final CoreGL gl, String ... vertexAttributes) {
+		return new CoreShader(gl, vertexAttributes);
+	}
 
-	/**
-	 * Attach the given vertex shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param filename the file of the shader
-	 */
-	void vertexShader(int shaderId, File file) throws FileNotFoundException;
+	CoreShader(final CoreGL gl, final String ... vertexAttributes) {
+		this.gl = gl;
+		this.attributes = vertexAttributes;
+		this.program = gl.glCreateProgram();
+		checkGLError("glCreateProgram");
+	}
 
-	/**
-	 * Attach the given vertex shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param shaderId shader id
-	 * @param streamName a name for the InputStream that will be logged if any compile errors occur
-	 * @param source the actual stream source
-	 */
-	void vertexShader(int shaderId, String streamName, InputStream source);
+	public int vertexShader(final String filename) {
+		return vertexShader(filename, getStream(filename));
+	}
 
-	// geometry shader
+	public int vertexShader(final File file) throws FileNotFoundException {
+		return vertexShader(file.getName(), getStream(file));
+	}
 
-	/**
-	 * Attach the given geometry shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param resourcename the resourcename of the shader
-	 */
-	int geometryShader(String resourcename);
+	public int vertexShader(final String streamName, final InputStream ... sources) {
+		return vertexShaderFromStream(streamName, sources);
+	}
 
-	/**
-	 * Attach the given geometry shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param filename the file of the shader
-	 */
-	int geometryShader(File file) throws FileNotFoundException;
+	public void vertexShader(final int shaderId, final String filename) {
+		vertexShader(shaderId, filename, getStream(filename));
+	}
 
-	/**
-	 * Attach the given geometry shader file to this CoreShader.
-	 * @param file the file of the shader
-	 * @param inputStreams the inputStreams to read the shader source
-	 */
-	int geometryShader(File file, InputStream ... inputStreams) throws FileNotFoundException;
+	public void vertexShader(final int shaderId, final File file) throws FileNotFoundException {
+		vertexShader(shaderId, file.getName(), getStream(file));
+	}
 
-	/**
-	 * Attach the given geometry shader file to this CoreShader.
-	 * @param streamName the name of the streams of the shader
-	 * @param inputStreams the inputStreams to read the shader source
-	 */
-	int geometryShader(String streamName, InputStream ... inputStreams) throws FileNotFoundException;
+	public void vertexShader(final int shaderId, final String streamName, final InputStream source) {
+		prepareShader(shaderId, streamName, source);
+	}
 
-	/**
-	 * Attach the given geometry shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param filename the file of the shader
-	 */
-	void geometryShader(int shaderId, File file) throws FileNotFoundException;
+	public void geometryShader(final int shaderId, final String filename) {
+		geometryShader(shaderId, filename, getStream(filename));
+	}
 
-	/**
-	 * Attach the given geometry shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param shaderId shader id
-	 * @param streamName a name for the InputStream that will be logged if any compile errors occur
-	 * @param source the actual stream source
-	 */
-	void geometryShader(int shaderId, String streamName, InputStream source);
+	public int geometryShader(final String filename) {
+		return geometryShaderFromStream(filename, getStream(filename));
+	}
 
-	/**
-	 * Attach the given geometry shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param resourcename the resourcename of the shader
-	 */
-	void geometryShader(int shaderId, String resourcename);
+	public int geometryShader(final File file) throws FileNotFoundException {
+		return geometryShader(file.getName(), getStream(file));
+	}
 
-	// fragment shader
+	public int geometryShader(final File file, final InputStream ... inputStreams) throws FileNotFoundException {
+		InputStream[] sources = new InputStream[inputStreams.length + 1];
+		System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
+		sources[sources.length - 1] = getStream(file);
+		return geometryShader(file.getName(), sources);
+	}
 
-	/**
-	 * Attach the given fragment shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param resourcename the resourcename of the shader
-	 */
-	int fragmentShader(String resourcename);
+	public int geometryShader(final String streamName, final InputStream ... inputStreams) throws FileNotFoundException {
+		return geometryShaderFromStream(streamName, inputStreams);
+	}
 
-	/**
-	 * Attach the given fragment shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param filename the file of the shader
-	 */
-	int fragmentShader(File file) throws FileNotFoundException;
+	public void geometryShader(final int shaderId, final String streamName, InputStream source) {
+		prepareShader(shaderId, streamName, source);
+	}
 
-	/**
-	 * Attach the given fragment shader from the InputStream.
-	 * @param streamName the streamName (used to identify the shader)
-	 * @param inputStreams the source stream of the shader
-	 * @return 
-	 * @throws FileNotFoundException
-	 */
-	int fragmentShader(String streamName, InputStream ... inputStreams) throws FileNotFoundException;
+	public void geometryShader(final int shaderId, final File file) throws FileNotFoundException {
+		geometryShader(shaderId, file.getName(), getStream(file));
+	}
 
-	/**
-	 * Attach the given fragment shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param resourcename the resourcename of the shader
-	 */
-	void fragmentShader(int shaderId, String resourcename);
+	public int fragmentShader(final String filename) {
+		return fragmentShader(filename, getStream(filename));
+	}
 
-	/**
-	 * Attach the given fragment shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param filename the file of the shader
-	 */
-	void fragmentShader(int shaderId, File file) throws FileNotFoundException;
+	public int fragmentShader(final File file) throws FileNotFoundException {
+		return fragmentShaderFromStream(file.getName(), getStream(file));
+	}
 
-	/**
-	 * Attach the given fragment shader file to this CoreShader. This will call glCreateShader(), loads and compiles
-	 * the shader source and finally attaches the shader.
-	 * @param shaderId shader id
-	 * @param streamName a name for the InputStream that will be logged if any compile errors occur
-	 * @param source the actual stream source
-	 */
-	void fragmentShader(int shaderId, String streamName, InputStream source);
+	public int fragmentShader(final String streamName, final InputStream ... inputStreams) {
+		return fragmentShaderFromStream(streamName, inputStreams);
+	}
 
-	// link and activate
+	public void fragmentShader(final int shaderId, final String filename) {
+		fragmentShader(shaderId, filename, getStream(filename));
+	}
 
-	/**
-	 * Link the Shader.
-	 */
-	void link();
+	public void fragmentShader(final int shaderId, final File file) throws FileNotFoundException {
+		fragmentShader(shaderId, file.getName(), getStream(file));
+	}
 
-	/**
-	 * Activate this program.
-	 */
-	void activate();
+	public void fragmentShader(final int shaderId, final String streamName, final InputStream source) {
+		prepareShader(shaderId, streamName, source);
+	}
 
-	// uniform access
+	private int vertexShaderFromStream(final String streamName, final InputStream ... sources) {
+		int shaderId = gl.glCreateShader(gl.GL_VERTEX_SHADER());
+		checkGLError("glCreateShader(GL_VERTEX_SHADER)");
+		prepareShader(shaderId, streamName, sources);
+		gl.glAttachShader(program, shaderId);
+		checkGLError("glAttachShader");
+		return shaderId;
+	}
 
-	void setUniformi(String name, int...values);
+	private int geometryShaderFromStream(final String streamName, final InputStream ... sources) {
+		int shaderId = gl.glCreateShader(gl.GL_GEOMETRY_SHADER());
+		checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
+		prepareShader(shaderId, streamName, sources);
+		gl.glAttachShader(program, shaderId);
+		checkGLError("glAttachShader");
+		return shaderId;
+	}
 
-	void setUniformf(String name, float...values);
+	private int fragmentShaderFromStream(final String streamName, final InputStream ... sources) {
+		int shaderId = gl.glCreateShader(gl.GL_FRAGMENT_SHADER());
+		checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
+		prepareShader(shaderId, streamName, sources);
+		gl.glAttachShader(program, shaderId);
+		checkGLError("glAttachShader");
+		return shaderId;
+	}
 
-	void setUniformd(String name, double...values);
-	
-	void setUniformiv(String name, int componentNum, int... values);
-	
-	void setUniformiv(String name, int componentNum, IntBuffer values);
-	
-	void setUniformfv(String name, int componentNum, float... values);
-	
-	void setUniformfv(String name, int componentNum, FloatBuffer values);
-	
-	void setUniformdv(String name, int componentNum, double... values);
-	
-	void setUniformdv(String name, int componentNum, DoubleBuffer values);
-	
-	void setUniformMatrix(String name, int componentNum, float...values);
-	
-	void setUniformMatrix(String name, int componentNum, FloatBuffer values);
+	public void link() {
+		for (int i=0; i<attributes.length; i++) {
+			gl.glBindAttribLocation(program, i, attributes[i]);
+			checkGLError("glBindAttribLocation (" + attributes[i] + ")");
+		}
 
-	// attribute location
+		gl.glLinkProgram(program);
+		checkGLError("glLinkProgram");
 
-	/**
-	 * Get the vertex attribute location of the vertex attribute with the given name.
-	 * @param name the name of the vertex attribute
-	 * @return the generic vertex attribute index value
-	 */
-	int getAttribLocation(String name);
+		IntBuffer params = gl.getUtil().createIntBuffer(1);
+		gl.glGetProgramiv(program, gl.GL_LINK_STATUS(), params);
+		if (params.get(0) != gl.GL_TRUE()) {
+			log.warning("link error: " + gl.glGetProgramInfoLog(program));
+			checkGLError("glGetProgramInfoLog");
+		}
+		checkGLError("glGetProgram");
+	}
 
-	/**
-	 * You can manually bind the vertex attribute with the given name to the given specific index value. You'll need to
-	 * call this method before calling the link() method!
-	 * 
-	 * @param name the name of the vertex attribute
-	 * @param index the new index you want to give that vertex attribute
-	 */
-	void bindAttribLocation(String name, int index);
+	public void setUniformi(final String name, final int...values) {
+		setUniform(name, UniformType.INT, toObjectArray(values));
+	}
+
+	public void setUniformf(final String name, final float...values) {
+		setUniform(name, UniformType.FLOAT, toObjectArray(values));
+	}
+
+	public void setUniformd(final String name, final double...values) {
+		setUniform(name, UniformType.DOUBLE, toObjectArray(values));
+	}
+
+	public void setUniformiv(final String name, final int componentNum, final int... values) {
+		IntBuffer buff = gl.getUtil().createIntBuffer(values.length);
+		buff.put(values);
+		buff.flip();
+		setUniformv(name, componentNum, UniformType.INT, buff);
+	}
+
+	public void setUniformiv(final String name, final int componentNum, final IntBuffer values) {
+		setUniformv(name, componentNum, UniformType.INT, values);
+	}
+
+	public void setUniformfv(final String name, final int componentNum, final float... values) {
+		FloatBuffer buff = gl.getUtil().createFloatBuffer(values.length);
+		buff.put(values);
+		buff.flip();
+		setUniformv(name, componentNum, UniformType.FLOAT, buff);
+	}
+
+	public void setUniformfv(final String name, final int componentNum, final FloatBuffer values) {
+		setUniformv(name, componentNum, UniformType.INT, values);
+
+	}
+
+	public void setUniformdv(final String name, final int componentNum, final double... values) {
+		DoubleBuffer buff = gl.getUtil().createDoubleBuffer(values.length);
+		buff.put(values);
+		buff.flip();
+		setUniformv(name, componentNum, UniformType.FLOAT, buff);
+
+	}
+
+	public void setUniformdv(final String name, final int componentNum, final DoubleBuffer values) {
+		setUniformv(name, componentNum, UniformType.INT, values);
+	}
+
+	public void setUniformMatrix(final String name, final int componentNum, final float... values) {
+		if(matBuffer == null)
+			gl.getUtil().createFloatBuffer(16);
+
+		matBuffer.clear();
+		matBuffer.put(values);
+		matBuffer.flip();
+		setUniformMatrix(name, componentNum, UniformType.FLOAT, matBuffer);
+	}
+
+	public void setUniformMatrix(final String name, final int componentNum,
+			FloatBuffer values) {
+		setUniformMatrix(name, componentNum, UniformType.FLOAT, values);
+	}
+
+	private void setUniform(final String name, final UniformType type, final Object...values) {
+		int loc = getLocation(name);
+		String method = "glUniform"+values.length+type.suffix;
+		try {
+			switch(values.length) {
+			case 1:
+				Method m = CoreGL.class.getMethod(method, int.class, type.value);
+				m.setAccessible(true);
+				m.invoke(gl, loc, values[0]);
+				break;
+			case 2:
+				m = CoreGL.class.getMethod(method, int.class, type.value, type.value);
+				m.setAccessible(true);
+				m.invoke(gl, loc, values[0], values[1]);
+				break;
+			case 3:
+				m = CoreGL.class.getMethod(method, int.class, type.value, type.value, type.value);
+				m.setAccessible(true);
+				m.invoke(gl, loc, values[0], values[1], values[2]);
+				break;
+			case 4:
+				m = CoreGL.class.getMethod(method, int.class, type.value, type.value, type.value, type.value);
+				m.setAccessible(true);
+				m.invoke(gl, loc, values[0], values[1], values[2], values[3]);
+				break;
+			default:
+				throw(new IllegalArgumentException("illegal number of values supplied to "
+						+ "setUniform"+type.suffix));
+			}
+		} catch (NoSuchMethodException e) {
+			throw(new CoreGLException("failed to locate set uniform method: " + method));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		checkGLError(method);
+	}
+
+	private void setUniformv(final String name, final int componentNum, 
+			final UniformType type, final Buffer data) {
+		int loc = getLocation(name);
+		if(componentNum < 1 || componentNum > 4)
+			throw(new IllegalArgumentException("illegal number of compoments for setUniform"+type.suffix+"v"));
+		String method = "glUniform"+componentNum+type.suffix+"v";
+		try {
+			Method m = CoreGL.class.getMethod(method, int.class, type.buffer);
+			m.setAccessible(true);
+			m.invoke(gl, loc, data);
+		} catch (NoSuchMethodException e) {
+			throw(new CoreGLException("failed to locate set uniform method: " + method));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		checkGLError(method);
+	}
+
+	private void setUniformMatrix(final String name, final int componentNum,
+			final UniformType type, final Buffer data) {
+		int loc = getLocation(name);
+		if(componentNum < 2 || componentNum > 4)
+			throw(new IllegalArgumentException("illegal number of compoments for setUniformMatrix"));
+		String method = "glUniformMatrix"+componentNum;
+		try {
+			Method m = CoreGL.class.getMethod(method, int.class, boolean.class, type.buffer);
+			m.setAccessible(true);
+			m.invoke(gl, loc, false, data);
+		} catch (NoSuchMethodException e) {
+			throw(new CoreGLException("failed to locate set uniform method: " + method));
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		checkGLError(method);
+	}
+
+	public int getAttribLocation(final String name) {
+		int result = gl.glGetAttribLocation(program, name);
+		checkGLError("glGetAttribLocation");
+		return result;
+	}
+
+	public void bindAttribLocation(final String name, final int index) {
+		gl.glBindAttribLocation(program, index, name);
+		checkGLError("glBindAttribLocation");
+	}
+
+	public Map<String, UniformBlockInfo> getUniformIndices(final String ... uniformNames) {
+		Map<String, UniformBlockInfo> result = new Hashtable<String, UniformBlockInfo>();
+
+		IntBuffer intBuffer = gl.getUtil().createIntBuffer(uniformNames.length);
+		gl.glGetUniformIndices(program, uniformNames, intBuffer);
+
+		IntBuffer uniformOffsets = gl.getUtil().createIntBuffer(uniformNames.length);
+		gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_OFFSET(), uniformOffsets);
+
+		IntBuffer arrayStrides = gl.getUtil().createIntBuffer(uniformNames.length);
+		gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_ARRAY_STRIDE(), arrayStrides);
+
+		IntBuffer matrixStrides = gl.getUtil().createIntBuffer(uniformNames.length);
+		gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_MATRIX_STRIDE(), matrixStrides);
+
+		checkGLError("getUniformIndices");
+
+		for (int i=0; i<uniformNames.length; i++) {
+			UniformBlockInfo blockInfo = new UniformBlockInfo();
+			blockInfo.name = uniformNames[i];
+			blockInfo.offset = uniformOffsets.get(i);
+			blockInfo.arrayStride = arrayStrides.get(i);
+			blockInfo.matrixStride = matrixStrides.get(i);
+			result.put(blockInfo.name, blockInfo);
+		}
+
+		return result;
+	}
+
+	public void uniformBlockBinding(final String name, final int uniformBlockBinding) {
+		int uniformBlockIndex = gl.glGetUniformBlockIndex(program, name);
+		checkGLError("glGetUniformBlockIndex");
+
+		gl.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+		checkGLError("glUniformBlockBinding");
+	}
+
+	public void activate() {
+		gl.glUseProgram(program);
+		checkGLError("glUseProgram");
+	}
+
+	private int registerParameter(final String name) {
+		int location = getUniform(name);
+		parameter.put(name, location);
+		return location;
+	}
+
+	private int getLocation(final String name) {
+		Integer value = parameter.get(name);
+		if (value == null) {
+			return registerParameter(name);
+		}
+		return value;
+	}
+
+	private int getUniform(final String uniformName) {
+		int result = gl.glGetUniformLocation(program, uniformName);
+		checkGLError("glGetUniformLocation for [" + uniformName + "] failed");
+		log.fine(getLoggingPrefix() + "glUniformLocation for [" + uniformName + "] = [" + result + "]");
+		return result;
+	}
+
+	private void prepareShader(final int shaderId, final String name, final InputStream ... sources) {
+		try {
+			gl.glShaderSource(shaderId, loadShader(sources));
+			checkGLError("glShaderSource");
+		} catch (IOException e) {
+			throw new CoreGLException(e);
+		}
+
+		gl.glCompileShader(shaderId);
+		checkGLError("glCompileShader");
+
+		IntBuffer ret = gl.getUtil().createIntBuffer(1);
+		gl.glGetShaderiv(shaderId, gl.GL_COMPILE_STATUS(), ret);
+		if (ret.get(0) == gl.GL_FALSE()) {
+			log.warning("'" + name + "' compile error: " + gl.glGetShaderInfoLog(shaderId));
+		}
+
+		printLogInfo(shaderId);
+		checkGLError(String.valueOf(shaderId));
+	}
+
+	private String loadShader(final InputStream ... sources) throws IOException {
+		StringBuilder srcbuff = new StringBuilder();
+		for (InputStream source : sources) {
+			InputStreamReader streamReader = new InputStreamReader(source);
+			BufferedReader buffReader = new BufferedReader(streamReader);
+			String nextLine = null;
+			while((nextLine = buffReader.readLine()) != null) {
+				srcbuff.append(nextLine + "\n");
+			}
+			buffReader.close();
+		}
+
+		return srcbuff.toString();
+	}
+
+	private void printLogInfo(final int obj) {
+		String logInfoMsg = gl.glGetShaderInfoLog(obj);
+		checkGLError("glGetShaderInfoLog");
+		if (!logInfoMsg.isEmpty()) {
+			log.info(getLoggingPrefix() + "Info log:\n" + logInfoMsg);
+		}
+		checkGLError("printLogInfo");
+	}
+
+	private void checkGLError(final String message) {
+		gl.checkGLError(getLoggingPrefix() + message);
+	}
+
+	private String getLoggingPrefix() {
+		return "[" + program + "] ";
+	}
+
+	private InputStream getStream(final File file) throws FileNotFoundException {
+		log.fine("loading shader file [" + file + "]");
+		return new FileInputStream(file);
+	}
+
+	private InputStream getStream(final String filename) {
+		return Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+	}
+
+	private Object[] toObjectArray(int[] ints) {
+		Object[] intObjs = new Integer[ints.length];
+		for(int i=0; i < intObjs.length; i++)
+			intObjs[i] = ints[i];
+		return intObjs;
+	}
+
+	private Object[] toObjectArray(float[] floats) {
+		Object[] intObjs = new Float[floats.length];
+		for(int i=0; i < intObjs.length; i++)
+			intObjs[i] = floats[i];
+		return intObjs;
+	}
+
+	private Object[] toObjectArray(double[] doubles) {
+		Object[] intObjs = new Double[doubles.length];
+		for(int i=0; i < intObjs.length; i++)
+			intObjs[i] = doubles[i];
+		return intObjs;
+	}
+
+	enum UniformType {
+		INT("i", int.class, IntBuffer.class),
+		FLOAT("f", float.class, FloatBuffer.class),
+		DOUBLE("d", double.class, DoubleBuffer.class);
+
+		String suffix;
+		Class<?> value, buffer;
+
+		UniformType(String suffix, Class<?> value, Class<?> buffer) {
+			this.suffix = suffix;
+			this.buffer = buffer;
+			this.value = value;
+		}
+	}
 }

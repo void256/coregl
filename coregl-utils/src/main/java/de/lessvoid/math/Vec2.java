@@ -227,6 +227,7 @@ public class Vec2 implements Serializable {
 		return this;
 	}
 
+	@Override
 	public String toString() {
 		return "Vec2: " + x + " " + y;
 	}

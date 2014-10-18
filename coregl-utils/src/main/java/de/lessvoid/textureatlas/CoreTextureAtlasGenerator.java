@@ -28,19 +28,11 @@ package de.lessvoid.textureatlas;
 
 import java.nio.FloatBuffer;
 
-import de.lessvoid.coregl.CoreFBO;
-import de.lessvoid.coregl.CoreFactory;
-import de.lessvoid.coregl.CoreRender;
-import de.lessvoid.coregl.CoreShader;
-import de.lessvoid.coregl.CoreTexture2D;
-import de.lessvoid.coregl.CoreTexture2D.ColorFormat;
-import de.lessvoid.coregl.CoreTexture2D.ResizeFilter;
-import de.lessvoid.coregl.CoreTexture2D.Type;
-import de.lessvoid.coregl.CoreVAO;
+import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVAO.FloatType;
-import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
+import de.lessvoid.coregl.spi.CoreGL;
 import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.textureatlas.TextureAtlasGenerator.Result;
 
@@ -66,26 +58,26 @@ public class CoreTextureAtlasGenerator {
    * @param width width of the texture
    * @param height height of the texture
    */
-  public CoreTextureAtlasGenerator(final CoreFactory coreFactory, final int width, final int height) {
-    coreRender = coreFactory.getCoreRender();
+  public CoreTextureAtlasGenerator(final CoreGL gl, final int width, final int height) {
+    coreRender = CoreRender.createCoreRender(gl);
 
-    renderToTexture = coreFactory.createCoreFBO();
+    renderToTexture = CoreFBO.createCoreFBO(gl);
     renderToTexture.bindFramebuffer();
 
-    texture = coreFactory.createEmptyTexture(ColorFormat.RGBA, Type.UNSIGNED_BYTE, width, height, ResizeFilter.Linear);
+    texture = CoreTexture2D.createEmptyTexture(gl, ColorFormat.RGBA, Type.UNSIGNED_BYTE, width, height, ResizeFilter.Linear);
     renderToTexture.attachTexture(texture.getTextureId(), 0);
 
-    shader = coreFactory.newShaderWithVertexAttributes("aVertex", "aUV");
+    shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");
     shader.vertexShader("de/lessvoid/coregl/plain-texture.vs");
     shader.fragmentShader("de/lessvoid/coregl/plain-texture.fs");
     shader.link();
     shader.activate();
     shader.setUniformi("uTexture", 0);
 
-    vao = coreFactory.createVAO();
+    vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    vbo = coreFactory.createVBO(DataType.FLOAT, UsageType.STREAM_DRAW, 4*4);
+    vbo = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STREAM_DRAW, 4*4);
     vbo.bind();
 
     vao.enableVertexAttribute(0);
@@ -98,7 +90,7 @@ public class CoreTextureAtlasGenerator {
     coreRender.clearColor(0.f, 0.f, 0.f, 0.f);
     coreRender.clearColorBuffer();
 
-    renderToTexture.disableAndResetViewport();
+    renderToTexture.disableAndResetViewport(width, height);
 
     vao.unbind();
 
@@ -181,6 +173,6 @@ public class CoreTextureAtlasGenerator {
 
     coreRender.renderTriangleStrip(4);
     vao.unbind();
-    renderToTexture.disableAndResetViewport();
+    renderToTexture.disableAndResetViewport(source.getWidth(), source.getHeight());
   }
 }

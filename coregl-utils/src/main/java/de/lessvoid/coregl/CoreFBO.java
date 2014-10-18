@@ -26,6 +26,9 @@
  */
 package de.lessvoid.coregl;
 
+import java.nio.IntBuffer;
+
+import de.lessvoid.coregl.spi.CoreGL;
 
 /**
  * Helper class to use a frame buffer object. This will take care of all the necessary setup. Currently this class only
@@ -39,49 +42,135 @@ package de.lessvoid.coregl;
  *
  * @author void
  */
-public interface CoreFBO {
-  /**
-   * Enable this FBO (glBindFramebuffer)
-   */
-  void bindFramebuffer();
+public class CoreFBO {
 
-  /**
-   * Disable rendering to this FBO.
-   */
-  void disable();
+	private final CoreGL gl;
 
-  /**
-   * Disable rendering to this FBO and reset the Viewport back to screen size.
-   */
-  void disableAndResetViewport();
+	private int fbo;
 
-  /**
-   * Delete the FBO.
-   */
-  void delete();
+	CoreFBO(final CoreGL gl) {
+		this.gl = gl;
+		initialize();
+	}
+	
+	public static CoreFBO createCoreFBO(final CoreGL gl) {
+		return new CoreFBO(gl);
+	}
+	
+	/**
+	 * Enable this FBO (glBindFramebuffer)
+	 */
+	public void bindFramebuffer() {
+		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER(), fbo);
+	}
 
-  /**
-   * Attach a texture object to this FBO.
-   *
-   * @param textureId the texture to attach
-   * @param colorAttachmentIdx the color attachment to use (0=GL_COLOR_ATTACHMENT0, 1=GL_COLOR_ATTACHMENT1 and so on)
-   */
-  void attachTexture(int textureId, int colorAttachmentIdx);
+	/**
+	 * Disable rendering to this FBO.
+	 */
+	public void disable() {
+		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER(), 0);
+	}
 
-  /**
-   * Attach a texture object from a texture array to this FBO.
-   *
-   * @param textureId the texture to attach
-   * @param colorAttachmentIdx the color attachment to use (0=GL_COLOR_ATTACHMENT0, 1=GL_COLOR_ATTACHMENT1 and so on)
-   * @param layer the texture index inside the texture array to attach
-   */
-  void attachTexture(int textureId, int colorAttachmentIdx, int layer);
+	/**
+	 * Disable rendering to this FBO and reset the Viewport back to screen size.
+	 * 
+	 * @param viewWidth the width to which the viewport should be reset
+	 * @param viewHeight the height to which the viewport should be reset
+	 */
+	public void disableAndResetViewport(int viewWidth, int viewHeight) {
+		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER(), 0);
+		gl.glViewport(0, 0, viewWidth, viewHeight);
+	}
 
-  /**
-   * Attach a stencil buffer to this FBO.
-   *
-   * @param width the width of the stencil buffer
-   * @param height the height of the stenicl buffer
-   */
-  void attachStencil(int width, int height);
+	/**
+	 * Delete the FBO.
+	 */
+	public void delete() {
+		gl.glDeleteFramebuffers(1, gl.getUtil().createIntBuffer(new int[] {fbo}));
+	}
+
+	/**
+	 * Attach a texture object to this FBO.
+	 *
+	 * @param textureId the texture to attach
+	 * @param colorAttachmentIdx the color attachment to use (0=GL_COLOR_ATTACHMENT0, 1=GL_COLOR_ATTACHMENT1 and so on)
+	 */
+	public void attachTexture(int textureId, int colorAttachmentIdx) {
+		gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER(), gl.GL_COLOR_ATTACHMENT0() + colorAttachmentIdx, gl.GL_TEXTURE_2D(), textureId, 0);
+		gl.checkGLError("glFramebufferTexture2D");
+
+		gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0() + colorAttachmentIdx);
+		gl.checkGLError("glDrawBuffer");
+
+		checkFramebufferStatus();
+	}
+
+	/**
+	 * Attach a texture object from a texture array to this FBO.
+	 *
+	 * @param textureId the texture to attach
+	 * @param colorAttachmentIdx the color attachment to use (0=GL_COLOR_ATTACHMENT0, 1=GL_COLOR_ATTACHMENT1 and so on)
+	 * @param layer the texture index inside the texture array to attach
+	 */
+	public void attachTexture(int textureId, int colorAttachmentIdx, int layer) {
+		gl.glFramebufferTextureLayer(gl.GL_FRAMEBUFFER(), gl.GL_COLOR_ATTACHMENT0() + colorAttachmentIdx, textureId, 0, layer);
+		gl.checkGLError("glFramebufferTextureLayer");
+
+		gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0() + colorAttachmentIdx);
+		gl.checkGLError("glDrawBuffer");
+
+		checkFramebufferStatus();
+	}
+
+	/**
+	 * Attach a stencil buffer to this FBO.
+	 *
+	 * @param width the width of the stencil buffer
+	 * @param height the height of the stenicl buffer
+	 */
+	public void attachStencil(int width, int height) {
+		IntBuffer buff = gl.getUtil().createIntBuffer(1);
+		gl.glGenRenderBuffers(1, buff);
+	    int renderBuffer = buff.get(0);
+	    gl.glBindRenderbuffer(gl.GL_RENDERBUFFER(), renderBuffer);
+	    gl.glRenderbufferStorage(gl.GL_RENDERBUFFER(), gl.GL_STENCIL_INDEX8(), width, height);
+	    gl.glFramebufferRenderbuffer(gl.GL_FRAMEBUFFER(), gl.GL_STENCIL_ATTACHMENT(), gl.GL_RENDERBUFFER(), renderBuffer);
+	    checkFramebufferStatus();
+	}
+
+	private void initialize() {
+		IntBuffer buffStore = gl.getUtil().createIntBuffer(1);
+		gl.glGenFramebuffers(1, buffStore);
+		fbo = buffStore.get(0);
+		gl.checkGLError("glGenFramebuffers");
+	}
+
+	private void checkFramebufferStatus() {
+		int fboStatus = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER());
+		if (fboStatus != gl.GL_FRAMEBUFFER_COMPLETE()) {
+			throw new CoreGLException(translateErrorState(fboStatus));
+		}
+	}
+
+	private String translateErrorState(final int fboStatus) {
+		if (fboStatus == gl.GL_FRAMEBUFFER_UNDEFINED()) {
+			return "GL_FRAMEBUFFER_UNDEFINED is returned if target is the default framebuffer, but the default framebuffer does not exist";
+		} else if (fboStatus == gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT()) {
+			return "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT is returned if any of the framebuffer attachment points are framebuffer incomplete.";
+		} else if (fboStatus == gl.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT()) {
+			return "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT is returned if the framebuffer does not have at least one image attached to it.";
+		} else if (fboStatus == gl.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER()) {
+			return "GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER is returned if the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for any color attachment point(s) named by GL_DRAWBUFFERi.";
+		} else if (fboStatus == gl.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER()) {
+			return "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER is returned if GL_READ_BUFFER is not GL_NONE and the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for the color attachment point named by GL_READ_BUFFER.";
+		} else if (fboStatus == gl.GL_FRAMEBUFFER_UNSUPPORTED()) {
+			return "GL_FRAMEBUFFER_UNSUPPORTED is returned if the combination of internal formats of the attached images violates an implementation-dependent set of restrictions.";
+		} else if (fboStatus == gl.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE()) {
+			return "GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE is returned if the value of GL_RENDERBUFFER_SAMPLES is not the same for all attached renderbuffers; if the value of GL_TEXTURE_SAMPLES is the not same for all attached textures; or, if the attached images are a mix of renderbuffers and textures, the value of GL_RENDERBUFFER_SAMPLES does not match the value of GL_TEXTURE_SAMPLES. + GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE is also returned if the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or, if the attached images are a mix of renderbuffers and textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures.";
+			//		      case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+			//		        return "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS is returned if any framebuffer attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target.";
+		} else {
+			return "Unknown Framebuffer Status: [" + fboStatus + "]";
+		}
+	}
 }
