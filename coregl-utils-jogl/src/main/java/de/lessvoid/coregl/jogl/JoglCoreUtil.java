@@ -1,27 +1,14 @@
 package de.lessvoid.coregl.jogl;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLContext;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
+import javax.media.opengl.*;
 import javax.media.opengl.glu.GLU;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.common.util.VersionNumber;
-import com.jogamp.newt.Display;
-import com.jogamp.newt.NewtFactory;
-import com.jogamp.newt.Screen;
-import com.jogamp.newt.opengl.GLWindow;
 
-import de.lessvoid.coregl.CoreVersion;
+import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVersion.GLSLVersion;
 import de.lessvoid.coregl.CoreVersion.GLVersion;
 import de.lessvoid.coregl.spi.CoreUtil;
@@ -156,42 +143,5 @@ public class JoglCoreUtil implements CoreUtil {
 	public GLSLVersion getGLSLVersion() {
 		VersionNumber glslVersion = GLContext.getCurrent().getGLSLVersionNumber();
 		return CoreVersion.getGLSLVersion(glslVersion.getMajor() * 100 + glslVersion.getMinor());
-	}
-
-//	@Test
-	public void test() {
-		GLProfile glp = GLProfile.getDefault();
-		GLCapabilities glc = new GLCapabilities(glp);
-		Display newtDisp = NewtFactory.createDisplay(null);
-		Screen newtScreen = NewtFactory.createScreen(newtDisp, 0);
-		GLWindow glWin = GLWindow.create(newtScreen, glc);
-		glWin.addGLEventListener(new GLEventListener() {
-
-			@Override
-			public void display(GLAutoDrawable arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void dispose(GLAutoDrawable arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void init(GLAutoDrawable arg0) {
-				System.out.println(GLContext.getCurrentGL().glGetString(GL.GL_VERSION));
-			}
-
-			@Override
-			public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3,
-					int arg4) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-		});
-		glWin.setVisible(true);
 	}
 }
