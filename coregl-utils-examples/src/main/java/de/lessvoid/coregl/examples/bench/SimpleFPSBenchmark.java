@@ -1,11 +1,12 @@
 package de.lessvoid.coregl.examples.bench;
 
-import org.junit.Test;
-
-import de.lessvoid.coregl.examples.*;
-import de.lessvoid.coregl.jogl.*;
-import de.lessvoid.coregl.lwjgl.*;
-import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.examples.SuperSimpleExampleMain;
+import de.lessvoid.coregl.jogl.CoreSetupJogl;
+import de.lessvoid.coregl.jogl.JoglCoreGL;
+import de.lessvoid.coregl.lwjgl.CoreSetupLwjgl;
+import de.lessvoid.coregl.lwjgl.LwjglCoreGL;
+import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.coregl.spi.CoreSetup;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
 public class SimpleFPSBenchmark {
@@ -16,7 +17,7 @@ public class SimpleFPSBenchmark {
 		new SimpleFPSBenchmark().benchTestAll();
 	}
 	
-	@Test
+//	@Test
 	public double benchTestJogl() {
 		CoreGL gl = new JoglCoreGL();
 		CoreSetup setup = new CoreSetupJogl(gl);
@@ -33,7 +34,7 @@ public class SimpleFPSBenchmark {
 		return -1;
 	}
 	
-	@Test
+//	@Test
 	public double benchTestLwjgl() {
 		CoreGL gl = new LwjglCoreGL();
 		CoreSetup setup = new CoreSetupLwjgl(gl);
@@ -50,7 +51,7 @@ public class SimpleFPSBenchmark {
 		return -1;
 	}
 	
-	@Test
+//	@Test
 	public void benchTestAll() {
 		System.err.println("running benchmark (JOGL): ");
 		double joglAvg = benchTestJogl();
