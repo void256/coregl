@@ -1177,7 +1177,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public void glBindFramebuffer(int target, int fbo) {
-		GLContext.getCurrentGL().glBindBuffer(target, fbo);
+		GLContext.getCurrentGL().glBindFramebuffer(target, fbo);
 	}
 
 	@Override
