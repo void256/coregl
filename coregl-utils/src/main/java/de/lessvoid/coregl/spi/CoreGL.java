@@ -151,6 +151,7 @@ public interface CoreGL {
 	// OpenGL methods
 	public void glBindTexture (int target, int texture);
 	public void glBlendFunc (int sfactor, int dfactor);
+	public void glBlendFuncSeparate (int sfactorRGB, int dfactorRGB, int sfactorAlpha, int dfactorAlpha);
 	public void glClear (int mask);
 	public void glClearColor (float red, float green, float blue, float alpha);
 	public void glDeleteTextures (int n, IntBuffer textures);

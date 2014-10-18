@@ -712,6 +712,11 @@ public class JoglCoreGL implements CoreGL {
 		GLContext.getCurrentGL().glBlendFunc(sfactor, dfactor);
 	}
 
+  @Override
+	public void glBlendFuncSeparate(int sfactorRGB, int dfactorRGB, int sfactorAlpha, int dfactorAlpha) {
+	  GLContext.getCurrentGL().glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, sfactorAlpha);
+	}
+
 	@Override
 	public void glClear(int mask) {
 		GLContext.getCurrentGL().glClear(mask);

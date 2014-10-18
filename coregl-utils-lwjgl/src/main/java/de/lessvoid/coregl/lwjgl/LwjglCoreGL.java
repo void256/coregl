@@ -1,14 +1,29 @@
 package de.lessvoid.coregl.lwjgl;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.logging.Logger;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL31;
+import org.lwjgl.opengl.GL32;
+import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL41;
 import org.lwjgl.util.glu.GLU;
 
 import de.lessvoid.coregl.CoreGLException;
-import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
@@ -713,6 +728,11 @@ public class LwjglCoreGL implements CoreGL {
 	public void glBlendFunc(int sfactor, int dfactor) {
 		GL11.glBlendFunc(sfactor, dfactor);
 	}
+
+  @Override
+  public void glBlendFuncSeparate(int sfactorRGB, int dfactorRGB, int sfactorAlpha, int dfactorAlpha) {
+    GL14.glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, sfactorAlpha);
+  }
 
 	@Override
 	public void glClear(int mask) {
