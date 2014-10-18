@@ -9,9 +9,8 @@
   <modules>
     <module>coregl-utils</module>
     <module>coregl-utils-lwjgl</module>
-    <module>coregl-utils-lwjgl-examples</module>
     <module>coregl-utils-jogl</module>
-    <module>coregl-utils-jogl-examples</module>
+    <module>coregl-utils-examples</module>
   </modules>
   <url>https://github.com/void256/coregl-utils/</url>
   <licenses>
