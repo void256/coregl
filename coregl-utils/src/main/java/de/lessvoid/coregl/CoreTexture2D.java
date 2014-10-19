@@ -597,11 +597,12 @@ public class CoreTexture2D {
 	}
 
 	public boolean isNPOTHardwareSupported() {
-		return false; //GLContext.getCapabilities().GL_ARB_texture_non_power_of_two;
+		return gl.getUtil().isNPOTHardwareSupported();
 	}
 
 	public boolean isNPOTSupported() {
-		return false; //GLContext.getCapabilities().OpenGL20 || isNPOTHardwareSupported();
+		
+		return gl.getUtil().isNPOTSupported();
 	}
 
 	public void disableErrorChecking() {

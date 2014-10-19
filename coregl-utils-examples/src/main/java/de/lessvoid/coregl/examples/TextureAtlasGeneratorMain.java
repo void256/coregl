@@ -50,6 +50,8 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
 
 	@Override
 	public void init(final CoreGL gl) {
+		
+		coreRender = CoreRender.createCoreRender(gl);
 
 		shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");
 		shader.vertexShader("texture-atlas/texture.vs");

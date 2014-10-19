@@ -9,12 +9,12 @@ import org.lwjgl.util.glu.GLU;
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVersion.GLSLVersion;
 import de.lessvoid.coregl.CoreVersion.GLVersion;
-import de.lessvoid.coregl.spi.CoreUtil;
+import de.lessvoid.coregl.spi.*;
 
 /**
  * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
  */
-public class LwjglCoreUtil implements CoreUtil {
+class LwjglCoreUtil implements CoreUtil {
 	
 	@Override
 	public int gluBuild2DMipmaps(int target, int internalFormat, int width,
@@ -125,6 +125,16 @@ public class LwjglCoreUtil implements CoreUtil {
 	@Override
 	public DoubleBuffer createDoubleBuffer(int size) {
 		return BufferUtils.createDoubleBuffer(size);
+	}
+	
+	@Override
+	public boolean isNPOTSupported() {
+		return getGLVersion().checkAgainst(GLVersion.GL20) || isNPOTHardwareSupported();
+	}
+	
+	@Override
+	public boolean isNPOTHardwareSupported() {
+		return GLContext.getCapabilities().GL_ARB_texture_non_power_of_two;
 	}
 	
 	@Override

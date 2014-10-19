@@ -7,16 +7,17 @@ import javax.media.opengl.glu.GLU;
 
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.common.util.VersionNumber;
+import com.jogamp.opengl.GLExtensions;
 
 import de.lessvoid.coregl.*;
 import de.lessvoid.coregl.CoreVersion.GLSLVersion;
 import de.lessvoid.coregl.CoreVersion.GLVersion;
-import de.lessvoid.coregl.spi.CoreUtil;
+import de.lessvoid.coregl.spi.*;
 
 /**
  * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
  */
-public class JoglCoreUtil implements CoreUtil {
+class JoglCoreUtil implements CoreUtil {
 	
 	@Override
 	public int gluBuild2DMipmaps(int target, int internalFormat, int width,
@@ -131,6 +132,16 @@ public class JoglCoreUtil implements CoreUtil {
 		float[] store = new float[1];
 		gl.glGetFloatv(pname, store, 0);
 		return store[0];
+	}
+	
+	@Override
+	public boolean isNPOTSupported() {
+		return getGLVersion().checkAgainst(GLVersion.GL20) || isNPOTHardwareSupported();
+	}
+	
+	@Override
+	public boolean isNPOTHardwareSupported() {
+		return GLContext.getCurrentGL().isExtensionAvailable(GLExtensions.ARB_texture_non_power_of_two);
 	}
 	
 	@Override

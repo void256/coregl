@@ -28,6 +28,9 @@ public interface CoreUtil {
 	ShortBuffer createShortBuffer(int size);
 	ByteBuffer createByteBuffer(int size);
 	
+	boolean isNPOTSupported();
+	boolean isNPOTHardwareSupported();
+	
 	CoreVersion.GLVersion getGLVersion();
 	CoreVersion.GLSLVersion getGLSLVersion();
 }
