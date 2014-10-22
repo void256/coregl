@@ -47,17 +47,26 @@ public interface CoreSetup {
 		/**
 		 * Called once after the OpenGL context has been initialized and before any calls are made to {@link #render(CoreGL, float)}.
 		 * Use this method to initialize any and all necessary Core components.
-		 * @param gl
+		 * @param gl the CoreGL instance in case you want to use that
 		 */
 		void init(final CoreGL gl);
 		
 		/**
 		 * Do some awesome stuff in here!
+		 * @param gl the CoreGL instance in case you want to use that
 		 * @param deltaTime the time past since the last call in ms
-		 * @return true when the render loop should be stopped and false if you want it to continue.
+		 * @return true when data has been rendered and the rendered data should be displayed. false when nothing has been
+		 *         changed and the display should not be updated.
 		 */
 		boolean render(final CoreGL gl, float deltaTime);
+
+		/**
+		 * When you're finishing rendering awesome stuff and the render loop should be ended, return true in here.
+		 * @return true render loop should be stopped and false if you want it to continue.
+		 */
+		boolean endLoop();
 	}
+
 	/**
 	 * (optional) This method will just set a new jdk14 Formatter that is more readable then the defaults.
 	 */

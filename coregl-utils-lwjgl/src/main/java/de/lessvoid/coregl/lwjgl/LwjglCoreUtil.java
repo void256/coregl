@@ -14,7 +14,7 @@ import de.lessvoid.coregl.spi.*;
 /**
  * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
  */
-class LwjglCoreUtil implements CoreUtil {
+public class LwjglCoreUtil implements CoreUtil {
 	
 	@Override
 	public int gluBuild2DMipmaps(int target, int internalFormat, int width,

@@ -89,8 +89,13 @@ public class LinearGradientMain implements RenderLoopCallback {
     time += deltaTime;
     shader.setUniformfv("gradientStop", 1, new float[] { 0.0f, (float) (Math.sin(time / 2000) + 1.0) / 2.0f, 1.0f });
 
-    return false;
+    return true;
 	}
+
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
 
   public static void main(final String[] args) throws Exception {
   	RenderLoopCallback linearGradientExample = new LinearGradientMain();

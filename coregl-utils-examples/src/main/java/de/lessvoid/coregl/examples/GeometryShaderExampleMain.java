@@ -167,8 +167,13 @@ public class GeometryShaderExampleMain implements RenderLoopCallback {
 
 		// render all the data in the currently active vao using triangle strips
 		coreRender.renderPoints(vertexCount);
-		return false;
+		return true;
 	}
+
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
 
 	public static void main(final String[] args) throws Exception {
 		RenderLoopCallback geomShaderExample = new GeometryShaderExampleMain();

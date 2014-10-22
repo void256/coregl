@@ -239,8 +239,13 @@ public class LineMain implements RenderLoopCallback {
     texture.setUniformi("uTexture", 0);
     texture.setUniformf("lineColor", 1.f, 1.f, 1.f, 1.f);
     coreRender.renderTriangleStrip(4);
-    return false;
+    return true;
 	}
+
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
 
   private InputStream resource(final String name) {
     return Thread.currentThread().getContextClassLoader().getResourceAsStream(name);

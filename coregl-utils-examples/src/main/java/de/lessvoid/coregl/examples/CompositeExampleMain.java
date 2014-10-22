@@ -190,9 +190,14 @@ public class CompositeExampleMain implements RenderLoopCallback {
 		renderSrc(gl, x, y);
 		renderWhite(gl, x, y);
 
-		return false;
+		return true;
 	}
 	
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
+
 	private void renderDst(final CoreGL gl, final float x, final float y) {
 		shader.setUniformf("uOffset", x, y);
 		gl.glDisable(gl.GL_BLEND());

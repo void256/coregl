@@ -50,8 +50,13 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
 		coreRender.clearColor(.1f, .1f, .3f, 0.f);
 		coreRender.clearColorBuffer();
 		coreRender.renderTriangleStrip(4);
-		return false;
+		return true;
 	}
+
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
 
 	@Override
 	public void init(final CoreGL gl) {

@@ -89,7 +89,12 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
     coreRender.clearColorBuffer();
     shader.activate();
     coreRender.renderTriangleStripInstances(4, 4);
-    return false;
+    return true;
+	}
+
+	@Override
+	public boolean endLoop() {
+	  return false;
 	}
 
   public static void main(final String[] args) throws Exception {

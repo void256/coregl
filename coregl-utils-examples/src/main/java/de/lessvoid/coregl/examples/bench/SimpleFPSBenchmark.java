@@ -106,7 +106,12 @@ public class SimpleFPSBenchmark {
 			long now = System.currentTimeMillis();
 			elapsed += (now - lastMilliTime);
 			lastMilliTime = now;
-			return elapsed >= duration;
+			return true;
 		}
+
+	  @Override
+	  public boolean endLoop() {
+      return elapsed >= duration;
+	  }
 	}
 }

@@ -122,8 +122,13 @@ public class TextureAtlasGeneratorMain implements RenderLoopCallback {
 
 		shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());
 		coreRender.renderTriangleStrip(4);
-		return false;
+		return true;
 	}
+
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
 
 	public static void main(final String[] args) throws Exception {
 		RenderLoopCallback texAtlasGenExample = new TextureAtlasGeneratorMain();

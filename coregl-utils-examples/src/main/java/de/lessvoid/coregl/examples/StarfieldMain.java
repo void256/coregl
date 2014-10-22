@@ -109,8 +109,13 @@ public class StarfieldMain implements RenderLoopCallback {
     Mat4 modelViewProjection = Mat4.mul(projection, Mat4.mul(translate, Mat4.mul(rotateX, rotateY, null), null), null);
     shader.setUniformMatrix("uModelViewProjection", 4, modelViewProjection.toBuffer());
 
-    return false;
+    return true;
 	}
+
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
 
   public static void main(final String[] args) throws Exception {
   	RenderLoopCallback starfieldExample = new StarfieldMain();

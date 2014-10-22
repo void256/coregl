@@ -114,17 +114,17 @@ public class CoreSetupLwjgl implements CoreSetup {
 	 */
 	@Override
 	public void renderLoop(final RenderLoopCallback renderLoop) {
-		boolean done = false;
 		long frameCounter = 0;
 		long now = System.currentTimeMillis();
 		long prevTime = System.nanoTime();
 
 		renderLoop.init(gl);
-		while (!Display.isCloseRequested() && !done) {
+		while (!Display.isCloseRequested() && !renderLoop.endLoop()) {
 			long nanoTime = System.nanoTime();
-			done = renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION);
+			if (renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION)) {
+	      Display.update();
+			}
 			prevTime = nanoTime;
-			Display.update();
 
 			frameCounter++;
 			long diff = System.currentTimeMillis() - now;
@@ -213,7 +213,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 
 	private void createWindow(final String title) throws LWJGLException {
 		Display.setFullscreen(false);
-		Display.create(new PixelFormat().withStencilBits(8), new ContextAttribs());
+		Display.create(new PixelFormat().withStencilBits(8), new ContextAttribs(3, 2).withProfileCore(true));
 		Display.setVSyncEnabled(false);
 		Display.setTitle(title);
 	}

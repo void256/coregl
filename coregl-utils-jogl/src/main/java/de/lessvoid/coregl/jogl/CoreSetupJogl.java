@@ -243,18 +243,17 @@ public class CoreSetupJogl implements CoreSetup {
 				updateVsync = false;
 			}
 			long now = System.nanoTime();
-			done = callback.render(gl, (now - prevTime) / NANO_TO_MS_CONVERSION);
+			callback.render(gl, (now - prevTime) / NANO_TO_MS_CONVERSION);
 			prevTime = now;
 		}
 
 		@Override
-		public void reshape(GLAutoDrawable drawable, int x, int y, int width,
-				int height) {
+		public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
 
 		}
 
 		boolean shouldStop() {
-			return done;
+			return callback.endLoop();
 		}
 	}
 }
