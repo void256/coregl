@@ -5,16 +5,27 @@ import de.lessvoid.coregl.lwjgl.*;
 import de.lessvoid.coregl.spi.*;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-class CoreExampleMain {
+/**
+ * Launcher class for CoreGL examples. The purpose of CoreExampleMain is
+ * to abstract the backend initialization all the way to the program launch
+ * arguments so that each example program can be freed of implementation
+ * specific code.
+ * @author Brian Groenke
+ */
+public class CoreExampleMain {
 	
 	private static final int DISPLAY_WIDTH = 1024, DISPLAY_HEIGHT = 768;
 
 	/**
-	 * Evaluates main method arguments to 
+	 * Evaluates main method arguments to launch the given RenderLoopCallback
+	 * example using specified backend (JOGL or LWJGL).<br/>
+	 * Program argument flags are 'jogl' and 'lwjgl' for JOGL and LWJGL backends
+	 * respectively. If no program arguments are specified, runExample defaults to
+	 * the JOGL backend.
 	 * @param example
 	 * @param mainArgs
 	 */
-	static void runExample(RenderLoopCallback example, String[] mainArgs) {
+	public static void runExample(RenderLoopCallback example, String[] mainArgs) {
 		String backendName = "jogl"; // default backend to use in case one isn't specified
 		if(mainArgs.length == 0) {
 			System.err.println("No backend argument supplied. Defaulting to '" + backendName + "'");
