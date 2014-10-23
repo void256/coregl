@@ -1,20 +1,26 @@
 package de.lessvoid.coregl.lwjgl;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GLContext;
 import org.lwjgl.util.glu.GLU;
 
-import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.CoreVersion;
 import de.lessvoid.coregl.CoreVersion.GLSLVersion;
 import de.lessvoid.coregl.CoreVersion.GLVersion;
-import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
  */
-public class LwjglCoreUtil implements CoreUtil {
+class LwjglCoreUtil implements CoreUtil {
 	
 	@Override
 	public int gluBuild2DMipmaps(int target, int internalFormat, int width,
