@@ -26,9 +26,15 @@
  */
 package de.lessvoid.coregl;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.nio.*;
 import java.util.Arrays;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 import de.lessvoid.coregl.CoreVersion.GLVersion;
 import de.lessvoid.coregl.spi.CoreGL;
@@ -601,7 +607,6 @@ public class CoreTexture2D {
 	}
 
 	public boolean isNPOTSupported() {
-		
 		return gl.getUtil().isNPOTSupported();
 	}
 
@@ -1044,6 +1049,31 @@ public class CoreTexture2D {
 			throw new CoreGLException("Unknown buffer type; " + pixels.getClass().toString());
 		}
 		checkGLError("glTexImage3D", true);
+	}
+
+	/**
+	 * Save the texture as a png file with the given filename.
+	 * @param filename
+	 */
+	public void saveAsPNG(final String filename) {
+	   try {
+	      BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+	      ByteBuffer pixels = gl.getUtil().createByteBuffer(width*height*4);
+	      gl.glGetTexImage(gl.GL_TEXTURE_2D(), 0, gl.GL_RGBA(), gl.GL_UNSIGNED_BYTE(), pixels);
+	      gl.checkGLError("glGetTexImage");
+
+	      WritableRaster raster = bi.getRaster();
+	      int[] buffer = new int[width*height*4];
+	      for (int i=0; i<width*height*4; i++) {
+	        buffer[i] = pixels.get(i);
+	      }
+	      raster.setPixels(0, 0, width, height, buffer);
+
+	      File outputfile = new File(filename);
+	      ImageIO.write(bi, "png", outputfile);
+	    } catch (IOException e) {
+	      throw new RuntimeException(e);
+	    }
 	}
 
 	/**

@@ -162,6 +162,7 @@ public interface CoreGL {
 	public void glGenTextures (int n, IntBuffer textures);
 	public void glPixelStorei(int param, int n);
 	public void glReadPixels (int x, int y, int width, int height, int format, int type, ByteBuffer pixelBuffer);
+	public void glGetTexImage (int target, int level, int format, int type, ByteBuffer pixelBuffer);
 	public int glGetError();
 	public void glGetIntegerv(int pname, int[] params, int offset);
 	public void glGetIntegerv(int pname, IntBuffer params);

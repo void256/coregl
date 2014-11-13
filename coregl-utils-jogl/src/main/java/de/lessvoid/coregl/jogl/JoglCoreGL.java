@@ -1170,6 +1170,11 @@ public class JoglCoreGL implements CoreGL {
 		GLContext.getCurrentGL().getGL().glReadPixels(x, y, width, height, format, type, pixelBuffer);
 	}
 
+  @Override
+  public void glGetTexImage (int target, int level, int format, int type, ByteBuffer pixelBuffer) {
+    GLContext.getCurrentGL().getGL2().glGetTexImage(target, level, format, type, pixelBuffer);
+  }
+
 	@Override
 	public void glGenFramebuffers(int n, IntBuffer frameBuffs) {
 		GLContext.getCurrentGL().getGL().glGenFramebuffers(n, frameBuffs);

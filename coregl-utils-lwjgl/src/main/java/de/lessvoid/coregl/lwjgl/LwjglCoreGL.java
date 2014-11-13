@@ -1179,6 +1179,11 @@ public class LwjglCoreGL implements CoreGL {
 		GL11.glReadPixels(x, y, width, height, format, type, pixelBuffer);
 	}
 	
+  @Override
+  public void glGetTexImage (int target, int level, int format, int type, ByteBuffer pixelBuffer) {
+    GL11.glGetTexImage(target, level, format, type, pixelBuffer);
+  }
+
 	@Override
 	public void glGenFramebuffers(int n, IntBuffer frameBuffs) {
 		GL30.glGenFramebuffers(frameBuffs);
