@@ -11,7 +11,7 @@ import de.lessvoid.coregl.spi.*;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
- * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ * @author Brian Groenke
  */
 public class JoglCoreGL implements CoreGL {
 

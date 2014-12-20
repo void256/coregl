@@ -8,7 +8,7 @@ import de.lessvoid.coregl.spi.CoreGL;
 
 /**
  * Version enumeration and identification for OpenGL and GLSL.
- * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ * @author Brian Groenke
  */
 public class CoreVersion {
 	
