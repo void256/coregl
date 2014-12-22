@@ -13,6 +13,10 @@ import com.jogamp.newt.opengl.GLWindow;
 
 import de.lessvoid.coregl.spi.*;
 
+/**
+ * CoreSetup implementation for JOGL
+ * @author Brian Groenke
+ */
 public class CoreSetupJogl implements CoreSetup {
 	private static final Logger log = Logger.getLogger(CoreSetupJogl.class.getName());
 	private static final float NANO_TO_MS_CONVERSION = 1000000.f;

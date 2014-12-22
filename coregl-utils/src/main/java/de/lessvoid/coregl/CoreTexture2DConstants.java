@@ -5,7 +5,7 @@ import java.util.*;
 import de.lessvoid.coregl.spi.CoreGL;
 
 /**
- * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ * @author Brian Groenke
  */
 class CoreTexture2DConstants {
 	

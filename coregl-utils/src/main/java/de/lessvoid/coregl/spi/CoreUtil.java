@@ -5,7 +5,7 @@ import java.nio.*;
 import de.lessvoid.coregl.CoreVersion;
 
 /**
- * @author Brian Groenke &lt;bgroe8@gmail.com&gt;
+ * @author Brian Groenke
  */
 public interface CoreUtil {
 	
