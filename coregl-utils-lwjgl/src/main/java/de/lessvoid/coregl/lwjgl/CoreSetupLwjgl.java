@@ -85,7 +85,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 		try {
 			LogManager.getLogManager().readConfiguration((new Object()).getClass().getResourceAsStream(loggingProperties));
 		} catch (Exception e) {
-			throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]");
+			throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]", e);
 		}
 	}
 
