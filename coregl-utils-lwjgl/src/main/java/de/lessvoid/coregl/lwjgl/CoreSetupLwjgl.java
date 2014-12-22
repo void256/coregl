@@ -83,7 +83,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 	@Override
 	public void initializeLogging(final String loggingProperties) {
 		try {
-			LogManager.getLogManager().readConfiguration((new Object()).getClass().getResourceAsStream(loggingProperties));
+			LogManager.getLogManager().readConfiguration(CoreSetupLwjgl.class.getResourceAsStream(loggingProperties));
 		} catch (Exception e) {
 			throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]", e);
 		}

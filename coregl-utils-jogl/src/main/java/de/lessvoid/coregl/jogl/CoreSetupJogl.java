@@ -1,17 +1,29 @@
 package de.lessvoid.coregl.jogl;
 
 import java.nio.IntBuffer;
-import java.util.logging.*;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import javax.media.nativewindow.util.Rectangle;
-import javax.media.opengl.*;
+import javax.media.opengl.GLAutoDrawable;
+import javax.media.opengl.GLCapabilities;
+import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLProfile;
 
-import com.jogamp.newt.*;
-import com.jogamp.newt.event.*;
+import com.jogamp.newt.Display;
+import com.jogamp.newt.MonitorMode;
+import com.jogamp.newt.NewtFactory;
+import com.jogamp.newt.Screen;
+import com.jogamp.newt.event.WindowAdapter;
+import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
 
-import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.coregl.spi.CoreSetup;
 
 /**
  * CoreSetup implementation for JOGL
@@ -67,7 +79,7 @@ public class CoreSetupJogl implements CoreSetup {
 	@Override
 	public void initializeLogging(final String loggingProperties) {
 		try {
-			LogManager.getLogManager().readConfiguration((new Object()).getClass().getResourceAsStream(loggingProperties));
+			LogManager.getLogManager().readConfiguration(CoreSetupJogl.class.getResourceAsStream(loggingProperties));
 		} catch (Exception e) {
 			throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]", e);
 		}
