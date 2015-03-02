@@ -27,7 +27,7 @@ The dependencies you'll need.
   </dependencies>
 ```
 
-### Jogl (WIP)
+### JOGL
 
 ```
   <dependencies>
