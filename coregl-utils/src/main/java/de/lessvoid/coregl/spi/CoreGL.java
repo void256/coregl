@@ -44,6 +44,8 @@ public interface CoreGL {
 	public int GL_STACK_UNDERFLOW();
 	public int GL_TEXTURE_2D();
 	public int GL_TEXTURE_BINDING_2D();
+	public int GL_TEXTURE_3D();
+	public int GL_TEXTURE_BINDING_3D();
 	public int GL_TEXTURE_MAG_FILTER();
 	public int GL_TEXTURE_MIN_FILTER();
 	public int GL_LINE_STRIP();
@@ -139,7 +141,7 @@ public interface CoreGL {
 	public int GL_MAX_VERTEX_ATTRIBS();
 	public int GL_MAX_3D_TEXTURE_SIZE();
 	public int GL_UNIFORM_BUFFER();
-	
+
 	// Non-core enums currently in use by CoreTexture2D
 	public int GL_BITMAP();
 	public int GL_COLOR_INDEX();
@@ -254,11 +256,11 @@ public interface CoreGL {
 	public void glBindBufferBase(int target, int bindingPoint, int id);
 	public void glPointSize(int psize);
 	public void glBlendEquationSeparate(int e1, int e2);
-	
+
 	public void checkGLError();
 	public void checkGLError(String msg);
 	public void checkGLError(String msg, boolean throwException);
 	public void setErrorChecksEnabled(boolean enabled);
-	
+
 	public CoreUtil getUtil();
 }

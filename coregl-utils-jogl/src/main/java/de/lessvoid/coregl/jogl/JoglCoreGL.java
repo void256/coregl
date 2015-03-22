@@ -53,7 +53,7 @@ public class JoglCoreGL implements CoreGL {
 	public int GL_COLOR_BUFFER_BIT() {
 		return GL.GL_COLOR_BUFFER_BIT;
 	}
-	
+
 	@Override
 	public int GL_DEPTH_BUFFER_BIT() {
 		return GL.GL_DEPTH_BUFFER_BIT;
@@ -214,6 +214,14 @@ public class JoglCoreGL implements CoreGL {
 		return GL.GL_TEXTURE_BINDING_2D;
 	}
 
+	public int GL_TEXTURE_3D() {
+		return GL2ES2.GL_TEXTURE_3D;
+	}
+
+	public int GL_TEXTURE_BINDING_3D() {
+		return GL2ES2.GL_TEXTURE_BINDING_3D;
+	}
+
 	@Override
 	public int GL_TEXTURE_MAG_FILTER() {
 		return GL.GL_TEXTURE_MAG_FILTER;
@@ -278,7 +286,7 @@ public class JoglCoreGL implements CoreGL {
 	public int GL_ZERO() {
 		return GL.GL_ZERO;
 	}
-	
+
 	@Override
 	public int GL_ONE() {
 		return GL.GL_ONE;
@@ -303,7 +311,7 @@ public class JoglCoreGL implements CoreGL {
 	public int GL_FUNC_ADD() {
 		return GL.GL_FUNC_ADD;
 	}
-	
+
 	@Override
 	public int GL_ACTIVE_TEXTURE() {
 		return GL.GL_ACTIVE_TEXTURE;
@@ -644,7 +652,7 @@ public class JoglCoreGL implements CoreGL {
 	public int GL_VERSION() {
 		return GL.GL_VERSION;
 	}
-	
+
 	@Override
 	public int GL_SHADING_LANGUAGE_VERSION() {
 		return GL2ES2.GL_SHADING_LANGUAGE_VERSION;
@@ -674,18 +682,18 @@ public class JoglCoreGL implements CoreGL {
 	public int GL_UNIFORM_BUFFER() {
 		return GL2ES3.GL_UNIFORM_BUFFER;
 	}
-	
+
 	// Non-core //
 	@Override
 	public int GL_BITMAP() {
 		return GL2.GL_BITMAP;
 	}
-	
+
 	@Override
 	public int GL_COLOR_INDEX() {
 		return GL2.GL_COLOR_INDEX;
 	}
-	
+
 	@Override
 	public int GL_COMPRESSED_ALPHA() {
 		return GL2.GL_COMPRESSED_ALPHA;
@@ -1054,22 +1062,22 @@ public class JoglCoreGL implements CoreGL {
 	public void glUniform4f(int location, float v0, float v1, float v2, float v3) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform4f(location, v0, v1, v2, v3);
 	}
-	
+
 	@Override
 	public void glUniform1fv(int location, FloatBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform1fv(location, ubuff.remaining(), ubuff);
 	}
-	
+
 	@Override
 	public void glUniform2fv(int location, FloatBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform2fv(location, ubuff.remaining() / 2, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform3fv(int location, FloatBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform3fv(location, ubuff.remaining() / 3, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform4fv(int location, FloatBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform4fv(location, ubuff.remaining() / 4, ubuff);
@@ -1094,22 +1102,22 @@ public class JoglCoreGL implements CoreGL {
 	public void glUniform4i(int location, int v0, int v1, int v2, int v3) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform4i(location, v0, v1, v2, v3);
 	}
-	
+
 	@Override
 	public void glUniform1iv(int location, IntBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform1iv(location, ubuff.remaining(), ubuff);
 	}
-	
+
 	@Override
 	public void glUniform2iv(int location, IntBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform2iv(location, ubuff.remaining() / 2, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform3iv(int location, IntBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform3iv(location, ubuff.remaining() / 3, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform4iv(int location, IntBuffer ubuff) {
 		GLContext.getCurrentGL().getGL2ES2().glUniform4iv(location, ubuff.remaining() / 4, ubuff);
@@ -1239,7 +1247,7 @@ public class JoglCoreGL implements CoreGL {
 	public void glBindBufferBase(int target, int bindingPoint, int id) {
 		GLContext.getCurrentGL().getGL2GL3().glBindBufferBase(target, bindingPoint, id);
 	}
-	
+
 	@Override
 	public void glPointSize(int psize) {
 		GLContext.getCurrentGL().getGL2GL3().glPointSize(psize);
@@ -1249,7 +1257,7 @@ public class JoglCoreGL implements CoreGL {
 	public void glBlendEquationSeparate(int e1, int e2) {
 		GLContext.getCurrentGL().glBlendEquationSeparate(e1, e2);
 	}
-	
+
 	private boolean errorChecksEnabled = true;
 
 	@Override
