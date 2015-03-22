@@ -34,9 +34,9 @@ public class LwjglCoreGL implements CoreGL {
 	private static Logger log = Logger.getLogger(LwjglCoreGL.class.getName());
 
 	private final CoreUtil util = new LwjglCoreUtil();
-	
+
 	public LwjglCoreGL() {
-		
+
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_COLOR_BUFFER_BIT() {
 		return GL11.GL_COLOR_BUFFER_BIT;
 	}
-	
+
 	@Override
 	public int GL_DEPTH_BUFFER_BIT() {
 		return GL11.GL_DEPTH_BUFFER_BIT;
@@ -229,6 +229,14 @@ public class LwjglCoreGL implements CoreGL {
 		return GL11.GL_TEXTURE_BINDING_2D;
 	}
 
+	public int GL_TEXTURE_3D() {
+		return GL12.GL_TEXTURE_3D;
+	}
+
+	public int GL_TEXTURE_BINDING_3D() {
+		return GL12.GL_TEXTURE_BINDING_3D;
+	}
+
 	@Override
 	public int GL_TEXTURE_MAG_FILTER() {
 		return GL11.GL_TEXTURE_MAG_FILTER;
@@ -293,7 +301,7 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_ZERO() {
 		return GL11.GL_ZERO;
 	}
-	
+
 	@Override
 	public int GL_ONE() {
 		return GL11.GL_ONE;
@@ -308,7 +316,7 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_DST_ALPHA() {
 		return GL11.GL_DST_ALPHA;
 	}
-	
+
 	@Override
 	public int GL_MAX() {
 		return GL14.GL_MAX;
@@ -518,7 +526,7 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_UNSIGNED_INT_8_8_8_8_REV() {
 		return GL12.GL_UNSIGNED_INT_8_8_8_8_REV;
 	}
-	
+
 	@Override
 	public int GL_HALF_FLOAT() {
 		return GL30.GL_HALF_FLOAT;
@@ -613,7 +621,7 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_R32F() {
 		return GL30.GL_R32F;
 	}
-	
+
 	@Override
 	public int GL_TEXTURE_2D_ARRAY() {
 		return GL30.GL_TEXTURE_2D_ARRAY;
@@ -683,12 +691,12 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_STENCIL_ATTACHMENT() {
 		return GL30.GL_STENCIL_ATTACHMENT;
 	}
-	
+
 	@Override
 	public int GL_VERSION() {
 		return GL11.GL_VERSION;
 	}
-	
+
 	@Override
 	public int GL_SHADING_LANGUAGE_VERSION() {
 		return GL20.GL_SHADING_LANGUAGE_VERSION;
@@ -713,7 +721,7 @@ public class LwjglCoreGL implements CoreGL {
 	public int GL_MAX_3D_TEXTURE_SIZE() {
 		return GL12.GL_MAX_3D_TEXTURE_SIZE;
 	}
-	
+
 	@Override
 	public int GL_UNIFORM_BUFFER() {
 		return GL31.GL_UNIFORM_BUFFER;
@@ -798,12 +806,12 @@ public class LwjglCoreGL implements CoreGL {
 	public int glGetInteger(int pname) {
 		return GL11.glGetInteger(pname);
 	}
-	
+
 	@Override
 	public String glGetString(int pname) {
 		return GL11.glGetString(pname);
 	}
-	
+
 	@Override
 	public boolean glIsEnabled(int cap) {
 		return GL11.glIsEnabled(cap);
@@ -833,27 +841,27 @@ public class LwjglCoreGL implements CoreGL {
 	public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ShortBuffer pixels) {
 		GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
 	}
-	
+
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels) {
 		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
-	
+
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, DoubleBuffer pixels) {
 		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
-	
+
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, FloatBuffer pixels) {
 		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
-	
+
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, IntBuffer pixels) {
 		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
 	}
-	
+
 	@Override
 	public void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ShortBuffer pixels) {
 		GL12.glTexImage3D(target, level, internalformat, width, height, depth, border, format, type, pixels);
@@ -923,7 +931,7 @@ public class LwjglCoreGL implements CoreGL {
 	public void glBufferData(int target, ShortBuffer data, int usage) {
 		GL15.glBufferData(target, data, usage);
 	}
-	
+
 	@Override
 	public void glCompileShader(int shader) {
 		GL20.glCompileShader(shader);
@@ -958,7 +966,7 @@ public class LwjglCoreGL implements CoreGL {
 	public void glEnableVertexAttribArray(int index) {
 		GL20.glEnableVertexAttribArray(index);
 	}
-	
+
 	@Override
 	public void glVertexAttribDivisor(int index, int divisor) {
 		GL33.glVertexAttribDivisor(index, divisor);
@@ -1065,22 +1073,22 @@ public class LwjglCoreGL implements CoreGL {
 	public void glUniform4f(int location, float v0, float v1, float v2, float v3) {
 		GL20.glUniform4f(location, v0, v1, v2, v3);
 	}
-	
+
 	@Override
 	public void glUniform1fv(int location, FloatBuffer ubuff) {
 		GL20.glUniform1(location, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform2fv(int location, FloatBuffer ubuff) {
 		GL20.glUniform2(location, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform3fv(int location, FloatBuffer ubuff) {
 		GL20.glUniform3(location, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform4fv(int location, FloatBuffer ubuff) {
 		GL20.glUniform4(location, ubuff);
@@ -1105,22 +1113,22 @@ public class LwjglCoreGL implements CoreGL {
 	public void glUniform4i(int location, int v0, int v1, int v2, int v3) {
 		GL20.glUniform4i(location, v0, v1, v2, v3);
 	}
-	
+
 	@Override
 	public void glUniform1iv(int location, IntBuffer ubuff) {
 		GL20.glUniform1(location, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform2iv(int location, IntBuffer ubuff) {
 		GL20.glUniform2(location, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform3iv(int location, IntBuffer ubuff) {
 		GL20.glUniform3(location, ubuff);
 	}
-	
+
 	@Override
 	public void glUniform4iv(int location, IntBuffer ubuff) {
 		GL20.glUniform4(location, ubuff);
@@ -1178,7 +1186,7 @@ public class LwjglCoreGL implements CoreGL {
 			int type, ByteBuffer pixelBuffer) {
 		GL11.glReadPixels(x, y, width, height, format, type, pixelBuffer);
 	}
-	
+
   @Override
   public void glGetTexImage (int target, int level, int format, int type, ByteBuffer pixelBuffer) {
     GL11.glGetTexImage(target, level, format, type, pixelBuffer);
@@ -1242,18 +1250,18 @@ public class LwjglCoreGL implements CoreGL {
 			int renderBufferTarget, int renderBuffer) {
 		GL30.glFramebufferRenderbuffer(target, attachment, renderBufferTarget, renderBuffer);
 	}
-	
+
 
 	@Override
 	public void glBindBufferBase(int target, int bindingPoint, int id) {
 		GL30.glBindBufferBase(target, bindingPoint, id);
 	}
-	
+
 	@Override
 	public void glPointSize(int psize) {
 		GL11.glPointSize(psize);
 	}
-	
+
 	@Override
 	public void glBlendEquationSeparate(int e1, int e2) {
 		GL20.glBlendEquationSeparate(e1, e2);
