@@ -7,13 +7,8 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import javax.media.nativewindow.WindowClosingProtocol.WindowClosingMode;
-import javax.media.nativewindow.util.Rectangle;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
-
+import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
+import com.jogamp.nativewindow.util.Rectangle;
 import com.jogamp.newt.Display;
 import com.jogamp.newt.MonitorMode;
 import com.jogamp.newt.NewtFactory;
@@ -21,6 +16,10 @@ import com.jogamp.newt.Screen;
 import com.jogamp.newt.event.WindowAdapter;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
 
 import de.lessvoid.coregl.spi.CoreGL;
 import de.lessvoid.coregl.spi.CoreSetup;
@@ -63,7 +62,7 @@ public class CoreSetupJogl implements CoreSetup {
 						throwable.printStackTrace();
 					}
 					return
-							record.getMillis() + " " +  
+							record.getMillis() + " " +
 							record.getLevel() + " [" +
 							record.getSourceClassName() + "] " +
 							record.getMessage() + "\n";
@@ -167,6 +166,7 @@ public class CoreSetupJogl implements CoreSetup {
 		centerWindow();
 		newtScreen.removeReference();
 		glWin.setVisible(true);
+		glWin.windowRepaint(0, 0, requestedWidth, requestedHeight);
 		logMode("current mode: ", newtScreen.getMainMonitor(new Rectangle(0,0,requestedWidth,requestedHeight)).getCurrentMode());
 	}
 
@@ -239,7 +239,7 @@ public class CoreSetupJogl implements CoreSetup {
 
 			gl.glViewport(0, 0, glWin.getWidth(), glWin.getHeight());
 
-			gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			gl.glClear(gl.GL_COLOR_BUFFER_BIT());
 			gl.glEnable(gl.GL_BLEND());
 			gl.glBlendFunc(gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
@@ -249,7 +249,7 @@ public class CoreSetupJogl implements CoreSetup {
 
 		@Override
 		public void dispose(GLAutoDrawable drawable) {
-			
+
 		}
 
 		@Override

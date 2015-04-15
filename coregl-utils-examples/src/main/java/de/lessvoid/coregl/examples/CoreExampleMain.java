@@ -13,7 +13,7 @@ import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
  * @author Brian Groenke
  */
 public class CoreExampleMain {
-	
+
 	private static final int DISPLAY_WIDTH = 1024, DISPLAY_HEIGHT = 768;
 
 	/**
@@ -26,7 +26,7 @@ public class CoreExampleMain {
 	 * @param mainArgs
 	 */
 	public static void runExample(RenderLoopCallback example, String[] mainArgs) {
-		String backendName = "jogl"; // default backend to use in case one isn't specified
+		String backendName = "JOGL"; // default backend to use in case one isn't specified
 		if(mainArgs.length == 0) {
 			System.err.println("No backend argument supplied. Defaulting to '" + backendName + "'");
 			printUsageString();
@@ -47,7 +47,7 @@ public class CoreExampleMain {
 			System.err.println("unrecognized backend name: " + mainArgs[0]);
 			printUsageString();
 		}
-		
+
 		if (gl != null && setup != null) {
 			try {
 				setup.initialize(example.getClass().getSimpleName() + " (" + backendName.toUpperCase() + ")", DISPLAY_WIDTH, DISPLAY_HEIGHT);
@@ -58,7 +58,7 @@ public class CoreExampleMain {
 			}
 		}
 	}
-	
+
 	private static void printUsageString() {
 		System.err.println("Usage: to specify a CoreGL backend, pass its identifier as a program argument (JOGL = 'jogl' LWJGL = 'lwjgl')");
 	}
