@@ -1,13 +1,26 @@
 package de.lessvoid.coregl.jogl;
 
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.logging.Logger;
 
-import javax.media.opengl.*;
-import javax.media.opengl.glu.GLU;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL2ES1;
+import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL2ES3;
+import com.jogamp.opengl.GL2GL3;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL3ES3;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.glu.GLU;
 
 import de.lessvoid.coregl.CoreGLException;
-import de.lessvoid.coregl.spi.*;
+import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
@@ -206,7 +219,7 @@ public class JoglCoreGL implements CoreGL {
 
 	@Override
 	public int GL_TEXTURE_2D_ARRAY() {
-		return GL.GL_TEXTURE_2D_ARRAY;
+		return GL2.GL_TEXTURE_2D_ARRAY;
 	}
 
 	@Override

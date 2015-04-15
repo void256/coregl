@@ -7,7 +7,7 @@
   </parent>
   <artifactId>coregl-utils-jogl</artifactId>
   <properties>
-    <jogamp.version>2.2.4</jogamp.version>
+    <jogamp.version>2.3.1</jogamp.version>
   </properties>
   <dependencies>
     <dependency>
@@ -38,6 +38,6 @@
       <url>http://www.jogamp.org/deployment/maven/</url>
       <layout>default</layout>
     </repository>
-  </repositories> 
+  </repositories>
   <name>OpenGL core utilities - Jogl Adapter</name>
 </project>
