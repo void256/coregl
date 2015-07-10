@@ -21,6 +21,8 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 
+import de.lessvoid.coregl.input.spi.CoreInput;
+import de.lessvoid.coregl.jogl.input.CoreInputJogl;
 import de.lessvoid.coregl.spi.CoreGL;
 import de.lessvoid.coregl.spi.CoreSetup;
 
@@ -39,6 +41,7 @@ public class CoreSetupJogl implements CoreSetup {
 	private Screen newtScreen;
 	private Display newtDisp;
 	private GLWindow glWin;
+	private CoreInput input;
 	private String lastFPS = "";
 
 	private volatile boolean closeRequested, vsync, updateVsync;
@@ -94,13 +97,19 @@ public class CoreSetupJogl implements CoreSetup {
 		initInput();
 	}
 
+	@Override
+	public CoreInput getInput() {
+	  return input;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see de.lessvoid.coregl.CoreDisplaySetup#destroy()
 	 */
 	@Override
 	public void destroy() {
-		glWin.destroy();
+		if (glWin != null) glWin.destroy();
+		if (input != null) input.dispose();
 	}
 
 	/*
@@ -199,7 +208,8 @@ public class CoreSetupJogl implements CoreSetup {
 	}
 
 	private void initInput() throws Exception {
-		// TODO ...
+		input = new CoreInputJogl(glWin);
+		input.initialize();
 	}
 
 	private String buildFpsText(long frameCounter) {
@@ -217,7 +227,6 @@ public class CoreSetupJogl implements CoreSetup {
 		final RenderLoopCallback callback;
 
 		long prevTime = System.nanoTime();
-		boolean done;
 
 		GLEventReceiver(RenderLoopCallback callback) {
 			this.callback = callback;
