@@ -37,7 +37,7 @@ public class CoreInputJogl extends AbstractCoreInput {
 
   @Override
   public void initialize() {
-    if (eventQueue == null || eventQueue.isRunning()) return;
+    if (eventQueue != null && eventQueue.isRunning()) return;
 
     eventQueue = new PollingEventQueue(this);
     eventQueue.start();
