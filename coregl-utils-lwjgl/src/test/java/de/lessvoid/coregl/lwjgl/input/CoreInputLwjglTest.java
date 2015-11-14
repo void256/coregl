@@ -1,4 +1,4 @@
-package de.lessvoid.coregl.jogl.input;
+package de.lessvoid.coregl.lwjgl.input;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -7,18 +7,19 @@ import de.lessvoid.coregl.input.spi.CoreKeyEvent;
 import de.lessvoid.coregl.input.spi.CoreKeyListener;
 import de.lessvoid.coregl.input.spi.CoreMouseEvent;
 import de.lessvoid.coregl.input.spi.CoreMouseListener;
-import de.lessvoid.coregl.jogl.CoreSetupJogl;
-import de.lessvoid.coregl.jogl.JoglCoreGL;
+import de.lessvoid.coregl.lwjgl.CoreSetupLwjgl;
+import de.lessvoid.coregl.lwjgl.LwjglCoreGL;
 import de.lessvoid.coregl.spi.CoreGL;
+import de.lessvoid.coregl.spi.CoreSetup;
 import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-public class CoreInputJoglTest {
+public class CoreInputLwjglTest {
 
   public static void main(String[] args) {
-    final CoreGL gl = new JoglCoreGL();
-    final CoreSetupJogl setup = new CoreSetupJogl(gl);
+    final CoreGL gl = new LwjglCoreGL();
+    final CoreSetup setup = new CoreSetupLwjgl(gl);
     try {
-      setup.initialize("Test JOGL Input", 1024, 768);
+      setup.initialize("Test LWJGL Input", 1024, 768);
       setup.initializeLogging();
       final CoreInput input = setup.getInput();
       final CoreKeyListener keyInput = new CoreKeyListener() {
