@@ -2,6 +2,8 @@ package de.lessvoid.coregl.lwjgl.input;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.lwjgl.input.Keyboard;
+
 import de.lessvoid.coregl.input.spi.CoreInput;
 import de.lessvoid.coregl.input.spi.CoreKeyEvent;
 import de.lessvoid.coregl.input.spi.CoreKeyListener;
@@ -21,6 +23,7 @@ public class CoreInputLwjglTest {
     try {
       setup.initialize("Test LWJGL Input", 1024, 768);
       setup.initializeLogging();
+      Keyboard.enableRepeatEvents(true);
       final CoreInput input = setup.getInput();
       final CoreKeyListener keyInput = new CoreKeyListener() {
         @Override
@@ -30,7 +33,7 @@ public class CoreInputLwjglTest {
 
         @Override
         public void keyReleased(CoreKeyEvent event) {
-
+          System.out.println("released: " + event);
         }
       };
       final CoreMouseListener mouseListener = new CoreMouseListener() {
@@ -42,17 +45,17 @@ public class CoreInputLwjglTest {
 
         @Override
         public void mouseDragged(CoreMouseEvent e) {
-
+          System.out.println("dragged: " + e.getX() + " " + e.getY());
         }
 
         @Override
         public void mouseEntered(CoreMouseEvent e) {
-
+          System.out.println("entered: " + e.getX() + " " + e.getY());
         }
 
         @Override
         public void mouseExited(CoreMouseEvent e) {
-
+          System.out.println("exited: " + e.getX() + " " + e.getY());
         }
 
         @Override
@@ -67,12 +70,12 @@ public class CoreInputLwjglTest {
 
         @Override
         public void mouseReleased(CoreMouseEvent e) {
-
+          System.out.println("released: " + e.getX() + " " + e.getY());
         }
 
         @Override
         public void mouseWheelMoved(CoreMouseEvent e) {
-
+          System.out.println("mouseWheel: " + e.getX() + " " + e.getY());
         }
       };
       input.addListener(keyInput);

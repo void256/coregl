@@ -16,17 +16,23 @@ public interface CoreInput {
   void fireEvent(CoreInputEvent event);
 
   /**
-   * Initializes this CoreInput by starting all event polling services and enabling the default
-   * event dispatchers. You may disable the default dispatchers and register your own via
+   * Initializes this CoreInput system and registers the default event dispatchers.
+   * You may disable the default dispatchers and register your own via
    * {@link #disableDefaultDispatchers()} and {@link #register(CoreInputEventDispatcher)}.
    */
   void initialize();
-  
+
+  /**
+   * Polls the underlying event system and pushes all pending input events to the registered
+   * dispatchers.
+   */
+  void update();
+
   /**
    * Registers the default event dispatchers, if they were previously disabled.
    */
   void enableDefaultDispatchers ();
-  
+
   /**
    * Unregisters the default event dispatchers. Use this method if you want listeners to receive
    * events dispatched only by your own custom dispatchers.

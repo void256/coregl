@@ -9,7 +9,7 @@ import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.opengl.GLWindow;
 
-import de.lessvoid.coregl.input.PollingEventQueue;
+import de.lessvoid.coregl.input.PendingEventQueue;
 import de.lessvoid.coregl.input.spi.AbstractCoreInput;
 
 public class CoreInputJogl extends AbstractCoreInput {
@@ -20,7 +20,7 @@ public class CoreInputJogl extends AbstractCoreInput {
   private final NewtMouseListener mouseListener = new NewtMouseListener();
   private final GLWindow glWin;
 
-  private PollingEventQueue eventQueue;
+  private PendingEventQueue eventQueue;
 
   /**
    * Creates a new JOGL CoreInput system with initialized listeners and
@@ -37,10 +37,9 @@ public class CoreInputJogl extends AbstractCoreInput {
 
   @Override
   public void initialize() {
-    if (eventQueue != null && eventQueue.isRunning()) return;
+    if (eventQueue != null) return;
 
-    eventQueue = new PollingEventQueue(this);
-    eventQueue.start();
+    eventQueue = new PendingEventQueue(this);
 
     // initialize and register default dispatchers
     enableDefaultDispatchers();
@@ -52,10 +51,15 @@ public class CoreInputJogl extends AbstractCoreInput {
   }
 
   @Override
+  public void update() {
+    eventQueue.flush();
+  }
+
+  @Override
   public void dispose() {
     glWin.removeKeyListener(keyListener);
     glWin.removeMouseListener(mouseListener);
-    if (eventQueue != null) eventQueue.destroy();
+    eventQueue = null;
 
     log.info("{}: Disposed input system for NEWT window: [{}]", getClass().getSimpleName(), glWin);
   }
@@ -70,7 +74,9 @@ public class CoreInputJogl extends AbstractCoreInput {
 
     @Override
     public void keyReleased(KeyEvent arg0) {
-      log.trace("keyReleased: {}", arg0);
+      // ignore release events sent by auto-repeat
+      if (arg0.isAutoRepeat()) return;
+      log.info("keyReleased: {}", arg0);
       eventQueue.enqueue(new CoreKeyEventJogl(arg0));
     }
   }

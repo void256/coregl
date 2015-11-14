@@ -6,7 +6,7 @@ import de.lessvoid.coregl.input.spi.NullCoreKeyEvent;
 
 public final class CoreKeyEventLwjgl extends NullCoreKeyEvent {
 
-  private static final short EVENT_KEY_PRESSED = 0xF00, EVENT_KEY_RELEASED = 0xF10;
+  public static final short EVENT_KEY_PRESSED = 0xF00, EVENT_KEY_RELEASED = 0xF10;
 
   private final short eventType, key;
   private final char keyChar;
@@ -40,7 +40,7 @@ public final class CoreKeyEventLwjgl extends NullCoreKeyEvent {
    */
   public static CoreKeyEventLwjgl createKeyEventFromCurrentState() {
     if (!Keyboard.isCreated()) throw new IllegalStateException("Keyboard has not yet been initialized.");
-    
+
     final short type = Keyboard.getEventKeyState() ? EVENT_KEY_PRESSED : EVENT_KEY_RELEASED;
     final boolean isAltDown = Keyboard.isKeyDown(Keyboard.KEY_LMENU),
         isRightAltDown = Keyboard.isKeyDown(Keyboard.KEY_RMENU);
@@ -716,5 +716,11 @@ public final class CoreKeyEventLwjgl extends NullCoreKeyEvent {
   @Override
   public short VK_Z() {
     return Keyboard.KEY_Z;
+  }
+
+  @Override
+  public String toString() {
+    final String type = (eventType == EVENT_KEY_PRESSED) ? "EVENT_KEY_PRESSED" : "EVENT_KEY_RELEASED";
+    return String.format("%s: type: %s char: %c repeated: %b timestamp: %d", getClass().getSimpleName(), type, keyChar, isRepeated, timestamp);
   }
 }

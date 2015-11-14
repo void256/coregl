@@ -29,7 +29,7 @@ public class CoreInputJoglTest {
 
         @Override
         public void keyReleased(CoreKeyEvent event) {
-
+          System.out.println("released: " + event);
         }
       };
       final CoreMouseListener mouseListener = new CoreMouseListener() {
@@ -41,17 +41,17 @@ public class CoreInputJoglTest {
 
         @Override
         public void mouseDragged(CoreMouseEvent e) {
-
+          System.out.println("dragged: " + e.getX() + " " + e.getY());
         }
 
         @Override
         public void mouseEntered(CoreMouseEvent e) {
-
+          System.out.println("entered: " + e.getX() + " " + e.getY());
         }
 
         @Override
         public void mouseExited(CoreMouseEvent e) {
-
+          System.out.println("exited: " + e.getX() + " " + e.getY());
         }
 
         @Override
@@ -66,12 +66,12 @@ public class CoreInputJoglTest {
 
         @Override
         public void mouseReleased(CoreMouseEvent e) {
-
+          System.out.println("released: " + e.getX() + " " + e.getY());
         }
 
         @Override
         public void mouseWheelMoved(CoreMouseEvent e) {
-
+          System.out.println("mouseWheel: " + e.getX() + " " + e.getY());
         }
       };
       input.addListener(keyInput);

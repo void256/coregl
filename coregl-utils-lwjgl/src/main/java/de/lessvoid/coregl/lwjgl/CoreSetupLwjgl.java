@@ -39,6 +39,7 @@ import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 import de.lessvoid.coregl.input.spi.CoreInput;
+import de.lessvoid.coregl.lwjgl.input.CoreInputLwjgl;
 import de.lessvoid.coregl.spi.*;
 
 public class CoreSetupLwjgl implements CoreSetup {
@@ -47,6 +48,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 	private final StringBuilder fpsText = new StringBuilder();
 	private static final float NANO_TO_MS_CONVERSION = 1000000.f;
 	private final CoreGL gl;
+	private CoreInput input;
 	private String lastFPS = "";
 
 	public CoreSetupLwjgl(final CoreGL gl) {
@@ -102,7 +104,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 
 	@Override
 	public CoreInput getInput() {
-	  return null;
+	  return input;
 	}
 
 	/*
@@ -111,6 +113,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 	 */
 	@Override
 	public void destroy() {
+	  if (input != null) input.dispose();
 		Display.destroy();
 	}
 
@@ -129,6 +132,7 @@ public class CoreSetupLwjgl implements CoreSetup {
 			long nanoTime = System.nanoTime();
 			if (renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION)) {
 	      Display.update();
+	      input.update();
 			}
 			prevTime = nanoTime;
 
@@ -287,7 +291,8 @@ public class CoreSetupLwjgl implements CoreSetup {
 	}
 
 	private void initInput() throws Exception {
-		// TODO ...
+		input = new CoreInputLwjgl();
+		input.initialize();
 	}
 
 	private String buildFpsText(long frameCounter) {
