@@ -45,7 +45,7 @@ public interface CoreMouseEvent extends CoreInputEvent {
 
   short getClickCount();
 
-  float getRotationScale();
+  float getWheelRotation();
 
   int getX();
 

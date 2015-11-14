@@ -4,8 +4,6 @@ public interface CoreInputEvent {
 
   boolean isAutoRepeat();
 
-  boolean isInvisible();
-
   boolean isConsumed();
 
   long getTimestamp();

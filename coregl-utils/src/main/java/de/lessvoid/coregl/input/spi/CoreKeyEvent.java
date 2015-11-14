@@ -45,8 +45,6 @@ public interface CoreKeyEvent extends CoreInputEvent {
 
   short VK_ALT();
 
-  short VK_ALT_GRAPH();
-
   short VK_AMPERSAND();
 
   short VK_ASTERISK();
@@ -300,6 +298,8 @@ public interface CoreKeyEvent extends CoreInputEvent {
   short VK_R();
 
   short VK_RIGHT();
+  
+  short VK_RIGHT_ALT();
 
   short VK_RIGHT_BRACE();
 
@@ -359,17 +359,11 @@ public interface CoreKeyEvent extends CoreInputEvent {
 
   short getKeySymbol();
 
-  int getButtonDownCount();
-
   boolean isModifierKey();
 
   boolean isAltDown();
 
-  boolean isAltGraphDown();
-
-  boolean isAnyButtonDown();
-
-  boolean isButtonDown(final int btn);
+  boolean isRightAltDown();
 
   boolean isConfined();
 

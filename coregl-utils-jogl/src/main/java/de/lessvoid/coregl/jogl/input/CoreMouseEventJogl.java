@@ -7,7 +7,7 @@ import de.lessvoid.coregl.input.spi.CoreMouseEvent;
 /**
  * @author Brian Groenke
  */
-public class CoreMouseEventJogl implements CoreMouseEvent {
+public final class CoreMouseEventJogl implements CoreMouseEvent {
 
     @Override
     public short BUTTON_COUNT() {
@@ -119,7 +119,7 @@ public class CoreMouseEventJogl implements CoreMouseEvent {
     }
 
     @Override
-    public float getRotationScale() {
+    public float getWheelRotation() {
 
         return evt.getRotationScale();
     }
@@ -182,12 +182,6 @@ public class CoreMouseEventJogl implements CoreMouseEvent {
     public boolean isControlDown() {
 
         return evt.isControlDown();
-    }
-
-    @Override
-    public boolean isInvisible() {
-
-        return evt.isInvisible();
     }
 
     @Override
