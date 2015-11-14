@@ -1,8 +1,9 @@
 package de.lessvoid.coregl.lwjgl.input;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
@@ -27,8 +28,8 @@ final class LwjglMouseEventDriver {
     if (Mouse.isCreated()) Mouse.destroy();
   }
 
-  public Set<CoreMouseEvent> update() {
-    final Set<CoreMouseEvent> mouseEvents = new HashSet<CoreMouseEvent>();
+  public Collection<CoreMouseEvent> update() {
+    final List<CoreMouseEvent> mouseEvents = new ArrayList<CoreMouseEvent>();
     final boolean isBtnEvent = Mouse.getEventButton() >= 0;
     final boolean eventBtnDown = Mouse.getEventButtonState();
     boolean anyBtnDown = false;
@@ -50,44 +51,44 @@ final class LwjglMouseEventDriver {
         mouseEvents.add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_CLICKED));
       }
     }
-    
+
     if (anyBtnDown && mouseMoved) {
       mouseEvents.add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_DRAGGED));
     } else if (mouseMoved) {
       mouseEvents.add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_MOVED));
     }
-    
+
     if (mouseWheelMoved) {
       mouseEvents.add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_WHEEL_MOVED));
     }
-    
+
     if (inWindowUpdated && !inWindow) {
       mouseEvents.add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_ENTERED));
     } else if (!inWindowUpdated && inWindow) {
       mouseEvents.add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_EXITED));
     }
-    
+
     mx = Mouse.getX();
     my = Mouse.getY();
     inWindow = inWindowUpdated;
-    
-    return Collections.unmodifiableSet(mouseEvents);
+
+    return Collections.unmodifiableList(mouseEvents);
   }
-  
+
   /**
    * @return the absolute mouse x coord since the last call to {@link #update()}
    */
   public int getX() {
     return mx;
   }
-  
+
   /**
    * @return the absolute mouse y coord since the last call to {@link #update()}
    */
   public int getY() {
     return my;
   }
-  
+
   /**
    * @return whether or not mouse is within the window bounds since last call to {@link #update()}
    */

@@ -127,6 +127,7 @@ public class CoreSetupJogl implements CoreSetup {
 
 		while (!closeRequested && !receiver.shouldStop()) {
 			glWin.display();
+			input.update();
 			frames++;
 			long now = System.currentTimeMillis();
 			if (now - lastPrintTime > 1000) {

@@ -47,7 +47,7 @@ public final class CoreMouseEventLwjgl implements CoreMouseEvent {
    * one event from the data polled via the LWJGL Mouse class. It is the responsibility of the caller
    * to determine the appropriate type for the event being created; this method will then pull the
    * rest of the static event data from the Mouse's current event state.
-   * 
+   *
    * @param mouseEventType the type of the mouse event, as determined by the caller
    * @return the CoreMouseEventLwjgl representing this event
    * @throws IllegalStateException
@@ -56,6 +56,7 @@ public final class CoreMouseEventLwjgl implements CoreMouseEvent {
    */
   public static CoreMouseEventLwjgl createMouseEventFromCurrentState(final short mouseEventType) {
     if (!Keyboard.isCreated()) throw new IllegalStateException("Keyboard has not yet been initialized.");
+    if (!Mouse.isCreated()) throw new IllegalStateException("Mouse has not yet been initialized.");
 
     final boolean isAltDown = Keyboard.isKeyDown(Keyboard.KEY_LMENU),
         isRightAltDown = Keyboard.isKeyDown(Keyboard.KEY_RMENU);
