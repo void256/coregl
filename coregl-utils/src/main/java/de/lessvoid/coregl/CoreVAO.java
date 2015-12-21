@@ -26,10 +26,11 @@
  */
 package de.lessvoid.coregl;
 
-import java.nio.IntBuffer;
-import java.util.*;
-
 import de.lessvoid.coregl.spi.CoreGL;
+
+import java.nio.IntBuffer;
+import java.util.Hashtable;
+import java.util.Map;
 
 
 /**
@@ -98,7 +99,7 @@ public class CoreVAO {
 	 */
 	public void vertexAttribPointer(int index, int size, FloatType vertexType, int stride, int offset) {
 		gl.glVertexAttribPointer(index, size, floatTypeMap.get(vertexType), false, stride * 4, offset * 4);
-		gl.checkGLError("glVertexAttribPointer (" + index + ")");
+		gl.checkGLError("glVertexAttribPointer");
 	}
 
 	/**
@@ -118,7 +119,7 @@ public class CoreVAO {
 		gl.glVertexAttribPointer(index, size, floatTypeMap.get(vertexType), false, stride * 4, offset * 4);
 		gl.glVertexAttribDivisor(index, divisor);
 		gl.glEnableVertexAttribArray(index);
-		gl.checkGLError("glVertexAttribPointer (" + index + ")");
+		gl.checkGLError("glVertexAttribPointer");
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class CoreVAO {
 	 */
 	public void enableVertexAttribute(int index) {
 		gl.glEnableVertexAttribArray(index);
-		gl.checkGLError("glEnableVertexAttribArray (" + index + ")");
+		gl.checkGLError("glEnableVertexAttribArray");
 	}
 
 	/**
@@ -143,7 +144,7 @@ public class CoreVAO {
 	 */
 	public void vertexAttribIPointer(int index, int size, IntType vertexType, int stride, int offset) {
 		gl.glVertexAttribIPointer(index, size, intTypeMap.get(vertexType), stride * 4, offset * 4);
-		gl.checkGLError("glVertexAttribIPointer (" + index + ")");
+		gl.checkGLError("glVertexAttribIPointer");
 	}
 
 	/**
@@ -163,7 +164,7 @@ public class CoreVAO {
 		gl.glVertexAttribIPointer(index, size, intTypeMap.get(vertexType), stride * 4, offset * 4);
 		gl.glVertexAttribDivisor(index, divisor);
 		gl.glEnableVertexAttribArray(index);
-		gl.checkGLError("glVertexAttribPointer (" + index + ")");
+		gl.checkGLError("glVertexAttribPointer");
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class CoreVAO {
 	 */
 	public void disableVertexAttribute(int index) {
 		gl.glDisableVertexAttribArray(index);
-		gl.checkGLError("glDisableVertexAttribArray (" + index + ")");
+		gl.checkGLError("glDisableVertexAttribArray");
 	}
 
 	public enum IntType {
