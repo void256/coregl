@@ -33,10 +33,14 @@ public final class CoreKeyEventLwjgl extends NullCoreKeyEvent {
   }
 
   /**
-   * Creates a new CoreKeyEvent using the data collected from the last call to <code>Keyboard.poll()</code>. It is
-   * the responsibility of the caller to call <code>Keyboard.next()</code> to advance to the next buffered event.
+   * Creates a new CoreKeyEvent using the data collected from the last call to
+   * <code>Keyboard.poll()</code>. It is the responsibility of the caller to
+   * call <code>Keyboard.next()</code> to advance to the next buffered event.
+   * 
    * @return the CoreKeyEventLwjgl representing this event
-   * @throws IllegalStateException if the Keyboard has not yet been initialized via <code>Keyboard.create()</code>.
+   * @throws IllegalStateException
+   *           if the Keyboard has not yet been initialized via
+   *           <code>Keyboard.create()</code>.
    */
   public static CoreKeyEventLwjgl createKeyEventFromCurrentState() {
     if (!Keyboard.isCreated()) throw new IllegalStateException("Keyboard has not yet been initialized.");
@@ -80,13 +84,13 @@ public final class CoreKeyEventLwjgl extends NullCoreKeyEvent {
   }
 
   @Override
-  public boolean isType(int type) {
+  public boolean isType(final int type) {
     return eventType == type;
   }
 
   @Override
-  public void setConsumed(boolean consumed) {
-    this.isConsumed = consumed;
+  public void setConsumed(final boolean consumed) {
+    isConsumed = consumed;
   }
 
   @Override
@@ -721,6 +725,11 @@ public final class CoreKeyEventLwjgl extends NullCoreKeyEvent {
   @Override
   public String toString() {
     final String type = (eventType == EVENT_KEY_PRESSED) ? "EVENT_KEY_PRESSED" : "EVENT_KEY_RELEASED";
-    return String.format("%s: type: %s char: %c repeated: %b timestamp: %d", getClass().getSimpleName(), type, keyChar, isRepeated, timestamp);
+    return String.format("%s: type: %s char: %c repeated: %b timestamp: %d",
+                         getClass().getSimpleName(),
+                         type,
+                         keyChar,
+                         isRepeated,
+                         timestamp);
   }
 }

@@ -1,62 +1,72 @@
 /**
- * Copyright (c) 2013, Jens Hohmuth 
- * All rights reserved. 
- * 
- * Redistribution and use in source and binary forms, with or without 
- * modification, are permitted provided that the following conditions are 
- * met: 
- * 
- *  * Redistributions of source code must retain the above copyright 
- *    notice, this list of conditions and the following disclaimer. 
- *  * Redistributions in binary form must reproduce the above copyright 
- *    notice, this list of conditions and the following disclaimer in the 
- *    documentation and/or other materials provided with the distribution. 
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
- * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE 
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * Copyright (c) 2013, Jens Hohmuth
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.lessvoid.textureatlas;
 
 import java.nio.FloatBuffer;
 
-import de.lessvoid.coregl.*;
+import de.lessvoid.coregl.ColorFormat;
+import de.lessvoid.coregl.CoreFBO;
+import de.lessvoid.coregl.CoreRender;
+import de.lessvoid.coregl.CoreShader;
+import de.lessvoid.coregl.CoreTexture2D;
+import de.lessvoid.coregl.CoreVAO;
 import de.lessvoid.coregl.CoreVAO.FloatType;
+import de.lessvoid.coregl.CoreVBO;
 import de.lessvoid.coregl.CoreVBO.DataType;
 import de.lessvoid.coregl.CoreVBO.UsageType;
+import de.lessvoid.coregl.ResizeFilter;
+import de.lessvoid.coregl.Type;
 import de.lessvoid.coregl.spi.CoreGL;
 import de.lessvoid.math.MatrixFactory;
 import de.lessvoid.textureatlas.TextureAtlasGenerator.Result;
 
 /**
- * This uses de.lessvoid.textureatlas.TextureAtlasGenerator while rendering individual CoreTextures into a
- * CoreRenderToTexture target.
+ * This uses de.lessvoid.textureatlas.TextureAtlasGenerator while rendering
+ * individual CoreTextures into a CoreRenderToTexture target.
  *
  * @author void
  */
 public class CoreTextureAtlasGenerator {
-  private CoreRender coreRender;
-  private CoreFBO renderToTexture;
-  private CoreVAO vao;
-  private CoreVBO<FloatBuffer> vbo;
-  private TextureAtlasGenerator generator;
-  private CoreShader shader;
-  private CoreTexture2D texture;
+  private final CoreRender coreRender;
+  private final CoreFBO renderToTexture;
+  private final CoreVAO vao;
+  private final CoreVBO<FloatBuffer> vbo;
+  private final TextureAtlasGenerator generator;
+  private final CoreShader shader;
+  private final CoreTexture2D texture;
 
   /**
-   * Prepare a RenderToTexture target of the given width x height that will be used as the rendering target for the
-   * texture atlas algorithm.
-   * 
-   * @param width width of the texture
-   * @param height height of the texture
+   * Prepare a RenderToTexture target of the given width x height that will be
+   * used as the rendering target for the texture atlas algorithm.
+   *
+   * @param width
+   *          width of the texture
+   * @param height
+   *          height of the texture
    */
   public CoreTextureAtlasGenerator(final CoreGL gl, final int width, final int height) {
     coreRender = CoreRender.createCoreRender(gl);
@@ -64,7 +74,8 @@ public class CoreTextureAtlasGenerator {
     renderToTexture = CoreFBO.createCoreFBO(gl);
     renderToTexture.bindFramebuffer();
 
-    texture = CoreTexture2D.createEmptyTexture(gl, ColorFormat.RGBA, Type.UNSIGNED_BYTE, width, height, ResizeFilter.Linear);
+    texture = CoreTexture2D
+        .createEmptyTexture(gl, ColorFormat.RGBA, Type.UNSIGNED_BYTE, width, height, ResizeFilter.Linear);
     renderToTexture.attachTexture(texture.getTextureId(), 0);
 
     shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");
@@ -77,14 +88,14 @@ public class CoreTextureAtlasGenerator {
     vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    vbo = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STREAM_DRAW, 4*4);
+    vbo = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STREAM_DRAW, 4 * 4);
     vbo.bind();
 
     vao.enableVertexAttribute(0);
     vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
     vao.enableVertexAttribute(1);
     vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
-    
+
     renderToTexture.bindFramebuffer();
 
     coreRender.clearColor(0.f, 0.f, 0.f, 0.f);
@@ -98,26 +109,32 @@ public class CoreTextureAtlasGenerator {
   }
 
   /**
-   * Add a single CoreTexture2D to the atlas and return informations about the position in the texture atlas.
+   * Add a single CoreTexture2D to the atlas and return informations about the
+   * position in the texture atlas.
    *
-   * @param texture the texture
-   * @param name the name used to identify this texture
-   * @param padding padding value around the texture when being placed into the atlas
+   * @param texture
+   *          the texture
+   * @param name
+   *          the name used to identify this texture
+   * @param padding
+   *          padding value around the texture when being placed into the atlas
    * @return the Result
    */
   public Result addImage(final CoreTexture2D texture, final String name, final int padding) {
     try {
-      Result result = generator.addImage(texture.getWidth(), texture.getHeight(), name, padding);
+      final Result result = generator.addImage(texture.getWidth(), texture.getHeight(), name, padding);
       put(texture, result.getX(), result.getY());
       return result;
-    } catch (TextureAtlasGeneratorException e) {
+    } catch (final TextureAtlasGeneratorException e) {
       return null;
     }
   }
 
   /**
-   * The target texture allocated for the texture atlas. If you want to later render using the texture atlas you'll
-   * need to call this and call bind() on it.
+   * The target texture allocated for the texture atlas. If you want to later
+   * render using the texture atlas you'll need to call this and call bind() on
+   * it.
+   * 
    * @return the CoreRenderToTexture allocated for the texture altas
    */
   public CoreTexture2D getTargetTexture() {
@@ -126,6 +143,7 @@ public class CoreTextureAtlasGenerator {
 
   /**
    * Width of the texture atlas used.
+   * 
    * @return width of the texture atlas
    */
   public int getWidth() {
@@ -134,6 +152,7 @@ public class CoreTextureAtlasGenerator {
 
   /**
    * Height of the texture atlas used.
+   * 
    * @return height of the texture atlas
    */
   public int getHeight() {
@@ -142,12 +161,14 @@ public class CoreTextureAtlasGenerator {
 
   private void put(final CoreTexture2D source, final int x, final int y) {
     shader.activate();
-    shader.setUniformMatrix("uMvp", 4,MatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()).toBuffer());
+    shader.setUniformMatrix("uMvp",
+                            4,
+                            MatrixFactory.createOrtho(0, texture.getWidth(), 0, texture.getHeight()).toBuffer());
 
     vao.bind();
     renderToTexture.bindFramebuffer();
 
-    FloatBuffer buffer = vbo.getBuffer();
+    final FloatBuffer buffer = vbo.getBuffer();
     buffer.put(x);
     buffer.put(y);
     buffer.put(0.0f);

@@ -53,8 +53,8 @@ import de.lessvoid.coregl.spi.CoreGL;
 public class CoreShader {
 
   private static final Logger log = Logger.getLogger(CoreShader.class.getName());
-  private int program;
-  private Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
+  private final int program;
+  private final Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
   private FloatBuffer matBuffer;
   private final String[] attributes;
 
@@ -81,14 +81,14 @@ public class CoreShader {
    *          1 and so on.
    * @return the CoreShader instance
    */
-  public static CoreShader createShaderWithVertexAttributes(final CoreGL gl, String... vertexAttributes) {
+  public static CoreShader createShaderWithVertexAttributes(final CoreGL gl, final String... vertexAttributes) {
     return new CoreShader(gl, vertexAttributes);
   }
 
   CoreShader(final CoreGL gl, final String... vertexAttributes) {
     this.gl = gl;
-    this.attributes = vertexAttributes;
-    this.program = gl.glCreateProgram();
+    attributes = vertexAttributes;
+    program = gl.glCreateProgram();
     checkGLError("glCreateProgram");
   }
 
@@ -129,7 +129,7 @@ public class CoreShader {
   }
 
   public int geometryShader(final File file, final InputStream... inputStreams) throws FileNotFoundException {
-    InputStream[] sources = new InputStream[inputStreams.length + 1];
+    final InputStream[] sources = new InputStream[inputStreams.length + 1];
     System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
     sources[sources.length - 1] = getStream(file);
     return geometryShader(file.getName(), sources);
@@ -139,7 +139,7 @@ public class CoreShader {
     return geometryShaderFromStream(streamName, inputStreams);
   }
 
-  public void geometryShader(final int shaderId, final String streamName, InputStream source) {
+  public void geometryShader(final int shaderId, final String streamName, final InputStream source) {
     prepareShader(shaderId, streamName, source);
   }
 
@@ -172,7 +172,7 @@ public class CoreShader {
   }
 
   private int vertexShaderFromStream(final String streamName, final InputStream... sources) {
-    int shaderId = gl.glCreateShader(gl.GL_VERTEX_SHADER());
+    final int shaderId = gl.glCreateShader(gl.GL_VERTEX_SHADER());
     checkGLError("glCreateShader(GL_VERTEX_SHADER)");
     prepareShader(shaderId, streamName, sources);
     gl.glAttachShader(program, shaderId);
@@ -181,7 +181,7 @@ public class CoreShader {
   }
 
   private int geometryShaderFromStream(final String streamName, final InputStream... sources) {
-    int shaderId = gl.glCreateShader(gl.GL_GEOMETRY_SHADER());
+    final int shaderId = gl.glCreateShader(gl.GL_GEOMETRY_SHADER());
     checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
     prepareShader(shaderId, streamName, sources);
     gl.glAttachShader(program, shaderId);
@@ -190,7 +190,7 @@ public class CoreShader {
   }
 
   private int fragmentShaderFromStream(final String streamName, final InputStream... sources) {
-    int shaderId = gl.glCreateShader(gl.GL_FRAGMENT_SHADER());
+    final int shaderId = gl.glCreateShader(gl.GL_FRAGMENT_SHADER());
     checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
     prepareShader(shaderId, streamName, sources);
     gl.glAttachShader(program, shaderId);
@@ -207,7 +207,7 @@ public class CoreShader {
     gl.glLinkProgram(program);
     checkGLError("glLinkProgram");
 
-    IntBuffer params = gl.getUtil().createIntBuffer(1);
+    final IntBuffer params = gl.getUtil().createIntBuffer(1);
     gl.glGetProgramiv(program, gl.GL_LINK_STATUS(), params);
     if (params.get(0) != gl.GL_TRUE()) {
       log.warning("link error: " + gl.glGetProgramInfoLog(program));
@@ -265,7 +265,7 @@ public class CoreShader {
   }
 
   public void setUniformiv(final String name, final int componentNum, final int... values) {
-    IntBuffer buff = gl.getUtil().createIntBuffer(values.length);
+    final IntBuffer buff = gl.getUtil().createIntBuffer(values.length);
     buff.put(values);
     buff.flip();
     setUniformiv(name, componentNum, buff);
@@ -296,7 +296,7 @@ public class CoreShader {
   }
 
   public void setUniformfv(final String name, final int componentNum, final float... values) {
-    FloatBuffer buff = gl.getUtil().createFloatBuffer(values.length);
+    final FloatBuffer buff = gl.getUtil().createFloatBuffer(values.length);
     buff.put(values);
     buff.flip();
     setUniformfv(name, componentNum, buff);
@@ -337,11 +337,14 @@ public class CoreShader {
 
   /**
    * Set uniform matrix of dimension 'n x n' where n = componentNum
-   * @param name name of the GLSL uniform variable
-   * @param componentNum matrix dimension 'n'
+   * 
+   * @param name
+   *          name of the GLSL uniform variable
+   * @param componentNum
+   *          matrix dimension 'n'
    * @param values
    */
-  public void setUniformMatrix(final String name, final int componentNum, FloatBuffer values) {
+  public void setUniformMatrix(final String name, final int componentNum, final FloatBuffer values) {
     setUniformMatrix(name, componentNum, componentNum, values);
   }
 
@@ -402,7 +405,7 @@ public class CoreShader {
   }
 
   public int getAttribLocation(final String name) {
-    int result = gl.glGetAttribLocation(program, name);
+    final int result = gl.glGetAttribLocation(program, name);
     checkGLError("glGetAttribLocation");
     return result;
   }
@@ -413,24 +416,24 @@ public class CoreShader {
   }
 
   public Map<String, UniformBlockInfo> getUniformIndices(final String... uniformNames) {
-    Map<String, UniformBlockInfo> result = new Hashtable<String, UniformBlockInfo>();
+    final Map<String, UniformBlockInfo> result = new Hashtable<String, UniformBlockInfo>();
 
-    IntBuffer intBuffer = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer intBuffer = gl.getUtil().createIntBuffer(uniformNames.length);
     gl.glGetUniformIndices(program, uniformNames, intBuffer);
 
-    IntBuffer uniformOffsets = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer uniformOffsets = gl.getUtil().createIntBuffer(uniformNames.length);
     gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_OFFSET(), uniformOffsets);
 
-    IntBuffer arrayStrides = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer arrayStrides = gl.getUtil().createIntBuffer(uniformNames.length);
     gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_ARRAY_STRIDE(), arrayStrides);
 
-    IntBuffer matrixStrides = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer matrixStrides = gl.getUtil().createIntBuffer(uniformNames.length);
     gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_MATRIX_STRIDE(), matrixStrides);
 
     checkGLError("getUniformIndices");
 
     for (int i = 0; i < uniformNames.length; i++) {
-      UniformBlockInfo blockInfo = new UniformBlockInfo();
+      final UniformBlockInfo blockInfo = new UniformBlockInfo();
       blockInfo.name = uniformNames[i];
       blockInfo.offset = uniformOffsets.get(i);
       blockInfo.arrayStride = arrayStrides.get(i);
@@ -442,7 +445,7 @@ public class CoreShader {
   }
 
   public void uniformBlockBinding(final String name, final int uniformBlockBinding) {
-    int uniformBlockIndex = gl.glGetUniformBlockIndex(program, name);
+    final int uniformBlockIndex = gl.glGetUniformBlockIndex(program, name);
     checkGLError("glGetUniformBlockIndex");
 
     gl.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
@@ -455,13 +458,13 @@ public class CoreShader {
   }
 
   private int registerParameter(final String name) {
-    int location = getUniform(name);
+    final int location = getUniform(name);
     parameter.put(name, location);
     return location;
   }
 
   private int getLocation(final String name) {
-    Integer value = parameter.get(name);
+    final Integer value = parameter.get(name);
     if (value == null) {
       return registerParameter(name);
     }
@@ -469,7 +472,7 @@ public class CoreShader {
   }
 
   private int getUniform(final String uniformName) {
-    int result = gl.glGetUniformLocation(program, uniformName);
+    final int result = gl.glGetUniformLocation(program, uniformName);
     checkGLError("glGetUniformLocation for [" + uniformName + "] failed");
     log.fine(getLoggingPrefix() + "glUniformLocation for [" + uniformName + "] = [" + result + "]");
     return result;
@@ -479,14 +482,14 @@ public class CoreShader {
     try {
       gl.glShaderSource(shaderId, loadShader(sources));
       checkGLError("glShaderSource");
-    } catch (IOException e) {
+    } catch (final IOException e) {
       throw new CoreGLException(e);
     }
 
     gl.glCompileShader(shaderId);
     checkGLError("glCompileShader");
 
-    IntBuffer ret = gl.getUtil().createIntBuffer(1);
+    final IntBuffer ret = gl.getUtil().createIntBuffer(1);
     gl.glGetShaderiv(shaderId, gl.GL_COMPILE_STATUS(), ret);
     if (ret.get(0) == gl.GL_FALSE()) {
       log.warning("'" + name + "' compile error: " + gl.glGetShaderInfoLog(shaderId));
@@ -497,10 +500,10 @@ public class CoreShader {
   }
 
   private String loadShader(final InputStream... sources) throws IOException {
-    StringBuilder srcbuff = new StringBuilder();
-    for (InputStream source : sources) {
-      InputStreamReader streamReader = new InputStreamReader(source);
-      BufferedReader buffReader = new BufferedReader(streamReader);
+    final StringBuilder srcbuff = new StringBuilder();
+    for (final InputStream source : sources) {
+      final InputStreamReader streamReader = new InputStreamReader(source);
+      final BufferedReader buffReader = new BufferedReader(streamReader);
       String nextLine = null;
       while ((nextLine = buffReader.readLine()) != null) {
         srcbuff.append(nextLine + "\n");
@@ -512,7 +515,7 @@ public class CoreShader {
   }
 
   private void printLogInfo(final int obj) {
-    String logInfoMsg = gl.glGetShaderInfoLog(obj);
+    final String logInfoMsg = gl.glGetShaderInfoLog(obj);
     checkGLError("glGetShaderInfoLog");
     if (!logInfoMsg.isEmpty()) {
       log.info(getLoggingPrefix() + "Info log:\n" + logInfoMsg);
@@ -538,8 +541,9 @@ public class CoreShader {
   }
 
   /**
-   * Internal enum for representing the 9 possible GLSL matrix types and mapping them to a single
-   * key formed from the 'n x m' dimensions.
+   * Internal enum for representing the 9 possible GLSL matrix types and mapping
+   * them to a single key formed from the 'n x m' dimensions.
+   * 
    * @author Brian Groenke (groenke.5@osu.edu)
    */
   enum UniformMatrixType {

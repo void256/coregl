@@ -39,16 +39,19 @@ public final class CoreMouseEventLwjgl implements CoreMouseEvent {
 
   /**
    * Creates a new CoreMouseEvent using the data collected from the last call to
-   * <code>Mouse.poll()</code>. It is the responsibility of the caller to
-   * call <code>Mouse.next()</code> to advance to the next buffered event.
-   * <br/><br/>
-   * Mouse event type resolution requires information about the previous state of the mouse that
-   * is outside of the scope of this class. It may sometimes even be necessary to create more than
-   * one event from the data polled via the LWJGL Mouse class. It is the responsibility of the caller
-   * to determine the appropriate type for the event being created; this method will then pull the
-   * rest of the static event data from the Mouse's current event state.
+   * <code>Mouse.poll()</code>. It is the responsibility of the caller to call
+   * <code>Mouse.next()</code> to advance to the next buffered event. <br/>
+   * <br/>
+   * Mouse event type resolution requires information about the previous state
+   * of the mouse that is outside of the scope of this class. It may sometimes
+   * even be necessary to create more than one event from the data polled via
+   * the LWJGL Mouse class. It is the responsibility of the caller to determine
+   * the appropriate type for the event being created; this method will then
+   * pull the rest of the static event data from the Mouse's current event
+   * state.
    *
-   * @param mouseEventType the type of the mouse event, as determined by the caller
+   * @param mouseEventType
+   *          the type of the mouse event, as determined by the caller
    * @return the CoreMouseEventLwjgl representing this event
    * @throws IllegalStateException
    *           if the Keyboard has not yet been initialized via
@@ -188,12 +191,12 @@ public final class CoreMouseEventLwjgl implements CoreMouseEvent {
   }
 
   @Override
-  public boolean isType(int type) {
+  public boolean isType(final int type) {
     return eventType == type;
   }
 
   @Override
-  public void setConsumed(boolean isConsumed) {
+  public void setConsumed(final boolean isConsumed) {
     this.isConsumed = isConsumed;
   }
 

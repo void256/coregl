@@ -59,7 +59,8 @@ final class LwjglMouseEventDriver {
     }
 
     if (mouseWheelMoved) {
-      mouseEvents.add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_WHEEL_MOVED));
+      mouseEvents
+          .add(CoreMouseEventLwjgl.createMouseEventFromCurrentState(CoreMouseEventLwjgl.EVENT_MOUSE_WHEEL_MOVED));
     }
 
     if (inWindowUpdated && !inWindow) {
@@ -90,7 +91,8 @@ final class LwjglMouseEventDriver {
   }
 
   /**
-   * @return whether or not mouse is within the window bounds since last call to {@link #update()}
+   * @return whether or not mouse is within the window bounds since last call to
+   *         {@link #update()}
    */
   public boolean isInWindow() {
     return inWindow;

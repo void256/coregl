@@ -4,8 +4,9 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * Helper class to manage CoreShaders (programs). This class will cache CoreShader instances and will remember the
- * active CoreShader (if you use the activate() method of this class to activate them).
+ * Helper class to manage CoreShaders (programs). This class will cache
+ * CoreShader instances and will remember the active CoreShader (if you use the
+ * activate() method of this class to activate them).
  *
  * @author void
  */
@@ -22,10 +23,12 @@ public class CoreShaderManager {
 
   /**
    * Activate the CoreShader with the given name.
-   * @param name the shader to activate
+   * 
+   * @param name
+   *          the shader to activate
    */
   public CoreShader activate(final String name) {
-    CoreShader newShader = lookup.get(name);
+    final CoreShader newShader = lookup.get(name);
     if (current == newShader) {
       return current;
     }

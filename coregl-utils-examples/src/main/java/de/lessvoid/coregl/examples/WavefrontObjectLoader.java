@@ -6,7 +6,7 @@ package de.lessvoid.coregl.examples;
  ** Brown (crash0veride007@gmail.com). Also added support for compressed mesh files (.zip).
  **
  ** This code was modified to be used independently from jogl by void256 in 2012. Some of the convienence like creating
- ** a display list from the model data has been removed in favor of being usable without a specific GL lib.    
+ ** a display list from the model data has been removed in favor of being usable without a specific GL lib.
  **/
 
 import java.io.BufferedReader;
@@ -31,16 +31,17 @@ import org.lwjgl.BufferUtils;
 public class WavefrontObjectLoader {
   private int faceCount = 0;
 
-  private ArrayList<float[]> vertices = new ArrayList<float[]>();
-  private ArrayList<float[]> textureCoordinates = new ArrayList<float[]>();
-  private ArrayList<float[]> normals = new ArrayList<float[]>();
+  private final ArrayList<float[]> vertices = new ArrayList<float[]>();
+  private final ArrayList<float[]> textureCoordinates = new ArrayList<float[]>();
+  private final ArrayList<float[]> normals = new ArrayList<float[]>();
 
-  private ArrayList<int[]> facesVertexIndizes = new ArrayList<int[]>();
-  private ArrayList<int[]> facesTextureIndizes = new ArrayList<int[]>();
-  private ArrayList<int[]> facesNormalIndizes = new ArrayList<int[]>();
+  private final ArrayList<int[]> facesVertexIndizes = new ArrayList<int[]>();
+  private final ArrayList<int[]> facesTextureIndizes = new ArrayList<int[]>();
+  private final ArrayList<int[]> facesNormalIndizes = new ArrayList<int[]>();
 
   /**
    * Load the model from a class path resource.
+   * 
    * @param modelPath
    * @throws IOException
    */
@@ -49,8 +50,11 @@ public class WavefrontObjectLoader {
   }
 
   /**
-   * Load the model from an InputStream. The InputStream will be closed after reading.
-   * @param stream stream to load model data from
+   * Load the model from an InputStream. The InputStream will be closed after
+   * reading.
+   * 
+   * @param stream
+   *          stream to load model data from
    * @throws IOException
    */
   public WavefrontObjectLoader(final InputStream stream) throws IOException {
@@ -58,8 +62,8 @@ public class WavefrontObjectLoader {
   }
 
   @Override
-	public String toString() {
-    StringBuilder result = new StringBuilder();
+  public String toString() {
+    final StringBuilder result = new StringBuilder();
     result.append("faceCount:");
     result.append(faceCount);
     result.append(", vertices:");
@@ -72,7 +76,7 @@ public class WavefrontObjectLoader {
   }
 
   private void loadOBJModel(final InputStream inputStream) throws IOException {
-    BufferedReader br = createBufferedReader(inputStream);
+    final BufferedReader br = createBufferedReader(inputStream);
     String line = null;
     while ((line = br.readLine()) != null) {
       if (line.startsWith("#")) {
@@ -113,7 +117,7 @@ public class WavefrontObjectLoader {
   }
 
   private void readFaceLine(final String line) {
-    String s[] = splitLine(line);
+    final String s[] = splitLine(line);
 
     // pattern is present if obj has only v and vn in face data
     if (line.contains("//")) {
@@ -138,7 +142,7 @@ public class WavefrontObjectLoader {
   }
 
   private float[] toFloatArray(final String sdata[]) {
-    float result[] = new float[sdata.length - 1];
+    final float result[] = new float[sdata.length - 1];
     for (int loop = 0; loop < result.length; loop++) {
       result[loop] = Float.parseFloat(sdata[loop + 1]);
     }
@@ -146,12 +150,12 @@ public class WavefrontObjectLoader {
   }
 
   private void processFaceData(final String sdata[]) {
-    int vdata[] = new int[sdata.length - 1];
-    int vtdata[] = new int[sdata.length - 1];
-    int vndata[] = new int[sdata.length - 1];
+    final int vdata[] = new int[sdata.length - 1];
+    final int vtdata[] = new int[sdata.length - 1];
+    final int vndata[] = new int[sdata.length - 1];
     for (int loop = 1; loop < sdata.length; loop++) {
-      String s = sdata[loop];
-      String[] temp = s.split("/");
+      final String s = sdata[loop];
+      final String[] temp = s.split("/");
       vdata[loop - 1] = Integer.valueOf(temp[0]); // always add vertex indices
       if (temp.length > 1) { // we have v and vt data
         vtdata[loop - 1] = Integer.valueOf(temp[1]); // add in vt indices
@@ -198,13 +202,13 @@ public class WavefrontObjectLoader {
   }
 
   public FloatBuffer asInterleavedArray() {
-    int size = faceCount * 3 * (3 + 2 + 3);
-    FloatBuffer buffer = ByteBuffer.allocateDirect(size << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
+    final int size = faceCount * 3 * (3 + 2 + 3);
+    final FloatBuffer buffer = ByteBuffer.allocateDirect(size << 2).order(ByteOrder.nativeOrder()).asFloatBuffer();
 
     for (int i = 0; i < faceCount; i++) {
-      int[] vIndex = facesVertexIndizes.get(i);
-      int[] textureIndex = facesTextureIndizes.get(i);
-      int[] normalIndex = facesNormalIndizes.get(i);
+      final int[] vIndex = facesVertexIndizes.get(i);
+      final int[] textureIndex = facesTextureIndizes.get(i);
+      final int[] normalIndex = facesNormalIndizes.get(i);
       for (int j = 0; j < 3; j++) {
         buffer.put(vertices.get(vIndex[j] - 1));
         buffer.put(textureCoordinates.get(textureIndex[j] - 1));
@@ -217,30 +221,30 @@ public class WavefrontObjectLoader {
   }
 
   public Data asVertexAndIndexBuffer() {
-    List<Float> vertexBuffer = new ArrayList<Float>();
-    List<Integer> indexBuffer = new ArrayList<Integer>();
+    final List<Float> vertexBuffer = new ArrayList<Float>();
+    final List<Integer> indexBuffer = new ArrayList<Integer>();
     int index = 0;
     int reused = 0;
-    Map<String, Integer> vertexCache = new HashMap<String, Integer>();
-    StringBuilder keyBuffer = new StringBuilder();
+    final Map<String, Integer> vertexCache = new HashMap<String, Integer>();
+    final StringBuilder keyBuffer = new StringBuilder();
     for (int i = 0; i < faceCount; i++) {
-      int[] vIndex = facesVertexIndizes.get(i);
-      int[] textureIndex = facesTextureIndizes.get(i);
-      int[] normalIndex = facesNormalIndizes.get(i);
+      final int[] vIndex = facesVertexIndizes.get(i);
+      final int[] textureIndex = facesTextureIndizes.get(i);
+      final int[] normalIndex = facesNormalIndizes.get(i);
       for (int j = 0; j < 3; j++) {
-        int vertexIdx = vIndex[j] - 1;
-        int textureCoordIdx = textureIndex[j] - 1;
-        int normalIdx = normalIndex[j] - 1;
-        
+        final int vertexIdx = vIndex[j] - 1;
+        final int textureCoordIdx = textureIndex[j] - 1;
+        final int normalIdx = normalIndex[j] - 1;
+
         keyBuffer.setLength(0);
         keyBuffer.append(vertexIdx);
         keyBuffer.append('/');
         keyBuffer.append(textureCoordIdx);
         keyBuffer.append('/');
         keyBuffer.append(normalIdx);
-        String key = keyBuffer.toString();
+        final String key = keyBuffer.toString();
         System.out.println(key);
-        Integer existingVertex = vertexCache.get(key);
+        final Integer existingVertex = vertexCache.get(key);
         if (existingVertex == null) {
           addArray(vertexBuffer, vertices.get(vertexIdx));
           addArray(vertexBuffer, textureCoordinates.get(textureCoordIdx));
@@ -254,19 +258,19 @@ public class WavefrontObjectLoader {
         }
       }
     }
-System.out.println("reused: " + reused);
+    System.out.println("reused: " + reused);
     return new Data(vertexBuffer, indexBuffer);
   }
 
   private void addArray(final List<Float> vertexBuffer, final float[] vertex) {
-    for (float f : vertex) {
+    for (final float f : vertex) {
       vertexBuffer.add(f);
     }
   }
 
   public static class Data {
-    private FloatBuffer vertexData;
-    private IntBuffer indexData;
+    private final FloatBuffer vertexData;
+    private final IntBuffer indexData;
 
     public Data(final List<Float> vertices, final List<Integer> indices) {
       vertexData = BufferUtils.createFloatBuffer(vertices.size() * (3 + 2 + 3));
@@ -287,7 +291,7 @@ System.out.println("reused: " + reused);
     }
 
     private float[] toFloatArray(final List<Float> src) {
-      float[] result = new float[src.size()];
+      final float[] result = new float[src.size()];
       for (int index = 0; index < src.size(); index++) {
         result[index] = src.get(index);
       }
@@ -295,7 +299,7 @@ System.out.println("reused: " + reused);
     }
 
     private int[] toIntArray(final List<Integer> src) {
-      int[] result = new int[src.size()];
+      final int[] result = new int[src.size()];
       for (int index = 0; index < src.size(); index++) {
         result[index] = src.get(index);
       }

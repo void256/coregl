@@ -298,7 +298,7 @@ public interface CoreKeyEvent extends CoreInputEvent {
   short VK_R();
 
   short VK_RIGHT();
-  
+
   short VK_RIGHT_ALT();
 
   short VK_RIGHT_BRACE();

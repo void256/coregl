@@ -23,12 +23,12 @@ public abstract class NullCoreKeyEvent implements CoreKeyEvent {
   }
 
   @Override
-  public boolean isType(int type) {
+  public boolean isType(final int type) {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public void setConsumed(boolean consumed) {
+  public void setConsumed(final boolean consumed) {
     throw new UnsupportedOperationException();
   }
 
@@ -951,7 +951,7 @@ public abstract class NullCoreKeyEvent implements CoreKeyEvent {
   public boolean isShiftDown() {
     throw new UnsupportedOperationException();
   }
-  
+
   protected UnsupportedOperationException unsupported(final String codeName) {
     return new UnsupportedOperationException(codeName + " not supported by " + getClass().getSimpleName());
   }

@@ -67,13 +67,13 @@ public class CoreInputJogl extends AbstractCoreInput {
   private class NewtKeyListener implements KeyListener {
 
     @Override
-    public void keyPressed(KeyEvent arg0) {
+    public void keyPressed(final KeyEvent arg0) {
       log.trace("keyPressed: {}", arg0);
       eventQueue.enqueue(new CoreKeyEventJogl(arg0));
     }
 
     @Override
-    public void keyReleased(KeyEvent arg0) {
+    public void keyReleased(final KeyEvent arg0) {
       // ignore release events sent by auto-repeat
       if (arg0.isAutoRepeat()) return;
       log.info("keyReleased: {}", arg0);
@@ -84,49 +84,49 @@ public class CoreInputJogl extends AbstractCoreInput {
   private class NewtMouseListener implements MouseListener {
 
     @Override
-    public void mouseClicked(MouseEvent arg0) {
+    public void mouseClicked(final MouseEvent arg0) {
       log.trace("mouseClicked: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
-    public void mouseDragged(MouseEvent arg0) {
+    public void mouseDragged(final MouseEvent arg0) {
       log.trace("mouseDragged: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
-    public void mouseEntered(MouseEvent arg0) {
+    public void mouseEntered(final MouseEvent arg0) {
       log.trace("mouseEntered: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
-    public void mouseExited(MouseEvent arg0) {
+    public void mouseExited(final MouseEvent arg0) {
       log.trace("mouseExited: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
-    public void mouseMoved(MouseEvent arg0) {
+    public void mouseMoved(final MouseEvent arg0) {
       log.trace("mouseMoved: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
-    public void mousePressed(MouseEvent arg0) {
+    public void mousePressed(final MouseEvent arg0) {
       log.trace("mousePressed: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
-    public void mouseReleased(MouseEvent arg0) {
+    public void mouseReleased(final MouseEvent arg0) {
       log.trace("mouseReleased: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
-    public void mouseWheelMoved(MouseEvent arg0) {
+    public void mouseWheelMoved(final MouseEvent arg0) {
       log.trace("mouseWheelMoved: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }

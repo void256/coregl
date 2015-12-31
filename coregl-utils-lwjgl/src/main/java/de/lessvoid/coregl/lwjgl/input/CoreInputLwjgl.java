@@ -29,7 +29,7 @@ public class CoreInputLwjgl extends AbstractCoreInput {
     try {
       if (!Keyboard.isCreated()) Keyboard.create();
       mouseEventDriver.init();
-    } catch (LWJGLException e) {
+    } catch (final LWJGLException e) {
       log.error("Error initializing LWJGL input system: ", e);
       throw new RuntimeException(e);
     }

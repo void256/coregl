@@ -10,7 +10,7 @@ import de.lessvoid.coregl.input.dispatch.CoreMouseEventDispatcher;
 public abstract class AbstractCoreInput implements CoreInput {
   private final Set<CoreInputEventDispatcher<?, ?>> dispatchers = Collections
       .synchronizedSet(new HashSet<CoreInputEventDispatcher<?, ?>>());
-  
+
   // default key/mouse dispatchers
   protected CoreKeyEventDispatcher defaultKeyDispatch;
   protected CoreMouseEventDispatcher defaultMouseDispatch;
@@ -48,7 +48,7 @@ public abstract class AbstractCoreInput implements CoreInput {
       if (dispatcher.eventType().isInstance(inputEvent)) dispatcher.dispatch(inputEvent);
     }
   }
-  
+
   @Override
   public void enableDefaultDispatchers() {
     if (defaultKeyDispatch == null) {

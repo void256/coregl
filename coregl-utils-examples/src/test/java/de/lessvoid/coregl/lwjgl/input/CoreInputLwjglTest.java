@@ -17,7 +17,7 @@ import de.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
 public class CoreInputLwjglTest {
 
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     final CoreGL gl = new LwjglCoreGL();
     final CoreSetup setup = new CoreSetupLwjgl(gl);
     try {
@@ -27,54 +27,54 @@ public class CoreInputLwjglTest {
       final CoreInput input = setup.getInput();
       final CoreKeyListener keyInput = new CoreKeyListener() {
         @Override
-        public void keyPressed(CoreKeyEvent event) {
+        public void keyPressed(final CoreKeyEvent event) {
           System.out.println("pressed: " + event);
         }
 
         @Override
-        public void keyReleased(CoreKeyEvent event) {
+        public void keyReleased(final CoreKeyEvent event) {
           System.out.println("released: " + event);
         }
       };
       final CoreMouseListener mouseListener = new CoreMouseListener() {
 
         @Override
-        public void mouseClicked(CoreMouseEvent e) {
+        public void mouseClicked(final CoreMouseEvent e) {
           System.out.println("clicked: " + e.getX() + " " + e.getY());
         }
 
         @Override
-        public void mouseDragged(CoreMouseEvent e) {
+        public void mouseDragged(final CoreMouseEvent e) {
           System.out.println("dragged: " + e.getX() + " " + e.getY());
         }
 
         @Override
-        public void mouseEntered(CoreMouseEvent e) {
+        public void mouseEntered(final CoreMouseEvent e) {
           System.out.println("entered: " + e.getX() + " " + e.getY());
         }
 
         @Override
-        public void mouseExited(CoreMouseEvent e) {
+        public void mouseExited(final CoreMouseEvent e) {
           System.out.println("exited: " + e.getX() + " " + e.getY());
         }
 
         @Override
-        public void mouseMoved(CoreMouseEvent e) {
+        public void mouseMoved(final CoreMouseEvent e) {
           System.out.println("moved: " + e.getX() + " " + e.getY());
         }
 
         @Override
-        public void mousePressed(CoreMouseEvent e) {
+        public void mousePressed(final CoreMouseEvent e) {
           System.out.println("pressed: " + e.getX() + " " + e.getY());
         }
 
         @Override
-        public void mouseReleased(CoreMouseEvent e) {
+        public void mouseReleased(final CoreMouseEvent e) {
           System.out.println("released: " + e.getX() + " " + e.getY());
         }
 
         @Override
-        public void mouseWheelMoved(CoreMouseEvent e) {
+        public void mouseWheelMoved(final CoreMouseEvent e) {
           System.out.println("mouseWheel: " + e.getX() + " " + e.getY());
         }
       };
@@ -82,7 +82,7 @@ public class CoreInputLwjglTest {
       input.addListener(mouseListener);
       setup.renderLoop(new NOPRenderLoop());
       setup.destroy();
-    } catch (Exception e) {
+    } catch (final Exception e) {
       e.printStackTrace();
     }
   }
@@ -92,11 +92,11 @@ public class CoreInputLwjglTest {
     private final AtomicBoolean stop = new AtomicBoolean();
 
     @Override
-    public void init(CoreGL gl) {
+    public void init(final CoreGL gl) {
     }
 
     @Override
-    public boolean render(CoreGL gl, float deltaTime) {
+    public boolean render(final CoreGL gl, final float deltaTime) {
       return true;
     }
 
