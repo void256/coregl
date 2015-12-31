@@ -53,7 +53,7 @@ public class CoreShader {
 
   private final CoreLogger log;
   private final int program;
-  private final Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
+  private final Map<String, Integer> parameter = new HashMap<String, Integer>();
   private FloatBuffer matBuffer;
   private final String[] attributes;
 
@@ -203,7 +203,7 @@ public class CoreShader {
   public void link() {
     for (int i = 0; i < attributes.length; i++) {
       gl.glBindAttribLocation(program, i, attributes[i]);
-      gl.checkGLError("glBindAttribLocation ({})", attributes[i]);
+      log.checkGLError(gl, "glBindAttribLocation ({})", attributes[i]);
     }
 
     gl.glLinkProgram(program);
@@ -475,7 +475,7 @@ public class CoreShader {
 
   private int getUniform(final String uniformName) {
     final int result = gl.glGetUniformLocation(program, uniformName);
-    gl.checkGLError("glGetUniformLocation for [{}] failed", uniformName);
+    log.checkGLError(gl, "glGetUniformLocation for [{}] failed", uniformName);
     log.fine("glUniformLocation for [{}] = [{}]", uniformName, result);
     return result;
   }
@@ -506,9 +506,9 @@ public class CoreShader {
     for (final InputStream source : sources) {
       final InputStreamReader streamReader = new InputStreamReader(source);
       final BufferedReader buffReader = new BufferedReader(streamReader);
-      String nextLine = null;
+      String nextLine;
       while ((nextLine = buffReader.readLine()) != null) {
-        srcbuff.append(nextLine + "\n");
+        srcbuff.append(nextLine).append('\n');
       }
       buffReader.close();
     }
@@ -540,7 +540,7 @@ public class CoreShader {
    *
    * @author Brian Groenke (groenke.5@osu.edu)
    */
-  enum UniformMatrixType {
+  private enum UniformMatrixType {
     M2x2(2, 2),
     M2x3(2, 3),
     M2x4(2, 4),
@@ -552,33 +552,35 @@ public class CoreShader {
     M4x3(4, 3),
     UNSUPPORTED(0, 0);
 
-    final static Map<Integer, UniformMatrixType> matDimsToType;
+    private final static UniformMatrixType[] matDimsToType;
 
-    final int n, m, key;
+    final int n, m;
 
     UniformMatrixType(final int n, final int m) {
       this.n = n;
       this.m = m;
-
-      key = keyFor(n, m);
     }
 
     static {
-      final Map<Integer, UniformMatrixType> builderMap = new HashMap<Integer, UniformMatrixType>();
+      matDimsToType = new UniformMatrixType[keyFor(4, 4) + 1];
       for (final UniformMatrixType value : values()) {
-        builderMap.put(value.key, value);
+        int key = keyFor(value.n, value.m);
+        if (key >= 0 && key < matDimsToType.length) {
+          matDimsToType[key] = value;
+        }
       }
-      matDimsToType = Collections.unmodifiableMap(builderMap);
     }
 
-    static UniformMatrixType typeFor(final int n, final int m) {
-      final int key = keyFor(n, m);
-      if (!matDimsToType.containsKey(key)) return UNSUPPORTED;
-      return matDimsToType.get(key);
+    private static UniformMatrixType typeFor(final int n, final int m) {
+      int key = keyFor(n, m);
+      if (key >= 0 && key < matDimsToType.length) {
+        return matDimsToType[key];
+      }
+      return UNSUPPORTED;
     }
 
     private static int keyFor(final int n, final int m) {
-      return (n << 15) | m;
+      return (n - 2) * 3 + m;
     }
   }
 }

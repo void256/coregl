@@ -727,7 +727,7 @@ public class CoreTexture2D {
    */
   private void checkGLError(final String message, final boolean throwException) {
     if (errorChecks) {
-      gl.checkGLError(message, throwException);
+      gl.checkGLError(throwException, message);
     }
   }
 
