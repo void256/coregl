@@ -1,5 +1,7 @@
 package de.lessvoid.coregl;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,17 +21,23 @@ public final class CoreLogger {
 
   private static final int DEFAULT_BUFFER_CAPACITY = 1024;
   private static final String ARG_STR = "{}";
+  private static final Map<String, CoreLogger> loggerCache = new ConcurrentHashMap<String, CoreLogger>();
   private final Logger log;
   private final StringBuilder concatBuffer = new StringBuilder(DEFAULT_BUFFER_CAPACITY);
   private String prefix = "";
 
   /* These arrays are used to transfer the arguments between the logging functions without requiring new objects. */
-  private static final Object[] transferArray1 = new Object[1];
-  private static final Object[] transferArray2 = new Object[2];
-  private static final Object[] transferArray3 = new Object[3];
+  private final Object[] transferArray1 = new Object[1];
+  private final Object[] transferArray2 = new Object[2];
+  private final Object[] transferArray3 = new Object[3];
 
   public static CoreLogger getCoreLogger(final String name) {
-    return new CoreLogger(name);
+    if (!loggerCache.containsKey(name)) loggerCache.put(name, new CoreLogger(name));
+    return loggerCache.get(name);
+  }
+
+  public static CoreLogger getCoreLogger(final Class<?> clazz) {
+    return getCoreLogger(clazz.getName());
   }
 
   public void info(final String message) {
@@ -42,7 +50,9 @@ public final class CoreLogger {
     Object[] transferArray = transferArray1;
     transferArray[0] = arg1;
 
-    info(message, transferArray);
+    if (log.isLoggable(Level.INFO)) {
+      log.info(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void info(final String message, final Object arg1, final Object arg2) {
@@ -50,7 +60,9 @@ public final class CoreLogger {
     transferArray[0] = arg1;
     transferArray[1] = arg2;
 
-    info(message, transferArray);
+    if (log.isLoggable(Level.INFO)) {
+      log.info(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void info(final String message, final Object arg1, final Object arg2, final Object arg3) {
@@ -59,7 +71,9 @@ public final class CoreLogger {
     transferArray[1] = arg2;
     transferArray[2] = arg3;
 
-    info(message, transferArray);
+    if (log.isLoggable(Level.INFO)) {
+      log.info(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void info(final String message, final Object... args) {
@@ -78,7 +92,9 @@ public final class CoreLogger {
     Object[] transferArray = transferArray1;
     transferArray[0] = arg1;
 
-    warn(message, transferArray);
+    if (log.isLoggable(Level.WARNING)) {
+      log.warning(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void warn(final String message, final Object arg1, final Object arg2) {
@@ -86,7 +102,9 @@ public final class CoreLogger {
     transferArray[0] = arg1;
     transferArray[1] = arg2;
 
-    warn(message, transferArray);
+    if (log.isLoggable(Level.WARNING)) {
+      log.warning(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void warn(final String message, final Object arg1, final Object arg2, final Object arg3) {
@@ -95,7 +113,9 @@ public final class CoreLogger {
     transferArray[1] = arg2;
     transferArray[2] = arg3;
 
-    warn(message, transferArray);
+    if (log.isLoggable(Level.WARNING)) {
+      log.warning(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void warn(final String message, final Object... args) {
@@ -114,7 +134,9 @@ public final class CoreLogger {
     Object[] transferArray = transferArray1;
     transferArray[0] = arg1;
 
-    severe(message, transferArray);
+    if (log.isLoggable(Level.SEVERE)) {
+      log.severe(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void severe(final String message, final Object arg1, final Object arg2) {
@@ -122,7 +144,9 @@ public final class CoreLogger {
     transferArray[0] = arg1;
     transferArray[1] = arg2;
 
-    severe(message, transferArray);
+    if (log.isLoggable(Level.SEVERE)) {
+      log.severe(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void severe(final String message, final Object arg1, final Object arg2, final Object arg3) {
@@ -131,7 +155,9 @@ public final class CoreLogger {
     transferArray[1] = arg2;
     transferArray[2] = arg3;
 
-    severe(message, transferArray);
+    if (log.isLoggable(Level.SEVERE)) {
+      log.severe(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void severe(final String message, final Object... args) {
@@ -150,7 +176,9 @@ public final class CoreLogger {
     Object[] transferArray = transferArray1;
     transferArray[0] = arg1;
 
-    fine(message, transferArray);
+    if (log.isLoggable(Level.FINE)) {
+      log.fine(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void fine(final String message, final Object arg1, final Object arg2) {
@@ -158,7 +186,9 @@ public final class CoreLogger {
     transferArray[0] = arg1;
     transferArray[1] = arg2;
 
-    fine(message, transferArray);
+    if (log.isLoggable(Level.FINE)) {
+      log.fine(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void fine(final String message, final Object arg1, final Object arg2, final Object arg3) {
@@ -167,7 +197,9 @@ public final class CoreLogger {
     transferArray[1] = arg2;
     transferArray[2] = arg3;
 
-    fine(message, transferArray);
+    if (log.isLoggable(Level.FINE)) {
+      log.fine(prepareWithArgs(message, transferArray));
+    }
   }
 
   public void fine(final String message, final Object... args) {
@@ -183,6 +215,10 @@ public final class CoreLogger {
 
   public String getLoggingPrefix() {
     return prefix;
+  }
+
+  public void setLevel(final Level level) {
+    log.setLevel(level);
   }
 
   public void checkGLError(final CoreGL gl, final String message, final Object arg1) {
@@ -303,14 +339,14 @@ public final class CoreLogger {
     }
   }
 
-  private String prepareWithArgs(final String message, final Object... args) {
+  private String prepareWithArgs(final String message, final Object[] args) {
     clearBuffer();
     concatBuffer.append(prefix);
     concatBuffer.append(message);
     for (final Object arg : args) {
       final int index = concatBuffer.indexOf(ARG_STR);
       if (index == -1) {
-        severe("Error preparing logging message. Expected {} parameters in message: \"{}\"", args.length, message);
+        severe("Error preparing logging message: expected {} parameters in message: \"{}\"", args.length, message);
         break;
       }
       concatBuffer.replace(index, index + 2, arg.toString());
