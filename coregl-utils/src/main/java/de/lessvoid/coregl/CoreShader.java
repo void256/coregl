@@ -506,9 +506,9 @@ public class CoreShader {
     for (final InputStream source : sources) {
       final InputStreamReader streamReader = new InputStreamReader(source);
       final BufferedReader buffReader = new BufferedReader(streamReader);
-      String nextLine = null;
+      String nextLine;
       while ((nextLine = buffReader.readLine()) != null) {
-        srcbuff.append(nextLine + "\n");
+        srcbuff.append(nextLine).append('\n');
       }
       buffReader.close();
     }
