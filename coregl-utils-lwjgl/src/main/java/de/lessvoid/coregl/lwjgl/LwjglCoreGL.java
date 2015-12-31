@@ -1438,8 +1438,13 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public void checkGLError(final String msg) {
+    log.checkGLError(this, false, msg);
+  }
+
+  @Override
   public void checkGLError(final String msg, final Object...args) {
-    checkGLError(false, msg, args);
+    log.checkGLError(this, false, msg, args);
   }
 
   @Override

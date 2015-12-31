@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import de.lessvoid.coregl.spi.CoreGL;
 
@@ -52,7 +51,7 @@ import de.lessvoid.coregl.spi.CoreGL;
  */
 public class CoreShader {
 
-  private static final Logger log = Logger.getLogger(CoreShader.class.getName());
+  private final CoreLogger log;
   private final int program;
   private final Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
   private FloatBuffer matBuffer;
@@ -89,7 +88,10 @@ public class CoreShader {
     this.gl = gl;
     attributes = vertexAttributes;
     program = gl.glCreateProgram();
-    checkGLError("glCreateProgram");
+    final String progIdStr = "[" + program + "]";
+    log = CoreLogger.getCoreLogger(getClass().getName() + progIdStr);
+    log.setLoggingPrefix(progIdStr);
+    gl.checkGLError("glCreateProgram");
   }
 
   public int vertexShader(final String filename) {
@@ -173,47 +175,47 @@ public class CoreShader {
 
   private int vertexShaderFromStream(final String streamName, final InputStream... sources) {
     final int shaderId = gl.glCreateShader(gl.GL_VERTEX_SHADER());
-    checkGLError("glCreateShader(GL_VERTEX_SHADER)");
+    gl.checkGLError("glCreateShader(GL_VERTEX_SHADER)");
     prepareShader(shaderId, streamName, sources);
     gl.glAttachShader(program, shaderId);
-    checkGLError("glAttachShader");
+    gl.checkGLError("glAttachShader");
     return shaderId;
   }
 
   private int geometryShaderFromStream(final String streamName, final InputStream... sources) {
     final int shaderId = gl.glCreateShader(gl.GL_GEOMETRY_SHADER());
-    checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
+    gl.checkGLError("glCreateShader(GL_GEOMETRY_SHADER)");
     prepareShader(shaderId, streamName, sources);
     gl.glAttachShader(program, shaderId);
-    checkGLError("glAttachShader");
+    gl.checkGLError("glAttachShader");
     return shaderId;
   }
 
   private int fragmentShaderFromStream(final String streamName, final InputStream... sources) {
     final int shaderId = gl.glCreateShader(gl.GL_FRAGMENT_SHADER());
-    checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
+    gl.checkGLError("glCreateShader(GL_FRAGMENT_SHADER)");
     prepareShader(shaderId, streamName, sources);
     gl.glAttachShader(program, shaderId);
-    checkGLError("glAttachShader");
+    gl.checkGLError("glAttachShader");
     return shaderId;
   }
 
   public void link() {
     for (int i = 0; i < attributes.length; i++) {
       gl.glBindAttribLocation(program, i, attributes[i]);
-      checkGLError("glBindAttribLocation (" + attributes[i] + ")");
+      gl.checkGLError("glBindAttribLocation ({})", attributes[i]);
     }
 
     gl.glLinkProgram(program);
-    checkGLError("glLinkProgram");
+    gl.checkGLError("glLinkProgram");
 
     final IntBuffer params = gl.getUtil().createIntBuffer(1);
     gl.glGetProgramiv(program, gl.GL_LINK_STATUS(), params);
     if (params.get(0) != gl.GL_TRUE()) {
-      log.warning("link error: " + gl.glGetProgramInfoLog(program));
-      checkGLError("glGetProgramInfoLog");
+      log.warn("link error: {}", gl.glGetProgramInfoLog(program));
+      gl.checkGLError("glGetProgramInfoLog");
     }
-    checkGLError("glGetProgram");
+    gl.checkGLError("glGetProgram");
   }
 
   public void setUniformi(final String name, final int... values) {
@@ -221,19 +223,19 @@ public class CoreShader {
     switch (values.length) {
     case 1:
       gl.glUniform1i(loc, values[0]);
-      checkGLError("glUniform1i");
+      gl.checkGLError("glUniform1i");
       break;
     case 2:
       gl.glUniform2i(loc, values[0], values[1]);
-      checkGLError("glUniform2i");
+      gl.checkGLError("glUniform2i");
       break;
     case 3:
       gl.glUniform3i(loc, values[0], values[1], values[2]);
-      checkGLError("glUniform3i");
+      gl.checkGLError("glUniform3i");
       break;
     case 4:
       gl.glUniform4i(loc, values[0], values[1], values[2], values[3]);
-      checkGLError("glUniform4i");
+      gl.checkGLError("glUniform4i");
       break;
     default:
       throw new IllegalArgumentException(String.format("Unsupported number of value arguments: %d", values.length));
@@ -245,19 +247,19 @@ public class CoreShader {
     switch (values.length) {
     case 1:
       gl.glUniform1f(loc, values[0]);
-      checkGLError("glUniform1f");
+      gl.checkGLError("glUniform1f");
       break;
     case 2:
       gl.glUniform2f(loc, values[0], values[1]);
-      checkGLError("glUniform2f");
+      gl.checkGLError("glUniform2f");
       break;
     case 3:
       gl.glUniform3f(loc, values[0], values[1], values[2]);
-      checkGLError("glUniform3f");
+      gl.checkGLError("glUniform3f");
       break;
     case 4:
       gl.glUniform4f(loc, values[0], values[1], values[2], values[3]);
-      checkGLError("glUniform4f");
+      gl.checkGLError("glUniform4f");
       break;
     default:
       throw new IllegalArgumentException("Unsupported number of value arguments: " + values.length);
@@ -276,19 +278,19 @@ public class CoreShader {
     switch (componentNum) {
     case 1:
       gl.glUniform1iv(loc, values);
-      checkGLError("glUniform1iv");
+      gl.checkGLError("glUniform1iv");
       break;
     case 2:
       gl.glUniform2iv(loc, values);
-      checkGLError("glUniform2iv");
+      gl.checkGLError("glUniform2iv");
       break;
     case 3:
       gl.glUniform3iv(loc, values);
-      checkGLError("glUniform3iv");
+      gl.checkGLError("glUniform3iv");
       break;
     case 4:
       gl.glUniform4iv(loc, values);
-      checkGLError("glUniform4iv");
+      gl.checkGLError("glUniform4iv");
       break;
     default:
       throw new IllegalArgumentException("Unsupported component count value: " + componentNum);
@@ -307,19 +309,19 @@ public class CoreShader {
     switch (componentNum) {
     case 1:
       gl.glUniform1fv(loc, values);
-      checkGLError("glUniform1fv");
+      gl.checkGLError("glUniform1fv");
       break;
     case 2:
       gl.glUniform2fv(loc, values);
-      checkGLError("glUniform2fv");
+      gl.checkGLError("glUniform2fv");
       break;
     case 3:
       gl.glUniform3fv(loc, values);
-      checkGLError("glUniform3fv");
+      gl.checkGLError("glUniform3fv");
       break;
     case 4:
       gl.glUniform4fv(loc, values);
-      checkGLError("glUniform4fv");
+      gl.checkGLError("glUniform4fv");
       break;
     default:
       throw new IllegalArgumentException("Unsupported component count value: " + componentNum);
@@ -337,7 +339,7 @@ public class CoreShader {
 
   /**
    * Set uniform matrix of dimension 'n x n' where n = componentNum
-   * 
+   *
    * @param name
    *          name of the GLSL uniform variable
    * @param componentNum
@@ -365,39 +367,39 @@ public class CoreShader {
     switch (type) {
     case M2x2:
       gl.glUniformMatrix2(loc, false, values);
-      checkGLError("glUniformMatrix2");
+      gl.checkGLError("glUniformMatrix2");
       break;
     case M2x3:
       gl.glUniformMatrix2x3(loc, false, values);
-      checkGLError("glUniformMatrix2x3");
+      gl.checkGLError("glUniformMatrix2x3");
       break;
     case M2x4:
       gl.glUniformMatrix2x4(loc, false, values);
-      checkGLError("glUniformMatrix2x4");
+      gl.checkGLError("glUniformMatrix2x4");
       break;
     case M3x2:
       gl.glUniformMatrix3x2(loc, false, values);
-      checkGLError("glUniformMatrix3x2");
+      gl.checkGLError("glUniformMatrix3x2");
       break;
     case M3x3:
       gl.glUniformMatrix3(loc, false, values);
-      checkGLError("glUniformMatrix3");
+      gl.checkGLError("glUniformMatrix3");
       break;
     case M3x4:
       gl.glUniformMatrix3x4(loc, false, values);
-      checkGLError("glUniformMatrix3x4");
+      gl.checkGLError("glUniformMatrix3x4");
       break;
     case M4x2:
       gl.glUniformMatrix4x2(loc, false, values);
-      checkGLError("glUniformMatrix4x2");
+      gl.checkGLError("glUniformMatrix4x2");
       break;
     case M4x3:
       gl.glUniformMatrix4x3(loc, false, values);
-      checkGLError("glUniformMatrix4x3");
+      gl.checkGLError("glUniformMatrix4x3");
       break;
     case M4x4:
       gl.glUniformMatrix4(loc, false, values);
-      checkGLError("glUniformMatrix4");
+      gl.checkGLError("glUniformMatrix4");
       break;
     default:
       throw new IllegalArgumentException(String.format("Unsupported dimension values for uniform matrix: %dx%d", n, m));
@@ -406,13 +408,13 @@ public class CoreShader {
 
   public int getAttribLocation(final String name) {
     final int result = gl.glGetAttribLocation(program, name);
-    checkGLError("glGetAttribLocation");
+    gl.checkGLError("glGetAttribLocation");
     return result;
   }
 
   public void bindAttribLocation(final String name, final int index) {
     gl.glBindAttribLocation(program, index, name);
-    checkGLError("glBindAttribLocation");
+    gl.checkGLError("glBindAttribLocation");
   }
 
   public Map<String, UniformBlockInfo> getUniformIndices(final String... uniformNames) {
@@ -430,7 +432,7 @@ public class CoreShader {
     final IntBuffer matrixStrides = gl.getUtil().createIntBuffer(uniformNames.length);
     gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_MATRIX_STRIDE(), matrixStrides);
 
-    checkGLError("getUniformIndices");
+    gl.checkGLError("getUniformIndices");
 
     for (int i = 0; i < uniformNames.length; i++) {
       final UniformBlockInfo blockInfo = new UniformBlockInfo();
@@ -446,15 +448,15 @@ public class CoreShader {
 
   public void uniformBlockBinding(final String name, final int uniformBlockBinding) {
     final int uniformBlockIndex = gl.glGetUniformBlockIndex(program, name);
-    checkGLError("glGetUniformBlockIndex");
+    gl.checkGLError("glGetUniformBlockIndex");
 
     gl.glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
-    checkGLError("glUniformBlockBinding");
+    gl.checkGLError("glUniformBlockBinding");
   }
 
   public void activate() {
     gl.glUseProgram(program);
-    checkGLError("glUseProgram");
+    gl.checkGLError("glUseProgram");
   }
 
   private int registerParameter(final String name) {
@@ -473,30 +475,30 @@ public class CoreShader {
 
   private int getUniform(final String uniformName) {
     final int result = gl.glGetUniformLocation(program, uniformName);
-    checkGLError("glGetUniformLocation for [" + uniformName + "] failed");
-    log.fine(getLoggingPrefix() + "glUniformLocation for [" + uniformName + "] = [" + result + "]");
+    gl.checkGLError("glGetUniformLocation for [{}] failed", uniformName);
+    log.fine("glUniformLocation for [{}] = [{}]", uniformName, result);
     return result;
   }
 
   private void prepareShader(final int shaderId, final String name, final InputStream... sources) {
     try {
       gl.glShaderSource(shaderId, loadShader(sources));
-      checkGLError("glShaderSource");
+      gl.checkGLError("glShaderSource");
     } catch (final IOException e) {
       throw new CoreGLException(e);
     }
 
     gl.glCompileShader(shaderId);
-    checkGLError("glCompileShader");
+    gl.checkGLError("glCompileShader");
 
     final IntBuffer ret = gl.getUtil().createIntBuffer(1);
     gl.glGetShaderiv(shaderId, gl.GL_COMPILE_STATUS(), ret);
     if (ret.get(0) == gl.GL_FALSE()) {
-      log.warning("'" + name + "' compile error: " + gl.glGetShaderInfoLog(shaderId));
+      log.warn("'{}' compile error: {}", name, gl.glGetShaderInfoLog(shaderId));
     }
 
     printLogInfo(shaderId);
-    checkGLError(String.valueOf(shaderId));
+    gl.checkGLError(String.valueOf(shaderId));
   }
 
   private String loadShader(final InputStream... sources) throws IOException {
@@ -516,23 +518,15 @@ public class CoreShader {
 
   private void printLogInfo(final int obj) {
     final String logInfoMsg = gl.glGetShaderInfoLog(obj);
-    checkGLError("glGetShaderInfoLog");
+    gl.checkGLError("glGetShaderInfoLog");
     if (!logInfoMsg.isEmpty()) {
-      log.info(getLoggingPrefix() + "Info log:\n" + logInfoMsg);
+      log.info("Info log:\n{}", logInfoMsg);
     }
-    checkGLError("printLogInfo");
-  }
-
-  private void checkGLError(final String message) {
-    gl.checkGLError(getLoggingPrefix() + message);
-  }
-
-  private String getLoggingPrefix() {
-    return "[" + program + "] ";
+    gl.checkGLError("printLogInfo");
   }
 
   private InputStream getStream(final File file) throws FileNotFoundException {
-    log.fine("loading shader file [" + file + "]");
+    log.fine("loading shader file [{}]", file);
     return new FileInputStream(file);
   }
 
@@ -543,7 +537,7 @@ public class CoreShader {
   /**
    * Internal enum for representing the 9 possible GLSL matrix types and mapping
    * them to a single key formed from the 'n x m' dimensions.
-   * 
+   *
    * @author Brian Groenke (groenke.5@osu.edu)
    */
   enum UniformMatrixType {

@@ -20,44 +20,67 @@ public final class CoreLogger {
   private static final String ARG_STR = "{}";
   private final Logger log;
   private final StringBuilder concatBuffer = new StringBuilder(DEFAULT_BUFFER_CAPACITY);
+  private String prefix = "";
 
   public static CoreLogger getCoreLogger(final String name) {
     return new CoreLogger(name);
   }
 
   public void info(final String message) {
-    log.info(message);
+    log.info(prepare(message));
   }
 
   public void info(final String message, final Object... args) {
-    info(concat(message, args));
+    log.info(prepareWithArgs(message, args));
   }
 
   public void warn(final String message) {
-    log.warning(message);
+    log.warning(prepare(message));
   }
 
   public void warn(final String message, final Object... args) {
-    warn(concat(message, args));
+    log.warning(prepareWithArgs(message, args));
   }
 
   public void severe(final String message) {
-    log.severe(message);
+    log.severe(prepare(message));
   }
 
   public void severe(final String message, final Object... args) {
-    severe(concat(message, args));
+    log.severe(prepareWithArgs(message, args));
   }
 
   public void fine(final String message) {
-    log.fine(message);
+    log.fine(prepare(message));
   }
 
   public void fine(final String message, final Object... args) {
-    fine(concat(message, args));
+    log.fine(prepareWithArgs(message, args));
   }
 
-  public void checkGLError(final CoreGL gl, final boolean throwException, final String message, final Object... args) {
+  public void setLoggingPrefix(final String prefix) {
+    if (prefix == null) throw new IllegalArgumentException("prefix argument cannot be null");
+    this.prefix = prefix;
+  }
+
+  public String getLoggingPrefix() {
+    return prefix;
+  }
+
+  public void checkGLError(final CoreGL gl, final String message, final Object...args) {
+    checkGLError(gl, false, message, args);
+  }
+
+  public void checkGLError(final CoreGL gl, final boolean throwException, final String message, final Object...args) {
+    // pre-process message args and then pass to normal checkGLError
+    checkGLError(gl, throwException, prepareWithArgs(message, args));
+  }
+
+  public void checkGLError(final CoreGL gl, final String message) {
+    checkGLError(gl, false, message);
+  }
+
+  public void checkGLError(final CoreGL gl, final boolean throwException, final String message) {
     int error = gl.glGetError();
     boolean hasError = false;
     while (error != gl.GL_NO_ERROR()) {
@@ -77,18 +100,27 @@ public final class CoreLogger {
     }
   }
 
-  public void checkGLError(final CoreGL gl, final String message, final Object...args) {
-    checkGLError(gl, false, message, args);
-  }
-
-  private String concat(final String message, final Object... args) {
-    concatBuffer.delete(0, concatBuffer.length()); // clear buffer
+  private String prepareWithArgs(final String message, final Object... args) {
+    clearBuffer();
+    concatBuffer.append(prefix);
     concatBuffer.append(message);
     for (final Object arg : args) {
       final int index = concatBuffer.indexOf(ARG_STR);
       concatBuffer.replace(index, index + 2, arg.toString());
     }
     return concatBuffer.toString();
+  }
+
+  // adds prefix to message without using varargs for argument processing
+  private String prepare(final String message) {
+    clearBuffer();
+    concatBuffer.append(prefix);
+    concatBuffer.append(message);
+    return concatBuffer.toString();
+  }
+
+  private void clearBuffer () {
+    concatBuffer.delete(0, concatBuffer.length());
   }
 
   private CoreLogger(final String name) {
