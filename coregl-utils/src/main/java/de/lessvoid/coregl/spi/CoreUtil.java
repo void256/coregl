@@ -15,6 +15,8 @@ public interface CoreUtil {
 
   int gluBuild2DMipmaps(int target, int internalFormat, int width, int height, int format, int type, ByteBuffer data);
 
+  String gluErrorString(int glError);
+
   IntBuffer createIntBuffer(int[] data);
 
   IntBuffer createIntBuffer(IntBuffer data);

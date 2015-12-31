@@ -5,7 +5,6 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.logging.Logger;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
@@ -16,9 +15,8 @@ import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.GLContext;
-import com.jogamp.opengl.glu.GLU;
 
-import de.lessvoid.coregl.CoreGLException;
+import de.lessvoid.coregl.CoreLogger;
 import de.lessvoid.coregl.spi.CoreGL;
 import de.lessvoid.coregl.spi.CoreUtil;
 
@@ -28,7 +26,7 @@ import de.lessvoid.coregl.spi.CoreUtil;
  */
 public class JoglCoreGL implements CoreGL {
 
-  private static Logger log = Logger.getLogger(JoglCoreGL.class.getName());
+  private static CoreLogger log = CoreLogger.getCoreLogger(JoglCoreGL.class.getName());
 
   private final CoreUtil util = new JoglCoreUtil();
 
@@ -1451,30 +1449,14 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
-  public void checkGLError(final String msg) {
-    checkGLError(msg, false);
+  public void checkGLError(final String msg, final Object...args) {
+    checkGLError(false, msg, args);
   }
 
   @Override
-  public void checkGLError(final String msg, final boolean throwException) {
+  public void checkGLError(final boolean throwException, final String msg, final Object...args) {
     if (!errorChecksEnabled) return;
-    int error = glGetError();
-    boolean hasError = false;
-    while (error != GL.GL_NO_ERROR) {
-      hasError = true;
-      final String glerrmsg = GLU.createGLU().gluErrorString(error);
-      final StringBuilder stacktrace = new StringBuilder();
-      for (final StackTraceElement strackTraceElement : Thread.currentThread().getStackTrace()) {
-        stacktrace.append(strackTraceElement.toString());
-        stacktrace.append("\n");
-      }
-      log.warning("OpenGL Error: (" + error + ") " + glerrmsg + " {" + msg + "} " + stacktrace.toString());
-      error = glGetError();
-    }
-
-    if (hasError && throwException) {
-      throw new CoreGLException("OpenGL Error occurred:" + msg);
-    }
+    log.checkGLError(this, throwException, msg, args);
   }
 
   @Override

@@ -35,6 +35,11 @@ class JoglCoreUtil implements CoreUtil {
   }
 
   @Override
+  public String gluErrorString (final int glError) {
+    return GLU.createGLU().gluErrorString(glError);
+  }
+
+  @Override
   public ByteBuffer createByteBuffer(final byte[] data) {
     return Buffers.newDirectByteBuffer(data);
   }

@@ -34,6 +34,11 @@ class LwjglCoreUtil implements CoreUtil {
   }
 
   @Override
+  public String gluErrorString(final int glError) {
+    return GLU.gluErrorString(glError);
+  }
+
+  @Override
   public ByteBuffer createByteBuffer(final byte[] data) {
     final ByteBuffer buffer = BufferUtils.createByteBuffer(data.length);
     buffer.put(data);

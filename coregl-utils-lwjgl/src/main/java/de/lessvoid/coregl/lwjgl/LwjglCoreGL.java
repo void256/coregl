@@ -5,7 +5,6 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.logging.Logger;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -20,9 +19,8 @@ import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL41;
-import org.lwjgl.util.glu.GLU;
 
-import de.lessvoid.coregl.CoreGLException;
+import de.lessvoid.coregl.CoreLogger;
 import de.lessvoid.coregl.spi.CoreGL;
 import de.lessvoid.coregl.spi.CoreUtil;
 
@@ -32,7 +30,7 @@ import de.lessvoid.coregl.spi.CoreUtil;
  */
 public class LwjglCoreGL implements CoreGL {
 
-  private static Logger log = Logger.getLogger(LwjglCoreGL.class.getName());
+  private static CoreLogger log = CoreLogger.getCoreLogger(LwjglCoreGL.class.getName());
 
   private final CoreUtil util = new LwjglCoreUtil();
 
@@ -1434,51 +1432,20 @@ public class LwjglCoreGL implements CoreGL {
 
   private boolean errorCheckingEnabled = true;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see de.lessvoid.coregl.CoreCheckGL#checkGLError()
-   */
   @Override
   public void checkGLError() {
     checkGLError("");
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see de.lessvoid.coregl.CoreCheckGL#checkGLError(java.lang.String)
-   */
   @Override
-  public void checkGLError(final String message) {
-    checkGLError(message, false);
+  public void checkGLError(final String msg, final Object...args) {
+    checkGLError(false, msg, args);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see de.lessvoid.coregl.CoreCheckGL#checkGLError(java.lang.String, boolean)
-   */
   @Override
-  public void checkGLError(final String message, final boolean throwException) {
+  public void checkGLError(final boolean throwException, final String msg, final Object...args) {
     if (!errorCheckingEnabled) return;
-    int error = glGetError();
-    boolean hasError = false;
-    while (error != GL11.GL_NO_ERROR) {
-      hasError = true;
-      final String glerrmsg = GLU.gluErrorString(error);
-      final StringBuilder stacktrace = new StringBuilder();
-      for (final StackTraceElement strackTraceElement : Thread.currentThread().getStackTrace()) {
-        stacktrace.append(strackTraceElement.toString());
-        stacktrace.append("\n");
-      }
-      log.warning("OpenGL Error: (" + error + ") " + glerrmsg + " {" + message + "} " + stacktrace.toString());
-      error = glGetError();
-    }
-
-    if (hasError && throwException) {
-      throw new CoreGLException("OpenGL Error occurred:" + message);
-    }
+    log.checkGLError(this, throwException, msg, args);
   }
 
   @Override

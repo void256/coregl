@@ -612,9 +612,9 @@ public interface CoreGL {
 
   public void checkGLError();
 
-  public void checkGLError(String msg);
+  public void checkGLError(String msg, Object...args);
 
-  public void checkGLError(String msg, boolean throwException);
+  public void checkGLError(boolean throwException, String msg, Object...args);
 
   public void setErrorChecksEnabled(boolean enabled);
 
