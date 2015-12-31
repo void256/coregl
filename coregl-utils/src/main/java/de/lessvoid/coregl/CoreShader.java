@@ -53,7 +53,7 @@ public class CoreShader {
 
   private final CoreLogger log;
   private final int program;
-  private final Hashtable<String, Integer> parameter = new Hashtable<String, Integer>();
+  private final Map<String, Integer> parameter = new HashMap<String, Integer>();
   private FloatBuffer matBuffer;
   private final String[] attributes;
 
