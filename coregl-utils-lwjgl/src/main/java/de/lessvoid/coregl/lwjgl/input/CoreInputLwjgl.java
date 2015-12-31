@@ -3,16 +3,15 @@ package de.lessvoid.coregl.lwjgl.input;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import de.lessvoid.coregl.CoreLogger;
 import de.lessvoid.coregl.input.PendingEventQueue;
 import de.lessvoid.coregl.input.spi.AbstractCoreInput;
 import de.lessvoid.coregl.input.spi.CoreMouseEvent;
 
 public class CoreInputLwjgl extends AbstractCoreInput {
 
-  private static final Logger log = LoggerFactory.getLogger(CoreInputLwjgl.class);
+  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreInputLwjgl.class);
 
   private final LwjglInputProcessor eventProcessor = new LwjglInputProcessor();
   private final LwjglMouseEventDriver mouseEventDriver = LwjglMouseEventDriver.getInstance();
@@ -30,7 +29,7 @@ public class CoreInputLwjgl extends AbstractCoreInput {
       if (!Keyboard.isCreated()) Keyboard.create();
       mouseEventDriver.init();
     } catch (final LWJGLException e) {
-      log.error("Error initializing LWJGL input system: ", e);
+      log.severe("Error initializing LWJGL input system: ", e);
       throw new RuntimeException(e);
     }
 
@@ -67,7 +66,7 @@ public class CoreInputLwjgl extends AbstractCoreInput {
         eventQueue.enqueue(CoreKeyEventLwjgl.createKeyEventFromCurrentState());
         count++;
       }
-      log.trace("enqueued {} key events", count);
+      log.fine("enqueued {} key events", count);
 
       // process mouse events
       count = 0;
@@ -77,7 +76,7 @@ public class CoreInputLwjgl extends AbstractCoreInput {
           count++;
         }
       }
-      log.trace("enqueued {} mouse events", count);
+      log.fine("enqueued {} mouse events", count);
     }
   }
 }

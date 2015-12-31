@@ -1,20 +1,18 @@
 package de.lessvoid.coregl.jogl.input;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.opengl.GLWindow;
 
+import de.lessvoid.coregl.CoreLogger;
 import de.lessvoid.coregl.input.PendingEventQueue;
 import de.lessvoid.coregl.input.spi.AbstractCoreInput;
 
 public class CoreInputJogl extends AbstractCoreInput {
 
-  private static final Logger log = LoggerFactory.getLogger(CoreInputJogl.class);
+  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreInputJogl.class);
 
   private final NewtKeyListener keyListener = new NewtKeyListener();
   private final NewtMouseListener mouseListener = new NewtMouseListener();
@@ -68,7 +66,7 @@ public class CoreInputJogl extends AbstractCoreInput {
 
     @Override
     public void keyPressed(final KeyEvent arg0) {
-      log.trace("keyPressed: {}", arg0);
+      log.fine("keyPressed: {}", arg0);
       eventQueue.enqueue(new CoreKeyEventJogl(arg0));
     }
 
@@ -76,7 +74,7 @@ public class CoreInputJogl extends AbstractCoreInput {
     public void keyReleased(final KeyEvent arg0) {
       // ignore release events sent by auto-repeat
       if (arg0.isAutoRepeat()) return;
-      log.info("keyReleased: {}", arg0);
+      log.fine("keyReleased: {}", arg0);
       eventQueue.enqueue(new CoreKeyEventJogl(arg0));
     }
   }
@@ -85,49 +83,49 @@ public class CoreInputJogl extends AbstractCoreInput {
 
     @Override
     public void mouseClicked(final MouseEvent arg0) {
-      log.trace("mouseClicked: {}", arg0);
+      log.fine("mouseClicked: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
     public void mouseDragged(final MouseEvent arg0) {
-      log.trace("mouseDragged: {}", arg0);
+      log.fine("mouseDragged: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
     public void mouseEntered(final MouseEvent arg0) {
-      log.trace("mouseEntered: {}", arg0);
+      log.fine("mouseEntered: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
     public void mouseExited(final MouseEvent arg0) {
-      log.trace("mouseExited: {}", arg0);
+      log.fine("mouseExited: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
     public void mouseMoved(final MouseEvent arg0) {
-      log.trace("mouseMoved: {}", arg0);
+      log.fine("mouseMoved: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
     public void mousePressed(final MouseEvent arg0) {
-      log.trace("mousePressed: {}", arg0);
+      log.fine("mousePressed: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
     public void mouseReleased(final MouseEvent arg0) {
-      log.trace("mouseReleased: {}", arg0);
+      log.fine("mouseReleased: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
 
     @Override
     public void mouseWheelMoved(final MouseEvent arg0) {
-      log.trace("mouseWheelMoved: {}", arg0);
+      log.fine("mouseWheelMoved: {}", arg0);
       eventQueue.enqueue(new CoreMouseEventJogl(arg0));
     }
   }

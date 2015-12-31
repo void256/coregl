@@ -4,16 +4,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.lessvoid.coregl.CoreLogger;
 import de.lessvoid.coregl.input.spi.CoreInputEventDispatcher;
 import de.lessvoid.coregl.input.spi.CoreMouseEvent;
 import de.lessvoid.coregl.input.spi.CoreMouseListener;
 
 public class CoreMouseEventDispatcher implements CoreInputEventDispatcher<CoreMouseEvent, CoreMouseListener> {
 
-  private static final Logger log = LoggerFactory.getLogger(CoreMouseEventDispatcher.class);
+  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreMouseEventDispatcher.class);
 
   private final Set<CoreMouseListener> listeners = Collections.synchronizedSet(new HashSet<CoreMouseListener>());
 

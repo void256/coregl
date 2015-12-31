@@ -4,16 +4,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.lessvoid.coregl.CoreLogger;
 import de.lessvoid.coregl.input.spi.CoreInputEventDispatcher;
 import de.lessvoid.coregl.input.spi.CoreKeyEvent;
 import de.lessvoid.coregl.input.spi.CoreKeyListener;
 
 public class CoreKeyEventDispatcher implements CoreInputEventDispatcher<CoreKeyEvent, CoreKeyListener> {
 
-  private static final Logger log = LoggerFactory.getLogger(CoreKeyEventDispatcher.class);
+  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreKeyEventDispatcher.class);
 
   private final Set<CoreKeyListener> listeners = Collections.synchronizedSet(new HashSet<CoreKeyListener>());
 
