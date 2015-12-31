@@ -23,6 +23,11 @@ public final class CoreLogger {
   private final StringBuilder concatBuffer = new StringBuilder(DEFAULT_BUFFER_CAPACITY);
   private String prefix = "";
 
+  /* These arrays are used to transfer the arguments between the logging functions without requiring new objects. */
+  private static final Object[] transferArray1 = new Object[1];
+  private static final Object[] transferArray2 = new Object[2];
+  private static final Object[] transferArray3 = new Object[3];
+
   public static CoreLogger getCoreLogger(final String name) {
     return new CoreLogger(name);
   }
@@ -31,6 +36,30 @@ public final class CoreLogger {
     if (log.isLoggable(Level.INFO)) {
       log.info(prepare(message));
     }
+  }
+
+  public void info(final String message, final Object arg1) {
+    Object[] transferArray = transferArray1;
+    transferArray[0] = arg1;
+
+    info(message, transferArray);
+  }
+
+  public void info(final String message, final Object arg1, final Object arg2) {
+    Object[] transferArray = transferArray2;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+
+    info(message, transferArray);
+  }
+
+  public void info(final String message, final Object arg1, final Object arg2, final Object arg3) {
+    Object[] transferArray = transferArray3;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+    transferArray[2] = arg3;
+
+    info(message, transferArray);
   }
 
   public void info(final String message, final Object... args) {
@@ -45,6 +74,30 @@ public final class CoreLogger {
     }
   }
 
+  public void warn(final String message, final Object arg1) {
+    Object[] transferArray = transferArray1;
+    transferArray[0] = arg1;
+
+    warn(message, transferArray);
+  }
+
+  public void warn(final String message, final Object arg1, final Object arg2) {
+    Object[] transferArray = transferArray2;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+
+    warn(message, transferArray);
+  }
+
+  public void warn(final String message, final Object arg1, final Object arg2, final Object arg3) {
+    Object[] transferArray = transferArray3;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+    transferArray[2] = arg3;
+
+    warn(message, transferArray);
+  }
+
   public void warn(final String message, final Object... args) {
     if (log.isLoggable(Level.WARNING)) {
       log.warning(prepareWithArgs(message, args));
@@ -57,6 +110,30 @@ public final class CoreLogger {
     }
   }
 
+  public void severe(final String message, final Object arg1) {
+    Object[] transferArray = transferArray1;
+    transferArray[0] = arg1;
+
+    severe(message, transferArray);
+  }
+
+  public void severe(final String message, final Object arg1, final Object arg2) {
+    Object[] transferArray = transferArray2;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+
+    severe(message, transferArray);
+  }
+
+  public void severe(final String message, final Object arg1, final Object arg2, final Object arg3) {
+    Object[] transferArray = transferArray3;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+    transferArray[2] = arg3;
+
+    severe(message, transferArray);
+  }
+
   public void severe(final String message, final Object... args) {
     if (log.isLoggable(Level.SEVERE)) {
       log.severe(prepareWithArgs(message, args));
@@ -67,6 +144,30 @@ public final class CoreLogger {
     if (log.isLoggable(Level.FINE)) {
       log.fine(prepare(message));
     }
+  }
+
+  public void fine(final String message, final Object arg1) {
+    Object[] transferArray = transferArray1;
+    transferArray[0] = arg1;
+
+    fine(message, transferArray);
+  }
+
+  public void fine(final String message, final Object arg1, final Object arg2) {
+    Object[] transferArray = transferArray2;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+
+    fine(message, transferArray);
+  }
+
+  public void fine(final String message, final Object arg1, final Object arg2, final Object arg3) {
+    Object[] transferArray = transferArray3;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+    transferArray[2] = arg3;
+
+    fine(message, transferArray);
   }
 
   public void fine(final String message, final Object... args) {
@@ -84,8 +185,69 @@ public final class CoreLogger {
     return prefix;
   }
 
+  public void checkGLError(final CoreGL gl, final String message, final Object arg1) {
+    Object[] transferArray = transferArray1;
+    transferArray[0] = arg1;
+
+    checkGLError(gl, message, transferArray);
+  }
+
+  public void checkGLError(final CoreGL gl, final String message, final Object arg1, final Object arg2) {
+    Object[] transferArray = transferArray2;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+
+    checkGLError(gl, message, transferArray);
+  }
+
+  public void checkGLError(final CoreGL gl,
+                           final String message,
+                           final Object arg1,
+                           final Object arg2,
+                           final Object arg3) {
+    Object[] transferArray = transferArray3;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+    transferArray[2] = arg3;
+
+    checkGLError(gl, message, transferArray);
+  }
+
   public void checkGLError(final CoreGL gl, final String message, final Object...args) {
     checkGLError(gl, false, message, args);
+  }
+
+  public void checkGLError(final CoreGL gl, final boolean throwException, final String message, final Object arg1) {
+    Object[] transferArray = transferArray1;
+    transferArray[0] = arg1;
+
+    checkGLError(gl, throwException, message, transferArray);
+  }
+
+  public void checkGLError(final CoreGL gl,
+                           final boolean throwException,
+                           final String message,
+                           final Object arg1,
+                           final Object arg2) {
+    Object[] transferArray = transferArray2;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+
+    checkGLError(gl, throwException, message, transferArray);
+  }
+
+  public void checkGLError(final CoreGL gl,
+                           final boolean throwException,
+                           final String message,
+                           final Object arg1,
+                           final Object arg2,
+                           final Object arg3) {
+    Object[] transferArray = transferArray3;
+    transferArray[0] = arg1;
+    transferArray[1] = arg2;
+    transferArray[2] = arg3;
+
+    checkGLError(gl, throwException, message, transferArray);
   }
 
   public void checkGLError(final CoreGL gl, final boolean throwException, final String message, final Object...args) {
@@ -147,6 +309,10 @@ public final class CoreLogger {
     concatBuffer.append(message);
     for (final Object arg : args) {
       final int index = concatBuffer.indexOf(ARG_STR);
+      if (index == -1) {
+        severe("Error preparing logging message. Expected {} parameters in message: \"{}\"", args.length, message);
+        break;
+      }
       concatBuffer.replace(index, index + 2, arg.toString());
     }
     return concatBuffer.toString();

@@ -203,7 +203,7 @@ public class CoreShader {
   public void link() {
     for (int i = 0; i < attributes.length; i++) {
       gl.glBindAttribLocation(program, i, attributes[i]);
-      gl.checkGLError("glBindAttribLocation ({})", attributes[i]);
+      log.checkGLError(gl, "glBindAttribLocation ({})", attributes[i]);
     }
 
     gl.glLinkProgram(program);
@@ -475,7 +475,7 @@ public class CoreShader {
 
   private int getUniform(final String uniformName) {
     final int result = gl.glGetUniformLocation(program, uniformName);
-    gl.checkGLError("glGetUniformLocation for [{}] failed", uniformName);
+    log.checkGLError(gl, "glGetUniformLocation for [{}] failed", uniformName);
     log.fine("glUniformLocation for [{}] = [{}]", uniformName, result);
     return result;
   }
