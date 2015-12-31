@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL21;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL31;
 import org.lwjgl.opengl.GL32;
@@ -27,7 +28,7 @@ import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
- * @author Brian Groenke
+ * @author Brian Groenke (groenke.5@osu.edu)
  */
 public class LwjglCoreGL implements CoreGL {
 
@@ -1138,6 +1139,46 @@ public class LwjglCoreGL implements CoreGL {
 	public void glUniformMatrix4(int location, boolean transpose, FloatBuffer matrices) {
 		GL20.glUniformMatrix4(location, transpose, matrices);
 	}
+
+  @Override
+  public void glUniformMatrix2(int location, boolean transpose, FloatBuffer matrices) {
+    GL20.glUniformMatrix2(location, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix2x3(int location, boolean transpose, FloatBuffer matrices) {
+    GL21.glUniformMatrix2x3(location, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix2x4(int location, boolean transpose, FloatBuffer matrices) {
+    GL21.glUniformMatrix2x4(location, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix3(int location, boolean transpose, FloatBuffer matrices) {
+    GL20.glUniformMatrix3(location, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix3x2(int location, boolean transpose, FloatBuffer matrices) {
+    GL21.glUniformMatrix3x2(location, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix3x4(int location, boolean transpose, FloatBuffer matrices) {
+    GL21.glUniformMatrix3x4(location, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix4x2(int location, boolean transpose, FloatBuffer matrices) {
+    GL21.glUniformMatrix4x2(location, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix4x3(int location, boolean transpose, FloatBuffer matrices) {
+    GL21.glUniformMatrix4x3(location, transpose, matrices);
+  }
 
 	@Override
 	public boolean glUnmapBuffer(int target) {

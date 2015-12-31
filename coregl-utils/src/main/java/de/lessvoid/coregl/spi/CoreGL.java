@@ -4,7 +4,7 @@ import java.nio.*;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
- * @author Brian Groenke
+ * @author Brian Groenke (groenke.5@osu.edu)
  */
 public interface CoreGL {
 	// OpenGL constants
@@ -237,7 +237,15 @@ public interface CoreGL {
 	public void glUniform2iv(int location, IntBuffer ubuff);
 	public void glUniform3iv(int location, IntBuffer ubuff);
 	public void glUniform4iv(int location, IntBuffer ubuff);
+	public void glUniformMatrix2(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformMatrix2x3(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformMatrix2x4(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformMatrix3(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformMatrix3x2(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformMatrix3x4(int location, boolean transpose, FloatBuffer matrices);
 	public void glUniformMatrix4(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformMatrix4x2(int location, boolean transpose, FloatBuffer matrices);
+	public void glUniformMatrix4x3(int location, boolean transpose, FloatBuffer matrices);
 	public void glUniformBlockBinding(int prog, int blockIndex, int blockBinding);
 	public boolean glUnmapBuffer(int target);
 	public void glUseProgram(int program);

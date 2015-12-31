@@ -24,7 +24,7 @@ import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
- * @author Brian Groenke
+ * @author Brian Groenke (groenke.5@osu.edu)
  */
 public class JoglCoreGL implements CoreGL {
 
@@ -1143,6 +1143,46 @@ public class JoglCoreGL implements CoreGL {
 		GLContext.getCurrentGL().getGL2ES2().glUniformMatrix4fv(location, matrices.remaining() / 16, transpose, matrices);
 	}
 
+  @Override
+  public void glUniformMatrix2(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES2().glUniformMatrix2fv(location, matrices.remaining() / 4, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix2x3(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES3().glUniformMatrix2x3fv(location, matrices.remaining() / 6, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix2x4(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES3().glUniformMatrix2x4fv(location, matrices.remaining() / 8, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix3(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES2().glUniformMatrix3fv(location, matrices.remaining() / 9, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix3x2(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES3().glUniformMatrix3x2fv(location, matrices.remaining() / 6, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix3x4(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES3().glUniformMatrix3x4fv(location, matrices.remaining() / 12, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix4x2(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES3().glUniformMatrix4x2fv(location, matrices.remaining() / 8, transpose, matrices);
+  }
+
+  @Override
+  public void glUniformMatrix4x3(int location, boolean transpose, FloatBuffer matrices) {
+    GLContext.getCurrentGL().getGL2ES3().glUniformMatrix4x3fv(location, matrices.remaining() / 12, transpose, matrices);
+  }
+
 	@Override
 	public boolean glUnmapBuffer(int target) {
 		return GLContext.getCurrentGL().glUnmapBuffer(target);
@@ -1315,5 +1355,4 @@ public class JoglCoreGL implements CoreGL {
 	public CoreUtil getUtil() {
 		return util;
 	}
-
 }
