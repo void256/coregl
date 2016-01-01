@@ -21,6 +21,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 
+import de.lessvoid.coregl.CoreLogger;
 import de.lessvoid.coregl.input.spi.CoreInput;
 import de.lessvoid.coregl.jogl.input.CoreInputJogl;
 import de.lessvoid.coregl.spi.CoreGL;
@@ -32,7 +33,7 @@ import de.lessvoid.coregl.spi.CoreSetup;
  * @author Brian Groenke
  */
 public class CoreSetupJogl implements CoreSetup {
-  private static final Logger log = Logger.getLogger(CoreSetupJogl.class.getName());
+  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreSetupJogl.class);
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
 
   private final StringBuilder fpsText = new StringBuilder();
@@ -185,8 +186,9 @@ public class CoreSetupJogl implements CoreSetup {
     newtScreen.removeReference();
     glWin.setVisible(true);
     glWin.windowRepaint(0, 0, requestedWidth, requestedHeight);
-    logMode("current mode: ",
-            newtScreen.getMainMonitor(new Rectangle(0, 0, requestedWidth, requestedHeight)).getCurrentMode());
+
+    log.info("current mode: {}",
+        newtScreen.getMainMonitor(new Rectangle(0, 0, requestedWidth, requestedHeight)).getCurrentMode().getSizeAndRRate());
   }
 
   private void createWindow(final String title, final int width, final int height, final GLCapabilities glc) {
@@ -206,11 +208,6 @@ public class CoreSetupJogl implements CoreSetup {
 
   private void centerWindow() {
     glWin.setPosition((newtScreen.getWidth() - glWin.getWidth()) / 2, (newtScreen.getHeight() - glWin.getHeight()) / 2);
-  }
-
-  private void logMode(final String message, final MonitorMode currentMode) {
-    log.info(message + currentMode.getRotatedWidth() + ", " + currentMode.getRotatedHeight() + ", "
-        + currentMode.getSurfaceSize().getBitsPerPixel() + ", " + currentMode.getRefreshRate() + " Hz");
   }
 
   private void initInput() throws Exception {
@@ -241,16 +238,16 @@ public class CoreSetupJogl implements CoreSetup {
     @Override
     public void init(final GLAutoDrawable drawable) {
       // just output some info about the system we're on
-      log.info("platform: " + System.getProperty("os.name"));
-      log.info("opengl version: " + gl.glGetString(gl.GL_VERSION()));
-      log.info("opengl vendor: " + gl.glGetString(gl.GL_VENDOR()));
-      log.info("opengl renderer: " + gl.glGetString(gl.GL_RENDERER()));
+      log.info("platform: {}", System.getProperty("os.name"));
+      log.info("opengl version: {}", gl.glGetString(gl.GL_VERSION()));
+      log.info("opengl vendor: {}", gl.glGetString(gl.GL_VENDOR()));
+      log.info("opengl renderer: {}", gl.glGetString(gl.GL_RENDERER()));
       final IntBuffer maxVertexAttribts = gl.getUtil().createIntBuffer(4 * 4);
       gl.glGetIntegerv(gl.GL_MAX_VERTEX_ATTRIBS(), maxVertexAttribts);
-      log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
-      gl.checkGLError("init phase 1");
+      log.info("GL_MAX_VERTEX_ATTRIBS: {}", maxVertexAttribts.get(0));
+      log.checkGLError(gl, "init phase 1");
 
-      log.info("GL_MAX_3D_TEXTURE_SIZE: " + gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
+      log.info("GL_MAX_3D_TEXTURE_SIZE: {}", gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
 
       gl.glViewport(0, 0, glWin.getWidth(), glWin.getHeight());
 
@@ -258,7 +255,7 @@ public class CoreSetupJogl implements CoreSetup {
       gl.glClear(gl.GL_COLOR_BUFFER_BIT());
       gl.glEnable(gl.GL_BLEND());
       gl.glBlendFunc(gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
-      gl.checkGLError("initialized");
+      log.checkGLError(gl, "initialized");
       callback.init(gl);
     }
 

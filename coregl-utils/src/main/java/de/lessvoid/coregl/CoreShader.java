@@ -89,7 +89,7 @@ public class CoreShader {
     attributes = vertexAttributes;
     program = gl.glCreateProgram();
     final String progIdStr = "[" + program + "]";
-    log = CoreLogger.getCoreLogger(getClass().getName() + progIdStr);
+    log = CoreLogger.getCoreLogger(getClass().getName());
     log.setLoggingPrefix(progIdStr);
     gl.checkGLError("glCreateProgram");
   }
