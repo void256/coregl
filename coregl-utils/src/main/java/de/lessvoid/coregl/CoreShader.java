@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -88,7 +89,7 @@ public class CoreShader {
     attributes = vertexAttributes;
     program = gl.glCreateProgram();
     final String progIdStr = "[" + program + "]";
-    log = CoreLogger.getCoreLogger(getClass().getName() + progIdStr);
+    log = CoreLogger.getCoreLogger(getClass().getName());
     log.setLoggingPrefix(progIdStr);
     gl.checkGLError("glCreateProgram");
   }
@@ -562,6 +563,7 @@ public class CoreShader {
 
     static {
       matDimsToType = new UniformMatrixType[keyFor(4, 4) + 1];
+      Arrays.fill(matDimsToType, UNSUPPORTED);
       for (final UniformMatrixType value : values()) {
         int key = keyFor(value.n, value.m);
         if (key >= 0 && key < matDimsToType.length) {
@@ -579,7 +581,7 @@ public class CoreShader {
     }
 
     private static int keyFor(final int n, final int m) {
-      return (n - 2) * 3 + m;
+      return (n - 2) * 3 + (m - 2);
     }
   }
 }

@@ -26,7 +26,7 @@ import de.lessvoid.coregl.spi.CoreUtil;
  */
 public class JoglCoreGL implements CoreGL {
 
-  private static CoreLogger log = CoreLogger.getCoreLogger(JoglCoreGL.class.getName());
+  private static CoreLogger log = CoreLogger.getCoreLogger(JoglCoreGL.class);
 
   private final CoreUtil util = new JoglCoreUtil();
 

@@ -21,7 +21,7 @@ public final class CoreLogger {
 
   private static final int DEFAULT_BUFFER_CAPACITY = 1024;
   private static final String ARG_STR = "{}";
-  private static final Map<String, CoreLogger> loggerCache = new ConcurrentHashMap<String, CoreLogger>();
+  private static final ConcurrentHashMap<String, CoreLogger> loggerCache = new ConcurrentHashMap<String, CoreLogger>();
   private final Logger log;
   private final StringBuilder concatBuffer = new StringBuilder(DEFAULT_BUFFER_CAPACITY);
   private String prefix = "";
@@ -32,12 +32,30 @@ public final class CoreLogger {
   private final Object[] transferArray3 = new Object[3];
 
   public static CoreLogger getCoreLogger(final String name) {
-    if (!loggerCache.containsKey(name)) loggerCache.put(name, new CoreLogger(name));
-    return loggerCache.get(name);
+    CoreLogger existing = loggerCache.get(name);
+    if (existing != null) {
+      return existing;
+    }
+
+    /*
+    Logger needs to be created. But point may be reached for multiple threads at the same time. So this code ensures
+    that that the same logger is returned for all calls of this function for the same name. It may create a useless
+    new logger instance that is never used and GCed pretty soon, but the returned value is ALWAYS the same for every
+    thread.
+    */
+    CoreLogger newLogger = new CoreLogger(name);
+    existing = loggerCache.putIfAbsent(name, newLogger);
+
+    /* existing is not null in case another thread created the logger in the mean time. */
+    return (existing == null) ? newLogger : existing;
   }
 
   public static CoreLogger getCoreLogger(final Class<?> clazz) {
     return getCoreLogger(clazz.getName());
+  }
+
+  public boolean isInfoLogged() {
+    return log.isLoggable(Level.INFO);
   }
 
   public void info(final String message) {
@@ -82,6 +100,10 @@ public final class CoreLogger {
     }
   }
 
+  public boolean isWarnLogged() {
+    return log.isLoggable(Level.WARNING);
+  }
+
   public void warn(final String message) {
     if (log.isLoggable(Level.WARNING)) {
       log.warning(prepare(message));
@@ -124,6 +146,10 @@ public final class CoreLogger {
     }
   }
 
+  public boolean isSevereLogged() {
+    return log.isLoggable(Level.SEVERE);
+  }
+
   public void severe(final String message) {
     if (log.isLoggable(Level.SEVERE)) {
       log.severe(prepare(message));
@@ -164,6 +190,10 @@ public final class CoreLogger {
     if (log.isLoggable(Level.SEVERE)) {
       log.severe(prepareWithArgs(message, args));
     }
+  }
+
+  public boolean isFineLogged() {
+    return log.isLoggable(Level.FINE);
   }
 
   public void fine(final String message) {
@@ -356,6 +386,10 @@ public final class CoreLogger {
 
   // adds prefix to message without using varargs for argument processing
   private String prepare(final String message) {
+    if (prefix.isEmpty()) {
+      return message;
+    }
+
     clearBuffer();
     concatBuffer.append(prefix);
     concatBuffer.append(message);
