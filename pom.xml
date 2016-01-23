@@ -1,19 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.lessvoid</groupId>
+	<groupId>com.lessvoid</groupId>
 	<artifactId>coregl</artifactId>
-	<version>2.0-SNAPSHOT</version>
+	<version>2.0.1</version>
 	<packaging>pom</packaging>
 	<name>OpenGL core utilities</name>
-	<description>simple utility methods to make life with OpenGL core profile simpler</description>
+	<description>A utility API to make life with OpenGL core profile simpler.</description>
 	<modules>
 		<module>coregl-utils</module>
 		<module>coregl-utils-lwjgl</module>
 		<module>coregl-utils-jogl</module>
 		<module>coregl-utils-examples</module>
 	</modules>
-	<url>https://github.com/void256/coregl-utils/</url>
+	<url>https://github.com/void256/coregl</url>
 	<licenses>
 		<license>
 			<name>The BSD 2-Clause License</name>
