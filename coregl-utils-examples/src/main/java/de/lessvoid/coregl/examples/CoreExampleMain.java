@@ -22,7 +22,7 @@ public class CoreExampleMain {
 
   /**
    * Evaluates main method arguments to launch the given RenderLoopCallback
-   * example using specified backend (JOGL or LWJGL).<br/>
+   * example using specified backend (JOGL or LWJGL).<br>
    * Program argument flags are 'jogl' and 'lwjgl' for JOGL and LWJGL backends
    * respectively. If no program arguments are specified, runExample defaults to
    * the JOGL backend.

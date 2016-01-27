@@ -40,8 +40,8 @@ public final class CoreMouseEventLwjgl implements CoreMouseEvent {
   /**
    * Creates a new CoreMouseEvent using the data collected from the last call to
    * <code>Mouse.poll()</code>. It is the responsibility of the caller to call
-   * <code>Mouse.next()</code> to advance to the next buffered event. <br/>
-   * <br/>
+   * <code>Mouse.next()</code> to advance to the next buffered event. <br>
+   * <br>
    * Mouse event type resolution requires information about the previous state
    * of the mouse that is outside of the scope of this class. It may sometimes
    * even be necessary to create more than one event from the data polled via
