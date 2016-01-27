@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.lessvoid</groupId>
     <artifactId>coregl</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>coregl-utils-jogl</artifactId>
   <properties>
@@ -28,7 +28,7 @@
     <dependency>
       <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <repositories>
@@ -40,5 +40,5 @@
     </repository>
   </repositories>
   <name>OpenGL core utilities - Jogl Adapter</name>
-  <version>2.0.0</version>
+  <version>2.0.1-SNAPSHOT</version>
 </project>
