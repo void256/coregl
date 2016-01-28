@@ -13,41 +13,44 @@ I've came up with these classes while learning OpenGL core profile. Maybe you ca
 
 ## Maven
 
-The dependencies you'll need.
-
-### LWJGL
+CoreGL is available in the Maven central. The dependencies you'll need are:
 
 ```
   <dependencies>
     <dependency>
-      <groupId>de.lessvoid</groupId>
+      <groupId>com.lessvoid</groupId>
+      <artifactId>coregl-utils</artifactId>
+      <version>2.0.0</version>
+    </dependency>
+  </dependencies>
+```
+
+### LWJGL
+
+Only needed when you want to use LWJGL.
+
+```
+  <dependencies>
+    <dependency>
+      <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils-lwjgl</artifactId>
-      <version>2.0-SNAPSHOT</version>
+      <version>2.0.0</version>
     </dependency>
   </dependencies>
 ```
 
 ### JOGL
 
+Only needed when you want to use JOGL.
+
 ```
   <dependencies>
     <dependency>
-      <groupId>de.lessvoid</groupId>
+      <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils-jogl</artifactId>
-      <version>2.0-SNAPSHOT</version>
+      <version>2.0.0</version>
     </dependency>
   </dependencies>
-```
-
-### Maven Repository
-
-```
-  <repositories>
-    <repository>
-      <id>nifty-maven-repo.sourceforge.net</id>
-      <url>http://nifty-gui.sourceforge.net/nifty-maven-repo</url>
-    </repository>
-  </repositories>
 ```
 
 ## Example
