@@ -13,15 +13,7 @@ I've came up with these classes while learning OpenGL core profile. Maybe you ca
 
 ## Maven
 
-CoreGL is available in the Maven central. The dependencies you'll need are:
-
-```XML
-<dependency>
-  <groupId>com.lessvoid</groupId>
-  <artifactId>coregl-utils</artifactId>
-  <version>2.0.0</version>
-</dependency>
-```
+CoreGL is available in the Maven central.
 
 ### LWJGL
 
