@@ -15,36 +15,36 @@ I've came up with these classes while learning OpenGL core profile. Maybe you ca
 
 CoreGL is available in the Maven central. The dependencies you'll need are:
 
-```
-  <dependency>
-    <groupId>com.lessvoid</groupId>
-    <artifactId>coregl-utils</artifactId>
-    <version>2.0.0</version>
-  </dependency>
+```XML
+<dependency>
+  <groupId>com.lessvoid</groupId>
+  <artifactId>coregl-utils</artifactId>
+  <version>2.0.0</version>
+</dependency>
 ```
 
 ### LWJGL
 
 Only needed when you want to use LWJGL.
 
-```
-  <dependency>
-    <groupId>com.lessvoid</groupId>
-    <artifactId>coregl-utils-lwjgl</artifactId>
-    <version>2.0.0</version>
-  </dependency>
+```XML
+<dependency>
+  <groupId>com.lessvoid</groupId>
+  <artifactId>coregl-utils-lwjgl</artifactId>
+  <version>2.0.0</version>
+</dependency>
 ```
 
 ### JOGL
 
 Only needed when you want to use JOGL.
 
-```
-  <dependency>
-    <groupId>com.lessvoid</groupId>
-    <artifactId>coregl-utils-jogl</artifactId>
-    <version>2.0.0</version>
-  </dependency>
+```XML
+<dependency>
+  <groupId>com.lessvoid</groupId>
+  <artifactId>coregl-utils-jogl</artifactId>
+  <version>2.0.0</version>
+</dependency>
 ```
 
 ## Example
