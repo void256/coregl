@@ -16,13 +16,11 @@ I've came up with these classes while learning OpenGL core profile. Maybe you ca
 CoreGL is available in the Maven central. The dependencies you'll need are:
 
 ```
-  <dependencies>
-    <dependency>
-      <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-  </dependencies>
+  <dependency>
+    <groupId>com.lessvoid</groupId>
+    <artifactId>coregl-utils</artifactId>
+    <version>2.0.0</version>
+  </dependency>
 ```
 
 ### LWJGL
@@ -30,13 +28,11 @@ CoreGL is available in the Maven central. The dependencies you'll need are:
 Only needed when you want to use LWJGL.
 
 ```
-  <dependencies>
-    <dependency>
-      <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils-lwjgl</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-  </dependencies>
+  <dependency>
+    <groupId>com.lessvoid</groupId>
+    <artifactId>coregl-utils-lwjgl</artifactId>
+    <version>2.0.0</version>
+  </dependency>
 ```
 
 ### JOGL
@@ -44,13 +40,11 @@ Only needed when you want to use LWJGL.
 Only needed when you want to use JOGL.
 
 ```
-  <dependencies>
-    <dependency>
-      <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils-jogl</artifactId>
-      <version>2.0.0</version>
-    </dependency>
-  </dependencies>
+  <dependency>
+    <groupId>com.lessvoid</groupId>
+    <artifactId>coregl-utils-jogl</artifactId>
+    <version>2.0.0</version>
+  </dependency>
 ```
 
 ## Example
