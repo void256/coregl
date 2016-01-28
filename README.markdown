@@ -17,8 +17,6 @@ CoreGL is available in the Maven central.
 
 ### LWJGL
 
-Only needed when you want to use LWJGL.
-
 ```XML
 <dependency>
   <groupId>com.lessvoid</groupId>
@@ -28,8 +26,6 @@ Only needed when you want to use LWJGL.
 ```
 
 ### JOGL
-
-Only needed when you want to use JOGL.
 
 ```XML
 <dependency>
