@@ -1,0 +1,13 @@
+de.lessvoid.coregl
+de.lessvoid.coregl.examples
+de.lessvoid.coregl.examples.bench
+de.lessvoid.coregl.input
+de.lessvoid.coregl.input.dispatch
+de.lessvoid.coregl.input.spi
+de.lessvoid.coregl.jogl
+de.lessvoid.coregl.jogl.input
+de.lessvoid.coregl.lwjgl
+de.lessvoid.coregl.lwjgl.input
+de.lessvoid.coregl.spi
+de.lessvoid.math
+de.lessvoid.textureatlas
