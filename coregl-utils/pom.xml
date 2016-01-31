@@ -2,11 +2,32 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>coregl-utils</artifactId>
   <description>simple utility methods to make life with OpenGL core profile simpler</description>
-  <name>OpenGL core utilities - Core</name>
+  <name>CoreGL Core</name>
   <parent>
     <groupId>com.lessvoid</groupId>
     <artifactId>coregl</artifactId>
     <version>2.0.1-SNAPSHOT</version>
   </parent>
   <version>2.0.1-SNAPSHOT</version>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <show>public</show>
+          <nohelp>true</nohelp>
+          <header>CoreGL, ${project.version}</header>
+          <footer>CoreGL, ${project.version}</footer>
+          <doctitle>CoreGL, ${project.version}</doctitle>
+          <links>
+            <link>http://docs.oracle.com/javase/6/docs/api/</link>
+          </links>
+          <additionalparam>-Xdoclint:none</additionalparam>
+          <docfilessubdirs>true</docfilessubdirs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>

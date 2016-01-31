@@ -4,7 +4,7 @@
   <artifactId>coregl</artifactId>
   <version>2.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>OpenGL core utilities</name>
+  <name>CoreGL</name>
   <description>A utility API to make life with OpenGL core profile simpler.</description>
   <modules>
     <module>coregl-utils</module>
@@ -185,24 +185,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.3</version>
-        <configuration>
-          <excludePackageNames>de.lessvoid.niftyinternal</excludePackageNames>
-          <show>public</show>
-          <nohelp>true</nohelp>
-          <header>Nifty-GUI, ${project.version}</header>
-          <footer>Nifty-GUI, ${project.version}</footer>
-          <doctitle>Nifty-GUI, ${project.version}</doctitle>
-          <links>
-            <link>http://docs.oracle.com/javase/6/docs/api/</link>
-          </links>
-          <additionalparam>-Xdoclint:none</additionalparam>
-          <docfilessubdirs>true</docfilessubdirs>
-        </configuration>
       </plugin>
     </plugins>
   </reporting>
