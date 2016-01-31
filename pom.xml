@@ -87,6 +87,35 @@
             <mavenExecutorId>forked-path</mavenExecutorId>
           </configuration>
         </plugin>
+        <!-- mvn clean site site:stage scm-publish:publish-scm -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.4</version>
+          <configuration>
+            <skipDeploy>true</skipDeploy>
+          </configuration>
+          <executions>
+            <execution>
+              <id>stage-for-scm-publish</id>
+              <phase>post-site</phase>
+              <goals>
+                <goal>stage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>1.1</version>
+          <configuration>
+            <checkoutDirectory>${project.build.directory}/scmpublish</checkoutDirectory>
+            <checkinComment>Publishing javadoc for ${project.artifactId}:${project.version}</checkinComment>
+            <skipDeletedFiles>true</skipDeletedFiles>
+            <scmBranch>gh-pages</scmBranch> <!-- branch with static site -->
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -113,7 +142,7 @@
   <scm>
     <connection>scm:git:git://github.com/void256/coregl.git</connection>
     <developerConnection>scm:git:git@github.com:void256/coregl.git</developerConnection>
-    <url>scm:git:git://github.com/void256/coregl.git</url>
+    <url>scm:git:https://github.com/void256/coregl.git</url>
     <tag>HEAD</tag>
   </scm>
   <distributionManagement>
@@ -125,6 +154,10 @@
       <id>ossrh</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
+    <site>
+      <id>coregl.github</id>
+      <url>scm:git:git@github.com:void256/coregl.git</url>
+    </site>
   </distributionManagement>
   <repositories>
     <repository>
@@ -136,6 +169,43 @@
       <url>http://nifty-gui.sourceforge.net/nifty-maven-repo</url>
     </repository>
   </repositories>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.3.1</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>index</report>
+              <report>scm</report>
+              <report>project-team</report>
+              <report>dependencies</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <excludePackageNames>de.lessvoid.niftyinternal</excludePackageNames>
+          <show>public</show>
+          <nohelp>true</nohelp>
+          <header>Nifty-GUI, ${project.version}</header>
+          <footer>Nifty-GUI, ${project.version}</footer>
+          <doctitle>Nifty-GUI, ${project.version}</doctitle>
+          <links>
+            <link>http://docs.oracle.com/javase/6/docs/api/</link>
+          </links>
+          <additionalparam>-Xdoclint:none</additionalparam>
+          <docfilessubdirs>true</docfilessubdirs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
   <profiles>
     <!-- profile for release signing all artifacts -->
     <!-- remember to call with: mvn release:perform -Darguments=-Dgpg.passphrase=PASSPHRASE -->
