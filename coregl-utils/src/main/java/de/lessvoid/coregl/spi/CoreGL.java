@@ -12,326 +12,326 @@ import java.nio.ShortBuffer;
  */
 public interface CoreGL {
   // OpenGL constants
-  public int GL_ALPHA();
+  int GL_ALPHA();
 
-  public int GL_ALPHA_TEST();
+  int GL_ALPHA_TEST();
 
-  public int GL_BLEND();
+  int GL_BLEND();
 
-  public int GL_BLEND_DST();
+  int GL_BLEND_DST();
 
-  public int GL_BLEND_SRC();
+  int GL_BLEND_SRC();
 
-  public int GL_BYTE();
+  int GL_BYTE();
 
-  public int GL_COLOR_BUFFER_BIT();
+  int GL_COLOR_BUFFER_BIT();
 
-  public int GL_DEPTH_BUFFER_BIT();
+  int GL_DEPTH_BUFFER_BIT();
 
-  public int GL_CULL_FACE();
+  int GL_CULL_FACE();
 
-  public int GL_DEPTH_TEST();
+  int GL_DEPTH_TEST();
 
-  public int GL_DST_COLOR();
+  int GL_DST_COLOR();
 
-  public int GL_FALSE();
+  int GL_FALSE();
 
-  public int GL_FLOAT();
+  int GL_FLOAT();
 
-  public int GL_INVALID_ENUM();
+  int GL_INVALID_ENUM();
 
-  public int GL_INVALID_OPERATION();
+  int GL_INVALID_OPERATION();
 
-  public int GL_INVALID_VALUE();
+  int GL_INVALID_VALUE();
 
-  public int GL_LINEAR();
+  int GL_LINEAR();
 
-  public int GL_LINEAR_MIPMAP_LINEAR();
+  int GL_LINEAR_MIPMAP_LINEAR();
 
-  public int GL_LINEAR_MIPMAP_NEAREST();
+  int GL_LINEAR_MIPMAP_NEAREST();
 
-  public int GL_LUMINANCE();
+  int GL_LUMINANCE();
 
-  public int GL_LUMINANCE_ALPHA();
+  int GL_LUMINANCE_ALPHA();
 
-  public int GL_MAX_TEXTURE_SIZE();
+  int GL_MAX_TEXTURE_SIZE();
 
-  public int GL_NEAREST();
+  int GL_NEAREST();
 
-  public int GL_NEAREST_MIPMAP_LINEAR();
+  int GL_NEAREST_MIPMAP_LINEAR();
 
-  public int GL_NEAREST_MIPMAP_NEAREST();
+  int GL_NEAREST_MIPMAP_NEAREST();
 
-  public int GL_NO_ERROR();
+  int GL_NO_ERROR();
 
-  public int GL_NOTEQUAL();
+  int GL_NOTEQUAL();
 
-  public int GL_OUT_OF_MEMORY();
+  int GL_OUT_OF_MEMORY();
 
-  public int GL_POINTS();
+  int GL_POINTS();
 
-  public int GL_RGB();
+  int GL_RGB();
 
-  public int GL_RGBA();
+  int GL_RGBA();
 
-  public int GL_SHORT();
+  int GL_SHORT();
 
-  public int GL_STACK_OVERFLOW();
+  int GL_STACK_OVERFLOW();
 
-  public int GL_STACK_UNDERFLOW();
+  int GL_STACK_UNDERFLOW();
 
-  public int GL_TEXTURE_2D();
+  int GL_TEXTURE_2D();
 
-  public int GL_TEXTURE_BINDING_2D();
+  int GL_TEXTURE_BINDING_2D();
 
-  public int GL_TEXTURE_3D();
+  int GL_TEXTURE_3D();
 
-  public int GL_TEXTURE_BINDING_3D();
+  int GL_TEXTURE_BINDING_3D();
 
-  public int GL_TEXTURE_MAG_FILTER();
+  int GL_TEXTURE_MAG_FILTER();
 
-  public int GL_TEXTURE_MIN_FILTER();
+  int GL_TEXTURE_MIN_FILTER();
 
-  public int GL_LINE_STRIP();
+  int GL_LINE_STRIP();
 
-  public int GL_LINE_STRIP_ADJACENCY();
+  int GL_LINE_STRIP_ADJACENCY();
 
-  public int GL_TRIANGLES();
+  int GL_TRIANGLES();
 
-  public int GL_TRIANGLE_STRIP();
+  int GL_TRIANGLE_STRIP();
 
-  public int GL_TRIANGLE_FAN();
+  int GL_TRIANGLE_FAN();
 
-  public int GL_TRUE();
+  int GL_TRUE();
 
-  public int GL_UNSIGNED_BYTE();
+  int GL_UNSIGNED_BYTE();
 
-  public int GL_UNSIGNED_SHORT();
+  int GL_UNSIGNED_SHORT();
 
-  public int GL_UNSIGNED_SHORT_4_4_4_4();
+  int GL_UNSIGNED_SHORT_4_4_4_4();
 
-  public int GL_UNSIGNED_SHORT_5_5_5_1();
+  int GL_UNSIGNED_SHORT_5_5_5_1();
 
-  public int GL_UNSIGNED_SHORT_5_6_5();
+  int GL_UNSIGNED_SHORT_5_6_5();
 
-  public int GL_VIEWPORT();
+  int GL_VIEWPORT();
 
-  public int GL_ZERO();
+  int GL_ZERO();
 
-  public int GL_ONE();
+  int GL_ONE();
 
-  public int GL_ONE_MINUS_DST_ALPHA();
+  int GL_ONE_MINUS_DST_ALPHA();
 
-  public int GL_DST_ALPHA();
+  int GL_DST_ALPHA();
 
-  public int GL_SRC_ALPHA();
+  int GL_SRC_ALPHA();
 
-  public int GL_ONE_MINUS_SRC_ALPHA();
+  int GL_ONE_MINUS_SRC_ALPHA();
 
-  public int GL_MAX();
+  int GL_MAX();
 
-  public int GL_FUNC_ADD();
+  int GL_FUNC_ADD();
 
-  public int GL_ACTIVE_TEXTURE();
+  int GL_ACTIVE_TEXTURE();
 
-  public int GL_ARRAY_BUFFER();
+  int GL_ARRAY_BUFFER();
 
-  public int GL_BGR();
+  int GL_BGR();
 
-  public int GL_BGRA();
+  int GL_BGRA();
 
-  public int GL_BLUE();
+  int GL_BLUE();
 
-  public int GL_COMPILE_STATUS();
+  int GL_COMPILE_STATUS();
 
-  public int GL_COMPRESSED_RGB();
+  int GL_COMPRESSED_RGB();
 
-  public int GL_COMPRESSED_RGBA();
+  int GL_COMPRESSED_RGBA();
 
-  public int GL_CURRENT_PROGRAM();
+  int GL_CURRENT_PROGRAM();
 
-  public int GL_DYNAMIC_DRAW();
+  int GL_DYNAMIC_DRAW();
 
-  public int GL_ELEMENT_ARRAY_BUFFER();
+  int GL_ELEMENT_ARRAY_BUFFER();
 
-  public int GL_FRAGMENT_SHADER();
+  int GL_FRAGMENT_SHADER();
 
-  public int GL_GEOMETRY_SHADER();
+  int GL_GEOMETRY_SHADER();
 
-  public int GL_GREEN();
+  int GL_GREEN();
 
-  public int GL_INT();
+  int GL_INT();
 
-  public int GL_LINK_STATUS();
+  int GL_LINK_STATUS();
 
-  public int GL_PRIMITIVE_RESTART();
+  int GL_PRIMITIVE_RESTART();
 
-  public int GL_PRIMITIVE_RESTART_INDEX();
+  int GL_PRIMITIVE_RESTART_INDEX();
 
-  public int GL_RED();
+  int GL_RED();
 
-  public int GL_STATIC_DRAW();
+  int GL_STATIC_DRAW();
 
-  public int GL_STREAM_DRAW();
+  int GL_STREAM_DRAW();
 
-  public int GL_TEXTURE0();
+  int GL_TEXTURE0();
 
-  public int GL_TEXTURE_2D_ARRAY();
+  int GL_TEXTURE_2D_ARRAY();
 
-  public int GL_TEXTURE_CUBE_MAP_NEGATIVE_X();
+  int GL_TEXTURE_CUBE_MAP_NEGATIVE_X();
 
-  public int GL_TEXTURE_CUBE_MAP_NEGATIVE_Y();
+  int GL_TEXTURE_CUBE_MAP_NEGATIVE_Y();
 
-  public int GL_TEXTURE_CUBE_MAP_NEGATIVE_Z();
+  int GL_TEXTURE_CUBE_MAP_NEGATIVE_Z();
 
-  public int GL_TEXTURE_CUBE_MAP_POSITIVE_X();
+  int GL_TEXTURE_CUBE_MAP_POSITIVE_X();
 
-  public int GL_TEXTURE_CUBE_MAP_POSITIVE_Y();
+  int GL_TEXTURE_CUBE_MAP_POSITIVE_Y();
 
-  public int GL_TEXTURE_CUBE_MAP_POSITIVE_Z();
+  int GL_TEXTURE_CUBE_MAP_POSITIVE_Z();
 
-  public int GL_UNSIGNED_BYTE_2_3_3_REV();
+  int GL_UNSIGNED_BYTE_2_3_3_REV();
 
-  public int GL_UNSIGNED_BYTE_3_3_2();
+  int GL_UNSIGNED_BYTE_3_3_2();
 
-  public int GL_UNSIGNED_INT();
+  int GL_UNSIGNED_INT();
 
-  public int GL_UNSIGNED_INT_10_10_10_2();
+  int GL_UNSIGNED_INT_10_10_10_2();
 
-  public int GL_UNSIGNED_INT_2_10_10_10_REV();
+  int GL_UNSIGNED_INT_2_10_10_10_REV();
 
-  public int GL_UNSIGNED_INT_8_8_8_8();
+  int GL_UNSIGNED_INT_8_8_8_8();
 
-  public int GL_UNSIGNED_INT_8_8_8_8_REV();
+  int GL_UNSIGNED_INT_8_8_8_8_REV();
 
-  public int GL_HALF_FLOAT();
+  int GL_HALF_FLOAT();
 
-  public int GL_DOUBLE();
+  int GL_DOUBLE();
 
-  public int GL_FIXED();
+  int GL_FIXED();
 
-  public int GL_INT_2_10_10_10_REV();
+  int GL_INT_2_10_10_10_REV();
 
-  public int GL_UNSIGNED_INT_10F_11F_11F_REV();
+  int GL_UNSIGNED_INT_10F_11F_11F_REV();
 
-  public int GL_UNSIGNED_SHORT_5_6_5_REV();
+  int GL_UNSIGNED_SHORT_5_6_5_REV();
 
-  public int GL_UNSIGNED_SHORT_4_4_4_4_REV();
+  int GL_UNSIGNED_SHORT_4_4_4_4_REV();
 
-  public int GL_UNSIGNED_SHORT_1_5_5_5_REV();
+  int GL_UNSIGNED_SHORT_1_5_5_5_REV();
 
-  public int GL_VERTEX_SHADER();
+  int GL_VERTEX_SHADER();
 
-  public int GL_WRITE_ONLY();
+  int GL_WRITE_ONLY();
 
-  public int GL_UNIFORM_OFFSET();
+  int GL_UNIFORM_OFFSET();
 
-  public int GL_UNIFORM_ARRAY_STRIDE();
+  int GL_UNIFORM_ARRAY_STRIDE();
 
-  public int GL_UNIFORM_MATRIX_STRIDE();
+  int GL_UNIFORM_MATRIX_STRIDE();
 
-  public int GL_PACK_ALIGNMENT();
+  int GL_PACK_ALIGNMENT();
 
-  public int GL_STENCIL_INDEX();
+  int GL_STENCIL_INDEX();
 
-  public int GL_TEXTURE_BUFFER();
+  int GL_TEXTURE_BUFFER();
 
-  public int GL_R32F();
+  int GL_R32F();
 
-  public int GL_FRAMEBUFFER();
+  int GL_FRAMEBUFFER();
 
-  public int GL_FRAMEBUFFER_COMPLETE();
+  int GL_FRAMEBUFFER_COMPLETE();
 
-  public int GL_FRAMEBUFFER_UNDEFINED();
+  int GL_FRAMEBUFFER_UNDEFINED();
 
-  public int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT();
+  int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT();
 
-  public int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT();
+  int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT();
 
-  public int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER();
+  int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER();
 
-  public int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER();
+  int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER();
 
-  public int GL_FRAMEBUFFER_UNSUPPORTED();
+  int GL_FRAMEBUFFER_UNSUPPORTED();
 
-  public int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE();
+  int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE();
 
-  public int GL_COLOR_ATTACHMENT0();
+  int GL_COLOR_ATTACHMENT0();
 
-  public int GL_RENDERBUFFER();
+  int GL_RENDERBUFFER();
 
-  public int GL_STENCIL_INDEX8();
+  int GL_STENCIL_INDEX8();
 
-  public int GL_STENCIL_ATTACHMENT();
+  int GL_STENCIL_ATTACHMENT();
 
-  public int GL_VERSION();
+  int GL_VERSION();
 
-  public int GL_SHADING_LANGUAGE_VERSION();
+  int GL_SHADING_LANGUAGE_VERSION();
 
-  public int GL_VENDOR();
+  int GL_VENDOR();
 
-  public int GL_RENDERER();
+  int GL_RENDERER();
 
-  public int GL_MAX_VERTEX_ATTRIBS();
+  int GL_MAX_VERTEX_ATTRIBS();
 
-  public int GL_MAX_3D_TEXTURE_SIZE();
+  int GL_MAX_3D_TEXTURE_SIZE();
 
-  public int GL_UNIFORM_BUFFER();
+  int GL_UNIFORM_BUFFER();
 
   // Non-core enums currently in use by CoreTexture2D
-  public int GL_BITMAP();
+  int GL_BITMAP();
 
-  public int GL_COLOR_INDEX();
+  int GL_COLOR_INDEX();
 
-  public int GL_COMPRESSED_ALPHA();
+  int GL_COMPRESSED_ALPHA();
 
-  public int GL_COMPRESSED_LUMINANCE();
+  int GL_COMPRESSED_LUMINANCE();
 
-  public int GL_COMPRESSED_LUMINANCE_ALPHA();
+  int GL_COMPRESSED_LUMINANCE_ALPHA();
   // --------------------------------------------- //
 
   // OpenGL methods
-  public void glBindTexture(int target, int texture);
+  void glBindTexture(int target, int texture);
 
-  public void glBlendFunc(int sfactor, int dfactor);
+  void glBlendFunc(int sfactor, int dfactor);
 
-  public void glBlendFuncSeparate(int sfactorRGB, int dfactorRGB, int sfactorAlpha, int dfactorAlpha);
+  void glBlendFuncSeparate(int sfactorRGB, int dfactorRGB, int sfactorAlpha, int dfactorAlpha);
 
-  public void glClear(int mask);
+  void glClear(int mask);
 
-  public void glClearColor(float red, float green, float blue, float alpha);
+  void glClearColor(float red, float green, float blue, float alpha);
 
-  public void glDeleteTextures(int n, IntBuffer textures);
+  void glDeleteTextures(int n, IntBuffer textures);
 
-  public void glDisable(int cap);
+  void glDisable(int cap);
 
-  public void glDrawArrays(int mode, int first, int count);
+  void glDrawArrays(int mode, int first, int count);
 
-  public void glDrawElements(int mode, int count, int type, int indices);
+  void glDrawElements(int mode, int count, int type, int indices);
 
-  public void glEnable(int cap);
+  void glEnable(int cap);
 
-  public void glGenTextures(int n, IntBuffer textures);
+  void glGenTextures(int n, IntBuffer textures);
 
-  public void glPixelStorei(int param, int n);
+  void glPixelStorei(int param, int n);
 
-  public void glReadPixels(int x, int y, int width, int height, int format, int type, ByteBuffer pixelBuffer);
+  void glReadPixels(int x, int y, int width, int height, int format, int type, ByteBuffer pixelBuffer);
 
-  public void glGetTexImage(int target, int level, int format, int type, ByteBuffer pixelBuffer);
+  void glGetTexImage(int target, int level, int format, int type, ByteBuffer pixelBuffer);
 
-  public int glGetError();
+  int glGetError();
 
-  public void glGetIntegerv(int pname, int[] params, int offset);
+  void glGetIntegerv(int pname, int[] params, int offset);
 
-  public void glGetIntegerv(int pname, IntBuffer params);
+  void glGetIntegerv(int pname, IntBuffer params);
 
-  public int glGetInteger(int pname);
+  int glGetInteger(int pname);
 
-  public String glGetString(int pname);
+  String glGetString(int pname);
 
-  public boolean glIsEnabled(int cap);
+  boolean glIsEnabled(int cap);
 
-  public void glTexImage2D(int target,
+  void glTexImage2D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -341,7 +341,7 @@ public interface CoreGL {
                            int type,
                            ByteBuffer pixels);
 
-  public void glTexImage2D(int target,
+  void glTexImage2D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -351,7 +351,7 @@ public interface CoreGL {
                            int type,
                            DoubleBuffer pixels);
 
-  public void glTexImage2D(int target,
+  void glTexImage2D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -361,7 +361,7 @@ public interface CoreGL {
                            int type,
                            FloatBuffer pixels);
 
-  public void glTexImage2D(int arget,
+  void glTexImage2D(int arget,
                            int level,
                            int internalformat,
                            int width,
@@ -371,7 +371,7 @@ public interface CoreGL {
                            int type,
                            IntBuffer pixels);
 
-  public void glTexImage2D(int target,
+  void glTexImage2D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -381,7 +381,7 @@ public interface CoreGL {
                            int type,
                            ShortBuffer pixels);
 
-  public void glTexImage3D(int target,
+  void glTexImage3D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -392,7 +392,7 @@ public interface CoreGL {
                            int type,
                            ByteBuffer pixels);
 
-  public void glTexImage3D(int target,
+  void glTexImage3D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -403,7 +403,7 @@ public interface CoreGL {
                            int type,
                            DoubleBuffer pixels);
 
-  public void glTexImage3D(int target,
+  void glTexImage3D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -414,7 +414,7 @@ public interface CoreGL {
                            int type,
                            FloatBuffer pixels);
 
-  public void glTexImage3D(int target,
+  void glTexImage3D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -425,7 +425,7 @@ public interface CoreGL {
                            int type,
                            IntBuffer pixels);
 
-  public void glTexImage3D(int target,
+  void glTexImage3D(int target,
                            int level,
                            int internalformat,
                            int width,
@@ -436,11 +436,11 @@ public interface CoreGL {
                            int type,
                            ShortBuffer pixels);
 
-  public void glTexParameterf(int target, int pname, float param);
+  void glTexParameterf(int target, int pname, float param);
 
-  public void glTexParameteri(int target, int pname, int param);
+  void glTexParameteri(int target, int pname, int param);
 
-  public void glTexSubImage2D(int target,
+  void glTexSubImage2D(int target,
                               int level,
                               int xoffset,
                               int yoffset,
@@ -450,175 +450,175 @@ public interface CoreGL {
                               int type,
                               ByteBuffer pixels);
 
-  public void glTexBuffer(int arg0, int arg1, int arg2);
+  void glTexBuffer(int arg0, int arg1, int arg2);
 
-  public void glViewport(int x, int y, int width, int height);
+  void glViewport(int x, int y, int width, int height);
 
-  public void glActiveTexture(int texture);
+  void glActiveTexture(int texture);
 
-  public void glAttachShader(int program, int shader);
+  void glAttachShader(int program, int shader);
 
-  public void glBindAttribLocation(int program, int index, String name);
+  void glBindAttribLocation(int program, int index, String name);
 
-  public void glBindBuffer(int target, int buffer);
+  void glBindBuffer(int target, int buffer);
 
-  public void glBindVertexArray(int array);
+  void glBindVertexArray(int array);
 
-  public void glVertexAttribDivisor(int index, int divisor);
+  void glVertexAttribDivisor(int index, int divisor);
 
-  public void glBufferData(int target, IntBuffer data, int usage);
+  void glBufferData(int target, IntBuffer data, int usage);
 
-  public void glBufferData(int target, FloatBuffer data, int usage);
+  void glBufferData(int target, FloatBuffer data, int usage);
 
-  public void glBufferData(int target, ShortBuffer data, int usage);
+  void glBufferData(int target, ShortBuffer data, int usage);
 
-  public void glCompileShader(int shader);
+  void glCompileShader(int shader);
 
-  public int glCreateProgram();
+  int glCreateProgram();
 
-  public int glCreateShader(int type);
+  int glCreateShader(int type);
 
-  public void glDeleteBuffers(int n, IntBuffer buffers);
+  void glDeleteBuffers(int n, IntBuffer buffers);
 
-  public void glDeleteVertexArrays(int n, IntBuffer arrays);
+  void glDeleteVertexArrays(int n, IntBuffer arrays);
 
-  public void glDrawArraysInstanced(int mode, int first, int count, int primcount);
+  void glDrawArraysInstanced(int mode, int first, int count, int primcount);
 
-  public void glEnableVertexAttribArray(int index);
+  void glEnableVertexAttribArray(int index);
 
-  public void glDisableVertexAttribArray(int index);
+  void glDisableVertexAttribArray(int index);
 
-  public void glGenBuffers(int n, IntBuffer buffers);
+  void glGenBuffers(int n, IntBuffer buffers);
 
-  public void glGenerateMipmap(int target);
+  void glGenerateMipmap(int target);
 
-  public void glGenFramebuffers(int n, IntBuffer frameBuffs);
+  void glGenFramebuffers(int n, IntBuffer frameBuffs);
 
-  public void glGenVertexArrays(int n, IntBuffer arrays);
+  void glGenVertexArrays(int n, IntBuffer arrays);
 
-  public int glGetAttribLocation(int program, String name);
+  int glGetAttribLocation(int program, String name);
 
-  public void glGetProgramiv(int program, int pname, IntBuffer params);
+  void glGetProgramiv(int program, int pname, IntBuffer params);
 
-  public String glGetProgramInfoLog(int program);
+  String glGetProgramInfoLog(int program);
 
-  public void glGetShaderiv(int shader, int pname, IntBuffer params);
+  void glGetShaderiv(int shader, int pname, IntBuffer params);
 
-  public String glGetShaderInfoLog(int shader);
+  String glGetShaderInfoLog(int shader);
 
-  public int glGetUniformLocation(int program, String name);
+  int glGetUniformLocation(int program, String name);
 
-  public void glGetUniformIndices(int program, String[] uniformNames, IntBuffer indexBuffer);
+  void glGetUniformIndices(int program, String[] uniformNames, IntBuffer indexBuffer);
 
-  public void glGetActiveUniforms(int program, int uniformCount, IntBuffer indices, int pname, IntBuffer params);
+  void glGetActiveUniforms(int program, int uniformCount, IntBuffer indices, int pname, IntBuffer params);
 
-  public int glGetUniformBlockIndex(int program, String name);
+  int glGetUniformBlockIndex(int program, String name);
 
-  public void glLinkProgram(int program);
+  void glLinkProgram(int program);
 
-  public ByteBuffer glMapBuffer(int target, int access, long length, ByteBuffer oldBuffer);
+  ByteBuffer glMapBuffer(int target, int access, long length, ByteBuffer oldBuffer);
 
-  public void glPrimitiveRestartIndex(int index);
+  void glPrimitiveRestartIndex(int index);
 
-  public void glShaderSource(int shader, String string);
+  void glShaderSource(int shader, String string);
 
-  public void glUniform1(int location, FloatBuffer values);
+  void glUniform1(int location, FloatBuffer values);
 
-  public void glUniform1f(int location, float v0);
+  void glUniform1f(int location, float v0);
 
-  public void glUniform2f(int location, float v0, float v1);
+  void glUniform2f(int location, float v0, float v1);
 
-  public void glUniform3f(int location, float v0, float v1, float v2);
+  void glUniform3f(int location, float v0, float v1, float v2);
 
-  public void glUniform4f(int location, float v0, float v1, float v2, float v3);
+  void glUniform4f(int location, float v0, float v1, float v2, float v3);
 
-  public void glUniform1fv(int location, FloatBuffer ubuff);
+  void glUniform1fv(int location, FloatBuffer ubuff);
 
-  public void glUniform2fv(int location, FloatBuffer ubuff);
+  void glUniform2fv(int location, FloatBuffer ubuff);
 
-  public void glUniform3fv(int location, FloatBuffer ubuff);
+  void glUniform3fv(int location, FloatBuffer ubuff);
 
-  public void glUniform4fv(int location, FloatBuffer ubuff);
+  void glUniform4fv(int location, FloatBuffer ubuff);
 
-  public void glUniform1i(int location, int v0);
+  void glUniform1i(int location, int v0);
 
-  public void glUniform2i(int location, int v0, int v1);
+  void glUniform2i(int location, int v0, int v1);
 
-  public void glUniform3i(int location, int v0, int v1, int v2);
+  void glUniform3i(int location, int v0, int v1, int v2);
 
-  public void glUniform4i(int location, int v0, int v1, int v2, int v3);
+  void glUniform4i(int location, int v0, int v1, int v2, int v3);
 
-  public void glUniform1iv(int location, IntBuffer ubuff);
+  void glUniform1iv(int location, IntBuffer ubuff);
 
-  public void glUniform2iv(int location, IntBuffer ubuff);
+  void glUniform2iv(int location, IntBuffer ubuff);
 
-  public void glUniform3iv(int location, IntBuffer ubuff);
+  void glUniform3iv(int location, IntBuffer ubuff);
 
-  public void glUniform4iv(int location, IntBuffer ubuff);
+  void glUniform4iv(int location, IntBuffer ubuff);
 
-  public void glUniformMatrix2(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix2(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix2x3(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix2x3(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix2x4(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix2x4(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix3(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix3(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix3x2(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix3x2(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix3x4(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix3x4(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix4(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix4(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix4x2(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix4x2(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformMatrix4x3(int location, boolean transpose, FloatBuffer matrices);
+  void glUniformMatrix4x3(int location, boolean transpose, FloatBuffer matrices);
 
-  public void glUniformBlockBinding(int prog, int blockIndex, int blockBinding);
+  void glUniformBlockBinding(int prog, int blockIndex, int blockBinding);
 
-  public boolean glUnmapBuffer(int target);
+  boolean glUnmapBuffer(int target);
 
-  public void glUseProgram(int program);
+  void glUseProgram(int program);
 
-  public void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long offset);
+  void glVertexAttribPointer(int index, int size, int type, boolean normalized, int stride, long offset);
 
-  public void glVertexAttribIPointer(int index, int size, int type, int stride, int buffer);
+  void glVertexAttribIPointer(int index, int size, int type, int stride, int buffer);
 
-  public int glCheckFramebufferStatus(int target);
+  int glCheckFramebufferStatus(int target);
 
-  public void glBindFramebuffer(int target, int fbo);
+  void glBindFramebuffer(int target, int fbo);
 
-  public void glDeleteFramebuffers(int fboCount, IntBuffer fboIds);
+  void glDeleteFramebuffers(int fboCount, IntBuffer fboIds);
 
-  public void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level);
+  void glFramebufferTexture2D(int target, int attachment, int textarget, int texture, int level);
 
-  public void glFramebufferTextureLayer(int target, int attachment, int texture, int level, int layer);
+  void glFramebufferTextureLayer(int target, int attachment, int texture, int level, int layer);
 
-  public void glDrawBuffer(int mode);
+  void glDrawBuffer(int mode);
 
-  public void glGenRenderBuffers(int buffCount, IntBuffer buffer);
+  void glGenRenderBuffers(int buffCount, IntBuffer buffer);
 
-  public void glBindRenderbuffer(int target, int renderBuffer);
+  void glBindRenderbuffer(int target, int renderBuffer);
 
-  public void glRenderbufferStorage(int target, int internalFormat, int width, int height);
+  void glRenderbufferStorage(int target, int internalFormat, int width, int height);
 
-  public void glFramebufferRenderbuffer(int target, int attachment, int renderBufferTarget, int renderBuffer);
+  void glFramebufferRenderbuffer(int target, int attachment, int renderBufferTarget, int renderBuffer);
 
-  public void glBindBufferBase(int target, int bindingPoint, int id);
+  void glBindBufferBase(int target, int bindingPoint, int id);
 
-  public void glPointSize(int psize);
+  void glPointSize(int psize);
 
-  public void glBlendEquationSeparate(int e1, int e2);
+  void glBlendEquationSeparate(int e1, int e2);
 
-  public void checkGLError();
+  void checkGLError();
 
-  public void checkGLError(String msg);
+  void checkGLError(String msg);
 
-  public void checkGLError(String msg, Object...args);
+  void checkGLError(String msg, Object...args);
 
-  public void checkGLError(boolean throwException, String msg, Object...args);
+  void checkGLError(boolean throwException, String msg, Object...args);
 
-  public void setErrorChecksEnabled(boolean enabled);
+  void setErrorChecksEnabled(boolean enabled);
 
-  public CoreUtil getUtil();
+  CoreUtil getUtil();
 }
