@@ -49,6 +49,11 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_ALWAYS() {
+    return GL11.GL_ALWAYS;
+  }
+
+  @Override
   public int GL_BLEND() {
     return GL11.GL_BLEND;
   }
@@ -119,6 +124,11 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_KEEP() {
+    return GL11.GL_KEEP;
+  }
+
+  @Override
   public int GL_LINEAR() {
     return GL11.GL_LINEAR;
   }
@@ -161,6 +171,11 @@ public class LwjglCoreGL implements CoreGL {
   @Override
   public int GL_NEAREST_MIPMAP_NEAREST() {
     return GL11.GL_NEAREST_MIPMAP_NEAREST;
+  }
+
+  @Override
+  public int GL_NEVER() {
+    return GL11.GL_NEVER;
   }
 
   @Override
@@ -339,6 +354,11 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_BACK() {
+    return GL11.GL_BACK;
+  }
+
+  @Override
   public int GL_BITMAP() {
     return GL11.GL_BITMAP;
   }
@@ -399,6 +419,16 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_DECR() {
+    return GL11.GL_DECR;
+  }
+
+  @Override
+  public int GL_DECR_WRAP() {
+    return GL14.GL_DECR_WRAP;
+  }
+
+  @Override
   public int GL_DYNAMIC_DRAW() {
     return GL15.GL_DYNAMIC_DRAW;
   }
@@ -409,6 +439,11 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_EQUAL() {
+    return GL11.GL_EQUAL;
+  }
+
+  @Override
   public int GL_FRAGMENT_SHADER() {
     return GL20.GL_FRAGMENT_SHADER;
   }
@@ -416,6 +451,16 @@ public class LwjglCoreGL implements CoreGL {
   @Override
   public int GL_GEOMETRY_SHADER() {
     return GL32.GL_GEOMETRY_SHADER;
+  }
+
+  @Override
+  public int GL_GEQUAL() {
+    return GL11.GL_GEQUAL;
+  }
+
+  @Override
+  public int GL_GREATER() {
+    return GL11.GL_GREATER;
   }
 
   @Override
@@ -534,6 +579,26 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_LESS() {
+    return GL11.GL_LESS;
+  }
+
+  @Override
+  public int GL_LEQUAL() {
+    return GL11.GL_LEQUAL;
+  }
+
+  @Override
+  public int GL_INCR() {
+    return GL11.GL_INCR;
+  }
+
+  @Override
+  public int GL_INCR_WRAP() {
+    return GL14.GL_INCR_WRAP;
+  }
+
+  @Override
   public int GL_DOUBLE() {
     return GL11.GL_DOUBLE;
   }
@@ -546,6 +611,11 @@ public class LwjglCoreGL implements CoreGL {
   @Override
   public int GL_INT_2_10_10_10_REV() {
     return GL33.GL_INT_2_10_10_10_REV;
+  }
+
+  @Override
+  public int GL_INVERT() {
+    return GL11.GL_INVERT;
   }
 
   @Override
@@ -669,6 +739,16 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_FRONT() {
+    return GL11.GL_FRONT;
+  }
+
+  @Override
+  public int GL_FRONT_AND_BACK() {
+    return GL11.GL_FRONT_AND_BACK;
+  }
+
+  @Override
   public int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE() {
     return GL30.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
   }
@@ -689,8 +769,18 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_STENCIL_TEST() {
+    return GL11.GL_STENCIL_TEST;
+  }
+
+  @Override
   public int GL_STENCIL_ATTACHMENT() {
     return GL30.GL_STENCIL_ATTACHMENT;
+  }
+
+  @Override
+  public int GL_STENCIL_BUFFER_BIT() {
+    return GL11.GL_STENCIL_BUFFER_BIT;
   }
 
   @Override
@@ -711,6 +801,11 @@ public class LwjglCoreGL implements CoreGL {
   @Override
   public int GL_RENDERER() {
     return GL11.GL_RENDERER;
+  }
+
+  @Override
+  public int GL_REPLACE() {
+    return GL11.GL_REPLACE;
   }
 
   @Override
@@ -1035,6 +1130,11 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public void glColorMask(final boolean red, final boolean green, final boolean blue, final boolean alpha) {
+    GL11.glColorMask(red, green, blue, alpha);
+  }
+
+  @Override
   public int glCreateProgram() {
     return GL20.glCreateProgram();
   }
@@ -1042,6 +1142,11 @@ public class LwjglCoreGL implements CoreGL {
   @Override
   public int glCreateShader(final int type) {
     return GL20.glCreateShader(type);
+  }
+
+  @Override
+  public void glDepthMask(final boolean flag) {
+    GL11.glDepthMask(flag);
   }
 
   @Override
@@ -1148,6 +1253,36 @@ public class LwjglCoreGL implements CoreGL {
   @Override
   public void glShaderSource(final int shader, final String string) {
     GL20.glShaderSource(shader, string);
+  }
+
+  @Override
+  public void glStencilFunc(final int func, final int ref, final int mask) {
+    GL11.glStencilFunc(func, ref, mask);
+  }
+
+  @Override
+  public void glStencilFuncSeparate(final int face, final int func, final int ref, final int mask) {
+    GL20.glStencilFuncSeparate(face, func, ref, mask);
+  }
+
+  @Override
+  public void glStencilMask(final int mask) {
+    GL11.glStencilMask(mask);
+  }
+
+  @Override
+  public void glStencilMaskSeparate(final int face, final int mask) {
+    GL20.glStencilMaskSeparate(face, mask);
+  }
+
+  @Override
+  public void glStencilOp(final int sfail, final int dpfail, final int dppass) {
+    GL11.glStencilOp(sfail, dpfail, dppass);
+  }
+
+  @Override
+  public void glStencilOpSeparate(final int face, final int sfail, final int dpfail, final int dppass) {
+    GL20.glStencilOpSeparate(face, sfail, dpfail, dppass);
   }
 
   @Override

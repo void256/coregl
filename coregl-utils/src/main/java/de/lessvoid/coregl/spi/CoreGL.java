@@ -22,7 +22,11 @@ public interface CoreGL {
 
   int GL_ALPHA_TEST();
 
+  int GL_ALWAYS();
+
   int GL_ARRAY_BUFFER();
+
+  int GL_BACK();
 
   int GL_BGR();
 
@@ -62,6 +66,10 @@ public interface CoreGL {
 
   int GL_CURRENT_PROGRAM();
 
+  int GL_DECR();
+
+  int GL_DECR_WRAP();
+
   int GL_DEPTH_BUFFER_BIT();
 
   int GL_DEPTH_TEST();
@@ -75,6 +83,8 @@ public interface CoreGL {
   int GL_DYNAMIC_DRAW();
 
   int GL_ELEMENT_ARRAY_BUFFER();
+
+  int GL_EQUAL();
 
   int GL_FALSE();
 
@@ -102,23 +112,43 @@ public interface CoreGL {
 
   int GL_FRAMEBUFFER_UNSUPPORTED();
 
+  int GL_FRONT();
+
+  int GL_FRONT_AND_BACK();
+
   int GL_FUNC_ADD();
 
   int GL_GEOMETRY_SHADER();
+
+  int GL_GEQUAL();
+
+  int GL_GREATER();
 
   int GL_GREEN();
 
   int GL_HALF_FLOAT();
 
+  int GL_LESS();
+
+  int GL_LEQUAL();
+
+  int GL_INCR();
+
+  int GL_INCR_WRAP();
+
   int GL_INT();
 
   int GL_INT_2_10_10_10_REV();
+
+  int GL_INVERT();
 
   int GL_INVALID_ENUM();
 
   int GL_INVALID_OPERATION();
 
   int GL_INVALID_VALUE();
+
+  int GL_KEEP();
 
   int GL_LINEAR();
 
@@ -150,6 +180,8 @@ public interface CoreGL {
 
   int GL_NEAREST_MIPMAP_NEAREST();
 
+  int GL_NEVER();
+
   int GL_NOTEQUAL();
 
   int GL_NO_ERROR();
@@ -178,6 +210,8 @@ public interface CoreGL {
 
   int GL_RENDERER();
 
+  int GL_REPLACE();
+
   int GL_RGB();
 
   int GL_RGBA();
@@ -196,9 +230,13 @@ public interface CoreGL {
 
   int GL_STENCIL_ATTACHMENT();
 
+  int GL_STENCIL_BUFFER_BIT();
+
   int GL_STENCIL_INDEX();
 
   int GL_STENCIL_INDEX8();
+
+  int GL_STENCIL_TEST();
 
   int GL_STREAM_DRAW();
 
@@ -334,9 +372,13 @@ public interface CoreGL {
 
   void glCompileShader(int shader);
 
+  void glColorMask(boolean red, boolean green, boolean blue, boolean alpha);
+
   int glCreateProgram();
 
   int glCreateShader(int type);
+
+  void glDepthMask(boolean flag);
 
   void glDeleteBuffers(int n, IntBuffer buffers);
 
@@ -427,6 +469,18 @@ public interface CoreGL {
   void glRenderbufferStorage(int target, int internalFormat, int width, int height);
 
   void glShaderSource(int shader, String string);
+
+  void glStencilFunc(int func, int ref, int mask);
+
+  void glStencilFuncSeparate(int face, int func, int ref, int mask);
+
+  void glStencilMask(int mask);
+
+  void glStencilMaskSeparate(int face, int mask);
+
+  void glStencilOp(int sfail, int dpfail, int dppass);
+
+  void glStencilOpSeparate(int face, int sfail, int dpfail, int dppass);
 
   void glTexBuffer(int arg0, int arg1, int arg2);
 

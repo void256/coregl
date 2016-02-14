@@ -41,6 +41,11 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_ALWAYS() {
+    return GL.GL_ALWAYS;
+  }
+
+  @Override
   public int GL_BLEND() {
     return GL.GL_BLEND;
   }
@@ -111,6 +116,11 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_KEEP() {
+    return GL.GL_KEEP;
+  }
+
+  @Override
   public int GL_LINEAR() {
     return GL.GL_LINEAR;
   }
@@ -153,6 +163,11 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public int GL_NEAREST_MIPMAP_NEAREST() {
     return GL.GL_NEAREST_MIPMAP_NEAREST;
+  }
+
+  @Override
+  public int GL_NEVER() {
+    return GL.GL_NEVER;
   }
 
   @Override
@@ -336,6 +351,11 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_BACK() {
+    return GL.GL_BACK;
+  }
+
+  @Override
   public int GL_BGR() {
     return GL.GL_BGR;
   }
@@ -371,6 +391,16 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_DECR() {
+    return GL.GL_DECR;
+  }
+
+  @Override
+  public int GL_DECR_WRAP() {
+    return GL.GL_DECR_WRAP;
+  }
+
+  @Override
   public int GL_DYNAMIC_DRAW() {
     return GL.GL_DYNAMIC_DRAW;
   }
@@ -381,6 +411,11 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_EQUAL() {
+    return GL.GL_EQUAL;
+  }
+
+  @Override
   public int GL_FRAGMENT_SHADER() {
     return GL2ES2.GL_FRAGMENT_SHADER;
   }
@@ -388,6 +423,16 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public int GL_GEOMETRY_SHADER() {
     return GL3.GL_GEOMETRY_SHADER;
+  }
+
+  @Override
+  public int GL_GEQUAL() {
+    return GL.GL_GEQUAL;
+  }
+
+  @Override
+  public int GL_GREATER() {
+    return GL.GL_GREATER;
   }
 
   @Override
@@ -506,6 +551,26 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_LESS() {
+    return GL.GL_LESS;
+  }
+
+  @Override
+  public int GL_LEQUAL() {
+    return GL.GL_LEQUAL;
+  }
+
+  @Override
+  public int GL_INCR() {
+    return GL.GL_INCR;
+  }
+
+  @Override
+  public int GL_INCR_WRAP() {
+    return GL.GL_INCR_WRAP;
+  }
+
+  @Override
   public int GL_DOUBLE() {
     return GL2GL3.GL_DOUBLE;
   }
@@ -518,6 +583,11 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public int GL_INT_2_10_10_10_REV() {
     return GL3ES3.GL_INT_2_10_10_10_REV;
+  }
+
+  @Override
+  public int GL_INVERT() {
+    return GL.GL_INVERT;
   }
 
   @Override
@@ -636,6 +706,16 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_FRONT() {
+    return GL.GL_FRONT;
+  }
+
+  @Override
+  public int GL_FRONT_AND_BACK() {
+    return GL.GL_FRONT_AND_BACK;
+  }
+
+  @Override
   public int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE() {
     return GL.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
   }
@@ -656,8 +736,18 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_STENCIL_TEST() {
+    return GL.GL_STENCIL_TEST;
+  }
+
+  @Override
   public int GL_STENCIL_ATTACHMENT() {
     return GL.GL_STENCIL_ATTACHMENT;
+  }
+
+  @Override
+  public int GL_STENCIL_BUFFER_BIT() {
+    return GL.GL_STENCIL_BUFFER_BIT;
   }
 
   @Override
@@ -678,6 +768,11 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public int GL_RENDERER() {
     return GL.GL_RENDERER;
+  }
+
+  @Override
+  public int GL_REPLACE() {
+    return GL.GL_REPLACE;
   }
 
   @Override
@@ -1029,6 +1124,11 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public void glColorMask(final boolean red, final boolean green, final boolean blue, final boolean alpha) {
+    GLContext.getCurrentGL().glColorMask(red, green, blue, alpha);
+  }
+
+  @Override
   public int glCreateProgram() {
     return GLContext.getCurrentGL().getGL2ES2().glCreateProgram();
   }
@@ -1036,6 +1136,11 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public int glCreateShader(final int type) {
     return GLContext.getCurrentGL().getGL2ES2().glCreateShader(type);
+  }
+
+  @Override
+  public void glDepthMask(final boolean flag) {
+    GLContext.getCurrentGL().glDepthMask(flag);
   }
 
   @Override
@@ -1154,6 +1259,36 @@ public class JoglCoreGL implements CoreGL {
     final String[] sources = new String[] { string };
     final int[] sourceLengths = new int[] { sources[0].length() };
     GLContext.getCurrentGL().getGL2ES2().glShaderSource(shader, sources.length, sources, sourceLengths, 0);
+  }
+
+  @Override
+  public void glStencilFunc(final int func, final int ref, final int mask) {
+    GLContext.getCurrentGL().glStencilFunc(func, ref, mask);
+  }
+
+  @Override
+  public void glStencilFuncSeparate(final int face, final int func, final int ref, final int mask) {
+    GLContext.getCurrentGL().getGL2ES2().glStencilFuncSeparate(face, func, ref, mask);
+  }
+
+  @Override
+  public void glStencilMask(final int mask) {
+    GLContext.getCurrentGL().glStencilMask(mask);
+  }
+
+  @Override
+  public void glStencilMaskSeparate(final int face, final int mask) {
+    GLContext.getCurrentGL().getGL2ES2().glStencilMaskSeparate(face, mask);
+  }
+
+  @Override
+  public void glStencilOp(final int sfail, final int dpfail, final int dppass) {
+    GLContext.getCurrentGL().glStencilOp(sfail, dpfail, dppass);
+  }
+
+  @Override
+  public void glStencilOpSeparate(final int face, final int sfail, final int dpfail, final int dppass) {
+    GLContext.getCurrentGL().getGL2ES2().glStencilOpSeparate(face, sfail, dpfail, dppass);
   }
 
   @Override
