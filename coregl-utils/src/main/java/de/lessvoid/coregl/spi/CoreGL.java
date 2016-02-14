@@ -370,6 +370,8 @@ public interface CoreGL {
 
   void glClearColor(float red, float green, float blue, float alpha);
 
+  void glClearStencil(int s);
+
   void glCompileShader(int shader);
 
   void glColorMask(boolean red, boolean green, boolean blue, boolean alpha);

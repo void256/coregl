@@ -846,6 +846,11 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public void glClearStencil(final int s) {
+    GLContext.getCurrentGL().glClearStencil(s);
+  }
+
+  @Override
   public void glDeleteTextures(final int n, final IntBuffer textures) {
     GLContext.getCurrentGL().glDeleteTextures(n, textures);
   }

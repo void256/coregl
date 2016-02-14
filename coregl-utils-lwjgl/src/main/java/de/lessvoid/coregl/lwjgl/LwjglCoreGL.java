@@ -852,6 +852,11 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public void glClearStencil(final int s) {
+    GL11.glClearStencil(s);
+  }
+
+  @Override
   public void glDeleteTextures(final int n, final IntBuffer textures) {
     GL11.glDeleteTextures(textures);
   }
