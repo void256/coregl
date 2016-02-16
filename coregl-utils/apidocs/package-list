@@ -1,7 +1,7 @@
-de.lessvoid.coregl
-de.lessvoid.coregl.input
-de.lessvoid.coregl.input.dispatch
-de.lessvoid.coregl.input.spi
-de.lessvoid.coregl.spi
-de.lessvoid.math
-de.lessvoid.textureatlas
+com.lessvoid.coregl
+com.lessvoid.coregl.input
+com.lessvoid.coregl.input.dispatch
+com.lessvoid.coregl.input.spi
+com.lessvoid.coregl.spi
+com.lessvoid.math
+com.lessvoid.textureatlas
