@@ -154,8 +154,8 @@ public class CoreFBO {
     gl.glGenRenderBuffers(1, buff);
     final int renderBuffer = buff.get(0);
     gl.glBindRenderbuffer(gl.GL_RENDERBUFFER(), renderBuffer);
-    gl.glRenderbufferStorage(gl.GL_RENDERBUFFER(), gl.GL_STENCIL_INDEX8(), width, height);
-    gl.glFramebufferRenderbuffer(gl.GL_FRAMEBUFFER(), gl.GL_STENCIL_ATTACHMENT(), gl.GL_RENDERBUFFER(), renderBuffer);
+    gl.glRenderbufferStorage(gl.GL_RENDERBUFFER(), gl.GL_DEPTH24_STENCIL8(), width, height);
+    gl.glFramebufferRenderbuffer(gl.GL_FRAMEBUFFER(), gl.GL_DEPTH_STENCIL_ATTACHMENT​(), gl.GL_RENDERBUFFER(), renderBuffer);
     checkFramebufferStatus();
   }
 

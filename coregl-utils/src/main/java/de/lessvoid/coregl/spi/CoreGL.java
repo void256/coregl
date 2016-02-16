@@ -70,7 +70,11 @@ public interface CoreGL {
 
   int GL_DECR_WRAP();
 
+  int GL_DEPTH24_STENCIL8();
+
   int GL_DEPTH_BUFFER_BIT();
+
+  int GL_DEPTH_STENCIL_ATTACHMENT​();
 
   int GL_DEPTH_TEST();
 

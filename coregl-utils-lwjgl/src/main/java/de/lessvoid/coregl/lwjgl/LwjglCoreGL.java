@@ -84,6 +84,11 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_DEPTH_STENCIL_ATTACHMENT​() {
+    return GL30.GL_DEPTH_STENCIL_ATTACHMENT;
+  }
+
+  @Override
   public int GL_CULL_FACE() {
     return GL11.GL_CULL_FACE;
   }
@@ -426,6 +431,11 @@ public class LwjglCoreGL implements CoreGL {
   @Override
   public int GL_DECR_WRAP() {
     return GL14.GL_DECR_WRAP;
+  }
+
+  @Override
+  public int GL_DEPTH24_STENCIL8() {
+    return GL30.GL_DEPTH24_STENCIL8;
   }
 
   @Override
