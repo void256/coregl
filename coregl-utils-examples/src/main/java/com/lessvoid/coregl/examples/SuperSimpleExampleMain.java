@@ -1,43 +1,3 @@
-# OpenGL core utilities
-
-**Simple utility classes and methods to make life with OpenGL core profile simpler.**
-
-- The classes provided can be used independently from each other. You don't need to learn a complex API.
-- The abstractions provided are rather low level. This is by intention. The library is supposed to be as simple and lightweight as possible.
-- Adapter jars are provided for LWJGL and JOGL. If you want you can target both Java OpenGL providers or you can use the implementations directly. You decide. 
-
-It's main purpose is to reduce the amount of boilerplate code you would need to write when talking to OpenGL core profile.
-**It's not meant to be anything else.**
-
-I've came up with these classes while learning OpenGL core profile. Maybe you can find them useful too.
-
-## Maven
-
-CoreGL is available in the Maven central.
-
-### LWJGL
-
-```XML
-<dependency>
-  <groupId>com.lessvoid</groupId>
-  <artifactId>coregl-utils-lwjgl</artifactId>
-  <version>2.0.0</version>
-</dependency>
-```
-
-### JOGL
-
-```XML
-<dependency>
-  <groupId>com.lessvoid</groupId>
-  <artifactId>coregl-utils-jogl</artifactId>
-  <version>2.0.0</version>
-</dependency>
-```
-
-## Example
-
-```java
 /**
  * Copyright (c) 2013, Jens Hohmuth
  * All rights reserved.
@@ -132,10 +92,8 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
     vao.bind();
   }
 
-  // pass 'jogl' into program arguments for JOGL backend and 'lwjgl' for LWJGL backend
   public static void main(final String[] args) {
     final RenderLoopCallback superSimpleExample = new SuperSimpleExampleMain();
     CoreExampleMain.runExample(superSimpleExample, args);
   }
 }
-```

@@ -1,43 +1,3 @@
-# OpenGL core utilities
-
-**Simple utility classes and methods to make life with OpenGL core profile simpler.**
-
-- The classes provided can be used independently from each other. You don't need to learn a complex API.
-- The abstractions provided are rather low level. This is by intention. The library is supposed to be as simple and lightweight as possible.
-- Adapter jars are provided for LWJGL and JOGL. If you want you can target both Java OpenGL providers or you can use the implementations directly. You decide. 
-
-It's main purpose is to reduce the amount of boilerplate code you would need to write when talking to OpenGL core profile.
-**It's not meant to be anything else.**
-
-I've came up with these classes while learning OpenGL core profile. Maybe you can find them useful too.
-
-## Maven
-
-CoreGL is available in the Maven central.
-
-### LWJGL
-
-```XML
-<dependency>
-  <groupId>com.lessvoid</groupId>
-  <artifactId>coregl-utils-lwjgl</artifactId>
-  <version>2.0.0</version>
-</dependency>
-```
-
-### JOGL
-
-```XML
-<dependency>
-  <groupId>com.lessvoid</groupId>
-  <artifactId>coregl-utils-jogl</artifactId>
-  <version>2.0.0</version>
-</dependency>
-```
-
-## Example
-
-```java
 /**
  * Copyright (c) 2013, Jens Hohmuth
  * All rights reserved.
@@ -66,51 +26,37 @@ CoreGL is available in the Maven central.
  */
 package com.lessvoid.coregl.examples;
 
+import java.util.Map;
+
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
+import com.lessvoid.coregl.CoreUBO;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.CoreVBO;
 import com.lessvoid.coregl.CoreVBO.DataType;
 import com.lessvoid.coregl.CoreVBO.UsageType;
+import com.lessvoid.coregl.UniformBlockInfo;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
-/**
- * The SuperSimpleExampleMain just renders a single quad using a triangle strip
- * with a very basic vertex and fragment shader. It demonstrates the use of the
- * core-utils classes.
- *
- * @author void
- */
-public class SuperSimpleExampleMain implements RenderLoopCallback {
+public class UniformBufferObjectExampleMain implements RenderLoopCallback {
 
   private CoreRender coreRender;
-
-  @Override
-  public boolean render(final CoreGL gl, final float deltaTime) {
-    // We don't have to use coreRender though but it's kinda easier that way
-    coreRender.clearColor(.1f, .1f, .3f, 0.f);
-    coreRender.clearColorBuffer();
-    coreRender.renderTriangleStrip(4);
-    return true;
-  }
-
-  @Override
-  public boolean endLoop() {
-    return false;
-  }
+  private CoreUBO ubo;
+  private CoreShader shader;
+  private CoreVAO vao;
 
   @Override
   public void init(final CoreGL gl) {
     coreRender = CoreRender.createCoreRender(gl);
 
-    final CoreShader shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");
-    shader.vertexShader("super-simple/super-simple.vs");
-    shader.fragmentShader("super-simple/super-simple.fs");
+    shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");
+    shader.vertexShader("ubo/ubo.vs");
+    shader.fragmentShader("ubo/ubo.fs");
     shader.link();
 
-    final CoreVAO vao = CoreVAO.createCoreVAO(gl);
+    vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
     CoreVBO.createCoreVBO(gl,
@@ -121,21 +67,42 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO
-    vao.enableVertexAttribute(0);
     vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
-    vao.enableVertexAttribute(1);
     vao.vertexAttribPointer(1, 4, FloatType.FLOAT, 6, 2);
+    vao.enableVertexAttribute(0);
+    vao.enableVertexAttribute(1);
+
+    final Map<String, UniformBlockInfo> blockInfos = shader.getUniformIndices("TransformBlock.off");
+
+    ubo = CoreUBO.createCoreUBO(gl, 256, blockInfos);
+    ubo.setFloatArray("TransformBlock.off", new float[] { -0.4f, 0.2f, 0.3f, 0.4f });
+    ubo.send();
+    shader.uniformBlockBinding("TransformBlock", 2);
+    ubo.bindBufferBase(2);
 
     // we only use a single shader and a single vao so we can activate both here
     // and let them stay active the whole time.
-    shader.activate();
     vao.bind();
+    shader.activate();
   }
 
-  // pass 'jogl' into program arguments for JOGL backend and 'lwjgl' for LWJGL backend
-  public static void main(final String[] args) {
-    final RenderLoopCallback superSimpleExample = new SuperSimpleExampleMain();
-    CoreExampleMain.runExample(superSimpleExample, args);
+  @Override
+  public boolean render(final CoreGL gl, final float deltaTime) {
+    // We don't have to use coreRender though but it's kinda easier that way
+    coreRender.clearColor(.1f, .1f, .3f, 0.f);
+    coreRender.clearColorBuffer();
+    shader.activate();
+    coreRender.renderTriangleStripInstances(4, 4);
+    return true;
+  }
+
+  @Override
+  public boolean endLoop() {
+    return false;
+  }
+
+  public static void main(final String[] args) throws Exception {
+    final RenderLoopCallback uboExample = new UniformBufferObjectExampleMain();
+    CoreExampleMain.runExample(uboExample, args);
   }
 }
-```
