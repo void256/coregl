@@ -9,6 +9,7 @@
   <modules>
     <module>coregl-utils</module>
     <module>coregl-utils-lwjgl</module>
+    <module>coregl-utils-lwjgl3</module>
     <module>coregl-utils-jogl</module>
     <module>coregl-utils-examples</module>
   </modules>
