@@ -39,6 +39,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.Platform;
 
 import de.lessvoid.coregl.input.spi.CoreInput;
@@ -52,6 +53,7 @@ public class CoreSetupLwjgl3 implements CoreSetup {
   private final CoreGL gl;
   private CoreInput input;
   private long window;
+  private boolean fullscreen;
   private String lastFPS = "";
 
   public CoreSetupLwjgl3(final CoreGL gl) {
@@ -165,12 +167,15 @@ public class CoreSetupLwjgl3 implements CoreSetup {
    */
   @Override
   public void enableVSync(final boolean enable) {
-
+    glfwSwapInterval(enable ? 1 : 0);
   }
 
+  /**
+   * Note: this must be called BEFORE the GLFW window is created via {@link #initGraphics(String, int, int)}
+   */
   @Override
   public void enableFullscreen(final boolean enable) {
-
+    fullscreen = enable;
   }
 
   @Override
@@ -207,7 +212,7 @@ public class CoreSetupLwjgl3 implements CoreSetup {
     gl.checkGLError("initialized");
   }
 
-  private void createWindow(final String title, int width, int height) {
+  private void createWindow(final String title, final int width, final int height) {
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -215,7 +220,15 @@ public class CoreSetupLwjgl3 implements CoreSetup {
     glfwWindowHint(GLFW_STENCIL_BITS, 8);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    window = glfwCreateWindow(width, height, title, 0, 0);
+    int windowWidth = width;
+    int windowHeight = height;
+    long monitor = glfwGetPrimaryMonitor();
+    if(fullscreen) {
+        GLFWVidMode vidMode = glfwGetVideoMode(monitor);
+        windowWidth = vidMode.width();
+        windowHeight = vidMode.height();
+    }
+    window = glfwCreateWindow(windowWidth, windowHeight, title, monitor, 0);
   }
 
   private void initInput() throws Exception {
