@@ -15,10 +15,9 @@ import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.GLContext;
-
 import com.lessvoid.coregl.CoreLogger;
-import com.lessvoid.coregl.spi.CoreUtil;
 import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
@@ -76,8 +75,8 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
-  public int GL_DEPTH_STENCIL_ATTACHMENT​() {
-    return GL2GL3.GL_DEPTH_STENCIL_ATTACHMENT;
+  public int GL_DEPTH_STENCIL_ATTACHMENT() {
+    return GL2ES3.GL_DEPTH_STENCIL_ATTACHMENT;
   }
 
   @Override
@@ -667,7 +666,7 @@ public class JoglCoreGL implements CoreGL {
 
   @Override
   public int GL_TEXTURE_BUFFER() {
-    return GL2GL3.GL_TEXTURE_BUFFER;
+    return GL2ES3.GL_TEXTURE_BUFFER;
   }
 
   @Override

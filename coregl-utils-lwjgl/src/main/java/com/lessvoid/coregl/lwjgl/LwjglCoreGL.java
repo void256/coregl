@@ -84,7 +84,7 @@ public class LwjglCoreGL implements CoreGL {
   }
 
   @Override
-  public int GL_DEPTH_STENCIL_ATTACHMENT​() {
+  public int GL_DEPTH_STENCIL_ATTACHMENT() {
     return GL30.GL_DEPTH_STENCIL_ATTACHMENT;
   }
 

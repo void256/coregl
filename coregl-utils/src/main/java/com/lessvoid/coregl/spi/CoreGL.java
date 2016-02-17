@@ -74,7 +74,7 @@ public interface CoreGL {
 
   int GL_DEPTH_BUFFER_BIT();
 
-  int GL_DEPTH_STENCIL_ATTACHMENT​();
+  int GL_DEPTH_STENCIL_ATTACHMENT();
 
   int GL_DEPTH_TEST();
 
