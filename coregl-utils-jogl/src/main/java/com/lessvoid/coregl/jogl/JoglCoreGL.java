@@ -1590,7 +1590,7 @@ public class JoglCoreGL implements CoreGL {
     GLContext.getCurrentGL().glBlendEquationSeparate(e1, e2);
   }
 
-  private boolean errorChecksEnabled = true;
+  private boolean errorChecksEnabled = false;
 
   @Override
   public void checkGLError() {
@@ -1599,12 +1599,12 @@ public class JoglCoreGL implements CoreGL {
 
   @Override
   public void checkGLError(final String msg) {
-    log.checkGLError(this, msg);
+    checkGLError(msg);
   }
 
   @Override
   public void checkGLError(final String msg, final Object...args) {
-    log.checkGLError(this, false, msg, args);
+    checkGLError(false, msg, args);
   }
 
   @Override

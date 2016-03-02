@@ -32,7 +32,7 @@ public class Lwjgl3CoreGL implements CoreGL {
 
   private static CoreLogger log = CoreLogger.getCoreLogger(Lwjgl3CoreGL.class.getName());
 
-  private boolean errorCheckingEnabled = true;
+  private boolean errorCheckingEnabled = false;
 
   private final CoreUtil util = new Lwjgl3CoreUtil();
 
@@ -49,12 +49,12 @@ public class Lwjgl3CoreGL implements CoreGL {
 
   @Override
   public void checkGLError(final String msg) {
-    log.checkGLError(this, false, msg);
+    checkGLError(false, msg);
   }
 
   @Override
   public void checkGLError(final String msg, final Object...args) {
-    log.checkGLError(this, false, msg, args);
+    checkGLError(false, msg, args);
   }
 
   @Override

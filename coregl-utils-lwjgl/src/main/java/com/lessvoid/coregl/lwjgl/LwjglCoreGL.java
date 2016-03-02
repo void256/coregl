@@ -1580,7 +1580,7 @@ public class LwjglCoreGL implements CoreGL {
     GL20.glBlendEquationSeparate(e1, e2);
   }
 
-  private boolean errorCheckingEnabled = true;
+  private boolean errorCheckingEnabled = false;
 
   @Override
   public void checkGLError() {
@@ -1589,12 +1589,12 @@ public class LwjglCoreGL implements CoreGL {
 
   @Override
   public void checkGLError(final String msg) {
-    log.checkGLError(this, false, msg);
+    checkGLError(false, msg);
   }
 
   @Override
   public void checkGLError(final String msg, final Object...args) {
-    log.checkGLError(this, false, msg, args);
+    checkGLError(false, msg, args);
   }
 
   @Override
