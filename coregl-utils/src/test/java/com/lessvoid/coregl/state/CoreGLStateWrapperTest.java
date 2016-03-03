@@ -1411,6 +1411,8 @@ public class CoreGLStateWrapperTest {
 
     @Test
     public void testGlDisableVertexAttribArrayWithoutPriorEnable() throws Exception {
+        gl.glDisableVertexAttribArray(42);
+        gl.glDisableVertexAttribArray(42);
         replay(gl);
         sut.glDisableVertexAttribArray(42);
         sut.glDisableVertexAttribArray(42);
@@ -1419,6 +1421,7 @@ public class CoreGLStateWrapperTest {
     @Test
     public void testGlDisableVertexAttribArrayWithPriorEnable() throws Exception {
         gl.glEnableVertexAttribArray(42);
+        gl.glDisableVertexAttribArray(42);
         gl.glDisableVertexAttribArray(42);
         replay(gl);
         sut.glEnableVertexAttribArray(42);
@@ -1471,6 +1474,7 @@ public class CoreGLStateWrapperTest {
 
     @Test
     public void testGlEnableVertexAttribArray() throws Exception {
+        gl.glEnableVertexAttribArray(42);
         gl.glEnableVertexAttribArray(42);
         replay(gl);
         sut.glEnableVertexAttribArray(42);

@@ -57,7 +57,6 @@ public class CoreGLStateWrapper implements CoreGL {
     private boolean glColorMaskAlpha;
     private boolean glDepthMaskFlag;
     private Set<Integer> glEnableSet = new HashSet<Integer>();
-    private Set<Integer> glEnableVertexAttribArraySet = new HashSet<Integer>();
     private int glDrawBufferMode;
     private int glPixelStoreiPname;
     private int glPixelStoreiParam;
@@ -1155,11 +1154,7 @@ public class CoreGLStateWrapper implements CoreGL {
 
     @Override
     public void glDisableVertexAttribArray(int index) {
-        if (!glEnableVertexAttribArraySet.contains(index)) {
-            return;
-        }
         gl.glDisableVertexAttribArray(index);
-        glEnableVertexAttribArraySet.remove(index);
     }
 
     @Override
@@ -1197,11 +1192,7 @@ public class CoreGLStateWrapper implements CoreGL {
 
     @Override
     public void glEnableVertexAttribArray(int index) {
-        if (glEnableVertexAttribArraySet.contains(index)) {
-            return;
-        }
         gl.glEnableVertexAttribArray(index);
-        glEnableVertexAttribArraySet.add(index);
     }
 
     @Override
