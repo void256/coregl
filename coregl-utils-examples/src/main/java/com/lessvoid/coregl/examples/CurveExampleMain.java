@@ -27,13 +27,15 @@
 package com.lessvoid.coregl.examples;
 
 import com.lessvoid.coregl.CoreBuffer;
-import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+
+import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
 public class CurveExampleMain implements RenderLoopCallback {
 
@@ -55,7 +57,8 @@ public class CurveExampleMain implements RenderLoopCallback {
     final float aspect = 4.f / 3.f;
     CoreBuffer.createCoreBufferObject(
         gl,
-        CoreBufferUsageType.STATIC_DRAW,
+        ARRAY_BUFFER,
+        STATIC_DRAW,
         new float[] {
             -0.4f, -0.4f * aspect, 0.0f, 0.0f, 0.4f, -0.4f * aspect, 1.0f, 0.0f, -0.4f,
              0.4f * aspect, 0.0f, 1.0f, 0.4f, 0.4f * aspect, 1.0f, 1.0f, });

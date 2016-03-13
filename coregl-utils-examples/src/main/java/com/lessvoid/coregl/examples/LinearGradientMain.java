@@ -27,7 +27,6 @@
 package com.lessvoid.coregl.examples;
 
 import com.lessvoid.coregl.CoreBuffer;
-import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
@@ -35,6 +34,9 @@ import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import com.lessvoid.math.MatrixFactory;
+
+import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
 public class LinearGradientMain implements RenderLoopCallback {
 
@@ -64,7 +66,8 @@ public class LinearGradientMain implements RenderLoopCallback {
 
     CoreBuffer.createCoreBufferObject(
         gl,
-        CoreBufferUsageType.STATIC_DRAW,
+        ARRAY_BUFFER,
+        STATIC_DRAW,
         new float[] { 100.f, 100.f, 100.f, 500.f, 500.f, 100.f, 500.f, 500.f, });
 
     // parameters are: index, size, stride, offset

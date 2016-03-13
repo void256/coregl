@@ -28,8 +28,6 @@ package com.lessvoid.coregl.examples;
 
 import com.lessvoid.coregl.ColorFormat;
 import com.lessvoid.coregl.CoreBuffer;
-import com.lessvoid.coregl.CoreBufferDataType;
-import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreFBO;
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
@@ -47,6 +45,10 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
+
+import static com.lessvoid.coregl.CoreBufferDataType.FLOAT;
+import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_DRAW;
 
 public class LineMain implements CoreSetup.RenderLoopCallback {
 
@@ -108,14 +110,14 @@ public class LineMain implements CoreSetup.RenderLoopCallback {
     src = CoreVAO.createCoreVAO(gl);
     src.bind();
 
-    vbo = CoreBuffer.createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.DYNAMIC_DRAW, 2 * 5);
-    vbo.bind();
+    vbo = CoreBuffer.createCoreBufferObject(gl, FLOAT, DYNAMIC_DRAW, 2 * 5);
+    vbo.bind(ARRAY_BUFFER);
     src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, CoreVAO.FloatType.FLOAT, 2, 0);
     totalTime = 0;
 
-    vboQuad = CoreBuffer.createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.DYNAMIC_DRAW, 4 * 4);
-    vboBackground = CoreBuffer.createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.DYNAMIC_DRAW, 5 * 4);
+    vboQuad = CoreBuffer.createCoreBufferObject(gl, FLOAT, DYNAMIC_DRAW, 4 * 4);
+    vboBackground = CoreBuffer.createCoreBufferObject(gl, FLOAT, DYNAMIC_DRAW, 5 * 4);
 
     fbo = CoreFBO.createCoreFBO(gl);
     fbo.bindFramebuffer();
@@ -169,7 +171,7 @@ public class LineMain implements CoreSetup.RenderLoopCallback {
     buffer.put(600.f + (float) Math.cos(totalTime / 1500.f) * 200.f);
     buffer.put(300.f + (float) Math.sin(totalTime / 1500.f) * 200.f);
     buffer.rewind();
-    vbo.send();
+    vbo.send(ARRAY_BUFFER);
 
     src.enableVertexAttribute(0);
     src.disableVertexAttribute(1);
@@ -206,7 +208,7 @@ public class LineMain implements CoreSetup.RenderLoopCallback {
     background.put(1.0f);
     background.rewind();
 
-    vboBackground.send();
+    vboBackground.send(ARRAY_BUFFER);
 
     src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, CoreVAO.FloatType.FLOAT, 5, 0);
@@ -246,7 +248,7 @@ public class LineMain implements CoreSetup.RenderLoopCallback {
     quad.put(1.0f);
     quad.rewind();
 
-    vboQuad.send();
+    vboQuad.send(ARRAY_BUFFER);
 
     src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, CoreVAO.FloatType.FLOAT, 4, 0);

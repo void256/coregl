@@ -27,13 +27,15 @@
 package com.lessvoid.coregl.examples;
 
 import com.lessvoid.coregl.CoreBuffer;
-import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+
+import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
 public class BackgroundMain implements RenderLoopCallback {
 
@@ -54,7 +56,8 @@ public class BackgroundMain implements RenderLoopCallback {
 
     CoreBuffer.createCoreBufferObject(
         gl,
-        CoreBufferUsageType.STATIC_DRAW,
+        ARRAY_BUFFER,
+        STATIC_DRAW,
         new float[] { -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f });
 
     // parameters are: index, size, stride, offset
