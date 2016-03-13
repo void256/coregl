@@ -26,13 +26,12 @@
  */
 package com.lessvoid.coregl.examples;
 
+import com.lessvoid.coregl.CoreBuffer;
+import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
-import com.lessvoid.coregl.CoreVBO;
-import com.lessvoid.coregl.CoreVBO.DataType;
-import com.lessvoid.coregl.CoreVBO.UsageType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
@@ -53,10 +52,10 @@ public class BackgroundMain implements RenderLoopCallback {
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    CoreVBO.createCoreVBO(gl,
-                          DataType.FLOAT,
-                          UsageType.STATIC_DRAW,
-                          new Float[] { -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, });
+    CoreBuffer.createCoreBufferObject(
+        gl,
+        CoreBufferUsageType.STATIC_DRAW,
+        new float[] { -1.0f, -1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 1.0f });
 
     // parameters are: index, size, stride, offset
     // this will use the currently active VBO to store the VBO in the VAO

@@ -1,5 +1,8 @@
 package com.lessvoid.coregl.state;
 
+import com.lessvoid.coregl.CoreBufferAccessType;
+import com.lessvoid.coregl.CoreBufferTargetType;
+import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreUtil;
 
@@ -175,6 +178,16 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_COPY_READ_BUFFER() {
+        return gl.GL_COPY_READ_BUFFER();
+    }
+
+    @Override
+    public int GL_COPY_WRITE_BUFFER() {
+        return gl.GL_COPY_WRITE_BUFFER();
+    }
+
+    @Override
     public int GL_COLOR_ATTACHMENT0() {
         return gl.GL_COLOR_ATTACHMENT0();
     }
@@ -277,6 +290,16 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_DYNAMIC_DRAW() {
         return gl.GL_DYNAMIC_DRAW();
+    }
+
+    @Override
+    public int GL_DYNAMIC_READ() {
+        return gl.GL_DYNAMIC_READ();
+    }
+
+    @Override
+    public int GL_DYNAMIC_COPY() {
+        return gl.GL_DYNAMIC_COPY();
     }
 
     @Override
@@ -565,6 +588,16 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_PIXEL_PACK_BUFFER() {
+        return gl.GL_PIXEL_PACK_BUFFER();
+    }
+
+    @Override
+    public int GL_PIXEL_PACK_BUFFER_BINDING() {
+        return gl.GL_PIXEL_PACK_BUFFER_BINDING();
+    }
+
+    @Override
     public int GL_POINTS() {
         return gl.GL_POINTS();
     }
@@ -582,6 +615,16 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_R32F() {
         return gl.GL_R32F();
+    }
+
+    @Override
+    public int GL_READ_ONLY() {
+        return gl.GL_READ_ONLY();
+    }
+
+    @Override
+    public int GL_READ_WRITE() {
+        return gl.GL_READ_WRITE();
     }
 
     @Override
@@ -645,6 +688,16 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_STATIC_READ() {
+        return gl.GL_STATIC_READ();
+    }
+
+    @Override
+    public int GL_STATIC_COPY() {
+        return gl.GL_STATIC_COPY();
+    }
+
+    @Override
     public int GL_STENCIL_ATTACHMENT() {
         return gl.GL_STENCIL_ATTACHMENT();
     }
@@ -672,6 +725,21 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_STREAM_DRAW() {
         return gl.GL_STREAM_DRAW();
+    }
+
+    @Override
+    public int GL_STREAM_READ() {
+        return gl.GL_STREAM_READ();
+    }
+
+    @Override
+    public int GL_STREAM_COPY() {
+        return gl.GL_STREAM_COPY();
+    }
+
+    @Override
+    public int GL_TRANSFORM_FEEDBACK_BUFFER() {
+        return gl.GL_TRANSFORM_FEEDBACK_BUFFER();
     }
 
     @Override
@@ -787,6 +855,16 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_UNIFORM_OFFSET() {
         return gl.GL_UNIFORM_OFFSET();
+    }
+
+    @Override
+    public int GL_PIXEL_UNPACK_BUFFER() {
+        return gl.GL_PIXEL_UNPACK_BUFFER();
+    }
+
+    @Override
+    public int GL_PIXEL_UNPACK_BUFFER_BINDING() {
+        return gl.GL_PIXEL_UNPACK_BUFFER_BINDING();
     }
 
     @Override
@@ -1033,6 +1111,11 @@ public class CoreGLStateWrapper implements CoreGL {
         glBlendFuncSeparateDfactorRGB = dfactorRGB;
         glBlendFuncSeparateSfactorAlpha = sfactorAlpha;
         glBlendFuncSeparateDfactorAlpha = dfactorAlpha;
+    }
+
+    @Override
+    public void glBufferData(final int target, final ByteBuffer data, final int usage) {
+        gl.glBufferData(target, data, usage);
     }
 
     @Override
@@ -1767,6 +1850,21 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public void setErrorChecksEnabled(boolean enabled) {
         gl.setErrorChecksEnabled(enabled);
+    }
+
+    @Override
+    public int mapCoreBufferTargetType(final CoreBufferTargetType target) {
+        return gl.mapCoreBufferTargetType(target);
+    }
+
+    @Override
+    public int mapCoreBufferUsageType(final CoreBufferUsageType usage) {
+        return gl.mapCoreBufferUsageType(usage);
+    }
+
+    @Override
+    public int mapCoreBufferAccessType(final CoreBufferAccessType access) {
+        return gl.mapCoreBufferAccessType(access);
     }
 
     private boolean stringEquals(final String a, final String b) {

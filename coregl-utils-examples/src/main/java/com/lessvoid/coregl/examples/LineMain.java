@@ -26,25 +26,27 @@
  */
 package com.lessvoid.coregl.examples;
 
+import com.lessvoid.coregl.ColorFormat;
+import com.lessvoid.coregl.CoreBuffer;
+import com.lessvoid.coregl.CoreBufferDataType;
+import com.lessvoid.coregl.CoreBufferUsageType;
+import com.lessvoid.coregl.CoreFBO;
+import com.lessvoid.coregl.CoreRender;
+import com.lessvoid.coregl.CoreShader;
+import com.lessvoid.coregl.CoreTexture2D;
+import com.lessvoid.coregl.CoreVAO;
+import com.lessvoid.coregl.ResizeFilter;
+import com.lessvoid.coregl.Type;
+import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreSetup;
+import com.lessvoid.math.Mat4;
+import com.lessvoid.math.MatrixFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
-
-import com.lessvoid.coregl.ColorFormat;
-import com.lessvoid.coregl.CoreFBO;
-import com.lessvoid.coregl.CoreRender;
-import com.lessvoid.coregl.CoreShader;
-import com.lessvoid.coregl.CoreVAO;
-import com.lessvoid.coregl.CoreVBO;
-import com.lessvoid.coregl.Type;
-import com.lessvoid.coregl.spi.CoreSetup;
-import com.lessvoid.math.MatrixFactory;
-import com.lessvoid.coregl.CoreTexture2D;
-import com.lessvoid.coregl.ResizeFilter;
-import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.math.Mat4;
 
 public class LineMain implements CoreSetup.RenderLoopCallback {
 
@@ -57,9 +59,9 @@ public class LineMain implements CoreSetup.RenderLoopCallback {
   private CoreShader lineShader1;
   private CoreShader lineShader2;
   private CoreVAO src;
-  private CoreVBO<FloatBuffer> vbo;
-  private CoreVBO<FloatBuffer> vboQuad;
-  private CoreVBO<FloatBuffer> vboBackground;
+  private CoreBuffer<FloatBuffer> vbo;
+  private CoreBuffer<FloatBuffer> vboQuad;
+  private CoreBuffer<FloatBuffer> vboBackground;
   private CoreFBO fbo;
   private float totalTime;
   private CoreTexture2D fboTexture;
@@ -106,14 +108,14 @@ public class LineMain implements CoreSetup.RenderLoopCallback {
     src = CoreVAO.createCoreVAO(gl);
     src.bind();
 
-    vbo = CoreVBO.createCoreVBO(gl, CoreVBO.DataType.FLOAT, CoreVBO.UsageType.DYNAMIC_DRAW, 2 * 5);
+    vbo = CoreBuffer.createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.DYNAMIC_DRAW, 2 * 5);
     vbo.bind();
     src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, CoreVAO.FloatType.FLOAT, 2, 0);
     totalTime = 0;
 
-    vboQuad = CoreVBO.createCoreVBO(gl, CoreVBO.DataType.FLOAT, CoreVBO.UsageType.DYNAMIC_DRAW, 4 * 4);
-    vboBackground = CoreVBO.createCoreVBO(gl, CoreVBO.DataType.FLOAT, CoreVBO.UsageType.DYNAMIC_DRAW, 5 * 4);
+    vboQuad = CoreBuffer.createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.DYNAMIC_DRAW, 4 * 4);
+    vboBackground = CoreBuffer.createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.DYNAMIC_DRAW, 5 * 4);
 
     fbo = CoreFBO.createCoreFBO(gl);
     fbo.bindFramebuffer();

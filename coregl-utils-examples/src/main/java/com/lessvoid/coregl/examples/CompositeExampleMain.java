@@ -26,16 +26,15 @@
  */
 package com.lessvoid.coregl.examples;
 
-import com.lessvoid.math.MatrixFactory;
+import com.lessvoid.coregl.CoreBuffer;
+import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
-import com.lessvoid.coregl.CoreVBO;
-import com.lessvoid.coregl.CoreVBO.DataType;
-import com.lessvoid.coregl.CoreVBO.UsageType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.math.MatrixFactory;
 
 public class CompositeExampleMain implements RenderLoopCallback {
 
@@ -56,12 +55,13 @@ public class CompositeExampleMain implements RenderLoopCallback {
     src = CoreVAO.createCoreVAO(gl);
     src.bind();
 
-    CoreVBO.createCoreVBO(gl,
-                          DataType.FLOAT,
-                          UsageType.STATIC_DRAW,
-                          new Float[] { 0.f, 0.f, 1.f, 1.f, 0.f, 1.f, 100.f, 0.f, 1.f, 1.f, 0.f, 1.f, 0.f, 100.f, 1.f,
-                              1.f, 0.f, 1.f, 100.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 100.f, 0.f, 0.f, 0.f, 0.f, 100.f,
-                              100.f, 0.f, 0.f, 0.f, 0.f, });
+    CoreBuffer.createCoreBufferObject(
+        gl,
+        CoreBufferUsageType.STATIC_DRAW,
+        new float[] {
+            0.f, 0.f, 1.f, 1.f, 0.f, 1.f, 100.f, 0.f, 1.f, 1.f, 0.f, 1.f, 0.f, 100.f, 1.f,
+            1.f, 0.f, 1.f, 100.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 100.f, 0.f, 0.f, 0.f, 0.f, 100.f,
+            100.f, 0.f, 0.f, 0.f, 0.f, });
 
     src.enableVertexAttribute(0);
     src.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
@@ -71,12 +71,13 @@ public class CompositeExampleMain implements RenderLoopCallback {
     dst = CoreVAO.createCoreVAO(gl);
     dst.bind();
 
-    CoreVBO.createCoreVBO(gl,
-                          DataType.FLOAT,
-                          UsageType.STATIC_DRAW,
-                          new Float[] { 0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 100.f, 0.f, 0.f, 0.f, 1.f, 1.f, 100.f, 100.f, 0.f,
-                              0.f, 1.f, 1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 100.f, 0.f, 0.f, 0.f, 0.f, 100.f, 100.f,
-                              0.f, 0.f, 0.f, 0.f, });
+    CoreBuffer.createCoreBufferObject(
+        gl,
+        CoreBufferUsageType.STATIC_DRAW,
+        new float[] {
+            0.f, 0.f, 0.f, 0.f, 1.f, 1.f, 100.f, 0.f, 0.f, 0.f, 1.f, 1.f, 100.f, 100.f, 0.f,
+            0.f, 1.f, 1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 100.f, 0.f, 0.f, 0.f, 0.f, 100.f, 100.f,
+            0.f, 0.f, 0.f, 0.f });
 
     dst.enableVertexAttribute(0);
     dst.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);
@@ -86,12 +87,13 @@ public class CompositeExampleMain implements RenderLoopCallback {
     white = CoreVAO.createCoreVAO(gl);
     white.bind();
 
-    CoreVBO.createCoreVBO(gl,
-                          DataType.FLOAT,
-                          UsageType.STATIC_DRAW,
-                          new Float[] { 0.f, 0.f, 1.f, 1.f, 1.f, 1.f, 100.f, 0.f, 1.f, 1.f, 1.f, 1.f, 100.f, 100.f, 1.f,
-                              1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 1.f, 0.f, 100.f, 1.f, 1.f, 1.f, 1.f, 100.f, 100.f,
-                              1.f, 1.f, 1.f, 1.f, });
+    CoreBuffer.createCoreBufferObject(
+        gl,
+        CoreBufferUsageType.STATIC_DRAW,
+        new float[] {
+            0.f, 0.f, 1.f, 1.f, 1.f, 1.f, 100.f, 0.f, 1.f, 1.f, 1.f, 1.f, 100.f, 100.f, 1.f,
+            1.f, 1.f, 1.f, 0.f, 0.f, 1.f, 1.f, 1.f, 1.f, 0.f, 100.f, 1.f, 1.f, 1.f, 1.f, 100.f, 100.f,
+            1.f, 1.f, 1.f, 1.f, });
 
     white.enableVertexAttribute(0);
     white.vertexAttribPointer(0, 2, FloatType.FLOAT, 6, 0);

@@ -26,19 +26,19 @@
  */
 package com.lessvoid.coregl.examples;
 
-import java.nio.FloatBuffer;
-
-import com.lessvoid.math.MatrixFactory;
+import com.lessvoid.coregl.CoreBuffer;
+import com.lessvoid.coregl.CoreBufferDataType;
+import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
-import com.lessvoid.coregl.CoreVBO;
-import com.lessvoid.coregl.CoreVBO.DataType;
-import com.lessvoid.coregl.CoreVBO.UsageType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 import com.lessvoid.math.Mat4;
+import com.lessvoid.math.MatrixFactory;
+
+import java.nio.FloatBuffer;
 
 public class StarfieldMain implements RenderLoopCallback {
 
@@ -61,14 +61,14 @@ public class StarfieldMain implements RenderLoopCallback {
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    CoreVBO.createCoreVBO(gl,
-                          DataType.FLOAT,
-                          UsageType.STATIC_DRAW,
-                          new Float[] { -0.025f, -0.025f, -0.025f, 0.025f, 0.025f, -0.025f, 0.025f, 0.025f, });
+    CoreBuffer.createCoreBufferObject(
+        gl,
+        CoreBufferUsageType.STATIC_DRAW,
+        new float[] { -0.025f, -0.025f, -0.025f, 0.025f, 0.025f, -0.025f, 0.025f, 0.025f, });
     vao.vertexAttribPointer(shader.getAttribLocation("aVertex"), 2, FloatType.FLOAT, 0, 0);
 
-    final CoreVBO<FloatBuffer> starPosBuffer = CoreVBO
-        .createCoreVBO(gl, DataType.FLOAT, UsageType.STATIC_DRAW, STAR_COUNT * 3);
+    final CoreBuffer<FloatBuffer> starPosBuffer = CoreBuffer
+        .createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.STATIC_DRAW, STAR_COUNT * 3);
     final FloatBuffer buffer = starPosBuffer.getBuffer();
     final float size = 20.f;
 

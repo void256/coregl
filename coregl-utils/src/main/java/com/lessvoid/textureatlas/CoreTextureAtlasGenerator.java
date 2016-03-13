@@ -26,22 +26,24 @@
  */
 package com.lessvoid.textureatlas;
 
-import java.nio.FloatBuffer;
-
 import com.lessvoid.coregl.ColorFormat;
+import com.lessvoid.coregl.CoreBuffer;
+import com.lessvoid.coregl.CoreBufferDataType;
+import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreFBO;
 import com.lessvoid.coregl.CoreRender;
-import com.lessvoid.coregl.Type;
-import com.lessvoid.math.MatrixFactory;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreTexture2D;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
-import com.lessvoid.coregl.CoreVBO;
-import com.lessvoid.coregl.CoreVBO.DataType;
-import com.lessvoid.coregl.CoreVBO.UsageType;
 import com.lessvoid.coregl.ResizeFilter;
+import com.lessvoid.coregl.Type;
 import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.math.MatrixFactory;
+
+import java.nio.FloatBuffer;
+
+import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 
 /**
  * This uses TextureAtlasGenerator while rendering
@@ -53,7 +55,7 @@ public class CoreTextureAtlasGenerator {
   private final CoreRender coreRender;
   private final CoreFBO renderToTexture;
   private final CoreVAO vao;
-  private final CoreVBO<FloatBuffer> vbo;
+  private final CoreBuffer<FloatBuffer> vbo;
   private final TextureAtlasGenerator generator;
   private final CoreShader shader;
   private final CoreTexture2D texture;
@@ -87,8 +89,8 @@ public class CoreTextureAtlasGenerator {
     vao = CoreVAO.createCoreVAO(gl);
     vao.bind();
 
-    vbo = CoreVBO.createCoreVBO(gl, DataType.FLOAT, UsageType.STREAM_DRAW, 4 * 4);
-    vbo.bind();
+    vbo = CoreBuffer.createCoreBufferObject(gl, CoreBufferDataType.FLOAT, CoreBufferUsageType.STREAM_DRAW, 4 * 4);
+    vbo.bind(ARRAY_BUFFER);
 
     vao.enableVertexAttribute(0);
     vao.vertexAttribPointer(0, 2, FloatType.FLOAT, 4, 0);
@@ -188,8 +190,8 @@ public class CoreTextureAtlasGenerator {
     buffer.put(1.0f);
     buffer.put(1.0f);
     buffer.rewind();
-    vbo.bind();
-    vbo.send();
+    vbo.bind(ARRAY_BUFFER);
+    vbo.send(ARRAY_BUFFER);
 
     coreRender.renderTriangleStrip(4);
     vao.unbind();

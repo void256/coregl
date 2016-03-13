@@ -1,5 +1,9 @@
 package com.lessvoid.coregl.spi;
 
+import com.lessvoid.coregl.CoreBufferAccessType;
+import com.lessvoid.coregl.CoreBufferTargetType;
+import com.lessvoid.coregl.CoreBufferUsageType;
+
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
@@ -44,6 +48,10 @@ public interface CoreGL {
 
   int GL_BYTE();
 
+  int GL_COPY_READ_BUFFER();
+
+  int GL_COPY_WRITE_BUFFER();
+
   int GL_COLOR_ATTACHMENT0();
 
   int GL_COLOR_BUFFER_BIT();
@@ -85,6 +93,10 @@ public interface CoreGL {
   int GL_DST_COLOR();
 
   int GL_DYNAMIC_DRAW();
+
+  int GL_DYNAMIC_READ();
+
+  int GL_DYNAMIC_COPY();
 
   int GL_ELEMENT_ARRAY_BUFFER();
 
@@ -200,6 +212,10 @@ public interface CoreGL {
 
   int GL_PACK_ALIGNMENT();
 
+  int GL_PIXEL_PACK_BUFFER();
+
+  int GL_PIXEL_PACK_BUFFER_BINDING();
+
   int GL_POINTS();
 
   int GL_PRIMITIVE_RESTART();
@@ -207,6 +223,10 @@ public interface CoreGL {
   int GL_PRIMITIVE_RESTART_INDEX();
 
   int GL_R32F();
+
+  int GL_READ_ONLY();
+
+  int GL_READ_WRITE();
 
   int GL_RED();
 
@@ -232,6 +252,10 @@ public interface CoreGL {
 
   int GL_STATIC_DRAW();
 
+  int GL_STATIC_READ();
+
+  int GL_STATIC_COPY();
+
   int GL_STENCIL_ATTACHMENT();
 
   int GL_STENCIL_BUFFER_BIT();
@@ -243,6 +267,12 @@ public interface CoreGL {
   int GL_STENCIL_TEST();
 
   int GL_STREAM_DRAW();
+
+  int GL_STREAM_READ();
+
+  int GL_STREAM_COPY();
+
+  int GL_TRANSFORM_FEEDBACK_BUFFER();
 
   int GL_TEXTURE0();
 
@@ -289,6 +319,10 @@ public interface CoreGL {
   int GL_UNIFORM_MATRIX_STRIDE();
 
   int GL_UNIFORM_OFFSET();
+
+  int GL_PIXEL_UNPACK_BUFFER();
+
+  int GL_PIXEL_UNPACK_BUFFER_BINDING();
 
   int GL_UNSIGNED_BYTE();
 
@@ -362,9 +396,11 @@ public interface CoreGL {
 
   void glBlendFuncSeparate(int sfactorRGB, int dfactorRGB, int sfactorAlpha, int dfactorAlpha);
 
-  void glBufferData(int target, FloatBuffer data, int usage);
+  void glBufferData(int target, ByteBuffer data, int usage);
 
   void glBufferData(int target, IntBuffer data, int usage);
+
+  void glBufferData(int target, FloatBuffer data, int usage);
 
   void glBufferData(int target, ShortBuffer data, int usage);
 
@@ -597,4 +633,10 @@ public interface CoreGL {
   CoreUtil getUtil();
 
   void setErrorChecksEnabled(boolean enabled);
+
+  int mapCoreBufferTargetType(CoreBufferTargetType target);
+
+  int mapCoreBufferUsageType(CoreBufferUsageType usage);
+
+  int mapCoreBufferAccessType(CoreBufferAccessType access);
 }

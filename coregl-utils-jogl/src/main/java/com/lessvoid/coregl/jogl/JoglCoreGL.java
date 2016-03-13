@@ -1,10 +1,30 @@
+/**
+ * Copyright (c) 2013, Jens Hohmuth
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ */
 package com.lessvoid.coregl.jogl;
-
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
@@ -15,9 +35,43 @@ import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GL3ES3;
 import com.jogamp.opengl.GLContext;
+import com.lessvoid.coregl.CoreBufferAccessType;
+import com.lessvoid.coregl.CoreBufferTargetType;
+import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreLogger;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreUtil;
+
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Map;
+
+import static com.lessvoid.coregl.CoreBufferAccessType.READ_ONLY;
+import static com.lessvoid.coregl.CoreBufferAccessType.READ_WRITE;
+import static com.lessvoid.coregl.CoreBufferAccessType.WRITE_ONLY;
+import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.COPY_READ_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.COPY_WRITE_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.ELEMENT_ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.PIXEL_PACK_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.PIXEL_UNPACK_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.TEXTURE_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.TRANSFORM_FEEDBACK_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.UNIFORM_BUFFER;
+import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_COPY;
+import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_DRAW;
+import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_READ;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_COPY;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_READ;
+import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_COPY;
+import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_DRAW;
+import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_READ;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
@@ -28,6 +82,41 @@ public class JoglCoreGL implements CoreGL {
   private static CoreLogger log = CoreLogger.getCoreLogger(JoglCoreGL.class);
 
   private final CoreUtil util = new JoglCoreUtil();
+  private final Map<CoreBufferUsageType, Integer> bufferUsageTypeMap;
+  private final Map<CoreBufferTargetType, Integer> bufferTargetTypeMap;
+  private final Map<CoreBufferAccessType, Integer> bufferAccessTypeMap;
+
+  public JoglCoreGL() {
+    Map<CoreBufferUsageType, Integer> mapUsage = new Hashtable<CoreBufferUsageType, Integer>();
+    mapUsage.put(STREAM_DRAW, GL_STREAM_DRAW());
+    mapUsage.put(STREAM_READ, GL_STREAM_READ());
+    mapUsage.put(STREAM_COPY, GL_STREAM_COPY());
+    mapUsage.put(STATIC_DRAW, GL_STATIC_DRAW());
+    mapUsage.put(STATIC_READ, GL_STATIC_READ());
+    mapUsage.put(STATIC_COPY, GL_STATIC_COPY());
+    mapUsage.put(DYNAMIC_DRAW, GL_DYNAMIC_DRAW());
+    mapUsage.put(DYNAMIC_READ, GL_DYNAMIC_READ());
+    mapUsage.put(DYNAMIC_COPY, GL_DYNAMIC_COPY());
+    bufferUsageTypeMap = Collections.unmodifiableMap(mapUsage);
+
+    Map<CoreBufferTargetType, Integer> mapTarget = new Hashtable<CoreBufferTargetType, Integer>();
+    mapTarget.put(ARRAY_BUFFER, GL_ARRAY_BUFFER());
+    mapTarget.put(COPY_READ_BUFFER, GL_COPY_READ_BUFFER());
+    mapTarget.put(COPY_WRITE_BUFFER, GL_COPY_WRITE_BUFFER());
+    mapTarget.put(ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER());
+    mapTarget.put(PIXEL_PACK_BUFFER, GL_PIXEL_PACK_BUFFER());
+    mapTarget.put(PIXEL_UNPACK_BUFFER, GL_PIXEL_UNPACK_BUFFER());
+    mapTarget.put(TEXTURE_BUFFER, GL_TEXTURE_BUFFER());
+    mapTarget.put(TRANSFORM_FEEDBACK_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER());
+    mapTarget.put(UNIFORM_BUFFER, GL_UNIFORM_BUFFER());
+    bufferTargetTypeMap = Collections.unmodifiableMap(mapTarget);
+
+    Map<CoreBufferAccessType, Integer> mapAccess = new Hashtable<CoreBufferAccessType, Integer>();
+    mapAccess.put(READ_ONLY, GL_READ_ONLY());
+    mapAccess.put(WRITE_ONLY, GL_WRITE_ONLY());
+    mapAccess.put(READ_WRITE, GL_READ_WRITE());
+    bufferAccessTypeMap = Collections.unmodifiableMap(mapAccess);
+  }
 
   @Override
   public int GL_ALPHA() {
@@ -62,6 +151,16 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public int GL_BYTE() {
     return GL.GL_BYTE;
+  }
+
+  @Override
+  public int GL_COPY_READ_BUFFER() {
+    return GL2.GL_COPY_READ_BUFFER;
+  }
+
+  @Override
+  public int GL_COPY_WRITE_BUFFER() {
+    return GL2.GL_COPY_WRITE_BUFFER;
   }
 
   @Override
@@ -415,6 +514,16 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_DYNAMIC_READ() {
+    return GL2.GL_DYNAMIC_READ;
+  }
+
+  @Override
+  public int GL_DYNAMIC_COPY() {
+    return GL2.GL_DYNAMIC_COPY;
+  }
+
+  @Override
   public int GL_ELEMENT_ARRAY_BUFFER() {
     return GL.GL_ELEMENT_ARRAY_BUFFER;
   }
@@ -480,8 +589,33 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_STATIC_READ() {
+    return GL2.GL_STATIC_READ;
+  }
+
+  @Override
+  public int GL_STATIC_COPY() {
+    return GL2.GL_STATIC_COPY;
+  }
+
+  @Override
   public int GL_STREAM_DRAW() {
     return GL2ES2.GL_STREAM_DRAW;
+  }
+
+  @Override
+  public int GL_STREAM_READ() {
+    return GL2.GL_STREAM_READ;
+  }
+
+  @Override
+  public int GL_STREAM_COPY() {
+    return GL2.GL_STREAM_COPY;
+  }
+
+  @Override
+  public int GL_TRANSFORM_FEEDBACK_BUFFER() {
+    return GL2.GL_TRANSFORM_FEEDBACK_BUFFER;
   }
 
   @Override
@@ -635,6 +769,16 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_PIXEL_UNPACK_BUFFER() {
+    return GL2.GL_PIXEL_UNPACK_BUFFER;
+  }
+
+  @Override
+  public int GL_PIXEL_UNPACK_BUFFER_BINDING() {
+    return GL2.GL_PIXEL_UNPACK_BUFFER_BINDING;
+  }
+
+  @Override
   public int GL_UNIFORM_ARRAY_STRIDE() {
     return GL2ES3.GL_UNIFORM_ARRAY_STRIDE;
   }
@@ -660,6 +804,16 @@ public class JoglCoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_PIXEL_PACK_BUFFER() {
+    return GL2.GL_PIXEL_PACK_BUFFER;
+  }
+
+  @Override
+  public int GL_PIXEL_PACK_BUFFER_BINDING() {
+    return GL2.GL_PIXEL_PACK_BUFFER_BINDING;
+  }
+
+  @Override
   public int GL_STENCIL_INDEX() {
     return GL2ES2.GL_STENCIL_INDEX;
   }
@@ -672,6 +826,16 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public int GL_R32F() {
     return GL.GL_R32F;
+  }
+
+  @Override
+  public int GL_READ_ONLY() {
+    return GL2.GL_READ_ONLY;
+  }
+
+  @Override
+  public int GL_READ_WRITE() {
+    return GL2.GL_READ_WRITE;
   }
 
   @Override
@@ -1115,6 +1279,11 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public void glBindVertexArray(final int array) {
     GLContext.getCurrentGL().getGL2ES3().glBindVertexArray(array);
+  }
+
+  @Override
+  public void glBufferData(final int target, final ByteBuffer data, final int usage) {
+    GLContext.getCurrentGL().glBufferData(target, data.remaining(), data, usage);
   }
 
   @Override
@@ -1599,7 +1768,7 @@ public class JoglCoreGL implements CoreGL {
 
   @Override
   public void checkGLError(final String msg) {
-    checkGLError(msg);
+    checkGLError(msg, new Object[0]);
   }
 
   @Override
@@ -1616,6 +1785,21 @@ public class JoglCoreGL implements CoreGL {
   @Override
   public void setErrorChecksEnabled(final boolean enabled) {
     errorChecksEnabled = enabled;
+  }
+
+  @Override
+  public int mapCoreBufferTargetType(final CoreBufferTargetType target) {
+    return bufferTargetTypeMap.get(target);
+  }
+
+  @Override
+  public int mapCoreBufferUsageType(final CoreBufferUsageType usage) {
+    return bufferUsageTypeMap.get(usage);
+  }
+
+  @Override
+  public int mapCoreBufferAccessType(final CoreBufferAccessType access) {
+    return bufferAccessTypeMap.get(access);
   }
 
   @Override
