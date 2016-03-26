@@ -30,7 +30,7 @@ public class CoreExampleMain {
    * @param mainArgs
    */
   public static void runExample(final CoreSetup.RenderLoopCallback example, final String[] mainArgs) {
-    String backendName = "JOGL"; // default backend to use in case one isn't
+    String backendName = "LWJGL"; // default backend to use in case one isn't
                                  // specified
     if (mainArgs.length == 0) {
       System.err.println("No backend argument supplied. Defaulting to '" + backendName + "'");
@@ -58,6 +58,7 @@ public class CoreExampleMain {
         setup.initialize(example.getClass().getSimpleName() + " (" + backendName.toUpperCase() + ")",
                          DISPLAY_WIDTH,
                          DISPLAY_HEIGHT);
+        setup.enableVSync(true);
         setup.renderLoop(example);
         setup.destroy();
       } catch (final Exception e) {
