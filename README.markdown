@@ -1,10 +1,20 @@
 # OpenGL core utilities
 
+## Important: toolchains.xml required to build
+
+To build this project you'll need a toolchains.xml file in your Maven
+directory. This is necessary to support Java 9. Even if you don't plan
+to use Java 9 right now, you'll still need a toolchains.xml to build.
+
+For details see the end of this readme.
+
+## What is this?
+
 **Simple utility classes and methods to make life with OpenGL core profile simpler.**
 
 - The classes provided can be used independently from each other. You don't need to learn a complex API.
 - The abstractions provided are rather low level. This is by intention. The library is supposed to be as simple and lightweight as possible.
-- Adapter jars are provided for LWJGL and JOGL. If you want you can target both Java OpenGL providers or you can use the implementations directly. You decide. 
+- Adapter jars are provided for LWJGL, LWJGL3 and JOGL. If you want you can target both Java OpenGL providers or you can use the implementations directly. You decide.
 
 It's main purpose is to reduce the amount of boilerplate code you would need to write when talking to OpenGL core profile.
 **It's not meant to be anything else.**
@@ -139,3 +149,69 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
   }
 }
 ```
+
+## Maven toolchains.xml support
+
+You'll need to create a toolchains.xml at this location:
+
+- Linux, OS X: ~/.m2
+- Windows: C:\Documents and Settings\{your-username}\.m2
+
+### Option 1: Compile with Java 8
+
+The idea here is to have only Java 8 in the toolchains.xml.
+
+#### toolchains.xml:
+
+```xml
+<toolchains>
+  <!-- JDK toolchains -->
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.8</version>
+      <vendor>oracle</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/path/to/jdk1.8.0</jdkHome>
+    </configuration>
+  </toolchain>
+</toolchains>
+```
+
+### Option 2: Compile with Java 9 - the resulting Jar can be used with Java 8 and Java 9
+
+We need both JDKs since for the time being we create backward compatible jars which
+require both JDKs.
+
+#### toolchains.xml:
+
+```xml
+<toolchains>
+  <!-- JDK toolchains -->
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>9</version>
+      <vendor>oracle</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/path/to/jdk-9</jdkHome>
+    </configuration>
+  </toolchain>
+  <toolchain>
+    <type>jdk</type>
+    <provides>
+      <version>1.8</version>
+      <vendor>oracle</vendor>
+    </provides>
+    <configuration>
+      <jdkHome>/path/to/jdk1.8.0</jdkHome>
+    </configuration>
+  </toolchain>
+</toolchains>
+```
+
+### Build
+
+`mvn clean install`

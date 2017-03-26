@@ -69,11 +69,46 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.6.1</version>
+          <executions>
+            <execution>
+              <id>default-compile</id>
+              <configuration>
+                <!-- compile everything to ensure module-info contains right entries -->
+                <!-- required when JAVA_HOME is JDK 8 or below -->
+                <jdkToolchain>
+                  <version>9</version>
+                </jdkToolchain>
+                <release>9</release>
+              </configuration>
+            </execution>
+            <execution>
+              <id>base-compile</id>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+              <!-- recompile everything for target VM except the module-info.java -->
+              <configuration>
+                <excludes>
+                  <exclude>module-info.java</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
+          <!-- defaults for compile and testCompile -->
           <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <!-- jdkToolchain required when JAVA_HOME is JDK 9 or above -->
+            <jdkToolchain>
+              <version>[1.5,9)</version>
+            </jdkToolchain>
+            <source>1.5</source>
+            <target>1.5</target>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.19.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -130,13 +165,7 @@
     <dependency>
       <groupId>org.easymock</groupId>
       <artifactId>easymock</artifactId>
-      <version>2.4</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymockclassextension</artifactId>
-      <version>2.4</version>
+      <version>3.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
