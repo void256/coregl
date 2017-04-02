@@ -1,11 +1,11 @@
 package com.lessvoid.coregl.examples;
 
-import com.lessvoid.coregl.lwjgl.LwjglCoreGL;
-import com.lessvoid.coregl.spi.CoreSetup;
 import com.lessvoid.coregl.jogl.CoreSetupJogl;
 import com.lessvoid.coregl.jogl.JoglCoreGL;
-import com.lessvoid.coregl.lwjgl.CoreSetupLwjgl;
 import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreSetup;
+import de.lessvoid.coregl.lwjgl3.CoreSetupLwjgl3;
+import de.lessvoid.coregl.lwjgl3.Lwjgl3CoreGL;
 
 /**
  * Launcher class for CoreGL examples. The purpose of CoreExampleMain is to
@@ -45,9 +45,15 @@ public class CoreExampleMain {
       gl = new JoglCoreGL();
       setup = new CoreSetupJogl(gl);
     } else if (backendName.equalsIgnoreCase("lwjgl")) {
+      /*
       System.err.println("running " + example.getClass().getName() + ": " + "backend=LWJGL");
       gl = new LwjglCoreGL();
       setup = new CoreSetupLwjgl(gl);
+      */
+    } else if (backendName.equalsIgnoreCase("lwjgl3")) {
+      System.err.println("running " + example.getClass().getName() + ": " + "backend=LWJGL3");
+      gl = new Lwjgl3CoreGL();
+      setup = new CoreSetupLwjgl3(gl);
     } else {
       System.err.println("unrecognized backend name: " + mainArgs[0]);
       printUsageString();

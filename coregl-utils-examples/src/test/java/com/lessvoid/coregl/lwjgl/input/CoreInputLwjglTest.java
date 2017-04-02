@@ -1,23 +1,14 @@
 package com.lessvoid.coregl.lwjgl.input;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.lwjgl.input.Keyboard;
-
-import com.lessvoid.coregl.input.spi.CoreInput;
-import com.lessvoid.coregl.input.spi.CoreKeyEvent;
-import com.lessvoid.coregl.input.spi.CoreKeyListener;
-import com.lessvoid.coregl.input.spi.CoreMouseEvent;
-import com.lessvoid.coregl.input.spi.CoreMouseListener;
-import com.lessvoid.coregl.lwjgl.CoreSetupLwjgl;
-import com.lessvoid.coregl.lwjgl.LwjglCoreGL;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CoreInputLwjglTest {
 
   public static void main(final String[] args) {
+    /*
     final CoreGL gl = new LwjglCoreGL();
     final CoreSetup setup = new CoreSetupLwjgl(gl);
     try {
@@ -85,6 +76,7 @@ public class CoreInputLwjglTest {
     } catch (final Exception e) {
       e.printStackTrace();
     }
+    */
   }
 
   private static class NOPRenderLoop implements RenderLoopCallback {

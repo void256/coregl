@@ -34,6 +34,9 @@ import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
@@ -47,8 +50,12 @@ public class BackgroundMain implements RenderLoopCallback {
   public void init(final CoreGL gl) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex");
-    shader.vertexShader("background/background.vs");
-    shader.fragmentShader("background/background.fs");
+    try {
+      shader.vertexShader("vertex", BackgroundMain.class.getModule().getResourceAsStream("background/background.vs"));
+      shader.fragmentShader("fragmen", BackgroundMain.class.getModule().getResourceAsStream("background/background.fs"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);

@@ -82,18 +82,19 @@
                 <release>9</release>
               </configuration>
             </execution>
+            <!-- recompile everything for target VM except the module-info.java
             <execution>
               <id>base-compile</id>
               <goals>
                 <goal>compile</goal>
               </goals>
-              <!-- recompile everything for target VM except the module-info.java -->
               <configuration>
                 <excludes>
                   <exclude>module-info.java</exclude>
                 </excludes>
               </configuration>
             </execution>
+            -->
           </executions>
           <!-- defaults for compile and testCompile -->
           <configuration>

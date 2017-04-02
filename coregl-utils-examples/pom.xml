@@ -13,14 +13,21 @@
       <artifactId>coregl-utils</artifactId>
       <version>2.1.0-SNAPSHOT</version>
     </dependency>
+    <!--
     <dependency>
       <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils-lwjgl</artifactId>
       <version>2.1.0-SNAPSHOT</version>
     </dependency>
+    -->
     <dependency>
       <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils-jogl</artifactId>
+      <version>2.1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.lessvoid</groupId>
+      <artifactId>coregl-utils-lwjgl3</artifactId>
       <version>2.1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
@@ -45,6 +52,26 @@
             <phase>generate-resources</phase>
             <goals>
               <goal>copy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <configuration>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+              <outputDirectory>${basedir}/target/modules</outputDirectory>
+            </configuration>
+            <goals>
+              <goal>copy-dependencies</goal>
             </goals>
           </execution>
         </executions>

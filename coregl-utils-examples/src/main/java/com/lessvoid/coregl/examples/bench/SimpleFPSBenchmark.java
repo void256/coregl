@@ -1,10 +1,8 @@
 package com.lessvoid.coregl.examples.bench;
 
 import com.lessvoid.coregl.examples.SuperSimpleExampleMain;
-import com.lessvoid.coregl.lwjgl.LwjglCoreGL;
 import com.lessvoid.coregl.jogl.CoreSetupJogl;
 import com.lessvoid.coregl.jogl.JoglCoreGL;
-import com.lessvoid.coregl.lwjgl.CoreSetupLwjgl;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup;
 import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
@@ -32,7 +30,7 @@ public class SimpleFPSBenchmark {
     }
     return -1;
   }
-
+/*
   public double benchTestLwjgl() {
     final CoreGL gl = new LwjglCoreGL();
     final CoreSetup setup = new CoreSetupLwjgl(gl);
@@ -48,7 +46,7 @@ public class SimpleFPSBenchmark {
     }
     return -1;
   }
-
+*/
   public void benchTestAll() {
     System.err.println("running benchmark (JOGL): ");
     final double joglAvg = benchTestJogl();
@@ -62,7 +60,7 @@ public class SimpleFPSBenchmark {
       e.printStackTrace();
     }
     System.err.println("running benchmark (LWJGL): ");
-    final double lwjglAvg = benchTestLwjgl();
+    final double lwjglAvg = 0;//benchTestLwjgl();
     System.err.println("Average frame render time (JOGL) = " + joglAvg / 1E6 + "ms");
     System.err.println("Average frame render time (LWJGL) = " + lwjglAvg / 1E6 + "ms");
   }

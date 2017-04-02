@@ -531,7 +531,10 @@ public class CoreShader {
   }
 
   private InputStream getStream(final String filename) {
-    return Thread.currentThread().getContextClassLoader().getResourceAsStream(filename);
+    Thread thread = Thread.currentThread();
+    ClassLoader contextClassLoader = thread.getContextClassLoader();
+    InputStream resourceAsStream = contextClassLoader.getResourceAsStream(filename);
+    return resourceAsStream;
   }
 
   /**
