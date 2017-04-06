@@ -7,10 +7,39 @@
     <artifactId>coregl</artifactId>
     <version>2.1.0-SNAPSHOT</version>
   </parent>
+  <profiles>
+    <profile>
+      <id>examples-lwjgl2</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.lessvoid</groupId>
+          <artifactId>coregl-utils-lwjgl3</artifactId>
+          <version>2.1.0-SNAPSHOT</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>examples-lwjgl3</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.lessvoid</groupId>
+          <artifactId>coregl-utils-lwjgl</artifactId>
+          <version>2.1.0-SNAPSHOT</version>
+          <scope>provided</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
   <dependencies>
     <dependency>
       <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils</artifactId>
+      <version>2.1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.lessvoid</groupId>
+      <artifactId>coregl-utils-jogl</artifactId>
       <version>2.1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -20,32 +49,40 @@
     </dependency>
     <dependency>
       <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils-jogl</artifactId>
+      <artifactId>coregl-utils-lwjgl3</artifactId>
       <version>2.1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
-        <groupId>com.googlecode.mavennatives</groupId>
-        <artifactId>maven-nativedependencies-plugin</artifactId>
-        <version>0.0.5</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
-          <!-- If you use this pom.xml with eclipse m2e plugin you'll need to
-            install the maven natives eclipse plugin from http://code.google.com/p/mavennatives/
-            to make the error message go away. It's as simple as installing it using
-            the following update site: http://mavennatives.googlecode.com/svn/eclipse-update/.
-            This plugin detects if you have the maven plugin configured, and if you do
-            it executes the unpacking of natives, and configures the Native Library Location.
-            This will allow you to run the examples from within eclipse without any more
-            setup of LWJGL required! Just execute the individual examples like any other
-            Java application from eclipse. Done! :) -->
           <execution>
-            <id>unpacknatives</id>
-            <phase>generate-resources</phase>
+            <id>unpack-dependencies-lwjgl</id>
+            <phase>process-sources</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>unpack-dependencies</goal>
             </goals>
+            <configuration>
+              <includeGroupIds>org.lwjgl.lwjgl</includeGroupIds>
+              <outputDirectory>${project.build.directory}/natives-lwjgl</outputDirectory>
+              <includeClassifiers>natives-linux,natives-osx,natives-windows</includeClassifiers>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-dependencies-jogl</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.jogamp.jogl,org.jogamp.gluegen,org.jogamp.joal</includeGroupIds>
+              <outputDirectory>${project.build.directory}/natives-jogl</outputDirectory>
+              <includeClassifiers>natives-android-aarch64,natives-android-armv6,natives-linux-amd64,natives-linux-armv6,natives-linux-armv6hf,natives-linux-i586,natives-macosx-universal,natives-solaris-amd64,natives-solaris-i586,natives-windows-amd64,natives-windows-i586</includeClassifiers>
+            </configuration>
           </execution>
         </executions>
       </plugin>
