@@ -46,7 +46,7 @@ public interface CoreSetup {
    *
    * @author void
    */
-  public interface RenderLoopCallback {
+  interface RenderLoopCallback {
 
     /**
      * Called once after the OpenGL context has been initialized and before any
