@@ -2,6 +2,8 @@ package com.lessvoid.coregl.examples;
 
 import com.lessvoid.coregl.jogl.CoreSetupJogl;
 import com.lessvoid.coregl.jogl.JoglCoreGL;
+import com.lessvoid.coregl.lwjgl.CoreSetupLwjgl;
+import com.lessvoid.coregl.lwjgl.LwjglCoreGL;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreSetup;
 import de.lessvoid.coregl.lwjgl3.CoreSetupLwjgl3;
@@ -41,17 +43,15 @@ public class CoreExampleMain {
     CoreGL gl = null;
     CoreSetup setup = null;
     if (backendName.equalsIgnoreCase("jogl")) {
-      System.err.println("running " + example.getClass().getName() + ": " + "backend=JOGL");
+      System.err.println("running " + example.getClass().getName() + ": " + "backend=jogl");
       gl = new JoglCoreGL();
       setup = new CoreSetupJogl(gl);
     } else if (backendName.equalsIgnoreCase("lwjgl")) {
-      /*
-      System.err.println("running " + example.getClass().getName() + ": " + "backend=LWJGL");
+      System.err.println("running " + example.getClass().getName() + ": " + "backend=lwjgl");
       gl = new LwjglCoreGL();
       setup = new CoreSetupLwjgl(gl);
-      */
     } else if (backendName.equalsIgnoreCase("lwjgl3")) {
-      System.err.println("running " + example.getClass().getName() + ": " + "backend=LWJGL3");
+      System.err.println("running " + example.getClass().getName() + ": " + "backend=lwjgl3");
       gl = new Lwjgl3CoreGL();
       setup = new CoreSetupLwjgl3(gl);
     } else {
