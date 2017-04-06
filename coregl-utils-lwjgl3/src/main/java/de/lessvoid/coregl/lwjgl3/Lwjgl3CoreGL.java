@@ -1,11 +1,11 @@
 package de.lessvoid.coregl.lwjgl3;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
-
+import com.lessvoid.coregl.CoreBufferAccessType;
+import com.lessvoid.coregl.CoreBufferTargetType;
+import com.lessvoid.coregl.CoreBufferUsageType;
+import com.lessvoid.coregl.CoreLogger;
+import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreUtil;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -20,9 +20,36 @@ import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL33;
 import org.lwjgl.opengl.GL41;
 
-import de.lessvoid.coregl.CoreLogger;
-import de.lessvoid.coregl.spi.CoreGL;
-import de.lessvoid.coregl.spi.CoreUtil;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Map;
+
+import static com.lessvoid.coregl.CoreBufferAccessType.READ_ONLY;
+import static com.lessvoid.coregl.CoreBufferAccessType.READ_WRITE;
+import static com.lessvoid.coregl.CoreBufferAccessType.WRITE_ONLY;
+import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.COPY_READ_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.COPY_WRITE_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.ELEMENT_ARRAY_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.PIXEL_PACK_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.PIXEL_UNPACK_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.TEXTURE_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.TRANSFORM_FEEDBACK_BUFFER;
+import static com.lessvoid.coregl.CoreBufferTargetType.UNIFORM_BUFFER;
+import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_COPY;
+import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_DRAW;
+import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_READ;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_COPY;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
+import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_READ;
+import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_COPY;
+import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_DRAW;
+import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_READ;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
@@ -35,6 +62,41 @@ public class Lwjgl3CoreGL implements CoreGL {
   private boolean errorCheckingEnabled = false;
 
   private final CoreUtil util = new Lwjgl3CoreUtil();
+  private final Map<CoreBufferUsageType, Integer> bufferUsageTypeMap;
+  private final Map<CoreBufferTargetType, Integer> bufferTargetTypeMap;
+  private final Map<CoreBufferAccessType, Integer> bufferAccessTypeMap;
+
+  public Lwjgl3CoreGL() {
+    Map<CoreBufferUsageType, Integer> mapUsage = new Hashtable<CoreBufferUsageType, Integer>();
+    mapUsage.put(STREAM_DRAW, GL_STREAM_DRAW());
+    mapUsage.put(STREAM_READ, GL_STREAM_READ());
+    mapUsage.put(STREAM_COPY, GL_STREAM_COPY());
+    mapUsage.put(STATIC_DRAW, GL_STATIC_DRAW());
+    mapUsage.put(STATIC_READ, GL_STATIC_READ());
+    mapUsage.put(STATIC_COPY, GL_STATIC_COPY());
+    mapUsage.put(DYNAMIC_DRAW, GL_DYNAMIC_DRAW());
+    mapUsage.put(DYNAMIC_READ, GL_DYNAMIC_READ());
+    mapUsage.put(DYNAMIC_COPY, GL_DYNAMIC_COPY());
+    bufferUsageTypeMap = Collections.unmodifiableMap(mapUsage);
+
+    Map<CoreBufferTargetType, Integer> mapTarget = new Hashtable<CoreBufferTargetType, Integer>();
+    mapTarget.put(ARRAY_BUFFER, GL_ARRAY_BUFFER());
+    mapTarget.put(COPY_READ_BUFFER, GL_COPY_READ_BUFFER());
+    mapTarget.put(COPY_WRITE_BUFFER, GL_COPY_WRITE_BUFFER());
+    mapTarget.put(ELEMENT_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER());
+    mapTarget.put(PIXEL_PACK_BUFFER, GL_PIXEL_PACK_BUFFER());
+    mapTarget.put(PIXEL_UNPACK_BUFFER, GL_PIXEL_UNPACK_BUFFER());
+    mapTarget.put(TEXTURE_BUFFER, GL_TEXTURE_BUFFER());
+    mapTarget.put(TRANSFORM_FEEDBACK_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER());
+    mapTarget.put(UNIFORM_BUFFER, GL_UNIFORM_BUFFER());
+    bufferTargetTypeMap = Collections.unmodifiableMap(mapTarget);
+
+    Map<CoreBufferAccessType, Integer> mapAccess = new Hashtable<CoreBufferAccessType, Integer>();
+    mapAccess.put(READ_ONLY, GL_READ_ONLY());
+    mapAccess.put(WRITE_ONLY, GL_WRITE_ONLY());
+    mapAccess.put(READ_WRITE, GL_READ_WRITE());
+    bufferAccessTypeMap = Collections.unmodifiableMap(mapAccess);
+  }
 
   @Override
   public void checkGLError() {
@@ -133,6 +195,16 @@ public class Lwjgl3CoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_COPY_READ_BUFFER() {
+    return 0;
+  }
+
+  @Override
+  public int GL_COPY_WRITE_BUFFER() {
+    return 0;
+  }
+
+  @Override
   public int GL_COLOR_ATTACHMENT0() {
     return GL30.GL_COLOR_ATTACHMENT0;
   }
@@ -198,8 +270,18 @@ public class Lwjgl3CoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_DEPTH24_STENCIL8() {
+    return 0;
+  }
+
+  @Override
   public int GL_DEPTH_BUFFER_BIT() {
     return GL11.GL_DEPTH_BUFFER_BIT;
+  }
+
+  @Override
+  public int GL_DEPTH_STENCIL_ATTACHMENT() {
+    return 0;
   }
 
   @Override
@@ -225,6 +307,16 @@ public class Lwjgl3CoreGL implements CoreGL {
   @Override
   public int GL_DYNAMIC_DRAW() {
     return GL15.GL_DYNAMIC_DRAW;
+  }
+
+  @Override
+  public int GL_DYNAMIC_READ() {
+    return 0;
+  }
+
+  @Override
+  public int GL_DYNAMIC_COPY() {
+    return 0;
   }
 
   @Override
@@ -513,6 +605,16 @@ public class Lwjgl3CoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_PIXEL_PACK_BUFFER() {
+    return 0;
+  }
+
+  @Override
+  public int GL_PIXEL_PACK_BUFFER_BINDING() {
+    return 0;
+  }
+
+  @Override
   public int GL_POINTS() {
     return GL11.GL_POINTS;
   }
@@ -530,6 +632,16 @@ public class Lwjgl3CoreGL implements CoreGL {
   @Override
   public int GL_R32F() {
     return GL30.GL_R32F;
+  }
+
+  @Override
+  public int GL_READ_ONLY() {
+    return 0;
+  }
+
+  @Override
+  public int GL_READ_WRITE() {
+    return 0;
   }
 
   @Override
@@ -593,6 +705,16 @@ public class Lwjgl3CoreGL implements CoreGL {
   }
 
   @Override
+  public int GL_STATIC_READ() {
+    return 0;
+  }
+
+  @Override
+  public int GL_STATIC_COPY() {
+    return 0;
+  }
+
+  @Override
   public int GL_STENCIL_ATTACHMENT() {
     return GL30.GL_STENCIL_ATTACHMENT;
   }
@@ -620,6 +742,21 @@ public class Lwjgl3CoreGL implements CoreGL {
   @Override
   public int GL_STREAM_DRAW() {
     return GL15.GL_STREAM_DRAW;
+  }
+
+  @Override
+  public int GL_STREAM_READ() {
+    return 0;
+  }
+
+  @Override
+  public int GL_STREAM_COPY() {
+    return 0;
+  }
+
+  @Override
+  public int GL_TRANSFORM_FEEDBACK_BUFFER() {
+    return 0;
   }
 
   @Override
@@ -735,6 +872,16 @@ public class Lwjgl3CoreGL implements CoreGL {
   @Override
   public int GL_UNIFORM_OFFSET() {
     return GL31.GL_UNIFORM_OFFSET;
+  }
+
+  @Override
+  public int GL_PIXEL_UNPACK_BUFFER() {
+    return 0;
+  }
+
+  @Override
+  public int GL_PIXEL_UNPACK_BUFFER_BINDING() {
+    return 0;
   }
 
   @Override
@@ -908,6 +1055,11 @@ public class Lwjgl3CoreGL implements CoreGL {
                                   final int sfactorAlpha,
                                   final int dfactorAlpha) {
     GL14.glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, sfactorAlpha);
+  }
+
+  @Override
+  public void glBufferData(final int target, final ByteBuffer data, final int usage) {
+
   }
 
   @Override
@@ -1597,5 +1749,20 @@ public class Lwjgl3CoreGL implements CoreGL {
   @Override
   public void setErrorChecksEnabled(final boolean enabled) {
     errorCheckingEnabled = enabled;
+  }
+
+  @Override
+  public int mapCoreBufferTargetType(final CoreBufferTargetType target) {
+    return bufferTargetTypeMap.get(target);
+  }
+
+  @Override
+  public int mapCoreBufferUsageType(final CoreBufferUsageType usage) {
+    return bufferUsageTypeMap.get(usage);
+  }
+
+  @Override
+  public int mapCoreBufferAccessType(final CoreBufferAccessType access) {
+    return bufferAccessTypeMap.get(access);
   }
 }
