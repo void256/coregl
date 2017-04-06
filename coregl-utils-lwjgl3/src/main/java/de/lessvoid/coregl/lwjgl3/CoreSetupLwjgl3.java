@@ -26,10 +26,14 @@
  */
 package de.lessvoid.coregl.lwjgl3;
 
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_MAX_3D_TEXTURE_SIZE;
-import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
+import com.lessvoid.coregl.input.spi.CoreInput;
+import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreSetup;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.system.Platform;
 
 import java.nio.IntBuffer;
 import java.util.logging.Formatter;
@@ -38,13 +42,46 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.system.Platform;
-
-import de.lessvoid.coregl.input.spi.CoreInput;
-import de.lessvoid.coregl.spi.CoreGL;
-import de.lessvoid.coregl.spi.CoreSetup;
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
+import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
+import static org.lwjgl.glfw.GLFW.GLFW_DEPTH_BITS;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_FORWARD_COMPAT;
+import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
+import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
+import static org.lwjgl.glfw.GLFW.GLFW_STENCIL_BITS;
+import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
+import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwShowWindow;
+import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
+import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
+import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.opengl.GL11.GL_VENDOR;
+import static org.lwjgl.opengl.GL11.GL_VERSION;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glGetInteger;
+import static org.lwjgl.opengl.GL11.glGetIntegerv;
+import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL12.GL_MAX_3D_TEXTURE_SIZE;
+import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
 
 public class CoreSetupLwjgl3 implements CoreSetup {
   private static final Logger log = Logger.getLogger(CoreSetupLwjgl3.class.getName());
@@ -139,12 +176,14 @@ public class CoreSetupLwjgl3 implements CoreSetup {
     long prevTime = System.nanoTime();
 
     renderLoop.init(gl);
-    while (glfwWindowShouldClose(window) == gl.GL_FALSE() && !renderLoop.endLoop()) {
+    while (!glfwWindowShouldClose(window) && !renderLoop.endLoop()) {
       final long nanoTime = System.nanoTime();
       if (renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION)) {
-        glfwPollEvents ();
+        glfwPollEvents();
         glfwSwapBuffers(window);
-        input.update();
+        if (input != null) {
+          input.update();
+        }
       }
       prevTime = nanoTime;
 
@@ -184,6 +223,9 @@ public class CoreSetupLwjgl3 implements CoreSetup {
   }
 
   private void initGraphics(final String title, final int requestedWidth, final int requestedHeight) throws Exception {
+    if (!glfwInit()) {
+      throw new Exception("unable to init glfw");
+    }
 
     final int width = requestedWidth;
     final int height = requestedHeight;
@@ -192,7 +234,7 @@ public class CoreSetupLwjgl3 implements CoreSetup {
     createWindow(title, width, height);
 
     // just output some infos about the system we're on
-    log.info("plattform: " + Platform.get());
+    log.info("platform: " + Platform.get());
     log.info("opengl version: " + glGetString(GL_VERSION));
     log.info("opengl vendor: " + glGetString(GL_VENDOR));
     log.info("opengl renderer: " + glGetString(GL_RENDERER));
@@ -200,11 +242,9 @@ public class CoreSetupLwjgl3 implements CoreSetup {
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, maxVertexAttribts);
     log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
     gl.checkGLError("init phase 1");
-
     log.info("GL_MAX_3D_TEXTURE_SIZE: " + glGetInteger(GL_MAX_3D_TEXTURE_SIZE));
 
     glViewport(0, 0, width, height);
-
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_BLEND);
@@ -213,13 +253,17 @@ public class CoreSetupLwjgl3 implements CoreSetup {
   }
 
   private void createWindow(final String title, final int width, final int height) {
+    GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint();
+    glfwSetErrorCallback(errorCallback);
+
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_CORE_PROFILE, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_STENCIL_BITS, 8);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     int windowWidth = width;
     int windowHeight = height;
     long monitor = glfwGetPrimaryMonitor();
@@ -228,7 +272,15 @@ public class CoreSetupLwjgl3 implements CoreSetup {
         windowWidth = vidMode.width();
         windowHeight = vidMode.height();
     }
-    window = glfwCreateWindow(windowWidth, windowHeight, title, monitor, 0);
+
+    window = glfwCreateWindow(windowWidth, windowHeight, title, 0, 0);
+    if (window == 0) {
+      glfwTerminate();
+      throw new RuntimeException("failed to create window");
+    }
+    glfwMakeContextCurrent(window);
+    GL.createCapabilities();
+    glfwShowWindow(window);
   }
 
   private void initInput() throws Exception {

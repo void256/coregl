@@ -1,21 +1,19 @@
 package de.lessvoid.coregl.lwjgl3;
 
+import com.lessvoid.coregl.CoreVersion;
+import com.lessvoid.coregl.CoreVersion.GLSLVersion;
+import com.lessvoid.coregl.CoreVersion.GLVersion;
+import com.lessvoid.coregl.spi.CoreUtil;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GLUtil;
-
-import de.lessvoid.coregl.CoreVersion;
-import de.lessvoid.coregl.CoreVersion.GLSLVersion;
-import de.lessvoid.coregl.CoreVersion.GLVersion;
-import de.lessvoid.coregl.spi.CoreUtil;
 
 /**
  * @author Brian Groenke
@@ -35,7 +33,7 @@ class Lwjgl3CoreUtil implements CoreUtil {
 
   @Override
   public String gluErrorString(final int glError) {
-    return GLUtil.getErrorString(glError);
+    return "";//GLUtil.getErrorString(glError);
   }
 
   @Override
