@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.lessvoid</groupId>
     <artifactId>coregl</artifactId>
-    <version>2.1.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
   </parent>
   <properties>
     <lwjgl.version>3.1.1</lwjgl.version>
@@ -14,7 +14,7 @@
     <dependency>
       <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
+      <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.lwjgl</groupId>
