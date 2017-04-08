@@ -32,10 +32,9 @@ import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
@@ -99,6 +98,6 @@ public class BackgroundMain implements RenderLoopCallback {
 
   public static void main(final String[] args) throws Exception {
     final RenderLoopCallback backgroundExample = new BackgroundMain();
-    CoreExampleMain.runExample(backgroundExample, args);
+    CoreExampleMain.runExample(backgroundExample);
   }
 }

@@ -1,12 +1,5 @@
 package com.lessvoid.coregl.jogl;
 
-import java.nio.IntBuffer;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import com.jogamp.nativewindow.util.Rectangle;
 import com.jogamp.newt.Display;
@@ -19,20 +12,27 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
-
+import com.lessvoid.coregl.CoreBufferUtil;
 import com.lessvoid.coregl.CoreLogger;
 import com.lessvoid.coregl.input.spi.CoreInput;
 import com.lessvoid.coregl.jogl.input.CoreInputJogl;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup;
+import com.lessvoid.coregl.spi.CoreGLSetup;
+
+import java.nio.IntBuffer;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
  * CoreSetup implementation for JOGL
  * 
  * @author Brian Groenke
  */
-public class CoreSetupJogl implements CoreSetup {
-  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreSetupJogl.class);
+public class CoreGLSetupJogl implements CoreGLSetup {
+  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreGLSetupJogl.class);
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
 
   private final StringBuilder fpsText = new StringBuilder();
@@ -47,7 +47,7 @@ public class CoreSetupJogl implements CoreSetup {
 
   private volatile boolean closeRequested, vsync, updateVsync;
 
-  public CoreSetupJogl(final CoreGL gl) {
+  public CoreGLSetupJogl(final CoreGL gl) {
     this.gl = gl;
   }
 
@@ -82,7 +82,7 @@ public class CoreSetupJogl implements CoreSetup {
   @Override
   public void initializeLogging(final String loggingProperties) {
     try {
-      LogManager.getLogManager().readConfiguration(CoreSetupJogl.class.getResourceAsStream(loggingProperties));
+      LogManager.getLogManager().readConfiguration(CoreGLSetupJogl.class.getResourceAsStream(loggingProperties));
     } catch (final Exception e) {
       throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]",
                                  e);
@@ -241,7 +241,7 @@ public class CoreSetupJogl implements CoreSetup {
       log.info("opengl version: {}", gl.glGetString(gl.GL_VERSION()));
       log.info("opengl vendor: {}", gl.glGetString(gl.GL_VENDOR()));
       log.info("opengl renderer: {}", gl.glGetString(gl.GL_RENDERER()));
-      final IntBuffer maxVertexAttribts = gl.getUtil().createIntBuffer(4 * 4);
+      final IntBuffer maxVertexAttribts = CoreBufferUtil.createIntBuffer(4 * 4);
       gl.glGetIntegerv(gl.GL_MAX_VERTEX_ATTRIBS(), maxVertexAttribts);
       log.info("GL_MAX_VERTEX_ATTRIBS: {}", maxVertexAttribts.get(0));
       log.checkGLError(gl, "init phase 1");

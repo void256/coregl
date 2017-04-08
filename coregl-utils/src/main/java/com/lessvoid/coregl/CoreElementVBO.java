@@ -26,9 +26,9 @@
  */
 package com.lessvoid.coregl;
 
-import java.nio.IntBuffer;
-
 import com.lessvoid.coregl.spi.CoreGL;
+
+import java.nio.IntBuffer;
 
 /**
  * The CoreElementVBO class represents a VBO bound to GL_ELEMENT_BUFFER.
@@ -46,7 +46,7 @@ public class CoreElementVBO {
     this.gl = gl;
     usage = usageType;
 
-    indexBuffer = gl.getUtil().createIntBuffer(data);
+    indexBuffer = CoreBufferUtil.createIntBuffer(data);
 
     final IntBuffer idbuff = IntBuffer.allocate(1);
     gl.glGenBuffers(1, idbuff);
@@ -61,7 +61,7 @@ public class CoreElementVBO {
     this.gl = gl;
     usage = usageType;
 
-    indexBuffer = gl.getUtil().createIntBuffer(data);
+    indexBuffer = CoreBufferUtil.createIntBuffer(data);
 
     final IntBuffer idbuff = IntBuffer.allocate(1);
     gl.glGenBuffers(1, idbuff);

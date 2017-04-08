@@ -26,6 +26,9 @@
  */
 package com.lessvoid.coregl;
 
+import com.lessvoid.coregl.spi.CoreGL;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
@@ -38,10 +41,6 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-
-import com.lessvoid.coregl.spi.CoreGL;
 
 /**
  * The CoreTexture2D represents a 2D texture in OpenGL space.
@@ -151,7 +150,7 @@ public class CoreTexture2D {
                                                  final ResizeFilter filter) {
     final CoreTexture2DConstants texMapConsts = new CoreTexture2DConstants(gl);
 
-    final ByteBuffer buffer = gl.getUtil()
+    final ByteBuffer buffer = CoreBufferUtil
         .createByteBuffer(width * height * texMapConsts.getColorInfo(format).componentsPerPixel);
     final byte[] data = new byte[width * height * texMapConsts.getColorInfo(format).componentsPerPixel];
     buffer.put(data);
@@ -196,7 +195,7 @@ public class CoreTexture2D {
                                                       final int num,
                                                       final ResizeFilter filter) {
     // FIXME works only for ColorFormat.RGBA at the moment! add other formats
-    final ByteBuffer buffer = gl.getUtil().createByteBuffer(width * height * 4 * num);
+    final ByteBuffer buffer = CoreBufferUtil.createByteBuffer(width * height * 4 * num);
     final byte[] data = new byte[width * height * 4 * num];
     buffer.put(data);
     buffer.flip();
@@ -537,11 +536,11 @@ public class CoreTexture2D {
   }
 
   public boolean isNPOTHardwareSupported() {
-    return gl.getUtil().isNPOTHardwareSupported();
+    return gl.isNPOTHardwareSupported();
   }
 
   public boolean isNPOTSupported() {
-    return gl.getUtil().isNPOTSupported();
+    return gl.isNPOTSupported();
   }
 
   public void disableErrorChecking() {
@@ -561,7 +560,7 @@ public class CoreTexture2D {
   }
 
   public void dispose() {
-    gl.glDeleteTextures(1, gl.getUtil().createIntBuffer(new int[] { textureId }));
+    gl.glDeleteTextures(1, CoreBufferUtil.createIntBuffer(new int[] { textureId }));
     checkGLError("dispose", true);
     isDisposed = true;
   }
@@ -877,7 +876,7 @@ public class CoreTexture2D {
       }
     } catch (final CoreGLException ex) {
       if (textureId == -1) {
-        gl.glDeleteTextures(1, gl.getUtil().createIntBuffer(new int[] { textureId }));
+        gl.glDeleteTextures(1, CoreBufferUtil.createIntBuffer(new int[] { textureId }));
         checkGLError("glDeleteTextures", false);
       }
       throw ex;
@@ -894,7 +893,7 @@ public class CoreTexture2D {
    *           in case generation a new texture ID fails
    */
   private int createTextureID() {
-    final IntBuffer idbuff = gl.getUtil().createIntBuffer(1);
+    final IntBuffer idbuff = CoreBufferUtil.createIntBuffer(1);
     gl.glGenTextures(1, idbuff);
     checkGLError("glGenTextures", true);
     return idbuff.get(0);
@@ -1170,7 +1169,7 @@ public class CoreTexture2D {
   public void saveAsPNG(final String filename) {
     try {
       final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-      final ByteBuffer pixels = gl.getUtil().createByteBuffer(width * height * 4);
+      final ByteBuffer pixels = CoreBufferUtil.createByteBuffer(width * height * 4);
       gl.glGetTexImage(gl.GL_TEXTURE_2D(), 0, gl.GL_RGBA(), gl.GL_UNSIGNED_BYTE(), pixels);
       gl.checkGLError("glGetTexImage");
 
@@ -1218,7 +1217,7 @@ public class CoreTexture2D {
                                  final int type,
                                  final Buffer data) {
     if (data instanceof ByteBuffer) {
-      gl.getUtil().gluBuild2DMipmaps(target, components, width, height, format, type, (ByteBuffer) data);
+      gl.gluBuild2DMipmaps(target, components, width, height, format, type, (ByteBuffer) data);
       checkGLError("gluBuild2DMipmaps", true);
     } else {
       throw new CoreGLException("MipMap creation not supported on this platform for non-byte buffers.");

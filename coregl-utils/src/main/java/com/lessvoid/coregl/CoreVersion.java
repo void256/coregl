@@ -1,8 +1,8 @@
 package com.lessvoid.coregl;
 
-import java.util.logging.Logger;
-
 import com.lessvoid.coregl.spi.CoreGL;
+
+import java.util.logging.Logger;
 
 /**
  * Version enumeration and identification for OpenGL and GLSL.
@@ -113,7 +113,7 @@ public class CoreVersion {
    *         <code>verCheck</code>
    */
   public static boolean checkCurrentGLVersion(final CoreGL gl, final GLVersion verCheck) {
-    return gl.getUtil().getGLVersion().checkAgainst(verCheck);
+    return gl.getGLVersion().checkAgainst(verCheck);
   }
 
   /**
@@ -243,6 +243,6 @@ public class CoreVersion {
    *         <code>verCheck</code>
    */
   public static boolean checkCurrentGLSLVersion(final CoreGL gl, final GLSLVersion verCheck) {
-    return gl.getUtil().getGLSLVersion().checkAgainst(verCheck);
+    return gl.getGLSLVersion().checkAgainst(verCheck);
   }
 }

@@ -26,6 +26,8 @@
  */
 package com.lessvoid.coregl;
 
+import com.lessvoid.coregl.spi.CoreGL;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,8 +41,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-
-import com.lessvoid.coregl.spi.CoreGL;
 
 /**
  * Helper class that represents a shader (actually the combination of a vertex
@@ -209,7 +209,7 @@ public class CoreShader {
     gl.glLinkProgram(program);
     gl.checkGLError("glLinkProgram");
 
-    final IntBuffer params = gl.getUtil().createIntBuffer(1);
+    final IntBuffer params = CoreBufferUtil.createIntBuffer(1);
     gl.glGetProgramiv(program, gl.GL_LINK_STATUS(), params);
     if (params.get(0) != gl.GL_TRUE()) {
       log.warn("link error: {}", gl.glGetProgramInfoLog(program));
@@ -267,7 +267,7 @@ public class CoreShader {
   }
 
   public void setUniformiv(final String name, final int componentNum, final int... values) {
-    final IntBuffer buff = gl.getUtil().createIntBuffer(values.length);
+    final IntBuffer buff = CoreBufferUtil.createIntBuffer(values.length);
     buff.put(values);
     buff.flip();
     setUniformiv(name, componentNum, buff);
@@ -298,7 +298,7 @@ public class CoreShader {
   }
 
   public void setUniformfv(final String name, final int componentNum, final float... values) {
-    final FloatBuffer buff = gl.getUtil().createFloatBuffer(values.length);
+    final FloatBuffer buff = CoreBufferUtil.createFloatBuffer(values.length);
     buff.put(values);
     buff.flip();
     setUniformfv(name, componentNum, buff);
@@ -329,7 +329,7 @@ public class CoreShader {
   }
 
   public void setUniformMatrix(final String name, final int componentNum, final float... values) {
-    if (matBuffer == null) matBuffer = gl.getUtil().createFloatBuffer(16);
+    if (matBuffer == null) matBuffer = CoreBufferUtil.createFloatBuffer(16);
 
     matBuffer.clear();
     matBuffer.put(values);
@@ -420,16 +420,16 @@ public class CoreShader {
   public Map<String, UniformBlockInfo> getUniformIndices(final String... uniformNames) {
     final Map<String, UniformBlockInfo> result = new Hashtable<String, UniformBlockInfo>();
 
-    final IntBuffer intBuffer = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer intBuffer = CoreBufferUtil.createIntBuffer(uniformNames.length);
     gl.glGetUniformIndices(program, uniformNames, intBuffer);
 
-    final IntBuffer uniformOffsets = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer uniformOffsets = CoreBufferUtil.createIntBuffer(uniformNames.length);
     gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_OFFSET(), uniformOffsets);
 
-    final IntBuffer arrayStrides = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer arrayStrides = CoreBufferUtil.createIntBuffer(uniformNames.length);
     gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_ARRAY_STRIDE(), arrayStrides);
 
-    final IntBuffer matrixStrides = gl.getUtil().createIntBuffer(uniformNames.length);
+    final IntBuffer matrixStrides = CoreBufferUtil.createIntBuffer(uniformNames.length);
     gl.glGetActiveUniforms(program, uniformNames.length, intBuffer, gl.GL_UNIFORM_MATRIX_STRIDE(), matrixStrides);
 
     gl.checkGLError("getUniformIndices");
@@ -491,7 +491,7 @@ public class CoreShader {
     gl.glCompileShader(shaderId);
     gl.checkGLError("glCompileShader");
 
-    final IntBuffer ret = gl.getUtil().createIntBuffer(1);
+    final IntBuffer ret = CoreBufferUtil.createIntBuffer(1);
     gl.glGetShaderiv(shaderId, gl.GL_COMPILE_STATUS(), ret);
     if (ret.get(0) == gl.GL_FALSE()) {
       log.warn("'{}' compile error: {}", name, gl.glGetShaderInfoLog(shaderId));

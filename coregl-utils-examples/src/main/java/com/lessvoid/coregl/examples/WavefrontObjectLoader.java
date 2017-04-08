@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.lwjgl.BufferUtils;
-
 /**
  * This class provides a way to load Wavefront Object models and provides simple
  * access to the loaded data.
@@ -272,12 +270,24 @@ public class WavefrontObjectLoader {
     private final FloatBuffer vertexData;
     private final IntBuffer indexData;
 
+    private static FloatBuffer createFloatBuffer(int capacity) {
+      return createByteBuffer(capacity << 2).asFloatBuffer();
+    }
+
+    private static ByteBuffer createByteBuffer(int capacity) {
+      return ByteBuffer.allocateDirect(capacity).order(ByteOrder.nativeOrder());
+    }
+
+    private static IntBuffer createIntBuffer(int capacity) {
+      return createByteBuffer(capacity << 2).asIntBuffer();
+    }
+
     public Data(final List<Float> vertices, final List<Integer> indices) {
-      vertexData = BufferUtils.createFloatBuffer(vertices.size() * (3 + 2 + 3));
+      vertexData = createFloatBuffer(vertices.size() * (3 + 2 + 3));
       vertexData.put(toFloatArray(vertices));
       vertexData.rewind();
 
-      indexData = BufferUtils.createIntBuffer(indices.size());
+      indexData = createIntBuffer(indices.size());
       indexData.put(toIntArray(indices));
       indexData.rewind();
     }

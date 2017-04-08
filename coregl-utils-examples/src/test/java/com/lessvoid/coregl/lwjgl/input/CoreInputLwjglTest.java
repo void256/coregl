@@ -1,7 +1,7 @@
 package com.lessvoid.coregl.lwjgl.input;
 
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

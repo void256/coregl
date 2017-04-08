@@ -1,10 +1,9 @@
 /**
  * Created by void on 26.03.17.
  */
-module coregl.utils.examples {
-  requires coregl.utils;
-  requires coregl.utils.lwjgl;
-  requires coregl.utils.jogl;
-  requires coregl.utils.lwjglthree;
+module com.lessvoid.coregl.examples {
   requires java.desktop;
+  //requires com.lessvoid.coregl.lwjglthree;
+  //requires com.lessvoid.coregl.lwjgl;
+  requires com.lessvoid.coregl.jogl;
 }

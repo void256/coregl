@@ -26,10 +26,10 @@
  */
 package com.lessvoid.coregl;
 
+import com.lessvoid.coregl.spi.CoreGL;
+
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
-import com.lessvoid.coregl.spi.CoreGL;
 
 /**
  * CoreTextureBuffer - texture buffer support (work in progress)
@@ -57,7 +57,7 @@ public class CoreTextureBuffer {
     gl.glBindBuffer(gl.GL_TEXTURE_BUFFER(), tbo);
     gl.checkGLError("glBindBuffer");
 
-    final IntBuffer buff = gl.getUtil().createIntBuffer(1);
+    final IntBuffer buff = CoreBufferUtil.createIntBuffer(1);
     buff.put(tbo).flip();
     gl.glDeleteBuffers(1, buff);
     gl.checkGLError("glDeleteBuffers");
@@ -125,7 +125,7 @@ public class CoreTextureBuffer {
   }
 
   private void init(final float[] data) {
-    final IntBuffer buff = gl.getUtil().createIntBuffer(1);
+    final IntBuffer buff = CoreBufferUtil.createIntBuffer(1);
     gl.glGenBuffers(1, buff);
     gl.checkGLError("glGenBuffers");
     buff.rewind();
@@ -134,7 +134,7 @@ public class CoreTextureBuffer {
     gl.glBindBuffer(gl.GL_TEXTURE_BUFFER(), tbo);
     gl.checkGLError("glBindBuffer");
 
-    final FloatBuffer buffer = gl.getUtil().createFloatBuffer(data.length);
+    final FloatBuffer buffer = CoreBufferUtil.createFloatBuffer(data.length);
     buffer.put(data);
     buffer.flip();
     gl.glBufferData(gl.GL_TEXTURE_BUFFER(), buffer, gl.GL_STATIC_DRAW());

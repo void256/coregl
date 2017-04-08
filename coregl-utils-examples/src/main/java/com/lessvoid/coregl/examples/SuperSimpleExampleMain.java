@@ -32,7 +32,7 @@ import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
@@ -95,8 +95,8 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
     vao.bind();
   }
 
-  public static void main(final String[] args) {
+  public static void main() {
     final RenderLoopCallback superSimpleExample = new SuperSimpleExampleMain();
-    CoreExampleMain.runExample(superSimpleExample, args);
+    CoreExampleMain.runExample(superSimpleExample);
   }
 }

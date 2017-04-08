@@ -41,7 +41,7 @@ import java.nio.ShortBuffer;
 public enum CoreBufferDataType {
   BYTE(1) {
     public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
-      return (T) gl.getUtil().createByteBuffer(calcByteLength(size));
+      return (T) CoreBufferUtil.createByteBuffer(calcByteLength(size));
     }
 
     public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
@@ -53,7 +53,7 @@ public enum CoreBufferDataType {
   },
   FLOAT(2) {
     public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
-      return (T) gl.getUtil().createByteBuffer(calcByteLength(size)).asFloatBuffer();
+      return (T) CoreBufferUtil.createByteBuffer(calcByteLength(size)).asFloatBuffer();
     }
 
     public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
@@ -65,7 +65,7 @@ public enum CoreBufferDataType {
   },
   SHORT(1) {
     public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
-      return (T) gl.getUtil().createByteBuffer(calcByteLength(size)).asShortBuffer();
+      return (T) CoreBufferUtil.createByteBuffer(calcByteLength(size)).asShortBuffer();
     }
 
     public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {

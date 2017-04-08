@@ -39,7 +39,7 @@ import com.lessvoid.coregl.input.spi.CoreInput;
  *
  * @author void
  */
-public interface CoreSetup {
+public interface CoreGLSetup {
   /**
    * You can implement this interface when you use the renderLoop() method. This
    * will be called each frame and allows you to actually draw.

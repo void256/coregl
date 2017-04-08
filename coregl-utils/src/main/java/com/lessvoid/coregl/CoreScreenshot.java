@@ -26,15 +26,14 @@
  */
 package com.lessvoid.coregl;
 
+import com.lessvoid.coregl.spi.CoreGL;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import javax.imageio.ImageIO;
-
-import com.lessvoid.coregl.spi.CoreGL;
 
 /**
  * This is not really OpenGL core profile specific. It's just a helper class to
@@ -70,7 +69,7 @@ public class CoreScreenshot {
   public void color(final String filename, final int width, final int height) {
     try {
       final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
-      final ByteBuffer pixels = gl.getUtil().createByteBuffer(width * height * 3);
+      final ByteBuffer pixels = CoreBufferUtil.createByteBuffer(width * height * 3);
       gl.glPixelStorei(gl.GL_PACK_ALIGNMENT(), 1);
       gl.glReadPixels(0, 0, width, height, gl.GL_RGB(), gl.GL_UNSIGNED_BYTE(), pixels);
       gl.checkGLError("glReadPixels");
@@ -104,7 +103,7 @@ public class CoreScreenshot {
   public void stencil(final String filename, final int width, final int height) {
     try {
       final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-      final ByteBuffer pixels = gl.getUtil().createByteBuffer(width * height);
+      final ByteBuffer pixels = CoreBufferUtil.createByteBuffer(width * height);
       gl.glPixelStorei(gl.GL_PACK_ALIGNMENT(), 1);
       gl.glReadPixels(0, 0, width, height, gl.GL_STENCIL_INDEX(), gl.GL_UNSIGNED_BYTE(), pixels);
       gl.checkGLError("glReadPixels");

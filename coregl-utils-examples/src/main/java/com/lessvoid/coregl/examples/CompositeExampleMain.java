@@ -32,7 +32,7 @@ import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 import com.lessvoid.math.MatrixFactory;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
@@ -224,8 +224,8 @@ public class CompositeExampleMain implements RenderLoopCallback {
     coreRender.renderTriangles(6);
   }
 
-  public static void main(final String[] args) throws Exception {
+  public static void main() throws Exception {
     final RenderLoopCallback compositeExample = new CompositeExampleMain();
-    CoreExampleMain.runExample(compositeExample, args);
+    CoreExampleMain.runExample(compositeExample);
   }
 }

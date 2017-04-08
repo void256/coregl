@@ -1,22 +1,10 @@
 package com.lessvoid.coregl.jogl.input;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import com.lessvoid.coregl.input.spi.CoreInput;
-import com.lessvoid.coregl.input.spi.CoreKeyEvent;
-import com.lessvoid.coregl.input.spi.CoreKeyListener;
-import com.lessvoid.coregl.input.spi.CoreMouseEvent;
-import com.lessvoid.coregl.spi.CoreSetup;
-import com.lessvoid.coregl.input.spi.CoreMouseListener;
-import com.lessvoid.coregl.jogl.CoreSetupJogl;
-import com.lessvoid.coregl.jogl.JoglCoreGL;
-import com.lessvoid.coregl.spi.CoreGL;
-
 public class CoreInputJoglTest {
-
+/*
   public static void main(final String[] args) {
-    final CoreGL gl = new JoglCoreGL();
-    final CoreSetupJogl setup = new CoreSetupJogl(gl);
+    final CoreGL gl = new CoreGLJogl();
+    final CoreGLSetupJogl setup = new CoreGLSetupJogl(gl);
     try {
       setup.initialize("Test JOGL Input", 1024, 768);
       setup.initializeLogging();
@@ -83,7 +71,7 @@ public class CoreInputJoglTest {
     }
   }
 
-  private static class NOPRenderLoop implements CoreSetup.RenderLoopCallback {
+  private static class NOPRenderLoop implements CoreGLSetup.RenderLoopCallback {
 
     private final AtomicBoolean stop = new AtomicBoolean();
 
@@ -101,4 +89,5 @@ public class CoreInputJoglTest {
       return stop.get();
     }
   }
+  */
 }

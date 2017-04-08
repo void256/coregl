@@ -1,12 +1,15 @@
 /**
  * Created by void on 26.03.17.
  */
-module coregl.utils.lwjglthree {
+module com.lessvoid.coregl.lwjglthree {
   requires java.base;
   requires java.logging;
-  requires coregl.utils;
   requires lwjgl;
   requires lwjgl.glfw;
   requires lwjgl.opengl;
-  exports de.lessvoid.coregl.lwjgl3;
+
+  requires transitive com.lessvoid.coregl;
+
+  provides com.lessvoid.coregl.spi.CoreGLProvider
+      with com.lessvoid.coregl.lwjgl3.CoreGLProviderLwjgl3;
 }

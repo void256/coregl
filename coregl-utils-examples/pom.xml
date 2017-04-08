@@ -9,13 +9,22 @@
   </parent>
   <profiles>
     <profile>
+      <id>examples-jogl</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.lessvoid</groupId>
+          <artifactId>coregl-utils-jogl</artifactId>
+          <version>2.1.0-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>examples-lwjgl2</id>
       <dependencies>
         <dependency>
           <groupId>com.lessvoid</groupId>
-          <artifactId>coregl-utils-lwjgl3</artifactId>
+          <artifactId>coregl-utils-lwjgl</artifactId>
           <version>2.1.0-SNAPSHOT</version>
-          <scope>provided</scope>
         </dependency>
       </dependencies>
     </profile>
@@ -24,9 +33,8 @@
       <dependencies>
         <dependency>
           <groupId>com.lessvoid</groupId>
-          <artifactId>coregl-utils-lwjgl</artifactId>
+          <artifactId>coregl-utils-lwjgl3</artifactId>
           <version>2.1.0-SNAPSHOT</version>
-          <scope>provided</scope>
         </dependency>
       </dependencies>
     </profile>
@@ -35,28 +43,6 @@
     <dependency>
       <groupId>com.lessvoid</groupId>
       <artifactId>coregl-utils</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-    </dependency>
-    <!--
-    <dependency>
-      <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils-jogl</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils-lwjgl</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils-lwjgl3</artifactId>
-      <version>2.1.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils-lwjgl3</artifactId>
       <version>2.1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
@@ -77,6 +63,18 @@
               <includeGroupIds>org.lwjgl.lwjgl</includeGroupIds>
               <outputDirectory>${project.build.directory}/natives-lwjgl</outputDirectory>
               <includeClassifiers>natives-linux,natives-osx,natives-windows</includeClassifiers>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-dependencies-lwjgl3</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeGroupIds>org.lwjgl</includeGroupIds>
+              <outputDirectory>${project.build.directory}/natives-lwjgl3</outputDirectory>
+              <includeClassifiers>natives-linux,natives-macos,natives-windows</includeClassifiers>
             </configuration>
           </execution>
           <execution>

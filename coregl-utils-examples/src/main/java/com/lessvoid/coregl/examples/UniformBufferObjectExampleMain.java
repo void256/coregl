@@ -34,7 +34,7 @@ import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.UniformBlockInfo;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import java.util.Map;
 
@@ -104,8 +104,8 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
     return false;
   }
 
-  public static void main(final String[] args) throws Exception {
+  public static void main() throws Exception {
     final RenderLoopCallback uboExample = new UniformBufferObjectExampleMain();
-    CoreExampleMain.runExample(uboExample, args);
+    CoreExampleMain.runExample(uboExample);
   }
 }

@@ -36,7 +36,7 @@ import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.ResizeFilter;
 import com.lessvoid.coregl.Type;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup;
+import com.lessvoid.coregl.spi.CoreGLSetup;
 import com.lessvoid.math.Mat4;
 import com.lessvoid.math.MatrixFactory;
 
@@ -50,7 +50,7 @@ import static com.lessvoid.coregl.CoreBufferDataType.FLOAT;
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.DYNAMIC_DRAW;
 
-public class LineMain implements CoreSetup.RenderLoopCallback {
+public class LineMain implements CoreGLSetup.RenderLoopCallback {
 
   private static final int WINDOW_WIDTH = 1024, WINDOW_HEIGHT = 768;
 
@@ -277,8 +277,8 @@ public class LineMain implements CoreSetup.RenderLoopCallback {
     return new ByteArrayInputStream(data.getBytes(Charset.forName("ISO-8859-1")));
   }
 
-  public static void main(final String[] args) throws Exception {
-    final CoreSetup.RenderLoopCallback lineExample = new LineMain();
-    CoreExampleMain.runExample(lineExample, args);
+  public static void main() throws Exception {
+    final CoreGLSetup.RenderLoopCallback lineExample = new LineMain();
+    CoreExampleMain.runExample(lineExample);
   }
 }

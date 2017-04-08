@@ -1,12 +1,15 @@
-package de.lessvoid.coregl.lwjgl3;
+package com.lessvoid.coregl.lwjgl3;
 
 import com.lessvoid.coregl.CoreBufferAccessType;
 import com.lessvoid.coregl.CoreBufferTargetType;
 import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreLogger;
+import com.lessvoid.coregl.CoreVersion;
+import com.lessvoid.coregl.CoreVersion.GLSLVersion;
+import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreUtil;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
@@ -55,18 +58,16 @@ import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_READ;
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
  * @author Brian Groenke (groenke.5@osu.edu)
  */
-public class Lwjgl3CoreGL implements CoreGL {
+public class CoreGLLwjgl3 implements CoreGL {
 
-  private static CoreLogger log = CoreLogger.getCoreLogger(Lwjgl3CoreGL.class.getName());
+  private static CoreLogger log = CoreLogger.getCoreLogger(CoreGLLwjgl3.class.getName());
 
   private boolean errorCheckingEnabled = false;
-
-  private final CoreUtil util = new Lwjgl3CoreUtil();
   private final Map<CoreBufferUsageType, Integer> bufferUsageTypeMap;
   private final Map<CoreBufferTargetType, Integer> bufferTargetTypeMap;
   private final Map<CoreBufferAccessType, Integer> bufferAccessTypeMap;
 
-  public Lwjgl3CoreGL() {
+  public CoreGLLwjgl3() {
     Map<CoreBufferUsageType, Integer> mapUsage = new Hashtable<CoreBufferUsageType, Integer>();
     mapUsage.put(STREAM_DRAW, GL_STREAM_DRAW());
     mapUsage.put(STREAM_READ, GL_STREAM_READ());
@@ -117,11 +118,6 @@ public class Lwjgl3CoreGL implements CoreGL {
   @Override
   public void checkGLError(final String msg, final Object...args) {
     checkGLError(false, msg, args);
-  }
-
-  @Override
-  public CoreUtil getUtil() {
-    return util;
   }
 
   @Override
@@ -1764,5 +1760,43 @@ public class Lwjgl3CoreGL implements CoreGL {
   @Override
   public int mapCoreBufferAccessType(final CoreBufferAccessType access) {
     return bufferAccessTypeMap.get(access);
+  }
+
+  @Override
+  public int gluBuild2DMipmaps(final int target,
+                               final int internalFormat,
+                               final int width,
+                               final int height,
+                               final int format,
+                               final int type,
+                               final ByteBuffer data) {
+    throw new UnsupportedOperationException ("GLUT is not supported by LWJGL3");
+  }
+
+  @Override
+  public String gluErrorString(final int glError) {
+    return "";//GLUtil.getErrorString(glError);
+  }
+
+  @Override
+  public boolean isNPOTSupported() {
+    return getGLVersion().checkAgainst(GLVersion.GL20) || isNPOTHardwareSupported();
+  }
+
+  @Override
+  public boolean isNPOTHardwareSupported() {
+    return GL.getCapabilities().GL_ARB_texture_non_power_of_two;
+  }
+
+  @Override
+  public GLVersion getGLVersion() {
+    final String glVersionString = GL11.glGetString(GL11.GL_VERSION);
+    return CoreVersion.getGLVersionFromString(glVersionString);
+  }
+
+  @Override
+  public GLSLVersion getGLSLVersion() {
+    final String glslVersionString = GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION);
+    return CoreVersion.getGLSLVersionFromString(glslVersionString);
   }
 }

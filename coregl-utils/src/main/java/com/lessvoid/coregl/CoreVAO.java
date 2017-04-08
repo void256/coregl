@@ -26,11 +26,11 @@
  */
 package com.lessvoid.coregl;
 
+import com.lessvoid.coregl.spi.CoreGL;
+
 import java.nio.IntBuffer;
 import java.util.Hashtable;
 import java.util.Map;
-
-import com.lessvoid.coregl.spi.CoreGL;
 
 /**
  * A Vertex Array Object (VAO).
@@ -49,7 +49,7 @@ public class CoreVAO {
   CoreVAO(final CoreGL gl) {
     checkLazyInit(gl);
     this.gl = gl;
-    final IntBuffer vaoBuff = gl.getUtil().createIntBuffer(1);
+    final IntBuffer vaoBuff = CoreBufferUtil.createIntBuffer(1);
     gl.glGenVertexArrays(1, vaoBuff);
     gl.checkGLError("glGenVertexArrays");
     vao = vaoBuff.get(0);
@@ -84,7 +84,7 @@ public class CoreVAO {
    * Delete all resources for this VAO.
    */
   public void delete() {
-    gl.glDeleteVertexArrays(1, gl.getUtil().createIntBuffer(new int[] { vao }));
+    gl.glDeleteVertexArrays(1, CoreBufferUtil.createIntBuffer(new int[] { vao }));
     gl.checkGLError("glDeleteVertexArrays");
   }
 

@@ -32,7 +32,7 @@ import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 import com.lessvoid.math.Mat4;
 import com.lessvoid.math.MatrixFactory;
 
@@ -125,8 +125,8 @@ public class StarfieldMain implements RenderLoopCallback {
     return false;
   }
 
-  public static void main(final String[] args) throws Exception {
+  public static void main() throws Exception {
     final RenderLoopCallback starfieldExample = new StarfieldMain();
-    CoreExampleMain.runExample(starfieldExample, args);
+    CoreExampleMain.runExample(starfieldExample);
   }
 }

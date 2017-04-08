@@ -56,7 +56,7 @@ public class CoreBuffer<T extends Buffer> {
       final CoreBufferUsageType usageType,
       final int size) {
     this.gl = gl;
-    this.intBuffer = gl.getUtil().createIntBuffer(1);
+    this.intBuffer = CoreBufferUtil.createIntBuffer(1);
     this.usage = gl.mapCoreBufferUsageType(usageType);
     this.bufferType = bufferType;
     this.byteLength = bufferType.calcByteLength(size);
@@ -119,7 +119,7 @@ public class CoreBuffer<T extends Buffer> {
       final CoreBufferDataType bufferType,
       final CoreBufferUsageType usageType,
       final int size) {
-    return new CoreBuffer<T>(gl, bufferType, usageType, size);
+    return new CoreBuffer<>(gl, bufferType, usageType, size);
   }
 
   /**
@@ -132,7 +132,7 @@ public class CoreBuffer<T extends Buffer> {
       final CoreBufferTargetType target,
       final CoreBufferUsageType usageType,
       final byte[] data) {
-    return new CoreBuffer(gl, target, usageType, data);
+    return new CoreBuffer<>(gl, target, usageType, data);
   }
 
   /**
@@ -145,7 +145,7 @@ public class CoreBuffer<T extends Buffer> {
       final CoreBufferTargetType target,
       final CoreBufferUsageType usageType,
       final float[] data) {
-    return new CoreBuffer(gl, target, usageType, data);
+    return new CoreBuffer<>(gl, target, usageType, data);
   }
 
   /**
@@ -158,7 +158,7 @@ public class CoreBuffer<T extends Buffer> {
       final CoreBufferTargetType target,
       final CoreBufferUsageType usageType,
       final short[] data) {
-    return new CoreBuffer(gl, target, usageType, data);
+    return new CoreBuffer<>(gl, target, usageType, data);
   }
 
   /**

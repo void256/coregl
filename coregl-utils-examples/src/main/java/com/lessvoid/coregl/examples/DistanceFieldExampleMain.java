@@ -38,14 +38,13 @@ import com.lessvoid.coregl.ResizeFilter;
 import com.lessvoid.coregl.Type;
 import com.lessvoid.coregl.examples.util.ImageLoaderImageIO;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
-import static org.lwjgl.opengl.GL11.glViewport;
 
 /**
  * The DistanceFieldExampleMain generates a signed distance field from a high resolution
@@ -142,7 +141,7 @@ public class DistanceFieldExampleMain implements RenderLoopCallback {
     coreRender.renderTriangleStrip(4);
     fbo.disable();
 
-    glViewport(0, 0, 1024, 768);
+    gl.glViewport(0, 0, 1024, 768);
 
     vao.bind();
     CoreBuffer.createCoreBufferObject(
@@ -161,8 +160,8 @@ public class DistanceFieldExampleMain implements RenderLoopCallback {
     textureShader.activate();
   }
 
-  public static void main(final String[] args) {
+  public static void main() {
     final RenderLoopCallback superSimpleExample = new DistanceFieldExampleMain();
-    CoreExampleMain.runExample(superSimpleExample, args);
+    CoreExampleMain.runExample(superSimpleExample);
   }
 }

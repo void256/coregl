@@ -32,7 +32,9 @@ import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreSetup.RenderLoopCallback;
+import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
+
+import java.io.IOException;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
@@ -47,8 +49,12 @@ public class CurveExampleMain implements RenderLoopCallback {
   public void init(final CoreGL gl) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vTexture");
-    shader.vertexShader("curve/curve.vs");
-    shader.fragmentShader("curve/curve.fs");
+    try {
+      shader.vertexShader("vertex", CurveExampleMain.class.getModule().getResourceAsStream("curve/curve.vs"));
+      shader.fragmentShader("fragmen", CurveExampleMain.class.getModule().getResourceAsStream("curve/curve.fs"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);
@@ -96,6 +102,6 @@ public class CurveExampleMain implements RenderLoopCallback {
 
   public static void main(final String[] args) throws Exception {
     final RenderLoopCallback curveEample = new CurveExampleMain();
-    CoreExampleMain.runExample(curveEample, args);
+    CoreExampleMain.runExample(curveEample);
   }
 }

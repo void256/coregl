@@ -3,8 +3,9 @@ package com.lessvoid.coregl.state;
 import com.lessvoid.coregl.CoreBufferAccessType;
 import com.lessvoid.coregl.CoreBufferTargetType;
 import com.lessvoid.coregl.CoreBufferUsageType;
+import com.lessvoid.coregl.CoreVersion.GLSLVersion;
+import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -1843,11 +1844,6 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
-    public CoreUtil getUtil() {
-        return gl.getUtil();
-    }
-
-    @Override
     public void setErrorChecksEnabled(boolean enabled) {
         gl.setErrorChecksEnabled(enabled);
     }
@@ -1865,6 +1861,36 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int mapCoreBufferAccessType(final CoreBufferAccessType access) {
         return gl.mapCoreBufferAccessType(access);
+    }
+
+    @Override
+    public int gluBuild2DMipmaps(final int target, final int internalFormat, final int width, final int height, final int format, final int type, final ByteBuffer data) {
+        return gl.gluBuild2DMipmaps(target, internalFormat, width, height, format, type, data);
+    }
+
+    @Override
+    public String gluErrorString(final int glError) {
+        return gl.gluErrorString(glError);
+    }
+
+    @Override
+    public boolean isNPOTSupported() {
+        return gl.isNPOTSupported();
+    }
+
+    @Override
+    public boolean isNPOTHardwareSupported() {
+        return gl.isNPOTHardwareSupported();
+    }
+
+    @Override
+    public GLVersion getGLVersion() {
+        return gl.getGLVersion();
+    }
+
+    @Override
+    public GLSLVersion getGLSLVersion() {
+        return gl.getGLSLVersion();
     }
 
     private boolean stringEquals(final String a, final String b) {

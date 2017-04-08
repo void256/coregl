@@ -26,9 +26,9 @@
  */
 package com.lessvoid.coregl;
 
-import java.nio.IntBuffer;
-
 import com.lessvoid.coregl.spi.CoreGL;
+
+import java.nio.IntBuffer;
 
 /**
  * Helper class to use a frame buffer object. This will take care of all the
@@ -90,7 +90,7 @@ public class CoreFBO {
    * Delete the FBO.
    */
   public void delete() {
-    gl.glDeleteFramebuffers(1, gl.getUtil().createIntBuffer(new int[] { fbo }));
+    gl.glDeleteFramebuffers(1, CoreBufferUtil.createIntBuffer(new int[] { fbo }));
   }
 
   /**
@@ -150,7 +150,7 @@ public class CoreFBO {
    *          the height of the stenicl buffer
    */
   public void attachStencil(final int width, final int height) {
-    final IntBuffer buff = gl.getUtil().createIntBuffer(1);
+    final IntBuffer buff = CoreBufferUtil.createIntBuffer(1);
     gl.glGenRenderBuffers(1, buff);
     final int renderBuffer = buff.get(0);
     gl.glBindRenderbuffer(gl.GL_RENDERBUFFER(), renderBuffer);
@@ -160,7 +160,7 @@ public class CoreFBO {
   }
 
   private void initialize() {
-    final IntBuffer buffStore = gl.getUtil().createIntBuffer(1);
+    final IntBuffer buffStore = CoreBufferUtil.createIntBuffer(1);
     gl.glGenFramebuffers(1, buffStore);
     fbo = buffStore.get(0);
     gl.checkGLError("glGenFramebuffers");

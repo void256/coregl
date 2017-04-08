@@ -26,6 +26,29 @@
  */
 package com.lessvoid.coregl.lwjgl;
 
+import com.lessvoid.coregl.input.spi.CoreInput;
+import com.lessvoid.coregl.lwjgl.input.CoreInputLwjgl;
+import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreGLSetup;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.LWJGLUtil;
+import org.lwjgl.opengl.ContextAttribs;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
+
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -43,32 +66,8 @@ import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.opengl.GL12.GL_MAX_3D_TEXTURE_SIZE;
 import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
 
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-
-import com.lessvoid.coregl.input.spi.CoreInput;
-import com.lessvoid.coregl.lwjgl.input.CoreInputLwjgl;
-import com.lessvoid.coregl.spi.CoreSetup;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.LWJGLUtil;
-import org.lwjgl.opengl.ContextAttribs;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.PixelFormat;
-
-import com.lessvoid.coregl.spi.CoreGL;
-
-public class CoreSetupLwjgl implements CoreSetup {
-  private static final Logger log = Logger.getLogger(CoreSetupLwjgl.class.getName());
+public class CoreGLSetupLwjgl implements CoreGLSetup {
+  private static final Logger log = Logger.getLogger(CoreGLSetupLwjgl.class.getName());
   private static final Comparator<DisplayMode> DisplayModeFrequencyComparator = new DisplayModeFrequencyComparator();
   private final StringBuilder fpsText = new StringBuilder();
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
@@ -76,7 +75,7 @@ public class CoreSetupLwjgl implements CoreSetup {
   private CoreInput input;
   private String lastFPS = "";
 
-  public CoreSetupLwjgl(final CoreGL gl) {
+  public CoreGLSetupLwjgl(final CoreGL gl) {
     this.gl = gl;
   }
 
@@ -111,7 +110,7 @@ public class CoreSetupLwjgl implements CoreSetup {
   @Override
   public void initializeLogging(final String loggingProperties) {
     try {
-      LogManager.getLogManager().readConfiguration(CoreSetupLwjgl.class.getResourceAsStream(loggingProperties));
+      LogManager.getLogManager().readConfiguration(CoreGLSetupLwjgl.class.getResourceAsStream(loggingProperties));
     } catch (final Exception e) {
       throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]",
                                  e);

@@ -1,10 +1,10 @@
 package com.lessvoid.coregl;
 
+import com.lessvoid.coregl.spi.CoreGL;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.lessvoid.coregl.spi.CoreGL;
 
 /**
  * Basic logging functionality for coregl-utils library classes; wraps a
@@ -349,7 +349,7 @@ public final class CoreLogger {
       }
 
       if (warningEnabled) {
-        String glerrmsg = gl.getUtil().gluErrorString(error);
+        String glerrmsg = gl.gluErrorString(error);
         if (stackTrace == null) {
           clearBuffer();
           for (final StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {

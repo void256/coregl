@@ -3,6 +3,7 @@ package com.lessvoid.coregl.spi;
 import com.lessvoid.coregl.CoreBufferAccessType;
 import com.lessvoid.coregl.CoreBufferTargetType;
 import com.lessvoid.coregl.CoreBufferUsageType;
+import com.lessvoid.coregl.CoreVersion;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -630,8 +631,6 @@ public interface CoreGL {
 
   void checkGLError(String msg, Object...args);
 
-  CoreUtil getUtil();
-
   void setErrorChecksEnabled(boolean enabled);
 
   int mapCoreBufferTargetType(CoreBufferTargetType target);
@@ -639,4 +638,16 @@ public interface CoreGL {
   int mapCoreBufferUsageType(CoreBufferUsageType usage);
 
   int mapCoreBufferAccessType(CoreBufferAccessType access);
+
+  int gluBuild2DMipmaps(int target, int internalFormat, int width, int height, int format, int type, ByteBuffer data);
+
+  String gluErrorString(int glError);
+
+  boolean isNPOTSupported();
+
+  boolean isNPOTHardwareSupported();
+
+  CoreVersion.GLVersion getGLVersion();
+
+  CoreVersion.GLSLVersion getGLSLVersion();
 }

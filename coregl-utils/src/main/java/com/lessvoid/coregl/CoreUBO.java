@@ -26,16 +26,16 @@
  */
 package com.lessvoid.coregl;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.util.Map;
-
-import com.lessvoid.math.Vec3;
-import com.lessvoid.math.Vec4;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.math.Mat3;
 import com.lessvoid.math.Mat4;
 import com.lessvoid.math.Vec2;
+import com.lessvoid.math.Vec3;
+import com.lessvoid.math.Vec4;
+
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.Map;
 
 public class CoreUBO {
 
@@ -61,9 +61,9 @@ public class CoreUBO {
     this.gl = gl;
     usage = usageType;
     byteLength = length;
-    byteBuffer = gl.getUtil().createByteBuffer(length);
+    byteBuffer = CoreBufferUtil.createByteBuffer(length);
     blockInfos = infos;
-    final IntBuffer idbuff = gl.getUtil().createIntBuffer(1);
+    final IntBuffer idbuff = CoreBufferUtil.createIntBuffer(1);
     gl.glGenBuffers(1, idbuff);
     id = idbuff.get(0);
     gl.checkGLError("glGenBuffers");
@@ -213,7 +213,7 @@ public class CoreUBO {
   }
 
   public void delete() {
-    gl.glDeleteBuffers(1, gl.getUtil().createIntBuffer(new int[] { id }));
+    gl.glDeleteBuffers(1, CoreBufferUtil.createIntBuffer(new int[] { id }));
     gl.checkGLError("glDeleteBuffers");
   }
 }
