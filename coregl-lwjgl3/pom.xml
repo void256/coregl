@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>coregl-utils-lwjgl3</artifactId>
+  <artifactId>coregl-lwjgl3</artifactId>
   <name>CoreGL LWJGL3 Adapter</name>
   <parent>
     <groupId>com.lessvoid</groupId>
-    <artifactId>coregl</artifactId>
+    <artifactId>coregl-main</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
   <properties>
@@ -13,7 +13,7 @@
   <dependencies>
     <dependency>
       <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
+      <artifactId>coregl</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -28,6 +28,12 @@
     </dependency>
     <dependency>
       <groupId>org.lwjgl</groupId>
+      <artifactId>lwjgl-opengl</artifactId>
+      <version>${lwjgl.version}</version>
+    </dependency>
+    <!--
+    <dependency>
+      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-jemalloc</artifactId>
       <version>${lwjgl.version}</version>
     </dependency>
@@ -38,14 +44,10 @@
     </dependency>
     <dependency>
       <groupId>org.lwjgl</groupId>
-      <artifactId>lwjgl-opengl</artifactId>
-      <version>${lwjgl.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-stb</artifactId>
       <version>${lwjgl.version}</version>
     </dependency>
+    -->
     <!-- natives linux -->
     <dependency>
       <groupId>org.lwjgl</groupId>
@@ -110,6 +112,7 @@
       <version>${lwjgl.version}</version>
       <classifier>natives-macos</classifier>
     </dependency>
+    <!--
     <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl-openal</artifactId>
@@ -131,6 +134,7 @@
       <classifier>natives-macos</classifier>
       <scope>runtime</scope>
     </dependency>
+    -->
     <!-- natives windows -->
     <dependency>
       <groupId>org.lwjgl</groupId>

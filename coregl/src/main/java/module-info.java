@@ -4,7 +4,6 @@
 module com.lessvoid.coregl {
   requires java.base;
   requires java.logging;
-  requires java.desktop;
 
   exports com.lessvoid.coregl;
   exports com.lessvoid.coregl.input;

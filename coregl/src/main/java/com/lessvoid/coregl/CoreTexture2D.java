@@ -28,11 +28,6 @@ package com.lessvoid.coregl;
 
 import com.lessvoid.coregl.spi.CoreGL;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -1159,32 +1154,6 @@ public class CoreTexture2D {
       throw new CoreGLException("Unknown buffer type; " + pixels.getClass().toString());
     }
     checkGLError("glTexImage3D", true);
-  }
-
-  /**
-   * Save the texture as a png file with the given filename.
-   * 
-   * @param filename
-   */
-  public void saveAsPNG(final String filename) {
-    try {
-      final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
-      final ByteBuffer pixels = CoreBufferUtil.createByteBuffer(width * height * 4);
-      gl.glGetTexImage(gl.GL_TEXTURE_2D(), 0, gl.GL_RGBA(), gl.GL_UNSIGNED_BYTE(), pixels);
-      gl.checkGLError("glGetTexImage");
-
-      final WritableRaster raster = bi.getRaster();
-      final int[] buffer = new int[width * height * 4];
-      for (int i = 0; i < width * height * 4; i++) {
-        buffer[i] = pixels.get(i);
-      }
-      raster.setPixels(0, 0, width, height, buffer);
-
-      final File outputfile = new File(filename);
-      ImageIO.write(bi, "png", outputfile);
-    } catch (final IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   /**

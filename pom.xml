@@ -1,17 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.lessvoid</groupId>
-  <artifactId>coregl</artifactId>
+  <artifactId>coregl-main</artifactId>
   <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>CoreGL</name>
   <description>A utility API to make life with OpenGL core profile simpler.</description>
   <modules>
-    <module>coregl-utils</module>
-    <module>coregl-utils-lwjgl</module>
-    <module>coregl-utils-lwjgl3</module>
-    <module>coregl-utils-jogl</module>
-    <module>coregl-utils-examples</module>
+    <module>coregl</module>
+    <module>coregl-lwjgl</module>
+    <module>coregl-lwjgl3</module>
+    <module>coregl-jogl</module>
+    <module>coregl-examples</module>
+    <module>coregl-ext</module>
   </modules>
   <url>https://github.com/void256/coregl</url>
   <licenses>

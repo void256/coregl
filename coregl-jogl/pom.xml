@@ -3,17 +3,17 @@
   <name>CoreGL JOGL Adapter</name>
   <parent>
     <groupId>com.lessvoid</groupId>
-    <artifactId>coregl</artifactId>
+    <artifactId>coregl-main</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>coregl-utils-jogl</artifactId>
+  <artifactId>coregl-jogl</artifactId>
   <properties>
     <jogamp.version>2.3.2</jogamp.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
+      <artifactId>coregl</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>

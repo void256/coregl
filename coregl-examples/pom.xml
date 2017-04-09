@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>coregl-utils-examples</artifactId>
+  <artifactId>coregl-examples</artifactId>
   <name>CoreGL Examples</name>
   <parent>
     <groupId>com.lessvoid</groupId>
-    <artifactId>coregl</artifactId>
+    <artifactId>coregl-main</artifactId>
     <version>3.0.0-SNAPSHOT</version>
   </parent>
   <profiles>
@@ -13,7 +13,7 @@
       <dependencies>
         <dependency>
           <groupId>com.lessvoid</groupId>
-          <artifactId>coregl-utils-jogl</artifactId>
+          <artifactId>coregl-jogl</artifactId>
           <version>3.0.0-SNAPSHOT</version>
         </dependency>
       </dependencies>
@@ -23,7 +23,7 @@
       <dependencies>
         <dependency>
           <groupId>com.lessvoid</groupId>
-          <artifactId>coregl-utils-lwjgl</artifactId>
+          <artifactId>coregl-lwjgl</artifactId>
           <version>3.0.0-SNAPSHOT</version>
         </dependency>
       </dependencies>
@@ -33,7 +33,7 @@
       <dependencies>
         <dependency>
           <groupId>com.lessvoid</groupId>
-          <artifactId>coregl-utils-lwjgl3</artifactId>
+          <artifactId>coregl-lwjgl3</artifactId>
           <version>3.0.0-SNAPSHOT</version>
         </dependency>
       </dependencies>
@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>com.lessvoid</groupId>
-      <artifactId>coregl-utils</artifactId>
+      <artifactId>coregl</artifactId>
       <version>3.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>

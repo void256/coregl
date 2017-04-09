@@ -24,8 +24,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.lessvoid.coregl;
+package com.lessvoid.coregl.ext;
 
+import com.lessvoid.coregl.CoreBufferUtil;
 import com.lessvoid.coregl.spi.CoreGL;
 
 import javax.imageio.ImageIO;
