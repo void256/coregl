@@ -10,7 +10,7 @@ float calc(float f, vec2 uPos) {
   uPos.y += sin( t + uPos.x * 5.0) * 0.1;
   uPos.x += sin( t + uPos.y * 6.0) + 0.2;
   float value = sin((uPos.x) * 5.0) + sin(uPos.y * 4.0);
-  return 1.0/sqrt(abs(value))/1.0 * pow(f, 10.);
+  return 1.0/sqrt(abs(value))/1.0 * pow(f, 3.);
 }
 
 void main( void ) {

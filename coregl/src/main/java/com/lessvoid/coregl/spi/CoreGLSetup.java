@@ -56,7 +56,7 @@ public interface CoreGLSetup {
      * @param gl
      *          the CoreGL instance in case you want to use that
      */
-    void init(final CoreGL gl);
+    void init(CoreGL gl);
 
     /**
      * Do some awesome stuff in here!
@@ -69,7 +69,7 @@ public interface CoreGLSetup {
      *         displayed. false when nothing has been changed and the display
      *         should not be updated.
      */
-    boolean render(final CoreGL gl, float deltaTime);
+    boolean render(CoreGL gl, float deltaTime);
 
     /**
      * When you're finishing rendering awesome stuff and the render loop should
@@ -78,7 +78,15 @@ public interface CoreGLSetup {
      * @return true render loop should be stopped and false if you want it to
      *         continue.
      */
-    boolean endLoop();
+    boolean endLoop(CoreGL gl);
+
+    /**
+     * When the visible region of the current window changes dimensions.
+     * @param gl CoreGL instance this is connected to
+     * @param width the new width
+     * @param height the new height
+     */
+    void sizeChanged(CoreGL gl, int width, int height);
   }
 
   /**

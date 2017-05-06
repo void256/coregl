@@ -51,7 +51,7 @@ public class BackgroundMain implements RenderLoopCallback {
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex");
     try {
       shader.vertexShader("vertex", BackgroundMain.class.getModule().getResourceAsStream("background/background.vs"));
-      shader.fragmentShader("fragmen", BackgroundMain.class.getModule().getResourceAsStream("background/background.fs"));
+      shader.fragmentShader("fragment", BackgroundMain.class.getModule().getResourceAsStream("background/background.fs"));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -84,7 +84,6 @@ public class BackgroundMain implements RenderLoopCallback {
 
     final float time = (System.currentTimeMillis() - startTime) / 1000.f;
     shader.setUniformf("time", time);
-    shader.setUniformf("resolution", 1024.f, 768.f);
 
     // render all the data in the currently active vao using triangle strips
     coreRender.renderTriangleStrip(4);
@@ -92,8 +91,16 @@ public class BackgroundMain implements RenderLoopCallback {
   }
 
   @Override
-  public boolean endLoop() {
+  public boolean endLoop(final CoreGL gl) {
     return false;
+  }
+
+  @Override
+  public void sizeChanged(final CoreGL gl, final int width, final int height) {
+    System.out.println(width + ", " + height);
+
+    shader.setUniformf("resolution", width, height);
+    gl.glViewport(0, 0, width, height);
   }
 
   public static void main(final String[] args) throws Exception {

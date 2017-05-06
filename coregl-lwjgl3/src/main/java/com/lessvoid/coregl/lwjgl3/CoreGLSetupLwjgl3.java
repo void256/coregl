@@ -31,6 +31,7 @@ import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.Platform;
@@ -52,12 +53,14 @@ import static org.lwjgl.glfw.GLFW.GLFW_RESIZABLE;
 import static org.lwjgl.glfw.GLFW.GLFW_STENCIL_BITS;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
+import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -92,6 +95,22 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
   private long window;
   private boolean fullscreen;
   private String lastFPS = "";
+  private FramebufferSizeChangedCallback framebufferSizeChangedCallback;
+
+  private static final class FramebufferSizeChangedCallback implements GLFWFramebufferSizeCallbackI {
+    private RenderLoopCallback renderLoopCallback;
+    private CoreGL gl;
+
+    private FramebufferSizeChangedCallback(final RenderLoopCallback renderLoopCallback, final CoreGL gl) {
+      this.renderLoopCallback = renderLoopCallback;
+      this.gl = gl;
+    }
+
+    @Override
+    public void invoke(final long window, final int width, final int height) {
+      renderLoopCallback.sizeChanged(gl, width, height);
+    }
+  }
 
   public CoreGLSetupLwjgl3(final CoreGL gl) {
     this.gl = gl;
@@ -176,7 +195,16 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     long prevTime = System.nanoTime();
 
     renderLoop.init(gl);
-    while (!glfwWindowShouldClose(window) && !renderLoop.endLoop()) {
+
+    framebufferSizeChangedCallback = new FramebufferSizeChangedCallback(renderLoop, gl);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeChangedCallback);
+
+    int width[] = new int[1];
+    int height[] = new int[1];
+    glfwGetFramebufferSize(window, width, height);
+    framebufferSizeChangedCallback.invoke(window, width[0], height[0]);
+
+    while (!glfwWindowShouldClose(window) && !renderLoop.endLoop(gl)) {
       final long nanoTime = System.nanoTime();
       if (renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION)) {
         glfwPollEvents();
@@ -267,7 +295,7 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     int windowWidth = width;
     int windowHeight = height;
     long monitor = glfwGetPrimaryMonitor();
-    if(fullscreen) {
+    if (fullscreen) {
         GLFWVidMode vidMode = glfwGetVideoMode(monitor);
         windowWidth = vidMode.width();
         windowHeight = vidMode.height();

@@ -280,7 +280,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
     }
 
     boolean shouldStop() {
-      return callback.endLoop();
+      return callback.endLoop(gl);
     }
   }
 }

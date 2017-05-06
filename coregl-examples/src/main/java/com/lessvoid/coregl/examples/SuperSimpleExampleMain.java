@@ -58,8 +58,13 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
   }
 
   @Override
-  public boolean endLoop() {
+  public boolean endLoop(final CoreGL gl) {
     return false;
+  }
+
+  @Override
+  public void sizeChanged(final CoreGL gl, final int width, final int height) {
+
   }
 
   @Override

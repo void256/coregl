@@ -93,8 +93,13 @@ public class CoreInputLwjglTest {
     }
 
     @Override
-    public boolean endLoop() {
+    public boolean endLoop(final CoreGL gl) {
       return stop.get();
+    }
+
+    @Override
+    public void sizeChanged(final CoreGL gl, final int width, final int height) {
+
     }
   }
 }

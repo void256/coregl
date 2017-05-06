@@ -158,7 +158,7 @@ public class CoreGLSetupLwjgl implements CoreGLSetup {
     long prevTime = System.nanoTime();
 
     renderLoop.init(gl);
-    while (!Display.isCloseRequested() && !renderLoop.endLoop()) {
+    while (!Display.isCloseRequested() && !renderLoop.endLoop(gl)) {
       final long nanoTime = System.nanoTime();
       if (renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION)) {
         Display.update();
