@@ -1,6 +1,5 @@
 package com.lessvoid.coregl.examples;
 
-import com.lessvoid.coregl.CoreGLFactory;
 import com.lessvoid.coregl.spi.CoreGLSetup;
 
 /**
@@ -20,9 +19,16 @@ public class CoreExampleMain {
    * 
    * @param example
    */
-  public static void runExample(final CoreGLSetup.RenderLoopCallback example) {
-    CoreGLFactory coreGLFactory = new CoreGLFactory();
-    CoreGLSetup setup = coreGLFactory.coreGLSetup();
+  public static void runExample(final String[] args, final CoreGLSetup.RenderLoopCallback example) throws Exception {
+    String adapter = "lwjgl3";
+    if (args.length != 1) {
+      System.out.println("please note that you can call this with [jogl, lwjgl, lwjgl3] too");
+    } else {
+      adapter = args[0];
+    }
+    System.out.println("using adapter [" + adapter + "]");
+
+    CoreGLSetup setup = createCoreGLSetup(adapter);
     try {
       setup.initialize(example.getClass().getSimpleName() + " (" + setup.getClass().getSimpleName() + ")",
                        DISPLAY_WIDTH,
@@ -32,6 +38,18 @@ public class CoreExampleMain {
       setup.destroy();
     } catch (final Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  private static CoreGLSetup createCoreGLSetup(final String adapter) throws Exception {
+    if ("jogl".equals(adapter)) {
+      return new com.lessvoid.coregl.jogl.CoreGLJogl().coreGLSetup();
+    } else if ("lwjgl".equals(adapter)) {
+      return new com.lessvoid.coregl.lwjgl.CoreGLLwjgl().coreGLSetup();
+    } else if ("lwjgl3".equals(adapter)) {
+      return new com.lessvoid.coregl.lwjgl3.CoreGLLwjgl3().coreGLSetup();
+    } else {
+      throw new Exception("unknown adapter [" + adapter + "]");
     }
   }
 }

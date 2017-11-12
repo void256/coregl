@@ -43,10 +43,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.GL_BLEND;
@@ -77,44 +73,6 @@ public class CoreGLSetupLwjgl implements CoreGLSetup {
 
   public CoreGLSetupLwjgl(final CoreGL gl) {
     this.gl = gl;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see de.lessvoid.coregl.CoreDisplaySetup#initializeLogging()
-   */
-  @Override
-  public void initializeLogging() {
-    for (final Handler handler : Logger.getLogger("").getHandlers()) {
-      handler.setFormatter(new Formatter() {
-        @Override
-        public String format(final LogRecord record) {
-          final Throwable throwable = record.getThrown();
-          if (throwable != null) {
-            throwable.printStackTrace();
-          }
-          return record.getMillis() + " " + record.getLevel() + " [" + record.getSourceClassName() + "] "
-              + record.getMessage() + "\n";
-        }
-      });
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * de.lessvoid.coregl.CoreDisplaySetup#initializeLogging(java.lang.String)
-   */
-  @Override
-  public void initializeLogging(final String loggingProperties) {
-    try {
-      LogManager.getLogManager().readConfiguration(CoreGLSetupLwjgl.class.getResourceAsStream(loggingProperties));
-    } catch (final Exception e) {
-      throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]",
-                                 e);
-    }
   }
 
   /*
@@ -158,6 +116,7 @@ public class CoreGLSetupLwjgl implements CoreGLSetup {
     long prevTime = System.nanoTime();
 
     renderLoop.init(gl);
+    renderLoop.sizeChanged(gl, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
     while (!Display.isCloseRequested() && !renderLoop.endLoop(gl)) {
       final long nanoTime = System.nanoTime();
       if (renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION)) {

@@ -8,6 +8,7 @@ import com.lessvoid.coregl.CoreVersion;
 import com.lessvoid.coregl.CoreVersion.GLSLVersion;
 import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreGLSetup;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -53,6 +54,8 @@ import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_READ;
 import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_COPY;
 import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_DRAW;
 import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_READ;
+import static org.lwjgl.glfw.GLFW.glfwGetCurrentContext;
+import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 /**
  * @author Aaron Mahan &lt;aaron@forerunnergames.com&gt;
@@ -61,6 +64,7 @@ import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_READ;
 public class CoreGLLwjgl3 implements CoreGL {
 
   private static CoreLogger log = CoreLogger.getCoreLogger(CoreGLLwjgl3.class.getName());
+  private final CoreGLSetup coreGLSetup;
 
   private boolean errorCheckingEnabled = false;
   private final Map<CoreBufferUsageType, Integer> bufferUsageTypeMap;
@@ -97,6 +101,28 @@ public class CoreGLLwjgl3 implements CoreGL {
     mapAccess.put(WRITE_ONLY, GL_WRITE_ONLY());
     mapAccess.put(READ_WRITE, GL_READ_WRITE());
     bufferAccessTypeMap = Collections.unmodifiableMap(mapAccess);
+
+    coreGLSetup = new CoreGLSetupLwjgl3(this);
+  }
+
+  @Override
+  public String name() {
+    return "lwjgl3";
+  }
+
+  @Override
+  public CoreGLSetup coreGLSetup() {
+    return coreGLSetup;
+  }
+
+  @Override
+  public long getCurrentContext() {
+    return glfwGetCurrentContext();
+  }
+
+  @Override
+  public void makeContextCurrent(final long context) {
+    glfwMakeContextCurrent(context);
   }
 
   @Override

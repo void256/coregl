@@ -20,11 +20,6 @@ import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
 
 import java.nio.IntBuffer;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 /**
  * CoreSetup implementation for JOGL
@@ -49,44 +44,6 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
   public CoreGLSetupJogl(final CoreGL gl) {
     this.gl = gl;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see de.lessvoid.coregl.CoreDisplaySetup#initializeLogging()
-   */
-  @Override
-  public void initializeLogging() {
-    for (final Handler handler : Logger.getLogger("").getHandlers()) {
-      handler.setFormatter(new Formatter() {
-        @Override
-        public String format(final LogRecord record) {
-          final Throwable throwable = record.getThrown();
-          if (throwable != null) {
-            throwable.printStackTrace();
-          }
-          return record.getMillis() + " " + record.getLevel() + " [" + record.getSourceClassName() + "] "
-              + record.getMessage() + "\n";
-        }
-      });
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * de.lessvoid.coregl.CoreDisplaySetup#initializeLogging(java.lang.String)
-   */
-  @Override
-  public void initializeLogging(final String loggingProperties) {
-    try {
-      LogManager.getLogManager().readConfiguration(CoreGLSetupJogl.class.getResourceAsStream(loggingProperties));
-    } catch (final Exception e) {
-      throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]",
-                                 e);
-    }
   }
 
   /*
@@ -225,7 +182,6 @@ public class CoreGLSetupJogl implements CoreGLSetup {
   }
 
   private class GLEventReceiver implements GLEventListener {
-
     final RenderLoopCallback callback;
 
     long prevTime = System.nanoTime();
@@ -248,6 +204,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
       log.info("GL_MAX_3D_TEXTURE_SIZE: {}", gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
 
+      System.out.println(glWin.getWidth() + ":" + glWin.getHeight());
       gl.glViewport(0, 0, glWin.getWidth(), glWin.getHeight());
 
       gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -276,7 +233,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
     @Override
     public void reshape(final GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
-
+      callback.sizeChanged(gl, width, height);
     }
 
     boolean shouldStop() {

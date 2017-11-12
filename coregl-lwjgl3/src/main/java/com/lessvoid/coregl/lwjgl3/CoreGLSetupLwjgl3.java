@@ -30,17 +30,12 @@ import com.lessvoid.coregl.input.spi.CoreInput;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.Platform;
 
 import java.nio.IntBuffer;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
@@ -59,7 +54,6 @@ import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -114,44 +108,6 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
 
   public CoreGLSetupLwjgl3(final CoreGL gl) {
     this.gl = gl;
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see de.lessvoid.coregl.CoreDisplaySetup#initializeLogging()
-   */
-  @Override
-  public void initializeLogging() {
-    for (final Handler handler : Logger.getLogger("").getHandlers()) {
-      handler.setFormatter(new Formatter() {
-        @Override
-        public String format(final LogRecord record) {
-          final Throwable throwable = record.getThrown();
-          if (throwable != null) {
-            throwable.printStackTrace();
-          }
-          return record.getMillis() + " " + record.getLevel() + " [" + record.getSourceClassName() + "] "
-              + record.getMessage() + "\n";
-        }
-      });
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * de.lessvoid.coregl.CoreDisplaySetup#initializeLogging(java.lang.String)
-   */
-  @Override
-  public void initializeLogging(final String loggingProperties) {
-    try {
-      LogManager.getLogManager().readConfiguration(CoreGLSetupLwjgl3.class.getResourceAsStream(loggingProperties));
-    } catch (final Exception e) {
-      throw new RuntimeException("error reading jdk14 logging properties resource from: [" + loggingProperties + "]",
-                                 e);
-    }
   }
 
   /*
@@ -272,6 +228,7 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     gl.checkGLError("init phase 1");
     log.info("GL_MAX_3D_TEXTURE_SIZE: " + glGetInteger(GL_MAX_3D_TEXTURE_SIZE));
 
+    System.out.println(width+":"+height);
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -281,8 +238,8 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
   }
 
   private void createWindow(final String title, final int width, final int height) {
-    GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint();
-    glfwSetErrorCallback(errorCallback);
+    //GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint();
+    //glfwSetErrorCallback(errorCallback);
 
     glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

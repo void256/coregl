@@ -4,12 +4,13 @@
 module com.lessvoid.coregl.lwjglthree {
   requires java.base;
   requires java.logging;
-  requires lwjgl;
-  requires lwjgl.glfw;
-  requires lwjgl.opengl;
+
+  requires org.lwjgl;
+  requires org.lwjgl.glfw;
+  requires org.lwjgl.opengl;
 
   requires transitive com.lessvoid.coregl;
 
-  provides com.lessvoid.coregl.spi.CoreGLProvider
-      with com.lessvoid.coregl.lwjgl3.CoreGLProviderLwjgl3;
+  provides com.lessvoid.coregl.spi.CoreGL
+      with com.lessvoid.coregl.lwjgl3.CoreGLLwjgl3;
 }

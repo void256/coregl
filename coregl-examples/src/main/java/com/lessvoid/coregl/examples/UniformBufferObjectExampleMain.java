@@ -106,11 +106,12 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-
+    shader.setUniformf("resolution", width, height);
+    gl.glViewport(0, 0, width, height);
   }
 
-  public static void main() throws Exception {
+  public static void main(final String[] args) throws Exception {
     final RenderLoopCallback uboExample = new UniformBufferObjectExampleMain();
-    CoreExampleMain.runExample(uboExample);
+    CoreExampleMain.runExample(args, uboExample);
   }
 }

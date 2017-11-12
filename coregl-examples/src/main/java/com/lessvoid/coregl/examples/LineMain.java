@@ -271,7 +271,7 @@ public class LineMain implements CoreGLSetup.RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-
+    gl.glViewport(0, 0, width, height);
   }
 
   private InputStream resource(final String name) {
@@ -282,8 +282,8 @@ public class LineMain implements CoreGLSetup.RenderLoopCallback {
     return new ByteArrayInputStream(data.getBytes(Charset.forName("ISO-8859-1")));
   }
 
-  public static void main() throws Exception {
+  public static void main(final String[] args) throws Exception {
     final CoreGLSetup.RenderLoopCallback lineExample = new LineMain();
-    CoreExampleMain.runExample(lineExample);
+    CoreExampleMain.runExample(args, lineExample);
   }
 }

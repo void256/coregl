@@ -101,11 +101,12 @@ public class LinearGradientMain implements RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-
+    shader.setUniformf("resolution", width, height);
+    gl.glViewport(0, 0, width, height);
   }
 
-  public static void main() throws Exception {
+  public static void main(final String[] args) throws Exception {
     final RenderLoopCallback linearGradientExample = new LinearGradientMain();
-    CoreExampleMain.runExample(linearGradientExample);
+    CoreExampleMain.runExample(args, linearGradientExample);
   }
 }

@@ -78,13 +78,14 @@ public class DistanceFieldExampleMain implements RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-
+    textureShader.setUniformf("resolution", width, height);
+    gl.glViewport(0, 0, width, height);
   }
 
   @Override
   public void init(final CoreGL gl) {
     try {
-      ByteBuffer data = loader.loadAsByteBufferRGBA(DistanceFieldExampleMain.class.getResourceAsStream("/logo.png"));
+      ByteBuffer data = loader.loadAsByteBufferRGBA(gl, DistanceFieldExampleMain.class.getResourceAsStream("/logo.png"));
       texture = CoreTexture2D.createCoreTexture(
               gl,
               ColorFormat.RGBA,
@@ -165,8 +166,8 @@ public class DistanceFieldExampleMain implements RenderLoopCallback {
     textureShader.activate();
   }
 
-  public static void main() {
+  public static void main(final String[] args) throws Exception {
     final RenderLoopCallback superSimpleExample = new DistanceFieldExampleMain();
-    CoreExampleMain.runExample(superSimpleExample);
+    CoreExampleMain.runExample(args, superSimpleExample);
   }
 }

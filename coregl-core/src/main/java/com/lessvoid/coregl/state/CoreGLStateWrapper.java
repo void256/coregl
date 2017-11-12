@@ -6,6 +6,7 @@ import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreVersion.GLSLVersion;
 import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreGLSetup;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -106,6 +107,16 @@ public class CoreGLStateWrapper implements CoreGL {
 
     public CoreGLStateWrapper(final CoreGL gl) {
         this.gl = gl;
+    }
+
+    @Override
+    public String name() {
+        return gl.name();
+    }
+
+    @Override
+    public CoreGLSetup coreGLSetup() {
+        return gl.coreGLSetup();
     }
 
     @Override
@@ -1821,6 +1832,16 @@ public class CoreGLStateWrapper implements CoreGL {
         glViewportY = y;
         glViewportWidth = width;
         glViewportHeight = height;
+    }
+
+    @Override
+    public long getCurrentContext() {
+        return gl.getCurrentContext();
+    }
+
+    @Override
+    public void makeContextCurrent(final long context) {
+        gl.makeContextCurrent(context);
     }
 
     @Override

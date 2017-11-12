@@ -90,23 +90,6 @@ public interface CoreGLSetup {
   }
 
   /**
-   * (optional) This method will just set a new jdk14 Formatter that is more
-   * readable then the defaults.
-   */
-  void initializeLogging();
-
-  /**
-   * (optional) This method will just set a new jdk14 Formatter that is more
-   * readable then the defaults and additionally reads the given
-   * loggingProperties from the Classpath and uses it to initialize the
-   * LogManager.
-   *
-   * @parameter loggingProperties a jdk14 configuration file available in the
-   *            Classpath
-   */
-  void initializeLogging(String loggingProperties);
-
-  /**
    * Initialize.
    *
    * @param title

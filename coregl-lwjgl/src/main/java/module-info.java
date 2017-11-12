@@ -10,6 +10,6 @@ module com.lessvoid.coregl.lwjgl {
 
   requires transitive com.lessvoid.coregl;
 
-  provides com.lessvoid.coregl.spi.CoreGLProvider
-      with com.lessvoid.coregl.lwjgl.CoreGLProviderLwjgl;
+  provides com.lessvoid.coregl.spi.CoreGL
+      with com.lessvoid.coregl.lwjgl.CoreGLLwjgl;
 }

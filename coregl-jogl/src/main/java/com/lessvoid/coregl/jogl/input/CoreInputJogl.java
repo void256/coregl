@@ -5,7 +5,6 @@ import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.MouseEvent;
 import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.opengl.GLWindow;
-
 import com.lessvoid.coregl.CoreLogger;
 import com.lessvoid.coregl.input.PendingEventQueue;
 import com.lessvoid.coregl.input.spi.AbstractCoreInput;

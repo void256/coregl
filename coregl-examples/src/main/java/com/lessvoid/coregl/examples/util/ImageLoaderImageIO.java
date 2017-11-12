@@ -26,8 +26,11 @@
  */
 package com.lessvoid.coregl.examples.util;
 
+import com.lessvoid.coregl.spi.CoreGL;
+
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -90,8 +93,8 @@ public class ImageLoaderImageIO {
     return imageProperties.getHeight();
   }
 
-  public ByteBuffer loadAsByteBufferRGBA(final InputStream imageStream) throws IOException {
-    return convertToOpenGlFormat(loadImageFromStream(imageStream), false, false);
+  public ByteBuffer loadAsByteBufferRGBA(final CoreGL gl, final InputStream imageStream) throws IOException {
+    return convertToOpenGlFormat(gl, loadImageFromStream(imageStream), false, false);
   }
 
   // Internal implementations
@@ -110,9 +113,11 @@ public class ImageLoaderImageIO {
   }
 
   private ByteBuffer convertToOpenGlFormat(
+          final CoreGL gl,
           final BufferedImage originalImage,
           final boolean shouldFlipVertically,
           final boolean shouldUseARGB) {
+    long currentContext = gl.getCurrentContext();
     ImageProperties originalImageProperties = new ImageProperties(
             originalImage.getWidth(),
             originalImage.getHeight(),
@@ -131,7 +136,7 @@ public class ImageLoaderImageIO {
 
     // We can't dispose of openGlImage any earlier because it would destroy rawOpenGlImageData.
     disposeImage(openGlImageGraphics);
-
+    gl.makeContextCurrent(currentContext);
     return openGlImageByteBuffer;
   }
 

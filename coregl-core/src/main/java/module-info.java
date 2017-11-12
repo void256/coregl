@@ -13,6 +13,4 @@ module com.lessvoid.coregl {
   exports com.lessvoid.coregl.state;
   exports com.lessvoid.math;
   exports com.lessvoid.textureatlas;
-
-  uses com.lessvoid.coregl.spi.CoreGLProvider;
 }

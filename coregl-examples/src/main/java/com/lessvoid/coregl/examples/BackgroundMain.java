@@ -34,8 +34,6 @@ import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
-import java.io.IOException;
-
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
@@ -49,12 +47,8 @@ public class BackgroundMain implements RenderLoopCallback {
   public void init(final CoreGL gl) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex");
-    try {
-      shader.vertexShader("vertex", BackgroundMain.class.getModule().getResourceAsStream("background/background.vs"));
-      shader.fragmentShader("fragment", BackgroundMain.class.getModule().getResourceAsStream("background/background.fs"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    shader.vertexShader("background/background.vs");
+    shader.fragmentShader("background/background.fs");
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);
@@ -97,14 +91,13 @@ public class BackgroundMain implements RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-    System.out.println(width + ", " + height);
-
     shader.setUniformf("resolution", width, height);
     gl.glViewport(0, 0, width, height);
+    System.out.println(width + ":" + height);
   }
 
   public static void main(final String[] args) throws Exception {
     final RenderLoopCallback backgroundExample = new BackgroundMain();
-    CoreExampleMain.runExample(backgroundExample);
+    CoreExampleMain.runExample(args, backgroundExample);
   }
 }

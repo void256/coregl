@@ -34,8 +34,6 @@ import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
-import java.io.IOException;
-
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
@@ -49,12 +47,8 @@ public class CurveExampleMain implements RenderLoopCallback {
   public void init(final CoreGL gl) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vTexture");
-    try {
-      shader.vertexShader("vertex", CurveExampleMain.class.getModule().getResourceAsStream("curve/curve.vs"));
-      shader.fragmentShader("fragmen", CurveExampleMain.class.getModule().getResourceAsStream("curve/curve.fs"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    shader.vertexShader("vertex", CurveExampleMain.class.getResourceAsStream("/curve/curve.vs"));
+    shader.fragmentShader("fragmen", CurveExampleMain.class.getResourceAsStream("/curve/curve.fs"));
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);
@@ -102,11 +96,12 @@ public class CurveExampleMain implements RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-
+    shader.setUniformf("resolution", width, height);
+    gl.glViewport(0, 0, width, height);
   }
 
   public static void main(final String[] args) throws Exception {
     final RenderLoopCallback curveEample = new CurveExampleMain();
-    CoreExampleMain.runExample(curveEample);
+    CoreExampleMain.runExample(args, curveEample);
   }
 }

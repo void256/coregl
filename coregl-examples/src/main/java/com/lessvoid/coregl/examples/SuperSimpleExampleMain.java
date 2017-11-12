@@ -64,7 +64,7 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-
+    gl.glViewport(0, 0, width, height);
   }
 
   @Override
@@ -100,8 +100,8 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
     vao.bind();
   }
 
-  public static void main() {
+  public static void main(final String[] args) throws Exception {
     final RenderLoopCallback superSimpleExample = new SuperSimpleExampleMain();
-    CoreExampleMain.runExample(superSimpleExample);
+    CoreExampleMain.runExample(args, superSimpleExample);
   }
 }

@@ -46,6 +46,7 @@ import com.lessvoid.coregl.CoreVersion;
 import com.lessvoid.coregl.CoreVersion.GLSLVersion;
 import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
+import com.lessvoid.coregl.spi.CoreGLSetup;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -88,6 +89,7 @@ public class CoreGLJogl implements CoreGL {
   private final Map<CoreBufferUsageType, Integer> bufferUsageTypeMap;
   private final Map<CoreBufferTargetType, Integer> bufferTargetTypeMap;
   private final Map<CoreBufferAccessType, Integer> bufferAccessTypeMap;
+  private CoreGLSetup coreGLSetup;
 
   public CoreGLJogl() {
     Map<CoreBufferUsageType, Integer> mapUsage = new Hashtable<CoreBufferUsageType, Integer>();
@@ -119,6 +121,18 @@ public class CoreGLJogl implements CoreGL {
     mapAccess.put(WRITE_ONLY, GL_WRITE_ONLY());
     mapAccess.put(READ_WRITE, GL_READ_WRITE());
     bufferAccessTypeMap = Collections.unmodifiableMap(mapAccess);
+
+    coreGLSetup = new CoreGLSetupJogl(this);
+  }
+
+  @Override
+  public String name() {
+    return "jogl";
+  }
+
+  @Override
+  public CoreGLSetup coreGLSetup() {
+    return coreGLSetup;
   }
 
   @Override
@@ -1760,6 +1774,16 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public void glBlendEquationSeparate(final int e1, final int e2) {
     GLContext.getCurrentGL().glBlendEquationSeparate(e1, e2);
+  }
+
+  @Override
+  public long getCurrentContext() {
+    return 0;
+  }
+
+  @Override
+  public void makeContextCurrent(final long context) {
+
   }
 
   private boolean errorChecksEnabled = false;

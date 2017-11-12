@@ -204,7 +204,8 @@ public class CompositeExampleMain implements RenderLoopCallback {
 
   @Override
   public void sizeChanged(final CoreGL gl, final int width, final int height) {
-
+    shader.setUniformf("resolution", width, height);
+    gl.glViewport(0, 0, width, height);
   }
 
   private void renderDst(final CoreGL gl, final float x, final float y) {
@@ -229,8 +230,8 @@ public class CompositeExampleMain implements RenderLoopCallback {
     coreRender.renderTriangles(6);
   }
 
-  public static void main() throws Exception {
+  public static void main(final String[] args) throws Exception {
     final RenderLoopCallback compositeExample = new CompositeExampleMain();
-    CoreExampleMain.runExample(compositeExample);
+    CoreExampleMain.runExample(args, compositeExample);
   }
 }
