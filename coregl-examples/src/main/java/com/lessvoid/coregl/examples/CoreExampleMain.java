@@ -44,12 +44,12 @@ public class CoreExampleMain {
   private static CoreGLSetup createCoreGLSetup(final String adapter) throws Exception {
     if ("jogl".equals(adapter)) {
       return new com.lessvoid.coregl.jogl.CoreGLJogl().coreGLSetup();
-    } else if ("lwjgl".equals(adapter)) {
-      return new com.lessvoid.coregl.lwjgl.CoreGLLwjgl().coreGLSetup();
+    // FIXME since we can't have lwjgl and lwjgl3 at the same time on the classpath we cannot switch it dynamically here
+    //} else if ("lwjgl".equals(adapter)) {
+    //  return new com.lessvoid.coregl.lwjgl.CoreGLLwjgl().coreGLSetup();
     } else if ("lwjgl3".equals(adapter)) {
       return new com.lessvoid.coregl.lwjgl3.CoreGLLwjgl3().coreGLSetup();
-    } else {
-      throw new Exception("unknown adapter [" + adapter + "]");
     }
+    throw new Exception("unknown adapter [" + adapter + "]");
   }
 }
