@@ -113,7 +113,7 @@ public class CoreFBO {
     gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0() + colorAttachmentIdx);
     gl.checkGLError("glDrawBuffer");
 
-    checkFramebufferStatus();
+    checkFramebufferStatus(gl);
   }
 
   /**
@@ -138,7 +138,7 @@ public class CoreFBO {
     gl.glDrawBuffer(gl.GL_COLOR_ATTACHMENT0() + colorAttachmentIdx);
     gl.checkGLError("glDrawBuffer");
 
-    checkFramebufferStatus();
+    checkFramebufferStatus(gl);
   }
 
   /**
@@ -156,7 +156,7 @@ public class CoreFBO {
     gl.glBindRenderbuffer(gl.GL_RENDERBUFFER(), renderBuffer);
     gl.glRenderbufferStorage(gl.GL_RENDERBUFFER(), gl.GL_DEPTH24_STENCIL8(), width, height);
     gl.glFramebufferRenderbuffer(gl.GL_FRAMEBUFFER(), gl.GL_DEPTH_STENCIL_ATTACHMENT(), gl.GL_RENDERBUFFER(), renderBuffer);
-    checkFramebufferStatus();
+    checkFramebufferStatus(gl);
   }
 
   private void initialize() {
@@ -166,14 +166,14 @@ public class CoreFBO {
     gl.checkGLError("glGenFramebuffers");
   }
 
-  private void checkFramebufferStatus() {
+  public static void checkFramebufferStatus(final CoreGL gl) {
     final int fboStatus = gl.glCheckFramebufferStatus(gl.GL_FRAMEBUFFER());
     if (fboStatus != gl.GL_FRAMEBUFFER_COMPLETE()) {
-      throw new CoreGLException(translateErrorState(fboStatus));
+      throw new CoreGLException(translateErrorState(gl, fboStatus));
     }
   }
 
-  private String translateErrorState(final int fboStatus) {
+  private static String translateErrorState(final CoreGL gl, final int fboStatus) {
     if (fboStatus == gl.GL_FRAMEBUFFER_UNDEFINED()) {
       return "GL_FRAMEBUFFER_UNDEFINED is returned if target is the default framebuffer, but the default framebuffer does not exist";
     } else if (fboStatus == gl.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT()) {

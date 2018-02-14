@@ -26,13 +26,9 @@
  */
 package com.lessvoid.coregl;
 
-import com.lessvoid.coregl.spi.CoreGL;
-
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 
 /**
  * The buffer type for a CoreBufferObject.
@@ -40,39 +36,30 @@ import java.nio.ShortBuffer;
  */
 public enum CoreBufferDataType {
   BYTE(1) {
-    public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
+    public <T extends Buffer> T createBuffer(final int size) {
       return (T) CoreBufferUtil.createByteBuffer(calcByteLength(size));
     }
 
     public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
       return (T) dataBuffer.order(ByteOrder.nativeOrder());
     }
-    public ByteBuffer bla(final Buffer vertexBuffer) {
-      return null;
-    }
   },
   FLOAT(2) {
-    public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
+    public <T extends Buffer> T createBuffer(final int size) {
       return (T) CoreBufferUtil.createByteBuffer(calcByteLength(size)).asFloatBuffer();
     }
 
     public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
       return (T) dataBuffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
     }
-    public FloatBuffer bla(final Buffer vertexBuffer) {
-      return null;
-    }
   },
   SHORT(1) {
-    public <T extends Buffer> T createBuffer(final CoreGL gl, final int size) {
+    public <T extends Buffer> T createBuffer(final int size) {
       return (T) CoreBufferUtil.createByteBuffer(calcByteLength(size)).asShortBuffer();
     }
 
     public <T extends Buffer> T asBuffer(final ByteBuffer dataBuffer) {
       return (T) dataBuffer.order(ByteOrder.nativeOrder()).asShortBuffer();
-    }
-    public ShortBuffer bla(final Buffer vertexBuffer) {
-      return null;
     }
   };
 
@@ -86,7 +73,6 @@ public enum CoreBufferDataType {
     return size << byteSizeFactor;
   }
 
-  public abstract <T extends Buffer> T createBuffer(CoreGL gl, int size);
+  public abstract <T extends Buffer> T createBuffer(int size);
   public abstract <T extends Buffer> T asBuffer(ByteBuffer dataBuffer);
-  public abstract <T extends Buffer> T bla(final Buffer vertexBuffer);
 }

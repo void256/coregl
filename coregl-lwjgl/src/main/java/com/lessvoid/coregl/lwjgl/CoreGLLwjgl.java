@@ -759,6 +759,11 @@ public class CoreGLLwjgl implements CoreGL {
   }
 
   @Override
+  public int GL_DRAW_FRAMEBUFFER() {
+    return GL30.GL_DRAW_FRAMEBUFFER;
+  }
+
+  @Override
   public int GL_FIXED() {
     return GL41.GL_FIXED;
   }
@@ -869,6 +874,11 @@ public class CoreGLLwjgl implements CoreGL {
   }
 
   @Override
+  public int GL_READ_FRAMEBUFFER() {
+    return GL30.GL_READ_FRAMEBUFFER;
+  }
+
+  @Override
   public int GL_READ_ONLY() {
     return GL15.GL_READ_ONLY;
   }
@@ -881,6 +891,16 @@ public class CoreGLLwjgl implements CoreGL {
   @Override
   public int GL_TEXTURE_2D_ARRAY() {
     return GL30.GL_TEXTURE_2D_ARRAY;
+  }
+
+  @Override
+  public int GL_TEXTURE_2D_MULTISAMPLE() {
+    return GL32.GL_TEXTURE_2D_MULTISAMPLE;
+  }
+
+  @Override
+  public int GL_PROXY_TEXTURE_2D_MULTISAMPLE() {
+    return GL32.GL_PROXY_TEXTURE_2D_MULTISAMPLE;
   }
 
   @Override
@@ -1027,6 +1047,11 @@ public class CoreGLLwjgl implements CoreGL {
   }
 
   @Override
+  public void glBlitFramebuffer(final int srcX0, final int srcY0, final int srcX1, final int srcY1, final int dstX0, final int dstY0, final int dstX1, final int dstY1, final int mask, final int filter) {
+    GL30.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+  }
+
+  @Override
   public void glClear(final int mask) {
     GL11.glClear(mask);
   }
@@ -1059,6 +1084,11 @@ public class CoreGLLwjgl implements CoreGL {
   @Override
   public void glDrawElements(final int mode, final int count, final int type, final int indices) {
     GL11.glDrawElements(mode, count, type, indices);
+  }
+
+  @Override
+  public void glDrawRangeElements(final int mode, final int start, final int end, final int count, final int type, final int indices) {
+    GL12.glDrawRangeElements(mode, start, end, count, type, indices);
   }
 
   @Override
@@ -1169,6 +1199,11 @@ public class CoreGLLwjgl implements CoreGL {
                            final int type,
                            final ShortBuffer pixels) {
     GL11.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+  }
+
+  @Override
+  public void glTexImage2DMultisample(final int target, final int samples, final int internalformat, final int width, final int height, final boolean fixedsamplelocations) {
+    GL32.glTexImage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
   }
 
   @Override
@@ -1362,6 +1397,16 @@ public class CoreGLLwjgl implements CoreGL {
   @Override
   public void glEnableVertexAttribArray(final int index) {
     GL20.glEnableVertexAttribArray(index);
+  }
+
+  @Override
+  public void glFinish() {
+    GL11.glFinish();
+  }
+
+  @Override
+  public void glFlush() {
+    GL11.glFlush();
   }
 
   @Override

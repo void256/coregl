@@ -356,6 +356,16 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_TEXTURE_2D_MULTISAMPLE() {
+    return GL2ES3.GL_TEXTURE_2D_MULTISAMPLE;
+  }
+
+  @Override
+  public int GL_PROXY_TEXTURE_2D_MULTISAMPLE() {
+    return GL2ES3.GL_PROXY_TEXTURE_2D_MULTISAMPLE;
+  }
+
+  @Override
   public int GL_TEXTURE_BINDING_2D() {
     return GL.GL_TEXTURE_BINDING_2D;
   }
@@ -736,6 +746,11 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_DRAW_FRAMEBUFFER() {
+    return GL2GL3.GL_DRAW_FRAMEBUFFER;
+  }
+
+  @Override
   public int GL_FIXED() {
     return GL.GL_FIXED;
   }
@@ -843,6 +858,11 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public int GL_R32F() {
     return GL.GL_R32F;
+  }
+
+  @Override
+  public int GL_READ_FRAMEBUFFER() {
+    return GL.GL_READ_FRAMEBUFFER;
   }
 
   @Override
@@ -1026,6 +1046,11 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public void glBlitFramebuffer(final int srcX0, final int srcY0, final int srcX1, final int srcY1, final int dstX0, final int dstY0, final int dstX1, final int dstY1, final int mask, final int filter) {
+    GLContext.getCurrentGL().getGL2ES3().glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+  }
+
+  @Override
   public void glClear(final int mask) {
     GLContext.getCurrentGL().glClear(mask);
   }
@@ -1058,6 +1083,11 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public void glDrawElements(final int mode, final int count, final int type, final int indices) {
     GLContext.getCurrentGL().glDrawElements(mode, count, type, indices);
+  }
+
+  @Override
+  public void glDrawRangeElements(final int mode, final int start, final int end, final int count, final int type, final int indices) {
+    GLContext.getCurrentGL().getGL2().glDrawRangeElements(mode, start, end, count, type, indices);
   }
 
   @Override
@@ -1163,6 +1193,11 @@ public class CoreGLJogl implements CoreGL {
                            final int type,
                            final ShortBuffer pixels) {
     GLContext.getCurrentGL().glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+  }
+
+  @Override
+  public void glTexImage2DMultisample(final int target, final int samples, final int internalformat, final int width, final int height, final boolean fixedsamplelocations) {
+    GLContext.getCurrentGL().getGL2ES3().glTexImage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
   }
 
   @Override
@@ -1361,6 +1396,16 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public void glEnableVertexAttribArray(final int index) {
     GLContext.getCurrentGL().getGL2ES2().glEnableVertexAttribArray(index);
+  }
+
+  @Override
+  public void glFinish() {
+    GLContext.getCurrentGL().getGL2ES2().glFinish();
+  }
+
+  @Override
+  public void glFlush() {
+    GLContext.getCurrentGL().getGL2ES2().glFlush();
   }
 
   @Override

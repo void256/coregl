@@ -124,14 +124,27 @@ public class CoreRender {
   }
 
   /**
+   * Render the currently active VAO using triangle fan with the given number of
+   * vertices.
+   *
+   * @param first the index of the first vertex to render
+   * @param count number of vertices to render as triangle fan
+   */
+  public void renderTriangleFan(final int first, final int count) {
+    gl.glDrawArrays(gl.GL_TRIANGLE_FAN(), first, count);
+    gl.checkGLError("glDrawArrays");
+  }
+
+  /**
    * Render the currently active VAO using triangle fans, sending the given
    * number of indizes.
    *
-   * @param count
-   *          number of indizes to render as triangle fans.
+   * @param count number of indizes to render as triangle fans.
+   * @param type the type of indices
+   * @param indices the start index in the buffer
    */
-  public void renderTriangleFanIndexed(final int count) {
-    gl.glDrawElements(gl.GL_TRIANGLE_FAN(), count, gl.GL_UNSIGNED_INT(), 0);
+  public void renderTriangleFanIndexed(final int count, final int type, final int indices) {
+    gl.glDrawElements(gl.GL_TRIANGLE_FAN(), count, type, indices);
     gl.checkGLError("glDrawElements(GL_TRIANGLE_FAN)");
   }
 

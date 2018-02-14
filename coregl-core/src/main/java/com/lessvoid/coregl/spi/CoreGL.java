@@ -112,6 +112,8 @@ public interface CoreGL {
 
   int GL_DOUBLE();
 
+  int GL_DRAW_FRAMEBUFFER();
+
   int GL_DST_ALPHA();
 
   int GL_DST_COLOR();
@@ -248,6 +250,8 @@ public interface CoreGL {
 
   int GL_R32F();
 
+  int GL_READ_FRAMEBUFFER();
+
   int GL_READ_ONLY();
 
   int GL_READ_WRITE();
@@ -303,6 +307,10 @@ public interface CoreGL {
   int GL_TEXTURE_2D();
 
   int GL_TEXTURE_2D_ARRAY();
+
+  int GL_TEXTURE_2D_MULTISAMPLE();
+
+  int GL_PROXY_TEXTURE_2D_MULTISAMPLE();
 
   int GL_TEXTURE_3D();
 
@@ -420,6 +428,8 @@ public interface CoreGL {
 
   void glBlendFuncSeparate(int sfactorRGB, int dfactorRGB, int sfactorAlpha, int dfactorAlpha);
 
+  void glBlitFramebuffer(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, int mask, int filter);
+
   void glBufferData(int target, ByteBuffer data, int usage);
 
   void glBufferData(int target, IntBuffer data, int usage);
@@ -466,9 +476,15 @@ public interface CoreGL {
 
   void glDrawElements(int mode, int count, int type, int indices);
 
+  void glDrawRangeElements(int mode, int start, int end, int count, int type, int indices);
+
   void glEnable(int cap);
 
   void glEnableVertexAttribArray(int index);
+
+  void glFinish();
+
+  void glFlush();
 
   void glFramebufferRenderbuffer(int target, int attachment, int renderBufferTarget, int renderBuffer);
 
@@ -559,6 +575,8 @@ public interface CoreGL {
   void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, IntBuffer pixels);
 
   void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ShortBuffer pixels);
+
+  void glTexImage2DMultisample(int target, int samples, int internalformat, int width, int height, boolean fixedsamplelocations);
 
   void glTexImage3D(int target, int level, int internalformat, int width, int height, int depth, int border, int format, int type, ByteBuffer pixels);
 

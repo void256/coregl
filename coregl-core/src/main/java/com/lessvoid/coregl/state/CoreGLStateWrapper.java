@@ -290,6 +290,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_DRAW_FRAMEBUFFER() {
+        return gl.GL_DRAW_FRAMEBUFFER();
+    }
+
+    @Override
     public int GL_DST_ALPHA() {
         return gl.GL_DST_ALPHA();
     }
@@ -630,6 +635,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_READ_FRAMEBUFFER() {
+        return gl.GL_READ_FRAMEBUFFER();
+    }
+
+    @Override
     public int GL_READ_ONLY() {
         return gl.GL_READ_ONLY();
     }
@@ -767,6 +777,16 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_TEXTURE_2D_ARRAY() {
         return gl.GL_TEXTURE_2D_ARRAY();
+    }
+
+    @Override
+    public int GL_TEXTURE_2D_MULTISAMPLE() {
+        return gl.GL_TEXTURE_2D_MULTISAMPLE();
+    }
+
+    @Override
+    public int GL_PROXY_TEXTURE_2D_MULTISAMPLE() {
+        return gl.GL_PROXY_TEXTURE_2D_MULTISAMPLE();
     }
 
     @Override
@@ -1126,6 +1146,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public void glBlitFramebuffer(final int srcX0, final int srcY0, final int srcX1, final int srcY1, final int dstX0, final int dstY0, final int dstX1, final int dstY1, final int mask, final int filter) {
+        gl.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
+    }
+
+    @Override
     public void glBufferData(final int target, final ByteBuffer data, final int usage) {
         gl.glBufferData(target, data, usage);
     }
@@ -1277,6 +1302,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public void glDrawRangeElements(final int mode, final int start, final int end, final int count, final int type, final int indices) {
+        gl.glDrawRangeElements(mode, start, end, count, type, indices);
+    }
+
+    @Override
     public void glEnable(int cap) {
         if (glEnableSet.contains(cap)) {
             return;
@@ -1288,6 +1318,16 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public void glEnableVertexAttribArray(int index) {
         gl.glEnableVertexAttribArray(index);
+    }
+
+    @Override
+    public void glFinish() {
+        gl.glFinish();
+    }
+
+    @Override
+    public void glFlush() {
+        gl.glFlush();
     }
 
     @Override
@@ -1591,6 +1631,11 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, ShortBuffer pixels) {
         gl.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels);
+    }
+
+    @Override
+    public void glTexImage2DMultisample(final int target, final int samples, final int internalformat, final int width, final int height, final boolean fixedsamplelocations) {
+        gl.glTexImage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
     }
 
     @Override

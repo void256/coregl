@@ -60,7 +60,7 @@ public class CoreBuffer<T extends Buffer> {
     this.usage = gl.mapCoreBufferUsageType(usageType);
     this.bufferType = bufferType;
     this.byteLength = bufferType.calcByteLength(size);
-    this.vertexBuffer = bufferType.createBuffer(gl, size);
+    this.vertexBuffer = bufferType.createBuffer(size);
     this.id = createBufferName();
   }
 
