@@ -251,14 +251,15 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
 
     int windowWidth = width;
     int windowHeight = height;
-    long monitor = glfwGetPrimaryMonitor();
+    long monitor = 0;
     if (fullscreen) {
-        GLFWVidMode vidMode = glfwGetVideoMode(monitor);
-        windowWidth = vidMode.width();
-        windowHeight = vidMode.height();
+      monitor = glfwGetPrimaryMonitor();
+      GLFWVidMode vidMode = glfwGetVideoMode(monitor);
+      windowWidth = vidMode.width();
+      windowHeight = vidMode.height();
     }
 
-    window = glfwCreateWindow(windowWidth, windowHeight, title, 0, 0);
+    window = glfwCreateWindow(windowWidth, windowHeight, title, monitor, 0);
     if (window == 0) {
       glfwTerminate();
       throw new RuntimeException("failed to create window");
