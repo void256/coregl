@@ -90,6 +90,8 @@ public class CoreGLJogl implements CoreGL {
   private final Map<CoreBufferTargetType, Integer> bufferTargetTypeMap;
   private final Map<CoreBufferAccessType, Integer> bufferAccessTypeMap;
   private CoreGLSetup coreGLSetup;
+  private int windowWidth;
+  private int windowHeight;
 
   public CoreGLJogl() {
     Map<CoreBufferUsageType, Integer> mapUsage = new Hashtable<CoreBufferUsageType, Integer>();
@@ -1906,6 +1908,16 @@ public class CoreGLJogl implements CoreGL {
     return CoreVersion.getGLSLVersion(glslVersion.getMajor() * 100 + glslVersion.getMinor());
   }
 
+  @Override
+  public float getScaleX() {
+    return GLContext.getCurrent().getGLDrawable().getSurfaceWidth() / (float) windowWidth;
+  }
+
+  @Override
+  public float getScaleY() {
+    return GLContext.getCurrent().getGLDrawable().getSurfaceHeight() / (float) windowHeight;
+  }
+
   private int glGetInteger(final GL gl, final int pname) {
     final int[] store = new int[1];
     gl.glGetIntegerv(pname, store, 0);
@@ -1916,5 +1928,10 @@ public class CoreGLJogl implements CoreGL {
     final float[] store = new float[1];
     gl.glGetFloatv(pname, store, 0);
     return store[0];
+  }
+
+  public void setWindowAttributes(final int width, final int height) {
+    this.windowWidth = width;
+    this.windowHeight = height;
   }
 }

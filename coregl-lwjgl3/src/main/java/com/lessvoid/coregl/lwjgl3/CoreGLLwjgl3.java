@@ -55,6 +55,7 @@ import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_COPY;
 import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_DRAW;
 import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_READ;
 import static org.lwjgl.glfw.GLFW.glfwGetCurrentContext;
+import static org.lwjgl.glfw.GLFW.glfwGetMonitorContentScale;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 /**
@@ -1869,5 +1870,21 @@ public class CoreGLLwjgl3 implements CoreGL {
   public GLSLVersion getGLSLVersion() {
     final String glslVersionString = GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION);
     return CoreVersion.getGLSLVersionFromString(glslVersionString);
+  }
+
+  @Override
+  public float getScaleX() {
+    float[] xscale = new float[1];
+    float[] yscale = new float[1];
+    glfwGetMonitorContentScale(glfwGetCurrentContext(), xscale, yscale);
+    return xscale[0];
+  }
+
+  @Override
+  public float getScaleY() {
+    float[] xscale = new float[1];
+    float[] yscale = new float[1];
+    glfwGetMonitorContentScale(glfwGetCurrentContext(), xscale, yscale);
+    return yscale[0];
   }
 }

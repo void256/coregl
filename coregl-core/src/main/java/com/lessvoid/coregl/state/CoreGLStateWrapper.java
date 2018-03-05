@@ -1959,6 +1959,16 @@ public class CoreGLStateWrapper implements CoreGL {
         return gl.getGLSLVersion();
     }
 
+    @Override
+    public float getScaleX() {
+        return gl.getScaleX();
+    }
+
+    @Override
+    public float getScaleY() {
+        return gl.getScaleY();
+    }
+
     private boolean stringEquals(final String a, final String b) {
         return Objects.equals(a, b);
     }

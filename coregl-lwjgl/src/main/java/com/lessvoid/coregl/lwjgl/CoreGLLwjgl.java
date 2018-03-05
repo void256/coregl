@@ -36,6 +36,7 @@ import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL13;
@@ -1894,5 +1895,15 @@ public class CoreGLLwjgl implements CoreGL {
   public GLSLVersion getGLSLVersion() {
     final String glslVersionString = GL11.glGetString(GL20.GL_SHADING_LANGUAGE_VERSION);
     return CoreVersion.getGLSLVersionFromString(glslVersionString);
+  }
+
+  @Override
+  public float getScaleX() {
+    return Display.getPixelScaleFactor();
+  }
+
+  @Override
+  public float getScaleY() {
+    return Display.getPixelScaleFactor();
   }
 }

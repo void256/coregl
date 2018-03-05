@@ -51,6 +51,7 @@ import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
 import static org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor;
 import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowContentScale;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
@@ -267,6 +268,11 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     glfwMakeContextCurrent(window);
     GL.createCapabilities();
     glfwShowWindow(window);
+
+    float[] xscale = new float[1];
+    float[] yscale = new float[1];
+    glfwGetWindowContentScale(window, xscale, yscale);
+    System.out.println(xscale[0] + ":" + yscale[0]);
   }
 
   private void initInput() throws Exception {

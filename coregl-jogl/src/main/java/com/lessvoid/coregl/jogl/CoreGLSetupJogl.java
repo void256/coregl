@@ -16,7 +16,6 @@ import com.lessvoid.coregl.CoreBufferUtil;
 import com.lessvoid.coregl.CoreLogger;
 import com.lessvoid.coregl.input.spi.CoreInput;
 import com.lessvoid.coregl.jogl.input.CoreInputJogl;
-import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
 
 import java.nio.IntBuffer;
@@ -32,7 +31,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
   private final StringBuilder fpsText = new StringBuilder();
 
-  private final CoreGL gl;
+  private final CoreGLJogl gl;
 
   private Screen newtScreen;
   private Display newtDisp;
@@ -42,7 +41,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
   private volatile boolean closeRequested, vsync, updateVsync;
 
-  public CoreGLSetupJogl(final CoreGL gl) {
+  public CoreGLSetupJogl(final CoreGLJogl gl) {
     this.gl = gl;
   }
 
@@ -142,6 +141,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
     newtScreen.removeReference();
     glWin.setVisible(true);
     glWin.windowRepaint(0, 0, requestedWidth, requestedHeight);
+    gl.setWindowAttributes(glWin.getWidth(), glWin.getHeight());
 
     log.info("current mode: {}",
         newtScreen.getMainMonitor(new Rectangle(0, 0, requestedWidth, requestedHeight)).getCurrentMode().getSizeAndRRate());

@@ -695,4 +695,8 @@ public interface CoreGL {
   CoreVersion.GLVersion getGLVersion();
 
   CoreVersion.GLSLVersion getGLSLVersion();
+
+  float getScaleX();
+
+  float getScaleY();
 }
