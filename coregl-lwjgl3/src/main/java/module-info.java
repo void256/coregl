@@ -9,6 +9,9 @@ module com.lessvoid.coregl.lwjglthree {
   requires org.lwjgl.glfw;
   requires org.lwjgl.opengl;
 
+  requires org.lwjgl.glfw.natives;
+  requires org.lwjgl.opengl.natives;
+
   requires transitive com.lessvoid.coregl;
 
   provides com.lessvoid.coregl.spi.CoreGL

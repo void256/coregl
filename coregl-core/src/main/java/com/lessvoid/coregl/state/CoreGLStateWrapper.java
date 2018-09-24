@@ -680,6 +680,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_SCISSOR_TEST() {
+        return gl.GL_SCISSOR_TEST();
+    }
+
+    @Override
     public int GL_SHADING_LANGUAGE_VERSION() {
         return gl.GL_SHADING_LANGUAGE_VERSION();
     }
@@ -1512,6 +1517,11 @@ public class CoreGLStateWrapper implements CoreGL {
         glRenderbufferStorageInternalFormat = internalFormat;
         glRenderbufferStorageWidth = width;
         glRenderbufferStorageHeight = height;
+    }
+
+    @Override
+    public void glScissor(final int x, final int y, final int width, final int height) {
+        gl.glScissor(x, y, width, height);
     }
 
     @Override

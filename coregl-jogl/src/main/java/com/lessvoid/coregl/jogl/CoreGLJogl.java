@@ -328,6 +328,11 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_SCISSOR_TEST() {
+    return GL.GL_SCISSOR_TEST;
+  }
+
+  @Override
   public int GL_SHORT() {
     return GL.GL_SHORT;
   }
@@ -1798,6 +1803,11 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public void glRenderbufferStorage(final int target, final int internalFormat, final int width, final int height) {
     GLContext.getCurrentGL().glRenderbufferStorage(target, internalFormat, width, height);
+  }
+
+  @Override
+  public void glScissor(final int x, final int y, final int width, final int height) {
+    GLContext.getCurrentGL().glScissor(x, y, width, height);
   }
 
   @Override

@@ -330,6 +330,11 @@ public class CoreGLLwjgl implements CoreGL {
   }
 
   @Override
+  public int GL_SCISSOR_TEST() {
+    return GL11.GL_SCISSOR_TEST;
+  }
+
+  @Override
   public int GL_SHORT() {
     return GL11.GL_SHORT;
   }
@@ -1781,6 +1786,11 @@ public class CoreGLLwjgl implements CoreGL {
   @Override
   public void glRenderbufferStorage(final int target, final int internalFormat, final int width, final int height) {
     GL30.glRenderbufferStorage(target, internalFormat, width, height);
+  }
+
+  @Override
+  public void glScissor(final int x, final int y, final int width, final int height) {
+    GL11.glScissor(x, y, width, height);
   }
 
   @Override

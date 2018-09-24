@@ -56,6 +56,7 @@ import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_DRAW;
 import static com.lessvoid.coregl.CoreBufferUsageType.STREAM_READ;
 import static org.lwjgl.glfw.GLFW.glfwGetCurrentContext;
 import static org.lwjgl.glfw.GLFW.glfwGetMonitorContentScale;
+import static org.lwjgl.glfw.GLFW.glfwGetWindowMonitor;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 
 /**
@@ -705,6 +706,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   @Override
   public int GL_RGBA() {
     return GL11.GL_RGBA;
+  }
+
+  @Override
+  public int GL_SCISSOR_TEST() {
+    return GL11.GL_SCISSOR_TEST;
   }
 
   @Override
@@ -1438,6 +1444,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   }
 
   @Override
+  public void glScissor(final int x, final int y, final int width, final int height) {
+    GL11.glScissor(x, y, width, height);
+  }
+
+  @Override
   public void glShaderSource(final int shader, final String string) {
     GL20.glShaderSource(shader, string);
   }
@@ -1876,7 +1887,7 @@ public class CoreGLLwjgl3 implements CoreGL {
   public float getScaleX() {
     float[] xscale = new float[1];
     float[] yscale = new float[1];
-    glfwGetMonitorContentScale(glfwGetCurrentContext(), xscale, yscale);
+    glfwGetMonitorContentScale(glfwGetWindowMonitor(glfwGetCurrentContext()), xscale, yscale);
     return xscale[0];
   }
 
@@ -1884,7 +1895,7 @@ public class CoreGLLwjgl3 implements CoreGL {
   public float getScaleY() {
     float[] xscale = new float[1];
     float[] yscale = new float[1];
-    glfwGetMonitorContentScale(glfwGetCurrentContext(), xscale, yscale);
+    glfwGetMonitorContentScale(glfwGetWindowMonitor(glfwGetCurrentContext()), xscale, yscale);
     return yscale[0];
   }
 }

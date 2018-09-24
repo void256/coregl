@@ -268,6 +268,8 @@ public interface CoreGL {
 
   int GL_RGBA();
 
+  int GL_SCISSOR_TEST();
+
   int GL_SHADING_LANGUAGE_VERSION();
 
   int GL_SHORT();
@@ -549,6 +551,8 @@ public interface CoreGL {
   void glReadPixels(int x, int y, int width, int height, int format, int type, ByteBuffer pixelBuffer);
 
   void glRenderbufferStorage(int target, int internalFormat, int width, int height);
+
+  void glScissor(int x, int y, int width, int height);
 
   void glShaderSource(int shader, String string);
 
