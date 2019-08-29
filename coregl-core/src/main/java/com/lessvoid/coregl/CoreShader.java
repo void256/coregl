@@ -218,28 +218,28 @@ public class CoreShader {
     gl.checkGLError("glGetProgram");
   }
 
-  public void setUniformi(final String name, final int... values) {
+  public void setUniformi(final String name, final int v1) {
     final int loc = getLocation(name);
-    switch (values.length) {
-    case 1:
-      gl.glUniform1i(loc, values[0]);
-      gl.checkGLError("glUniform1i");
-      break;
-    case 2:
-      gl.glUniform2i(loc, values[0], values[1]);
-      gl.checkGLError("glUniform2i");
-      break;
-    case 3:
-      gl.glUniform3i(loc, values[0], values[1], values[2]);
-      gl.checkGLError("glUniform3i");
-      break;
-    case 4:
-      gl.glUniform4i(loc, values[0], values[1], values[2], values[3]);
-      gl.checkGLError("glUniform4i");
-      break;
-    default:
-      throw new IllegalArgumentException(String.format("Unsupported number of value arguments: %d", values.length));
-    }
+    gl.glUniform1i(loc, v1);
+    gl.checkGLError("glUniform1i");
+  }
+
+  public void setUniformi(final String name, final int v1, final int v2) {
+    final int loc = getLocation(name);
+    gl.glUniform2i(loc, v1, v2);
+    gl.checkGLError("glUniform2i");
+  }
+
+  public void setUniformi(final String name, final int v1, final int v2, final int v3) {
+    final int loc = getLocation(name);
+    gl.glUniform3i(loc, v1, v2, v3);
+    gl.checkGLError("glUniform3i");
+  }
+
+  public void setUniformi(final String name, final int v1, final int v2, final int v3, final int v4) {
+    final int loc = getLocation(name);
+    gl.glUniform4i(loc, v1, v2, v3, v4);
+    gl.checkGLError("glUniform4i");
   }
 
   public void setUniformf(final String name, final float... values) {
