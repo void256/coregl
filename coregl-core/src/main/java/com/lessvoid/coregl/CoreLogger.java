@@ -352,7 +352,8 @@ public final class CoreLogger {
         String glerrmsg = gl.gluErrorString(error);
         if (stackTrace == null) {
           clearBuffer();
-          for (final StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
+          for (int i=0; i<Thread.currentThread().getStackTrace().length; i++) {
+            StackTraceElement stackTraceElement = Thread.currentThread().getStackTrace()[i];
             concatBuffer.append(stackTraceElement.toString());
             concatBuffer.append("\n");
           }
@@ -372,7 +373,8 @@ public final class CoreLogger {
     clearBuffer();
     concatBuffer.append(prefix);
     concatBuffer.append(message);
-    for (final Object arg : args) {
+    for (int i=0; i<args.length; i++) {
+      Object arg = args[i];
       final int index = concatBuffer.indexOf(ARG_STR);
       if (index == -1) {
         severe("Error preparing logging message: expected {} parameters in message: \"{}\"", args.length, message);
