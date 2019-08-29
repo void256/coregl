@@ -176,9 +176,9 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
       final long diff = System.currentTimeMillis() - now;
       if (diff >= 1000) {
         now += diff;
-        final String fpsText = buildFpsText(frameCounter);
-        lastFPS = fpsText;
-        log.fine(fpsText);
+        //final String fpsText = buildFpsText(frameCounter);
+        //lastFPS = fpsText;
+        //log.fine(fpsText);
         frameCounter = 0;
       }
     }
