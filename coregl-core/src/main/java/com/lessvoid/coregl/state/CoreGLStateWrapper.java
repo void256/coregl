@@ -1910,6 +1910,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public void checkGLError(final boolean throwException, final String msg) {
+        gl.checkGLError(throwException, msg);
+    }
+
+    @Override
     public void checkGLError(String msg) {
         gl.checkGLError(msg);
     }

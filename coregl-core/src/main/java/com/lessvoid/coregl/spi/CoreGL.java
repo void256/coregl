@@ -676,6 +676,8 @@ public interface CoreGL {
 
   void checkGLError(boolean throwException, String msg, Object...args);
 
+  void checkGLError(boolean throwException, String msg);
+
   void checkGLError(String msg);
 
   void checkGLError(String msg, Object...args);

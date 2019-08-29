@@ -72,6 +72,7 @@ public class CoreGLLwjgl3 implements CoreGL {
   private final Map<CoreBufferUsageType, Integer> bufferUsageTypeMap;
   private final Map<CoreBufferTargetType, Integer> bufferTargetTypeMap;
   private final Map<CoreBufferAccessType, Integer> bufferAccessTypeMap;
+  private final Object[] emptyObjectArray = new Object[0];
 
   public CoreGLLwjgl3() {
     Map<CoreBufferUsageType, Integer> mapUsage = new Hashtable<CoreBufferUsageType, Integer>();
@@ -136,6 +137,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   public void checkGLError(final boolean throwException, final String msg, final Object...args) {
     if (!errorCheckingEnabled) return;
     log.checkGLError(this, throwException, msg, args);
+  }
+
+  @Override
+  public void checkGLError(final boolean throwException, final String msg) {
+    checkGLError(throwException, msg, emptyObjectArray);
   }
 
   @Override

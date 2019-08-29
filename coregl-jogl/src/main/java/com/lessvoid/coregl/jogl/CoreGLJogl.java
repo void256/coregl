@@ -92,6 +92,7 @@ public class CoreGLJogl implements CoreGL {
   private CoreGLSetup coreGLSetup;
   private int windowWidth;
   private int windowHeight;
+  private Object[] emptyObjectArray = new Object[0];
 
   public CoreGLJogl() {
     Map<CoreBufferUsageType, Integer> mapUsage = new Hashtable<CoreBufferUsageType, Integer>();
@@ -1864,6 +1865,11 @@ public class CoreGLJogl implements CoreGL {
   public void checkGLError(final boolean throwException, final String msg, final Object...args) {
     if (!errorChecksEnabled) return;
     log.checkGLError(this, throwException, msg, args);
+  }
+
+  @Override
+  public void checkGLError(final boolean throwException, final String msg) {
+    checkGLError(throwException, msg, emptyObjectArray);
   }
 
   @Override
