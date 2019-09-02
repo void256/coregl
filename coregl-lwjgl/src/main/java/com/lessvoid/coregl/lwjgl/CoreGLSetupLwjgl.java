@@ -115,7 +115,7 @@ public class CoreGLSetupLwjgl implements CoreGLSetup {
     long now = System.currentTimeMillis();
     long prevTime = System.nanoTime();
 
-    renderLoop.init(gl);
+    renderLoop.init(gl, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
     renderLoop.sizeChanged(gl, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
     while (!Display.isCloseRequested() && !renderLoop.endLoop(gl)) {
       final long nanoTime = System.nanoTime();

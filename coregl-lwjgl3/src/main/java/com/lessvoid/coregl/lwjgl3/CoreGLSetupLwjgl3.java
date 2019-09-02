@@ -151,14 +151,13 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     long now = System.currentTimeMillis();
     long prevTime = System.nanoTime();
 
-    renderLoop.init(gl);
-
-    framebufferSizeChangedCallback = new FramebufferSizeChangedCallback(renderLoop, gl);
-    glfwSetFramebufferSizeCallback(window, framebufferSizeChangedCallback);
-
     int width[] = new int[1];
     int height[] = new int[1];
     glfwGetFramebufferSize(window, width, height);
+    renderLoop.init(gl, width[0], height[0]);
+
+    framebufferSizeChangedCallback = new FramebufferSizeChangedCallback(renderLoop, gl);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeChangedCallback);
     framebufferSizeChangedCallback.invoke(window, width[0], height[0]);
 
     while (!glfwWindowShouldClose(window) && !renderLoop.endLoop(gl)) {

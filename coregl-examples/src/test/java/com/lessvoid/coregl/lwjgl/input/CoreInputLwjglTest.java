@@ -84,7 +84,7 @@ public class CoreInputLwjglTest {
     private final AtomicBoolean stop = new AtomicBoolean();
 
     @Override
-    public void init(final CoreGL gl) {
+    public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     }
 
     @Override

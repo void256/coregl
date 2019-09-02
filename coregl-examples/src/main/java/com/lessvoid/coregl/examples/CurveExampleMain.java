@@ -44,7 +44,7 @@ public class CurveExampleMain implements RenderLoopCallback {
   private float r = 0.f;
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vTexture");
     shader.vertexShader("vertex", CurveExampleMain.class.getResourceAsStream("/curve/curve.vs"));

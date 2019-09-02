@@ -49,7 +49,7 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
   private CoreVAO vao;
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
 
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");

@@ -68,7 +68,7 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
   }
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
 
     final CoreShader shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");

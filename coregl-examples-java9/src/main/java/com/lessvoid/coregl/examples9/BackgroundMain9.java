@@ -44,7 +44,7 @@ public class BackgroundMain9 implements RenderLoopCallback {
   private CoreRender coreRender;
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex");
     shader.vertexShader("background/background.vs");

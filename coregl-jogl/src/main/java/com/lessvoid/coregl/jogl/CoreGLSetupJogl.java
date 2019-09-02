@@ -1,5 +1,6 @@
 package com.lessvoid.coregl.jogl;
 
+import com.jogamp.common.util.InterruptSource.Thread;
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
 import com.jogamp.nativewindow.util.Rectangle;
 import com.jogamp.newt.Display;
@@ -212,7 +213,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
       gl.glEnable(gl.GL_BLEND());
       gl.glBlendFunc(gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
       log.checkGLError(gl, "initialized");
-      callback.init(gl);
+      callback.init(gl, glWin.getWidth(), glWin.getHeight());
     }
 
     @Override

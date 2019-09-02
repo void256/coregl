@@ -45,7 +45,7 @@ public class LinearGradientMain implements RenderLoopCallback {
   private CoreShader shader;
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
 
     shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");

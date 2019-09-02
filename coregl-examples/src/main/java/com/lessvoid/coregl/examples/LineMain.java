@@ -71,7 +71,7 @@ public class LineMain implements CoreGLSetup.RenderLoopCallback {
   private float time;
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
 
     texture = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");

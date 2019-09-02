@@ -83,7 +83,7 @@ public class DistanceFieldExampleMain implements RenderLoopCallback {
   }
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     try {
       ByteBuffer data = loader.loadAsByteBufferRGBA(gl, DistanceFieldExampleMain.class.getResourceAsStream("/logo.png"));
       texture = CoreTexture2D.createCoreTexture(

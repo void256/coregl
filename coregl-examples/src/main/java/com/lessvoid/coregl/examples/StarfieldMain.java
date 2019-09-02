@@ -52,7 +52,7 @@ public class StarfieldMain implements RenderLoopCallback {
   private float angleY = 0.f;
 
   @Override
-  public void init(final CoreGL gl) {
+  public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
 
     shader = CoreShader.createShader(gl);

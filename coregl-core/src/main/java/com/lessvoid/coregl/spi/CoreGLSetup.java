@@ -55,8 +55,10 @@ public interface CoreGLSetup {
      *
      * @param gl
      *          the CoreGL instance in case you want to use that
+     * @param framebufferWidth the framebuffer width
+     * @param framebufferHeight the framebuffer height
      */
-    void init(CoreGL gl);
+    void init(CoreGL gl, int framebufferWidth, int framebufferHeight);
 
     /**
      * Do some awesome stuff in here!
