@@ -30,6 +30,7 @@ import com.lessvoid.coregl.input.spi.CoreInput;
 import com.lessvoid.coregl.lwjgl.input.CoreInputLwjgl;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
+import com.lessvoid.coregl.state.CoreGLStateWrapper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.LWJGLUtil;
@@ -45,23 +46,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_RENDERER;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_VENDOR;
-import static org.lwjgl.opengl.GL11.GL_VERSION;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glGetInteger;
-import static org.lwjgl.opengl.GL11.glGetString;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL12.GL_MAX_3D_TEXTURE_SIZE;
-import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
-
 public class CoreGLSetupLwjgl implements CoreGLSetup {
   private static final Logger log = Logger.getLogger(CoreGLSetupLwjgl.class.getName());
   private static final Comparator<DisplayMode> DisplayModeFrequencyComparator = new DisplayModeFrequencyComparator();
@@ -72,7 +56,7 @@ public class CoreGLSetupLwjgl implements CoreGLSetup {
   private String lastFPS = "";
 
   public CoreGLSetupLwjgl(final CoreGL gl) {
-    this.gl = gl;
+    this.gl = new CoreGLStateWrapper(gl);
   }
 
   /*
@@ -192,22 +176,22 @@ public class CoreGLSetupLwjgl implements CoreGLSetup {
 
     // just output some infos about the system we're on
     log.info("plattform: " + LWJGLUtil.getPlatformName());
-    log.info("opengl version: " + glGetString(GL_VERSION));
-    log.info("opengl vendor: " + glGetString(GL_VENDOR));
-    log.info("opengl renderer: " + glGetString(GL_RENDERER));
+    log.info("opengl version: " + gl.glGetString(gl.GL_VERSION()));
+    log.info("opengl vendor: " + gl.glGetString(gl.GL_VENDOR()));
+    log.info("opengl renderer: " + gl.glGetString(gl.GL_RENDERER()));
     final IntBuffer maxVertexAttribts = BufferUtils.createIntBuffer(4 * 4);
-    glGetInteger(GL_MAX_VERTEX_ATTRIBS, maxVertexAttribts);
+    gl.glGetIntegerv(gl.GL_MAX_VERTEX_ATTRIBS(), maxVertexAttribts);
     log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
     gl.checkGLError("init phase 1");
 
-    log.info("GL_MAX_3D_TEXTURE_SIZE: " + glGetInteger(GL_MAX_3D_TEXTURE_SIZE));
+    log.info("GL_MAX_3D_TEXTURE_SIZE: " + gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
 
-    glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
+    gl.glViewport(0, 0, Display.getDisplayMode().getWidth(), Display.getDisplayMode().getHeight());
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    gl.glClear(gl.GL_COLOR_BUFFER_BIT());
+    gl.glEnable(gl.GL_BLEND());
+    gl.glBlendFunc(gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
     gl.checkGLError("initialized");
   }
 

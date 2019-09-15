@@ -17,7 +17,9 @@ import com.lessvoid.coregl.CoreBufferUtil;
 import com.lessvoid.coregl.CoreLogger;
 import com.lessvoid.coregl.input.spi.CoreInput;
 import com.lessvoid.coregl.jogl.input.CoreInputJogl;
+import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
+import com.lessvoid.coregl.state.CoreGLStateWrapper;
 
 import java.nio.IntBuffer;
 
@@ -32,7 +34,8 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
   private final StringBuilder fpsText = new StringBuilder();
 
-  private final CoreGLJogl gl;
+  private final CoreGL gl;
+  private final CoreGLJogl glJogl;
 
   private Screen newtScreen;
   private Display newtDisp;
@@ -42,8 +45,9 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
   private volatile boolean closeRequested, vsync, updateVsync;
 
-  public CoreGLSetupJogl(final CoreGLJogl gl) {
-    this.gl = gl;
+  public CoreGLSetupJogl(final CoreGLJogl glJogl) {
+    this.gl = new CoreGLStateWrapper(glJogl);
+    this.glJogl = glJogl;
   }
 
   /*
@@ -142,7 +146,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
     newtScreen.removeReference();
     glWin.setVisible(true);
     glWin.windowRepaint(0, 0, requestedWidth, requestedHeight);
-    gl.setWindowAttributes(glWin.getWidth(), glWin.getHeight());
+    glJogl.setWindowAttributes(glWin.getWidth(), glWin.getHeight());
 
     log.info("current mode: {}",
         newtScreen.getMainMonitor(new Rectangle(0, 0, requestedWidth, requestedHeight)).getCurrentMode().getSizeAndRRate());
@@ -202,12 +206,8 @@ public class CoreGLSetupJogl implements CoreGLSetup {
       gl.glGetIntegerv(gl.GL_MAX_VERTEX_ATTRIBS(), maxVertexAttribts);
       log.info("GL_MAX_VERTEX_ATTRIBS: {}", maxVertexAttribts.get(0));
       log.checkGLError(gl, "init phase 1");
-
       log.info("GL_MAX_3D_TEXTURE_SIZE: {}", gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
-
-      System.out.println(glWin.getWidth() + ":" + glWin.getHeight());
       gl.glViewport(0, 0, glWin.getWidth(), glWin.getHeight());
-
       gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
       gl.glClear(gl.GL_COLOR_BUFFER_BIT());
       gl.glEnable(gl.GL_BLEND());

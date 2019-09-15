@@ -29,6 +29,7 @@ package com.lessvoid.coregl.lwjgl3;
 import com.lessvoid.coregl.input.spi.CoreInput;
 import com.lessvoid.coregl.spi.CoreGL;
 import com.lessvoid.coregl.spi.CoreGLSetup;
+import com.lessvoid.coregl.state.CoreGLStateWrapper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -62,24 +63,6 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_RENDERER;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
-import static org.lwjgl.opengl.GL11.GL_VENDOR;
-import static org.lwjgl.opengl.GL11.GL_VERSION;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glGetInteger;
-import static org.lwjgl.opengl.GL11.glGetIntegerv;
-import static org.lwjgl.opengl.GL11.glGetString;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL12.GL_MAX_3D_TEXTURE_SIZE;
-import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
 
 public class CoreGLSetupLwjgl3 implements CoreGLSetup {
   private static final Logger log = Logger.getLogger(CoreGLSetupLwjgl3.class.getName());
@@ -108,7 +91,7 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
   }
 
   public CoreGLSetupLwjgl3(final CoreGL gl) {
-    this.gl = gl;
+    this.gl = new CoreGLStateWrapper(gl);
   }
 
   /*
@@ -219,21 +202,19 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
 
     // just output some infos about the system we're on
     log.info("platform: " + Platform.get());
-    log.info("opengl version: " + glGetString(GL_VERSION));
-    log.info("opengl vendor: " + glGetString(GL_VENDOR));
-    log.info("opengl renderer: " + glGetString(GL_RENDERER));
+    log.info("opengl version: " + gl.glGetString(gl.GL_VERSION()));
+    log.info("opengl vendor: " + gl.glGetString(gl.GL_VENDOR()));
+    log.info("opengl renderer: " + gl.glGetString(gl.GL_RENDERER()));
     final IntBuffer maxVertexAttribts = BufferUtils.createIntBuffer(4 * 4);
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, maxVertexAttribts);
+    gl.glGetIntegerv(gl.GL_MAX_VERTEX_ATTRIBS(), maxVertexAttribts);
     log.info("GL_MAX_VERTEX_ATTRIBS: " + maxVertexAttribts.get(0));
     gl.checkGLError("init phase 1");
-    log.info("GL_MAX_3D_TEXTURE_SIZE: " + glGetInteger(GL_MAX_3D_TEXTURE_SIZE));
-
-    System.out.println(width+":"+height);
-    glViewport(0, 0, width, height);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    log.info("GL_MAX_3D_TEXTURE_SIZE: " + gl.glGetInteger(gl.GL_MAX_3D_TEXTURE_SIZE()));
+    gl.glViewport(0, 0, width, height);
+    gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    gl.glClear(gl.GL_COLOR_BUFFER_BIT());
+    gl.glEnable(gl.GL_BLEND());
+    gl.glBlendFunc(gl.GL_SRC_ALPHA(), gl.GL_ONE_MINUS_SRC_ALPHA());
     gl.checkGLError("initialized");
   }
 
@@ -241,10 +222,10 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     //GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint();
     //glfwSetErrorCallback(errorCallback);
 
-    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, gl.GL_TRUE());
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, gl.GL_TRUE());
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_STENCIL_BITS, 8);
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
@@ -271,7 +252,6 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     float[] xscale = new float[1];
     float[] yscale = new float[1];
     glfwGetWindowContentScale(window, xscale, yscale);
-    System.out.println(xscale[0] + ":" + yscale[0]);
   }
 
   private void initInput() throws Exception {
