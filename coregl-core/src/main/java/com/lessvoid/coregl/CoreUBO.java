@@ -39,12 +39,6 @@ import java.util.Map;
 
 public class CoreUBO {
 
-  @Override
-  protected void finalize() throws Throwable {
-    super.finalize();
-    System.out.println("HJSAHDKJAHSD");
-  }
-
   private final CoreGL gl;
 
   private final int id;
@@ -203,9 +197,6 @@ public class CoreUBO {
   }
 
   public void send() {
-    for (int i = 0; i < byteBuffer.limit(); i++) {
-      System.out.print(String.format("%02X ", byteBuffer.get(i)));
-    }
     byteBuffer.rewind();
     gl.glBindBuffer(gl.GL_UNIFORM_BUFFER(), id);
     gl.glBufferData(gl.GL_UNIFORM_BUFFER(), byteBuffer.asIntBuffer(), usage);
