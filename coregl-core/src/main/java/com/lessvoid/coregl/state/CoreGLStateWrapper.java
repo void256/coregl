@@ -1984,6 +1984,11 @@ public class CoreGLStateWrapper implements CoreGL {
         return gl.getScaleY();
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + " (" + gl.toString() + ")";
+    }
+
     private boolean stringEquals(final String a, final String b) {
         return Objects.equals(a, b);
     }
