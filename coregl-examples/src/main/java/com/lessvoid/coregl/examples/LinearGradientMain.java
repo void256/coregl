@@ -31,14 +31,15 @@ import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
+import com.lessvoid.coregl.examples.runner.CoreExampleMain;
+import com.lessvoid.coregl.examples.runner.CoreExampleRenderLoop;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 import com.lessvoid.math.MatrixFactory;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
-public class LinearGradientMain implements RenderLoopCallback {
+public class LinearGradientMain implements CoreExampleRenderLoop {
 
   private CoreRender coreRender;
   private float time;
@@ -82,7 +83,9 @@ public class LinearGradientMain implements RenderLoopCallback {
   }
 
   @Override
-  public boolean render(final CoreGL gl, final float deltaTime) {
+  public boolean render(final CoreGL gl, final float d) {
+    float deltaTime = 16.6666f;
+
     // We don't have to use coreRender, but it's kinda easier that way
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
@@ -106,7 +109,6 @@ public class LinearGradientMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    final RenderLoopCallback linearGradientExample = new LinearGradientMain();
-    CoreExampleMain.runExample(args, linearGradientExample);
+    CoreExampleMain.runExample(args, new LinearGradientMain());
   }
 }

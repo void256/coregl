@@ -1,12 +1,8 @@
-package com.lessvoid.coregl.state;
+package com.lessvoid.coregl;
 
-import com.lessvoid.coregl.CoreBufferAccessType;
-import com.lessvoid.coregl.CoreBufferTargetType;
-import com.lessvoid.coregl.CoreBufferUsageType;
 import com.lessvoid.coregl.CoreVersion.GLSLVersion;
 import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
@@ -112,11 +108,6 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public String name() {
         return gl.name();
-    }
-
-    @Override
-    public CoreGLSetup coreGLSetup() {
-        return gl.coreGLSetup();
     }
 
     @Override

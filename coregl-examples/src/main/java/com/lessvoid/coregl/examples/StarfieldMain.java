@@ -31,8 +31,9 @@ import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
+import com.lessvoid.coregl.examples.runner.CoreExampleMain;
+import com.lessvoid.coregl.examples.runner.CoreExampleRenderLoop;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 import com.lessvoid.math.Mat4;
 import com.lessvoid.math.MatrixFactory;
 
@@ -42,7 +43,7 @@ import static com.lessvoid.coregl.CoreBufferDataType.FLOAT;
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
-public class StarfieldMain implements RenderLoopCallback {
+public class StarfieldMain implements CoreExampleRenderLoop {
 
   private static final int STAR_COUNT = 20000;
   private CoreRender coreRender;
@@ -96,7 +97,7 @@ public class StarfieldMain implements RenderLoopCallback {
   }
 
   @Override
-  public boolean render(final CoreGL gl, final float deltaTime) {
+  public boolean render(final CoreGL gl, final float d) {
     gl.glClearColor(.1f, .1f, .3f, 0.f);
     gl.glClear(gl.GL_COLOR_BUFFER_BIT() | gl.GL_DEPTH_BUFFER_BIT());
 
@@ -108,6 +109,7 @@ public class StarfieldMain implements RenderLoopCallback {
     final Mat4 rotateY = Mat4.createRotate(angleY, 0.f, 1.f, 0.f);
     final Mat4 projection = MatrixFactory.createProjection(65.f, 1024.f / 768.f, 1f, 1000.f);
 
+    float deltaTime = 16.6666f;
     z -= deltaTime / 1000.f;
     angleX += deltaTime / 1000.f;
     angleY += deltaTime / 2000.f;
@@ -132,7 +134,6 @@ public class StarfieldMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    final RenderLoopCallback starfieldExample = new StarfieldMain();
-    CoreExampleMain.runExample(args, starfieldExample);
+    CoreExampleMain.runExample(args, new StarfieldMain());
   }
 }

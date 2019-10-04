@@ -1,5 +1,6 @@
 package com.lessvoid.coregl.state;
 
+import com.lessvoid.coregl.CoreGLStateWrapper;
 import com.lessvoid.coregl.spi.CoreGL;
 import org.junit.After;
 import org.junit.Before;

@@ -36,9 +36,10 @@ import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.ResizeFilter;
 import com.lessvoid.coregl.Type;
+import com.lessvoid.coregl.examples.runner.CoreExampleMain;
+import com.lessvoid.coregl.examples.runner.CoreExampleRenderLoop;
 import com.lessvoid.coregl.examples.util.ImageLoaderImageIO;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -52,7 +53,7 @@ import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
  *
  * @author void
  */
-public class DistanceFieldExampleMain implements RenderLoopCallback {
+public class DistanceFieldExampleMain implements CoreExampleRenderLoop {
   private CoreRender coreRender;
   private ImageLoaderImageIO loader = new ImageLoaderImageIO();
   private CoreTexture2D texture;
@@ -62,7 +63,9 @@ public class DistanceFieldExampleMain implements RenderLoopCallback {
   private float t;
 
   @Override
-  public boolean render(final CoreGL gl, final float deltaTime) {
+  public boolean render(final CoreGL gl, final float d) {
+    float deltaTime = 16.6666f;
+
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
     t += deltaTime;
@@ -167,7 +170,6 @@ public class DistanceFieldExampleMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    final RenderLoopCallback superSimpleExample = new DistanceFieldExampleMain();
-    CoreExampleMain.runExample(args, superSimpleExample);
+    CoreExampleMain.runExample(args, new DistanceFieldExampleMain());
   }
 }

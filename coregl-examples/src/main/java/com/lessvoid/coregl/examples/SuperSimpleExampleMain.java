@@ -31,8 +31,9 @@ import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
+import com.lessvoid.coregl.examples.runner.CoreExampleMain;
+import com.lessvoid.coregl.examples.runner.CoreExampleRenderLoop;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
@@ -44,12 +45,12 @@ import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
  *
  * @author void
  */
-public class SuperSimpleExampleMain implements RenderLoopCallback {
+public class SuperSimpleExampleMain implements CoreExampleRenderLoop {
 
   private CoreRender coreRender;
 
   @Override
-  public boolean render(final CoreGL gl, final float deltaTime) {
+  public boolean render(final CoreGL gl, final float d) {
     // We don't have to use coreRender though but it's kinda easier that way
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
@@ -101,7 +102,6 @@ public class SuperSimpleExampleMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    final RenderLoopCallback superSimpleExample = new SuperSimpleExampleMain();
-    CoreExampleMain.runExample(args, superSimpleExample);
+    CoreExampleMain.runExample(args, new SuperSimpleExampleMain());
   }
 }

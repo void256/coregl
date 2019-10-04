@@ -8,7 +8,6 @@
     <version>3.0.0-SNAPSHOT</version>
   </parent>
   <properties>
-    <lwjgl.version>2.9.3</lwjgl.version>
     <lwjgl3.version>3.1.4-SNAPSHOT</lwjgl3.version>
     <jogamp.version>2.3.2</jogamp.version>
   </properties>
@@ -35,55 +34,7 @@
       <version>${jogamp.version}</version>
     </dependency>
   </dependencies>
-  <!--
-      since we can't have both lwjgl and lwjgl3 on the classpath
-      we need to use profiles here to separate them
-  -->
   <profiles>
-    <!-- lwjgl -->
-    <profile>
-      <id>use-lwjgl</id>
-      <dependencies>
-        <dependency>
-          <groupId>com.lessvoid</groupId>
-          <artifactId>coregl-lwjgl</artifactId>
-          <version>3.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-          <groupId>org.lwjgl.lwjgl</groupId>
-          <artifactId>lwjgl</artifactId>
-          <version>${lwjgl.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.lwjgl.lwjgl</groupId>
-          <artifactId>lwjgl_util</artifactId>
-          <version>${lwjgl.version}</version>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.0.0</version>
-            <executions>
-              <execution>
-                <id>unpack-dependencies-lwjgl</id>
-                <phase>process-sources</phase>
-                <goals>
-                  <goal>unpack-dependencies</goal>
-                </goals>
-                <configuration>
-                  <includeGroupIds>org.lwjgl.lwjgl</includeGroupIds>
-                  <outputDirectory>${project.build.directory}/natives-lwjgl</outputDirectory>
-                  <includeClassifiers>natives-linux,natives-osx,natives-windows</includeClassifiers>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <!-- lwjgl 3 -->
     <profile>
       <id>use-lwjgl3</id>

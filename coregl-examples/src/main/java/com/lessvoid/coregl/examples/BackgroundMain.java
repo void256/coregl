@@ -31,13 +31,14 @@ import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
+import com.lessvoid.coregl.examples.runner.CoreExampleMain;
+import com.lessvoid.coregl.examples.runner.CoreExampleRenderLoop;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
-public class BackgroundMain implements RenderLoopCallback {
+public class BackgroundMain implements CoreExampleRenderLoop {
 
   private CoreShader shader;
   private final long startTime = System.currentTimeMillis();
@@ -72,7 +73,7 @@ public class BackgroundMain implements RenderLoopCallback {
   }
 
   @Override
-  public boolean render(final CoreGL gl, final float deltaTime) {
+  public boolean render(final CoreGL gl, final float delaTime) {
     gl.glClearColor(.1f, .1f, .3f, 0.f);
     gl.glClear(gl.GL_COLOR_BUFFER_BIT());
 
@@ -97,7 +98,6 @@ public class BackgroundMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    final RenderLoopCallback backgroundExample = new BackgroundMain();
-    CoreExampleMain.runExample(args, backgroundExample);
+    CoreExampleMain.runExample(args, new BackgroundMain());
   }
 }

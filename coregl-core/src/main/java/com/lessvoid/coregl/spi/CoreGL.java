@@ -29,17 +29,6 @@ public interface CoreGL {
    */
   String name();
 
-  /**
-   * The CoreGLSetup interface is an optional component that can be used to
-   * initialize the underlying GL system, like create window, initialize a basic
-   * render loop and other setup work. If you know what GL subsystem you're using
-   * you can initialize the subsystem on your own too and completetely ignore
-   * this call.
-   *
-   * @return the CoreGLSetup which is optional so this can be null
-   */
-  CoreGLSetup coreGLSetup();
-
   /////////////////////////////////////////////////////////////////////////////
   // OpenGL constants
   /////////////////////////////////////////////////////////////////////////////

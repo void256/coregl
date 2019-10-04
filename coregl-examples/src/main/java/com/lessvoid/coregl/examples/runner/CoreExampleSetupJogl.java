@@ -1,4 +1,4 @@
-package com.lessvoid.coregl.jogl;
+package com.lessvoid.coregl.examples.runner;
 
 import com.jogamp.common.util.InterruptSource.Thread;
 import com.jogamp.nativewindow.WindowClosingProtocol.WindowClosingMode;
@@ -15,11 +15,8 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.lessvoid.coregl.CoreBufferUtil;
 import com.lessvoid.coregl.CoreLogger;
-import com.lessvoid.coregl.input.spi.CoreInput;
-import com.lessvoid.coregl.jogl.input.CoreInputJogl;
+import com.lessvoid.coregl.jogl.CoreGLJogl;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup;
-import com.lessvoid.coregl.state.CoreGLStateWrapper;
 
 import java.nio.IntBuffer;
 
@@ -28,8 +25,8 @@ import java.nio.IntBuffer;
  * 
  * @author Brian Groenke
  */
-public class CoreGLSetupJogl implements CoreGLSetup {
-  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreGLSetupJogl.class);
+public class CoreExampleSetupJogl {
+  private static final CoreLogger log = CoreLogger.getCoreLogger(CoreExampleSetupJogl.class);
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
 
   private final StringBuilder fpsText = new StringBuilder();
@@ -40,13 +37,12 @@ public class CoreGLSetupJogl implements CoreGLSetup {
   private Screen newtScreen;
   private Display newtDisp;
   private GLWindow glWin;
-  private CoreInput input;
   private String lastFPS = "";
 
   private volatile boolean closeRequested, vsync, updateVsync;
 
-  public CoreGLSetupJogl(final CoreGLJogl glJogl) {
-    this.gl = new CoreGLStateWrapper(glJogl);
+  public CoreExampleSetupJogl(final CoreGLJogl glJogl) {
+    this.gl = glJogl;
     this.glJogl = glJogl;
   }
 
@@ -56,15 +52,8 @@ public class CoreGLSetupJogl implements CoreGLSetup {
    * @see de.lessvoid.coregl.CoreDisplaySetup#initialize(java.lang.String, int,
    * int)
    */
-  @Override
   public void initialize(final String title, final int width, final int height) throws Exception {
     initGraphics(title, width, height);
-    initInput();
-  }
-
-  @Override
-  public CoreInput getInput() {
-    return input;
   }
 
   /*
@@ -72,10 +61,8 @@ public class CoreGLSetupJogl implements CoreGLSetup {
    * 
    * @see de.lessvoid.coregl.CoreDisplaySetup#destroy()
    */
-  @Override
   public void destroy() {
     if (glWin != null) glWin.destroy();
-    if (input != null) input.dispose();
   }
 
   /*
@@ -84,8 +71,7 @@ public class CoreGLSetupJogl implements CoreGLSetup {
    * @see de.lessvoid.coregl.CoreDisplaySetup#renderLoop(de.lessvoid.coregl.
    * CoreDisplaySetup.RenderLoopCallback)
    */
-  @Override
-  public void renderLoop(final RenderLoopCallback renderCallback) {
+  public void renderLoop(final CoreExampleRenderLoop renderCallback) {
     int frames = 0;
     long lastPrintTime = System.currentTimeMillis();
 
@@ -95,7 +81,6 @@ public class CoreGLSetupJogl implements CoreGLSetup {
 
     while (!closeRequested && !receiver.shouldStop()) {
       glWin.display();
-      input.update();
       frames++;
       final long now = System.currentTimeMillis();
       if (now - lastPrintTime > 1000) {
@@ -115,18 +100,15 @@ public class CoreGLSetupJogl implements CoreGLSetup {
    * 
    * @see de.lessvoid.coregl.CoreSetup#enableVSync(boolean)
    */
-  @Override
   public void enableVSync(final boolean enable) {
     vsync = enable;
     updateVsync = true;
   }
 
-  @Override
   public void enableFullscreen(final boolean enable) {
     glWin.setFullscreen(enable);
   }
 
-  @Override
   public String getFPS() {
     return lastFPS;
   }
@@ -171,11 +153,6 @@ public class CoreGLSetupJogl implements CoreGLSetup {
     glWin.setPosition((newtScreen.getWidth() - glWin.getWidth()) / 2, (newtScreen.getHeight() - glWin.getHeight()) / 2);
   }
 
-  private void initInput() throws Exception {
-    input = new CoreInputJogl(glWin);
-    input.initialize();
-  }
-
   private String buildFpsText(final long frameCounter) {
     fpsText.setLength(0);
     fpsText.append("fps: ");
@@ -187,11 +164,11 @@ public class CoreGLSetupJogl implements CoreGLSetup {
   }
 
   private class GLEventReceiver implements GLEventListener {
-    final RenderLoopCallback callback;
+    final CoreExampleRenderLoop callback;
 
     long prevTime = System.nanoTime();
 
-    GLEventReceiver(final RenderLoopCallback callback) {
+    GLEventReceiver(final CoreExampleRenderLoop callback) {
       this.callback = callback;
     }
 

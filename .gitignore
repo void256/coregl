@@ -7,3 +7,9 @@
 /bin
 WORKLOG
 *.iml
+/coregl-ext/target/maven-archiver/pom.properties
+/coregl-ext/target/maven-status/maven-compiler-plugin/compile/base-compile/createdFiles.lst
+/coregl-ext/target/maven-status/maven-compiler-plugin/compile/base-compile/inputFiles.lst
+/coregl-ext/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+/coregl-ext/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+/coregl-ext/target/coregl-ext-3.0.0-SNAPSHOT.jar

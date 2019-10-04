@@ -31,14 +31,15 @@ import com.lessvoid.coregl.CoreRender;
 import com.lessvoid.coregl.CoreShader;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
+import com.lessvoid.coregl.examples.runner.CoreExampleMain;
+import com.lessvoid.coregl.examples.runner.CoreExampleRenderLoop;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 import com.lessvoid.math.MatrixFactory;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
-public class CompositeExampleMain implements RenderLoopCallback {
+public class CompositeExampleMain implements CoreExampleRenderLoop {
 
   private CoreRender coreRender;
   private CoreShader shader;
@@ -231,7 +232,6 @@ public class CompositeExampleMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    final RenderLoopCallback compositeExample = new CompositeExampleMain();
-    CoreExampleMain.runExample(args, compositeExample);
+    CoreExampleMain.runExample(args, new CompositeExampleMain());
   }
 }

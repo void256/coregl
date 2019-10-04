@@ -24,12 +24,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.lessvoid.coregl.lwjgl3;
+package com.lessvoid.coregl.examples.runner;
 
-import com.lessvoid.coregl.input.spi.CoreInput;
+import com.lessvoid.coregl.CoreGLStateWrapper;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup;
-import com.lessvoid.coregl.state.CoreGLStateWrapper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -64,22 +62,24 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 
-public class CoreGLSetupLwjgl3 implements CoreGLSetup {
-  private static final Logger log = Logger.getLogger(CoreGLSetupLwjgl3.class.getName());
+public class CoreExampleSetupLWJGL3 {
+  private static final Logger log = Logger.getLogger(CoreExampleSetupLWJGL3.class.getName());
   private final StringBuilder fpsText = new StringBuilder();
   private static final float NANO_TO_MS_CONVERSION = 1000000.f;
   private final CoreGL gl;
-  private CoreInput input;
   private long window;
   private boolean fullscreen;
   private String lastFPS = "";
   private FramebufferSizeChangedCallback framebufferSizeChangedCallback;
 
+  private static final double timeDelta = 1000.0/60.0;
+  private double timeAccumulator = 0;
+
   private static final class FramebufferSizeChangedCallback implements GLFWFramebufferSizeCallbackI {
-    private RenderLoopCallback renderLoopCallback;
+    private CoreExampleRenderLoop renderLoopCallback;
     private CoreGL gl;
 
-    private FramebufferSizeChangedCallback(final RenderLoopCallback renderLoopCallback, final CoreGL gl) {
+    private FramebufferSizeChangedCallback(final CoreExampleRenderLoop renderLoopCallback, final CoreGL gl) {
       this.renderLoopCallback = renderLoopCallback;
       this.gl = gl;
     }
@@ -90,7 +90,7 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     }
   }
 
-  public CoreGLSetupLwjgl3(final CoreGL gl) {
+  public CoreExampleSetupLWJGL3(final CoreGL gl) {
     this.gl = new CoreGLStateWrapper(gl);
   }
 
@@ -100,15 +100,8 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
    * @see de.lessvoid.coregl.CoreDisplaySetup#initialize(java.lang.String, int,
    * int)
    */
-  @Override
   public void initialize(final String title, final int width, final int height) throws Exception {
     initGraphics(title, width, height);
-    initInput();
-  }
-
-  @Override
-  public CoreInput getInput() {
-    throw new UnsupportedOperationException ("LWJGL3 input not yet supported");
   }
 
   /*
@@ -116,9 +109,7 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
    *
    * @see de.lessvoid.coregl.CoreDisplaySetup#destroy()
    */
-  @Override
   public void destroy() {
-    if (input != null) input.dispose();
     glfwDestroyWindow(window);
   }
 
@@ -128,8 +119,7 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
    * @see de.lessvoid.coregl.CoreDisplaySetup#renderLoop(de.lessvoid.coregl.
    * CoreDisplaySetup.RenderLoopCallback)
    */
-  @Override
-  public void renderLoop(final RenderLoopCallback renderLoop) {
+  public void renderLoop(final CoreExampleRenderLoop renderLoop) {
     long frameCounter = 0;
     long now = System.currentTimeMillis();
     long prevTime = System.nanoTime();
@@ -148,9 +138,6 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
       if (renderLoop.render(gl, (nanoTime - prevTime) / NANO_TO_MS_CONVERSION)) {
         glfwPollEvents();
         glfwSwapBuffers(window);
-        if (input != null) {
-          input.update();
-        }
       }
       prevTime = nanoTime;
 
@@ -158,9 +145,9 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
       final long diff = System.currentTimeMillis() - now;
       if (diff >= 1000) {
         now += diff;
-        //final String fpsText = buildFpsText(frameCounter);
-        //lastFPS = fpsText;
-        //log.fine(fpsText);
+        final String fpsText = buildFpsText(frameCounter);
+        lastFPS = fpsText;
+        log.fine(fpsText);
         frameCounter = 0;
       }
     }
@@ -171,7 +158,6 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
    *
    * @see de.lessvoid.coregl.CoreSetup#enableVSync(boolean)
    */
-  @Override
   public void enableVSync(final boolean enable) {
     glfwSwapInterval(enable ? 1 : 0);
   }
@@ -179,12 +165,10 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
   /**
    * Note: this must be called BEFORE the GLFW window is created via {@link #initGraphics(String, int, int)}
    */
-  @Override
   public void enableFullscreen(final boolean enable) {
     fullscreen = enable;
   }
 
-  @Override
   public String getFPS() {
     return lastFPS;
   }
@@ -252,11 +236,6 @@ public class CoreGLSetupLwjgl3 implements CoreGLSetup {
     float[] xscale = new float[1];
     float[] yscale = new float[1];
     glfwGetWindowContentScale(window, xscale, yscale);
-  }
-
-  private void initInput() throws Exception {
-    // input = new CoreInputLwjgl();
-    // input.initialize();
   }
 
   private String buildFpsText(final long frameCounter) {

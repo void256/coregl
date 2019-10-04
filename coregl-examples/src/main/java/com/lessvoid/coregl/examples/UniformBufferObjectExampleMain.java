@@ -33,15 +33,16 @@ import com.lessvoid.coregl.CoreUBO;
 import com.lessvoid.coregl.CoreVAO;
 import com.lessvoid.coregl.CoreVAO.FloatType;
 import com.lessvoid.coregl.UniformBlockInfo;
+import com.lessvoid.coregl.examples.runner.CoreExampleMain;
+import com.lessvoid.coregl.examples.runner.CoreExampleRenderLoop;
 import com.lessvoid.coregl.spi.CoreGL;
-import com.lessvoid.coregl.spi.CoreGLSetup.RenderLoopCallback;
 
 import java.util.Map;
 
 import static com.lessvoid.coregl.CoreBufferTargetType.ARRAY_BUFFER;
 import static com.lessvoid.coregl.CoreBufferUsageType.STATIC_DRAW;
 
-public class UniformBufferObjectExampleMain implements RenderLoopCallback {
+public class UniformBufferObjectExampleMain implements CoreExampleRenderLoop {
 
   private CoreRender coreRender;
   private CoreUBO ubo;
@@ -90,7 +91,7 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
   }
 
   @Override
-  public boolean render(final CoreGL gl, final float deltaTime) {
+  public boolean render(final CoreGL gl, final float d) {
     // We don't have to use coreRender though but it's kinda easier that way
     coreRender.clearColor(.1f, .1f, .3f, 0.f);
     coreRender.clearColorBuffer();
@@ -111,7 +112,6 @@ public class UniformBufferObjectExampleMain implements RenderLoopCallback {
   }
 
   public static void main(final String[] args) throws Exception {
-    final RenderLoopCallback uboExample = new UniformBufferObjectExampleMain();
-    CoreExampleMain.runExample(args, uboExample);
+    CoreExampleMain.runExample(args, new UniformBufferObjectExampleMain());
   }
 }

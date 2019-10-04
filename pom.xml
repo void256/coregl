@@ -9,11 +9,9 @@
   <modules>
     <module>coregl-core</module>
     <module>coregl-ext</module>
-    <module>coregl-lwjgl</module>
     <module>coregl-lwjgl3</module>
     <module>coregl-jogl</module>
     <module>coregl-examples</module>
-    <module>coregl-examples-java9</module>
   </modules>
   <url>https://github.com/void256/coregl</url>
   <licenses>
