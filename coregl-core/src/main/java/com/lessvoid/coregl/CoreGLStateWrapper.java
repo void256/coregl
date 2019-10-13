@@ -3,15 +3,15 @@ package com.lessvoid.coregl;
 import com.lessvoid.coregl.CoreVersion.GLSLVersion;
 import com.lessvoid.coregl.CoreVersion.GLVersion;
 import com.lessvoid.coregl.spi.CoreGL;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A Wrapper for any CoreGL implementation class that will cache state changes internally so that the same state
@@ -57,7 +57,7 @@ public class CoreGLStateWrapper implements CoreGL {
     private boolean glColorMaskBlue;
     private boolean glColorMaskAlpha;
     private boolean glDepthMaskFlag;
-    private Set<Integer> glEnableSet = new HashSet<Integer>();
+    private IntSet glEnableSet = new IntOpenHashSet();
     private int glDrawBufferMode;
     private int glPixelStoreiPname;
     private int glPixelStoreiParam;
@@ -626,6 +626,31 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_R32I() {
+        return gl.GL_R32I();
+    }
+
+    @Override
+    public int GL_R32UI() {
+        return gl.GL_R32UI();
+    }
+
+    @Override
+    public int GL_R8() {
+        return gl.GL_R8();
+    }
+
+    @Override
+    public int GL_R8I() {
+        return gl.GL_R8I();
+    }
+
+    @Override
+    public int GL_R8UI() {
+        return gl.GL_R8UI();
+    }
+
+    @Override
     public int GL_READ_FRAMEBUFFER() {
         return gl.GL_READ_FRAMEBUFFER();
     }
@@ -661,13 +686,128 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_RG16() {
+        return gl.GL_RG16();
+    }
+
+    @Override
+    public int GL_RG16F() {
+        return gl.GL_RG16F();
+    }
+
+    @Override
+    public int GL_RG16I() {
+        return gl.GL_RG16I();
+    }
+
+    @Override
+    public int GL_RG16UI() {
+        return gl.GL_RG16UI();
+    }
+
+    @Override
+    public int GL_RG32F() {
+        return gl.GL_RG32F();
+    }
+
+    @Override
+    public int GL_RG32I() {
+        return gl.GL_RG32I();
+    }
+
+    @Override
+    public int GL_RG32UI() {
+        return gl.GL_RG32UI();
+    }
+
+    @Override
+    public int GL_RG8() {
+        return gl.GL_RG8();
+    }
+
+    @Override
+    public int GL_RG8I() {
+        return gl.GL_RG8I();
+    }
+
+    @Override
+    public int GL_RG8UI() {
+        return gl.GL_RG8UI();
+    }
+
+    @Override
     public int GL_RGB() {
         return gl.GL_RGB();
     }
 
     @Override
+    public int GL_RGB32F() {
+        return gl.GL_RGB32F();
+    }
+
+    @Override
+    public int GL_RGB32I() {
+        return gl.GL_RGB32I();
+    }
+
+    @Override
+    public int GL_RGB32UI() {
+        return gl.GL_RGB32UI();
+    }
+
+    @Override
     public int GL_RGBA() {
         return gl.GL_RGBA();
+    }
+
+    @Override
+    public int GL_RGBA16() {
+        return gl.GL_RGBA16();
+    }
+
+    @Override
+    public int GL_RGBA16F() {
+        return gl.GL_RGBA16F();
+    }
+
+    @Override
+    public int GL_RGBA16I() {
+        return gl.GL_RGBA16I();
+    }
+
+    @Override
+    public int GL_RGBA16UI() {
+        return gl.GL_RGBA16UI();
+    }
+
+    @Override
+    public int GL_RGBA32F() {
+        return gl.GL_RGBA32F();
+    }
+
+    @Override
+    public int GL_RGBA32I() {
+        return gl.GL_RGBA32I();
+    }
+
+    @Override
+    public int GL_RGBA32UI() {
+        return gl.GL_RGBA32UI();
+    }
+
+    @Override
+    public int GL_RGBA8() {
+        return gl.GL_RGBA8();
+    }
+
+    @Override
+    public int GL_RGBA8I() {
+        return gl.GL_RGBA8I();
+    }
+
+    @Override
+    public int GL_RGBA8UI() {
+        return gl.GL_RGBA8UI();
     }
 
     @Override
@@ -783,6 +923,26 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_PROXY_TEXTURE_2D_MULTISAMPLE() {
         return gl.GL_PROXY_TEXTURE_2D_MULTISAMPLE();
+    }
+
+    @Override
+    public int GL_R16() {
+        return gl.GL_R16();
+    }
+
+    @Override
+    public int GL_R16F() {
+        return gl.GL_R16F();
+    }
+
+    @Override
+    public int GL_R16I() {
+        return gl.GL_R16I();
+    }
+
+    @Override
+    public int GL_R16UI() {
+        return gl.GL_R16UI();
     }
 
     @Override

@@ -4,6 +4,7 @@
 module com.lessvoid.coregl {
   requires java.base;
   requires java.logging;
+  requires it.unimi.dsi.fastutil;
 
   exports com.lessvoid.coregl;
   exports com.lessvoid.coregl.spi;

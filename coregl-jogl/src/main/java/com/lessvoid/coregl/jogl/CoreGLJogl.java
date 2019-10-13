@@ -315,8 +315,73 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_RGB32F() {
+    return GL.GL_RGB32F;
+  }
+
+  @Override
+  public int GL_RGB32I() {
+    return GL3.GL_RGB32I;
+  }
+
+  @Override
+  public int GL_RGB32UI() {
+    return GL3.GL_RGB32UI;
+  }
+
+  @Override
   public int GL_RGBA() {
     return GL.GL_RGBA;
+  }
+
+  @Override
+  public int GL_RGBA16() {
+    return GL3.GL_RGBA16;
+  }
+
+  @Override
+  public int GL_RGBA16F() {
+    return GL.GL_RGBA16F;
+  }
+
+  @Override
+  public int GL_RGBA16I() {
+    return GL3.GL_RGBA16I;
+  }
+
+  @Override
+  public int GL_RGBA16UI() {
+    return GL3.GL_RGBA16UI;
+  }
+
+  @Override
+  public int GL_RGBA32F() {
+    return GL.GL_RGBA32F;
+  }
+
+  @Override
+  public int GL_RGBA32I() {
+    return GL3.GL_RGBA32I;
+  }
+
+  @Override
+  public int GL_RGBA32UI() {
+    return GL3.GL_RGBA32UI;
+  }
+
+  @Override
+  public int GL_RGBA8() {
+    return GL.GL_RGBA8;
+  }
+
+  @Override
+  public int GL_RGBA8I() {
+    return GL3.GL_RGBA8I;
+  }
+
+  @Override
+  public int GL_RGBA8UI() {
+    return GL3.GL_RGBA8UI;
   }
 
   @Override
@@ -362,6 +427,26 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public int GL_PROXY_TEXTURE_2D_MULTISAMPLE() {
     return GL2ES3.GL_PROXY_TEXTURE_2D_MULTISAMPLE;
+  }
+
+  @Override
+  public int GL_R16() {
+    return GL3.GL_R16;
+  }
+
+  @Override
+  public int GL_R16F() {
+    return GL.GL_R16F;
+  }
+
+  @Override
+  public int GL_R16I() {
+    return GL3.GL_R16I;
+  }
+
+  @Override
+  public int GL_R16UI() {
+    return GL3.GL_R16UI;
   }
 
   @Override
@@ -860,6 +945,31 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_R32I() {
+    return GL3.GL_R32I;
+  }
+
+  @Override
+  public int GL_R32UI() {
+    return GL3.GL_R32UI;
+  }
+
+  @Override
+  public int GL_R8() {
+    return GL.GL_R8;
+  }
+
+  @Override
+  public int GL_R8I() {
+    return GL3.GL_R8I;
+  }
+
+  @Override
+  public int GL_R8UI() {
+    return GL3.GL_R8UI;
+  }
+
+  @Override
   public int GL_READ_FRAMEBUFFER() {
     return GL.GL_READ_FRAMEBUFFER;
   }
@@ -982,6 +1092,56 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public int GL_REPLACE() {
     return GL.GL_REPLACE;
+  }
+
+  @Override
+  public int GL_RG16() {
+    return GL3.GL_RG16;
+  }
+
+  @Override
+  public int GL_RG16F() {
+    return GL.GL_RG16F;
+  }
+
+  @Override
+  public int GL_RG16I() {
+    return GL3.GL_RG16I;
+  }
+
+  @Override
+  public int GL_RG16UI() {
+    return GL3.GL_RG16UI;
+  }
+
+  @Override
+  public int GL_RG32F() {
+    return GL.GL_RG32F;
+  }
+
+  @Override
+  public int GL_RG32I() {
+    return GL3.GL_RG32I;
+  }
+
+  @Override
+  public int GL_RG32UI() {
+    return GL3.GL_RG32UI;
+  }
+
+  @Override
+  public int GL_RG8() {
+    return GL.GL_RG8;
+  }
+
+  @Override
+  public int GL_RG8I() {
+    return GL3.GL_RG8I;
+  }
+
+  @Override
+  public int GL_RG8UI() {
+    return GL3.GL_RG8UI;
   }
 
   @Override

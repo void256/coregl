@@ -217,12 +217,12 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_COPY_READ_BUFFER() {
-    return 0;
+    return GL31.GL_COPY_READ_BUFFER;
   }
 
   @Override
   public int GL_COPY_WRITE_BUFFER() {
-    return 0;
+    return GL31.GL_COPY_WRITE_BUFFER;
   }
 
   @Override
@@ -292,7 +292,7 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_DEPTH24_STENCIL8() {
-    return 0;
+    return GL30.GL_DEPTH24_STENCIL8;
   }
 
   @Override
@@ -302,7 +302,7 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_DEPTH_STENCIL_ATTACHMENT() {
-    return 0;
+    return GL30.GL_DEPTH_STENCIL_ATTACHMENT;
   }
 
   @Override
@@ -337,12 +337,12 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_DYNAMIC_READ() {
-    return 0;
+    return GL15.GL_DYNAMIC_READ;
   }
 
   @Override
   public int GL_DYNAMIC_COPY() {
-    return 0;
+    return GL15.GL_DYNAMIC_COPY;
   }
 
   @Override
@@ -632,12 +632,12 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_PIXEL_PACK_BUFFER() {
-    return 0;
+    return GL21.GL_PIXEL_PACK_BUFFER;
   }
 
   @Override
   public int GL_PIXEL_PACK_BUFFER_BINDING() {
-    return 0;
+    return GL21.GL_PIXEL_PACK_BUFFER_BINDING;
   }
 
   @Override
@@ -661,18 +661,43 @@ public class CoreGLLwjgl3 implements CoreGL {
   }
 
   @Override
+  public int GL_R32I() {
+    return GL30.GL_R32I;
+  }
+
+  @Override
+  public int GL_R32UI() {
+    return GL30.GL_R32UI;
+  }
+
+  @Override
+  public int GL_R8() {
+    return GL30.GL_R8;
+  }
+
+  @Override
+  public int GL_R8I() {
+    return GL30.GL_R8I;
+  }
+
+  @Override
+  public int GL_R8UI() {
+    return GL30.GL_R8UI;
+  }
+
+  @Override
   public int GL_READ_FRAMEBUFFER() {
     return GL30.GL_READ_FRAMEBUFFER;
   }
 
   @Override
   public int GL_READ_ONLY() {
-    return 0;
+    return GL15.GL_READ_ONLY;
   }
 
   @Override
   public int GL_READ_WRITE() {
-    return 0;
+    return GL15.GL_READ_WRITE;
   }
 
   @Override
@@ -696,13 +721,128 @@ public class CoreGLLwjgl3 implements CoreGL {
   }
 
   @Override
+  public int GL_RG16() {
+    return GL30.GL_RG16;
+  }
+
+  @Override
+  public int GL_RG16F() {
+    return GL30.GL_RG16F;
+  }
+
+  @Override
+  public int GL_RG16I() {
+    return GL30.GL_RG16I;
+  }
+
+  @Override
+  public int GL_RG16UI() {
+    return GL30.GL_RG16UI;
+  }
+
+  @Override
+  public int GL_RG32F() {
+    return GL30.GL_RG32F;
+  }
+
+  @Override
+  public int GL_RG32I() {
+    return GL30.GL_RG32I;
+  }
+
+  @Override
+  public int GL_RG32UI() {
+    return GL30.GL_RG32UI;
+  }
+
+  @Override
+  public int GL_RG8() {
+    return GL30.GL_RG8;
+  }
+
+  @Override
+  public int GL_RG8I() {
+    return GL30.GL_RG8I;
+  }
+
+  @Override
+  public int GL_RG8UI() {
+    return GL30.GL_RG8UI;
+  }
+
+  @Override
   public int GL_RGB() {
     return GL11.GL_RGB;
   }
 
   @Override
+  public int GL_RGB32F() {
+    return GL30.GL_RGB32F;
+  }
+
+  @Override
+  public int GL_RGB32I() {
+    return GL30.GL_RGB32I;
+  }
+
+  @Override
+  public int GL_RGB32UI() {
+    return GL30.GL_RGB32UI;
+  }
+
+  @Override
   public int GL_RGBA() {
     return GL11.GL_RGBA;
+  }
+
+  @Override
+  public int GL_RGBA16() {
+    return GL11.GL_RGBA16;
+  }
+
+  @Override
+  public int GL_RGBA16F() {
+    return GL30.GL_RGBA16F;
+  }
+
+  @Override
+  public int GL_RGBA16I() {
+    return GL30.GL_RGBA16I;
+  }
+
+  @Override
+  public int GL_RGBA16UI() {
+    return GL30.GL_RGBA16UI;
+  }
+
+  @Override
+  public int GL_RGBA32F() {
+    return GL30.GL_RGBA32F;
+  }
+
+  @Override
+  public int GL_RGBA32I() {
+    return GL30.GL_RGBA32I;
+  }
+
+  @Override
+  public int GL_RGBA32UI() {
+    return GL30.GL_RGBA32UI;
+  }
+
+  @Override
+  public int GL_RGBA8() {
+    return GL11.GL_RGBA8;
+  }
+
+  @Override
+  public int GL_RGBA8I() {
+    return GL30.GL_RGBA8I;
+  }
+
+  @Override
+  public int GL_RGBA8UI() {
+    return GL30.GL_RGBA8UI;
   }
 
   @Override
@@ -742,12 +882,12 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_STATIC_READ() {
-    return 0;
+    return GL15.GL_STATIC_READ;
   }
 
   @Override
   public int GL_STATIC_COPY() {
-    return 0;
+    return GL15.GL_STATIC_COPY;
   }
 
   @Override
@@ -782,17 +922,17 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_STREAM_READ() {
-    return 0;
+    return GL15.GL_STREAM_READ;
   }
 
   @Override
   public int GL_STREAM_COPY() {
-    return 0;
+    return GL15.GL_STREAM_COPY;
   }
 
   @Override
   public int GL_TRANSFORM_FEEDBACK_BUFFER() {
-    return 0;
+    return GL30.GL_TRANSFORM_FEEDBACK_BUFFER;
   }
 
   @Override
@@ -813,6 +953,26 @@ public class CoreGLLwjgl3 implements CoreGL {
   @Override
   public int GL_PROXY_TEXTURE_2D_MULTISAMPLE() {
     return GL32.GL_PROXY_TEXTURE_2D_MULTISAMPLE;
+  }
+
+  @Override
+  public int GL_R16() {
+    return GL31.GL_R16;
+  }
+
+  @Override
+  public int GL_R16F() {
+    return GL31.GL_R16F;
+  }
+
+  @Override
+  public int GL_R16I() {
+    return GL31.GL_R16I;
+  }
+
+  @Override
+  public int GL_R16UI() {
+    return GL31.GL_R16UI;
   }
 
   @Override
@@ -922,12 +1082,12 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public int GL_PIXEL_UNPACK_BUFFER() {
-    return 0;
+    return GL21.GL_PIXEL_UNPACK_BUFFER;
   }
 
   @Override
   public int GL_PIXEL_UNPACK_BUFFER_BINDING() {
-    return 0;
+    return GL21.GL_PIXEL_UNPACK_BUFFER_BINDING;
   }
 
   @Override
@@ -1110,7 +1270,7 @@ public class CoreGLLwjgl3 implements CoreGL {
 
   @Override
   public void glBufferData(final int target, final ByteBuffer data, final int usage) {
-
+    GL15.glBufferData(target, data, usage);
   }
 
   @Override

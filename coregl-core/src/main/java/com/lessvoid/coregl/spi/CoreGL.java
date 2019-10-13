@@ -34,361 +34,215 @@ public interface CoreGL {
   /////////////////////////////////////////////////////////////////////////////
 
   int GL_ACTIVE_TEXTURE();
-
   int GL_ALPHA();
-
   int GL_ALPHA_TEST();
-
   int GL_ALWAYS();
-
   int GL_ARRAY_BUFFER();
-
   int GL_BACK();
-
   int GL_BGR();
-
   int GL_BGRA();
-
   int GL_BITMAP();
-
   int GL_BLEND();
-
   int GL_BLEND_DST();
-
   int GL_BLEND_SRC();
-
   int GL_BLUE();
-
   int GL_BYTE();
-
-  int GL_COPY_READ_BUFFER();
-
-  int GL_COPY_WRITE_BUFFER();
-
   int GL_COLOR_ATTACHMENT0();
-
   int GL_COLOR_BUFFER_BIT();
-
   int GL_COLOR_INDEX();
-
   int GL_COMPILE_STATUS();
-
   int GL_COMPRESSED_ALPHA();
-
   int GL_COMPRESSED_LUMINANCE();
-
   int GL_COMPRESSED_LUMINANCE_ALPHA();
-
   int GL_COMPRESSED_RGB();
-
   int GL_COMPRESSED_RGBA();
-
+  int GL_COPY_READ_BUFFER();
+  int GL_COPY_WRITE_BUFFER();
   int GL_CULL_FACE();
-
   int GL_CURRENT_PROGRAM();
-
   int GL_DECR();
-
   int GL_DECR_WRAP();
-
   int GL_DEPTH24_STENCIL8();
-
   int GL_DEPTH_BUFFER_BIT();
-
   int GL_DEPTH_STENCIL_ATTACHMENT();
-
   int GL_DEPTH_TEST();
-
   int GL_DOUBLE();
-
   int GL_DRAW_FRAMEBUFFER();
-
   int GL_DST_ALPHA();
-
   int GL_DST_COLOR();
-
-  int GL_DYNAMIC_DRAW();
-
-  int GL_DYNAMIC_READ();
-
   int GL_DYNAMIC_COPY();
-
+  int GL_DYNAMIC_DRAW();
+  int GL_DYNAMIC_READ();
   int GL_ELEMENT_ARRAY_BUFFER();
-
   int GL_EQUAL();
-
   int GL_FALSE();
-
   int GL_FIXED();
-
   int GL_FLOAT();
-
   int GL_FRAGMENT_SHADER();
-
   int GL_FRAMEBUFFER();
-
   int GL_FRAMEBUFFER_COMPLETE();
-
   int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT();
-
   int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER();
-
   int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT();
-
   int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE();
-
   int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER();
-
   int GL_FRAMEBUFFER_UNDEFINED();
-
   int GL_FRAMEBUFFER_UNSUPPORTED();
-
   int GL_FRONT();
-
   int GL_FRONT_AND_BACK();
-
   int GL_FUNC_ADD();
-
   int GL_GEOMETRY_SHADER();
-
   int GL_GEQUAL();
-
   int GL_GREATER();
-
   int GL_GREEN();
-
   int GL_HALF_FLOAT();
-
-  int GL_LESS();
-
-  int GL_LEQUAL();
-
   int GL_INCR();
-
   int GL_INCR_WRAP();
-
   int GL_INT();
-
   int GL_INT_2_10_10_10_REV();
-
-  int GL_INVERT();
-
   int GL_INVALID_ENUM();
-
   int GL_INVALID_OPERATION();
-
   int GL_INVALID_VALUE();
-
+  int GL_INVERT();
   int GL_KEEP();
-
+  int GL_LEQUAL();
+  int GL_LESS();
   int GL_LINEAR();
-
   int GL_LINEAR_MIPMAP_LINEAR();
-
   int GL_LINEAR_MIPMAP_NEAREST();
-
   int GL_LINE_STRIP();
-
   int GL_LINE_STRIP_ADJACENCY();
-
   int GL_LINK_STATUS();
-
   int GL_LUMINANCE();
-
   int GL_LUMINANCE_ALPHA();
-
   int GL_MAX();
-
   int GL_MAX_3D_TEXTURE_SIZE();
-
   int GL_MAX_TEXTURE_SIZE();
-
   int GL_MAX_VERTEX_ATTRIBS();
-
   int GL_NEAREST();
-
   int GL_NEAREST_MIPMAP_LINEAR();
-
   int GL_NEAREST_MIPMAP_NEAREST();
-
   int GL_NEVER();
-
   int GL_NOTEQUAL();
-
   int GL_NO_ERROR();
-
   int GL_ONE();
-
   int GL_ONE_MINUS_DST_ALPHA();
-
   int GL_ONE_MINUS_SRC_ALPHA();
-
   int GL_OUT_OF_MEMORY();
-
   int GL_PACK_ALIGNMENT();
-
   int GL_PIXEL_PACK_BUFFER();
-
   int GL_PIXEL_PACK_BUFFER_BINDING();
-
-  int GL_POINTS();
-
-  int GL_PRIMITIVE_RESTART();
-
-  int GL_PRIMITIVE_RESTART_INDEX();
-
-  int GL_R32F();
-
-  int GL_READ_FRAMEBUFFER();
-
-  int GL_READ_ONLY();
-
-  int GL_READ_WRITE();
-
-  int GL_RED();
-
-  int GL_RENDERBUFFER();
-
-  int GL_RENDERER();
-
-  int GL_REPLACE();
-
-  int GL_RGB();
-
-  int GL_RGBA();
-
-  int GL_SCISSOR_TEST();
-
-  int GL_SHADING_LANGUAGE_VERSION();
-
-  int GL_SHORT();
-
-  int GL_SRC_ALPHA();
-
-  int GL_STACK_OVERFLOW();
-
-  int GL_STACK_UNDERFLOW();
-
-  int GL_STATIC_DRAW();
-
-  int GL_STATIC_READ();
-
-  int GL_STATIC_COPY();
-
-  int GL_STENCIL_ATTACHMENT();
-
-  int GL_STENCIL_BUFFER_BIT();
-
-  int GL_STENCIL_INDEX();
-
-  int GL_STENCIL_INDEX8();
-
-  int GL_STENCIL_TEST();
-
-  int GL_STREAM_DRAW();
-
-  int GL_STREAM_READ();
-
-  int GL_STREAM_COPY();
-
-  int GL_TRANSFORM_FEEDBACK_BUFFER();
-
-  int GL_TEXTURE0();
-
-  int GL_TEXTURE_2D();
-
-  int GL_TEXTURE_2D_ARRAY();
-
-  int GL_TEXTURE_2D_MULTISAMPLE();
-
-  int GL_PROXY_TEXTURE_2D_MULTISAMPLE();
-
-  int GL_TEXTURE_3D();
-
-  int GL_TEXTURE_BINDING_2D();
-
-  int GL_TEXTURE_BINDING_3D();
-
-  int GL_TEXTURE_BUFFER();
-
-  int GL_TEXTURE_CUBE_MAP_NEGATIVE_X();
-
-  int GL_TEXTURE_CUBE_MAP_NEGATIVE_Y();
-
-  int GL_TEXTURE_CUBE_MAP_NEGATIVE_Z();
-
-  int GL_TEXTURE_CUBE_MAP_POSITIVE_X();
-
-  int GL_TEXTURE_CUBE_MAP_POSITIVE_Y();
-
-  int GL_TEXTURE_CUBE_MAP_POSITIVE_Z();
-
-  int GL_TEXTURE_MAG_FILTER();
-
-  int GL_TEXTURE_MIN_FILTER();
-
-  int GL_TRIANGLES();
-
-  int GL_TRIANGLE_FAN();
-
-  int GL_TRIANGLE_STRIP();
-
-  int GL_TRUE();
-
-  int GL_UNIFORM_ARRAY_STRIDE();
-
-  int GL_UNIFORM_BUFFER();
-
-  int GL_UNIFORM_MATRIX_STRIDE();
-
-  int GL_UNIFORM_OFFSET();
-
   int GL_PIXEL_UNPACK_BUFFER();
-
   int GL_PIXEL_UNPACK_BUFFER_BINDING();
-
+  int GL_POINTS();
+  int GL_PRIMITIVE_RESTART();
+  int GL_PRIMITIVE_RESTART_INDEX();
+  int GL_PROXY_TEXTURE_2D_MULTISAMPLE();
+  int GL_R16();
+  int GL_R16F();
+  int GL_R16I();
+  int GL_R16UI();
+  int GL_R32F();
+  int GL_R32I();
+  int GL_R32UI();
+  int GL_R8();
+  int GL_R8I();
+  int GL_R8UI();
+  int GL_READ_FRAMEBUFFER();
+  int GL_READ_ONLY();
+  int GL_READ_WRITE();
+  int GL_RED();
+  int GL_RENDERBUFFER();
+  int GL_RENDERER();
+  int GL_REPLACE();
+  int GL_RG16();
+  int GL_RG16F();
+  int GL_RG16I();
+  int GL_RG16UI();
+  int GL_RG32F();
+  int GL_RG32I();
+  int GL_RG32UI();
+  int GL_RG8();
+  int GL_RG8I();
+  int GL_RG8UI();
+  int GL_RGB();
+  int GL_RGB32F();
+  int GL_RGB32I();
+  int GL_RGB32UI();
+  int GL_RGBA();
+  int GL_RGBA16();
+  int GL_RGBA16F();
+  int GL_RGBA16I();
+  int GL_RGBA16UI();
+  int GL_RGBA32F();
+  int GL_RGBA32I();
+  int GL_RGBA32UI();
+  int GL_RGBA8();
+  int GL_RGBA8I();
+  int GL_RGBA8UI();
+  int GL_SCISSOR_TEST();
+  int GL_SHADING_LANGUAGE_VERSION();
+  int GL_SHORT();
+  int GL_SRC_ALPHA();
+  int GL_STACK_OVERFLOW();
+  int GL_STACK_UNDERFLOW();
+  int GL_STATIC_COPY();
+  int GL_STATIC_DRAW();
+  int GL_STATIC_READ();
+  int GL_STENCIL_ATTACHMENT();
+  int GL_STENCIL_BUFFER_BIT();
+  int GL_STENCIL_INDEX();
+  int GL_STENCIL_INDEX8();
+  int GL_STENCIL_TEST();
+  int GL_STREAM_COPY();
+  int GL_STREAM_DRAW();
+  int GL_STREAM_READ();
+  int GL_TEXTURE0();
+  int GL_TEXTURE_2D();
+  int GL_TEXTURE_2D_ARRAY();
+  int GL_TEXTURE_2D_MULTISAMPLE();
+  int GL_TEXTURE_3D();
+  int GL_TEXTURE_BINDING_2D();
+  int GL_TEXTURE_BINDING_3D();
+  int GL_TEXTURE_BUFFER();
+  int GL_TEXTURE_CUBE_MAP_NEGATIVE_X();
+  int GL_TEXTURE_CUBE_MAP_NEGATIVE_Y();
+  int GL_TEXTURE_CUBE_MAP_NEGATIVE_Z();
+  int GL_TEXTURE_CUBE_MAP_POSITIVE_X();
+  int GL_TEXTURE_CUBE_MAP_POSITIVE_Y();
+  int GL_TEXTURE_CUBE_MAP_POSITIVE_Z();
+  int GL_TEXTURE_MAG_FILTER();
+  int GL_TEXTURE_MIN_FILTER();
+  int GL_TRANSFORM_FEEDBACK_BUFFER();
+  int GL_TRIANGLES();
+  int GL_TRIANGLE_FAN();
+  int GL_TRIANGLE_STRIP();
+  int GL_TRUE();
+  int GL_UNIFORM_ARRAY_STRIDE();
+  int GL_UNIFORM_BUFFER();
+  int GL_UNIFORM_MATRIX_STRIDE();
+  int GL_UNIFORM_OFFSET();
   int GL_UNSIGNED_BYTE();
-
   int GL_UNSIGNED_BYTE_2_3_3_REV();
-
   int GL_UNSIGNED_BYTE_3_3_2();
-
   int GL_UNSIGNED_INT();
-
   int GL_UNSIGNED_INT_10F_11F_11F_REV();
-
   int GL_UNSIGNED_INT_10_10_10_2();
-
   int GL_UNSIGNED_INT_2_10_10_10_REV();
-
   int GL_UNSIGNED_INT_8_8_8_8();
-
   int GL_UNSIGNED_INT_8_8_8_8_REV();
-
   int GL_UNSIGNED_SHORT();
-
   int GL_UNSIGNED_SHORT_1_5_5_5_REV();
-
   int GL_UNSIGNED_SHORT_4_4_4_4();
-
   int GL_UNSIGNED_SHORT_4_4_4_4_REV();
-
   int GL_UNSIGNED_SHORT_5_5_5_1();
-
   int GL_UNSIGNED_SHORT_5_6_5();
-
   int GL_UNSIGNED_SHORT_5_6_5_REV();
-
   int GL_VENDOR();
-
   int GL_VERSION();
-
   int GL_VERTEX_SHADER();
-
   int GL_VIEWPORT();
-
   int GL_WRITE_ONLY();
-
   int GL_ZERO();
 
   /////////////////////////////////////////////////////////////////////////////
