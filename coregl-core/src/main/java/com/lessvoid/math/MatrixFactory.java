@@ -54,6 +54,25 @@ public class MatrixFactory {
   }
 
   /**
+   * Create orthographic projection Matrix4f.
+   *
+   * @return new Matrix4j
+   */
+  public static void setOrtho(final Mat4 target, final float left, final float right, final float bottom, final float top) {
+    final float zNear = -9999;
+    final float zFar = 9999;
+
+    target.setIdentity();
+    target.m00 = 2 / (right - left);
+    target.m11 = 2 / (top - bottom);
+    target.m22 = -2 / (zFar - zNear);
+    target.m30 = -(right + left) / (right - left);
+    target.m31 = -(top + bottom) / (top - bottom);
+    target.m32 = -(zFar + zNear) / (zFar - zNear);
+    target.m33 = 1;
+  }
+
+  /**
    * Create perspective projection Matrix4f in glFrustrum() style =)
    *
    * @param left

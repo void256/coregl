@@ -172,12 +172,28 @@ public class Mat4 implements Serializable {
     return result;
   }
 
+  public Mat4 setTranslate(final float x, final float y, final float z) {
+    setIdentity(this);
+    m30 = x;
+    m31 = y;
+    m32 = z;
+    return this;
+  }
+
   public static Mat4 createScale(final float x, final float y, final float z) {
     final Mat4 result = new Mat4();
     result.m00 = x;
     result.m11 = y;
     result.m22 = z;
     return result;
+  }
+
+  public Mat4 setScale(final float x, final float y, final float z) {
+    setIdentity(this);
+    m00 = x;
+    m11 = y;
+    m22 = z;
+    return this;
   }
 
   public static Mat4 createRotate(final float angle, final float x, final float y, final float z) {
@@ -206,6 +222,34 @@ public class Mat4 implements Serializable {
     result.m23 = 0;
     result.m33 = 1;
     return result;
+  }
+
+  public Mat4 setRotate(final float angle, final float x, final float y, final float z) {
+    final double angleRad = angle * Math.PI / 180.;
+    final float c = (float) Math.cos(angleRad);
+    final float s = (float) Math.sin(angleRad);
+
+    setIdentity(this);
+    m00 = x * x * (1 - c) + c;
+    m10 = x * y * (1 - c) - z * s;
+    m20 = x * z * (1 - c) + y * s;
+    m30 = 0;
+
+    m01 = y * x * (1 - c) + z * s;
+    m11 = y * y * (1 - c) + c;
+    m21 = y * z * (1 - c) - x * s;
+    m31 = 0;
+
+    m02 = x * z * (1 - c) - y * s;
+    m12 = y * z * (1 - c) + x * s;
+    m22 = z * z * (1 - c) + c;
+    m32 = 0;
+
+    m03 = 0;
+    m13 = 0;
+    m23 = 0;
+    m33 = 1;
+    return this;
   }
 
   /**
