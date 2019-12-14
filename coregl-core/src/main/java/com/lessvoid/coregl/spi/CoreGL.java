@@ -47,6 +47,7 @@ public interface CoreGL {
   int GL_BLEND_SRC();
   int GL_BLUE();
   int GL_BYTE();
+  int GL_CLAMP_TO_EDGE();
   int GL_COLOR_ATTACHMENT0();
   int GL_COLOR_BUFFER_BIT();
   int GL_COLOR_INDEX();
@@ -119,6 +120,7 @@ public interface CoreGL {
   int GL_MAX_3D_TEXTURE_SIZE();
   int GL_MAX_TEXTURE_SIZE();
   int GL_MAX_VERTEX_ATTRIBS();
+  int GL_MIRRORED_REPEAT();
   int GL_NEAREST();
   int GL_NEAREST_MIPMAP_LINEAR();
   int GL_NEAREST_MIPMAP_NEAREST();
@@ -154,6 +156,7 @@ public interface CoreGL {
   int GL_RED();
   int GL_RENDERBUFFER();
   int GL_RENDERER();
+  int GL_REPEAT();
   int GL_REPLACE();
   int GL_RG16();
   int GL_RG16F();
@@ -213,6 +216,8 @@ public interface CoreGL {
   int GL_TEXTURE_CUBE_MAP_POSITIVE_Z();
   int GL_TEXTURE_MAG_FILTER();
   int GL_TEXTURE_MIN_FILTER();
+  int GL_TEXTURE_WRAP_S();
+  int GL_TEXTURE_WRAP_T();
   int GL_TRANSFORM_FEEDBACK_BUFFER();
   int GL_TRIANGLES();
   int GL_TRIANGLE_FAN();

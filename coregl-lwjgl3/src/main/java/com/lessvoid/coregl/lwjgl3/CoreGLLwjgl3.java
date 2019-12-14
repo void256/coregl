@@ -216,6 +216,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   }
 
   @Override
+  public int GL_CLAMP_TO_EDGE() {
+    return GL13.GL_CLAMP_TO_EDGE;
+  }
+
+  @Override
   public int GL_COPY_READ_BUFFER() {
     return GL31.GL_COPY_READ_BUFFER;
   }
@@ -576,6 +581,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   }
 
   @Override
+  public int GL_MIRRORED_REPEAT() {
+    return GL14.GL_MIRRORED_REPEAT;
+  }
+
+  @Override
   public int GL_NEAREST() {
     return GL11.GL_NEAREST;
   }
@@ -713,6 +723,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   @Override
   public int GL_RENDERER() {
     return GL11.GL_RENDERER;
+  }
+
+  @Override
+  public int GL_REPEAT() {
+    return GL11.GL_REPEAT;
   }
 
   @Override
@@ -1033,6 +1048,16 @@ public class CoreGLLwjgl3 implements CoreGL {
   @Override
   public int GL_TEXTURE_MIN_FILTER() {
     return GL11.GL_TEXTURE_MIN_FILTER;
+  }
+
+  @Override
+  public int GL_TEXTURE_WRAP_S() {
+    return GL11.GL_TEXTURE_WRAP_S;
+  }
+
+  @Override
+  public int GL_TEXTURE_WRAP_T() {
+    return GL11.GL_TEXTURE_WRAP_T;
   }
 
   @Override

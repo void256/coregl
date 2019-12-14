@@ -181,6 +181,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_CLAMP_TO_EDGE() {
+        return gl.GL_CLAMP_TO_EDGE();
+    }
+
+    @Override
     public int GL_COPY_READ_BUFFER() {
         return gl.GL_COPY_READ_BUFFER();
     }
@@ -541,6 +546,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_MIRRORED_REPEAT() {
+        return gl.GL_MIRRORED_REPEAT();
+    }
+
+    @Override
     public int GL_NEAREST() {
         return gl.GL_NEAREST();
     }
@@ -678,6 +688,11 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_RENDERER() {
         return gl.GL_RENDERER();
+    }
+
+    @Override
+    public int GL_REPEAT() {
+        return gl.GL_REPEAT();
     }
 
     @Override
@@ -1003,6 +1018,16 @@ public class CoreGLStateWrapper implements CoreGL {
     @Override
     public int GL_TEXTURE_MIN_FILTER() {
         return gl.GL_TEXTURE_MIN_FILTER();
+    }
+
+    @Override
+    public int GL_TEXTURE_WRAP_S() {
+        return gl.GL_TEXTURE_WRAP_S();
+    }
+
+    @Override
+    public int GL_TEXTURE_WRAP_T() {
+        return gl.GL_TEXTURE_WRAP_T();
     }
 
     @Override

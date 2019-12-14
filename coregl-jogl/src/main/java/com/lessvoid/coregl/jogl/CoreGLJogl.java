@@ -165,6 +165,11 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_CLAMP_TO_EDGE() {
+    return GL.GL_CLAMP_TO_EDGE;
+  }
+
+  @Override
   public int GL_COPY_READ_BUFFER() {
     return GL2.GL_COPY_READ_BUFFER;
   }
@@ -472,6 +477,16 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public int GL_TEXTURE_MIN_FILTER() {
     return GL.GL_TEXTURE_MIN_FILTER;
+  }
+
+  @Override
+  public int GL_TEXTURE_WRAP_S() {
+    return GL.GL_TEXTURE_WRAP_S;
+  }
+
+  @Override
+  public int GL_TEXTURE_WRAP_T() {
+    return GL.GL_TEXTURE_WRAP_T;
   }
 
   @Override
@@ -1090,6 +1105,11 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_REPEAT() {
+    return GL.GL_REPEAT;
+  }
+
+  @Override
   public int GL_REPLACE() {
     return GL.GL_REPLACE;
   }
@@ -1147,6 +1167,11 @@ public class CoreGLJogl implements CoreGL {
   @Override
   public int GL_MAX_VERTEX_ATTRIBS() {
     return GL2ES2.GL_MAX_VERTEX_ATTRIBS;
+  }
+
+  @Override
+  public int GL_MIRRORED_REPEAT() {
+    return GL.GL_MIRRORED_REPEAT;
   }
 
   @Override
