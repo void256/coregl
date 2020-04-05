@@ -59,6 +59,9 @@ public class CoreTextureAtlasGenerator {
   private final TextureAtlasGenerator generator;
   private final CoreShader shader;
   private final CoreTexture2D texture;
+  private final CoreGL gl;
+  private final int width;
+  private final int height;
 
   /**
    * Prepare a RenderToTexture target of the given width x height that will be
@@ -70,6 +73,10 @@ public class CoreTextureAtlasGenerator {
    *          height of the texture
    */
   public CoreTextureAtlasGenerator(final CoreGL gl, final int width, final int height) {
+    this.gl = gl;
+    this.width = width;
+    this.height = height;
+
     coreRender = CoreRender.createCoreRender(gl);
 
     renderToTexture = CoreFBO.createCoreFBO(gl);
@@ -80,8 +87,8 @@ public class CoreTextureAtlasGenerator {
     renderToTexture.attachTexture(texture.getTextureId(), 0);
 
     shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");
-    shader.vertexShader("com/lessvoid/coregl/plain-texture.vs");
-    shader.fragmentShader("com/lessvoid/coregl/plain-texture.fs");
+    shader.vertexShader("com/lessvoid/coregl/plain-texture.vs", CoreShader.class.getResourceAsStream("plain-texture.vs"));
+    shader.fragmentShader("com/lessvoid/coregl/plain-texture.fs", CoreShader.class.getResourceAsStream("plain-texture.fs"));
     shader.link();
     shader.activate();
     shader.setUniformi("uTexture", 0);
@@ -98,6 +105,7 @@ public class CoreTextureAtlasGenerator {
     vao.vertexAttribPointer(1, 2, FloatType.FLOAT, 4, 2);
 
     renderToTexture.bindFramebuffer();
+    gl.glViewport(0, 0, width, height);
 
     coreRender.clearColor(0.f, 0.f, 0.f, 0.f);
     coreRender.clearColorBuffer();
@@ -129,6 +137,25 @@ public class CoreTextureAtlasGenerator {
     } catch (final TextureAtlasGeneratorException e) {
       return null;
     }
+  }
+
+  /**
+   * Add a single CoreTexture2D to the atlas and return informations about the
+   * position in the texture atlas. This version expects TextureAtlasGenerator.Result as a parameter and is directly
+   * modifying it to prevent garbage collector work.
+   *
+   * @param texture
+   *          the texture
+   * @param name
+   *          the name used to identify this texture
+   * @param padding
+   *          padding value around the texture when being placed into the atlas
+   * @param result
+   *          this instance is modified with the position where the texture is placed
+   */
+  public void addImage(final CoreTexture2D texture, final String name, final int padding, final TextureAtlasGenerator.Result result) throws TextureAtlasGeneratorException {
+    generator.addImage(texture.getWidth(), texture.getHeight(), name, padding, result);
+    put(texture, result.getX(), result.getY());
   }
 
   /**
@@ -168,6 +195,7 @@ public class CoreTextureAtlasGenerator {
 
     vao.bind();
     renderToTexture.bindFramebuffer();
+    gl.glViewport(0, 0, width, height);
 
     final FloatBuffer buffer = vbo.getBuffer();
     buffer.put(x);

@@ -54,10 +54,10 @@ public class TextureAtlasGenerator {
    * @author void
    */
   public static class Result {
-    private final int x;
-    private final int y;
-    private final int originalImageWidth;
-    private final int originalImageHeight;
+    private int x;
+    private int y;
+    private int originalImageWidth;
+    private int originalImageHeight;
 
     public Result(final int x, final int y, final int originalImageWidth, final int originalImageHeight) {
       this.x = x;
@@ -125,6 +125,43 @@ public class TextureAtlasGenerator {
 
     rectangleMap.put(name, node.rect);
     return new Result(node.rect.x, node.rect.y, imageWidth, imageHeight);
+  }
+
+  /**
+   * Adds an image and calculates the target position of the image in the bigger
+   * texture as a Result instance. Please note that it is up to you to position
+   * the image data. This will just give you the coordinates.
+   *
+   * @param imageWidth
+   *          image width to add
+   * @param imageHeight
+   *          image height to add
+   * @param name
+   *          name of the image this is used to track the individual images you
+   *          can see this as the id of the image
+   * @param padding
+   *          padding to apply
+   * @param result
+   *          the position of the image in the bigger texture taking all other
+   *          previously added images into account
+   * @throws TextureAtlasGeneratorException
+   *           when the image could not be added
+   */
+  public void addImage(final int imageWidth,
+                         final int imageHeight,
+                         final String name,
+                         final int padding,
+                         final Result result) throws TextureAtlasGeneratorException {
+    final Node node = root.insert(imageWidth, imageHeight, padding);
+    if (node == null) {
+      throw new TextureAtlasGeneratorException(imageWidth, imageHeight, name);
+    }
+
+    rectangleMap.put(name, node.rect);
+    result.x = node.rect.x;
+    result.y = node.rect.y;
+    result.originalImageWidth = imageWidth;
+    result.originalImageHeight = imageHeight;
   }
 
   private static class Rectangle {
