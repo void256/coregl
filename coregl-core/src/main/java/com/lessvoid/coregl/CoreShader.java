@@ -131,7 +131,7 @@ public class CoreShader {
     return geometryShader(file.getName(), sources[0], sources2);
   }
 
-  public int geometryShader(final String streamName, final InputStream first, final InputStream... inputStreams) throws FileNotFoundException {
+  public int geometryShader(final String streamName, final InputStream first, final InputStream... inputStreams) {
     InputStream[] s = new InputStream[1 + inputStreams.length];
     s[0] = first;
     if (inputStreams.length > 0) {

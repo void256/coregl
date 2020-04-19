@@ -42,7 +42,6 @@ import com.lessvoid.math.Mat4;
 import com.lessvoid.math.MatrixFactory;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.charset.Charset;
@@ -82,13 +81,9 @@ public class LineMain implements CoreExampleRenderLoop {
 
     lineShader1 = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
     lineShader1.vertexShader("line/line.vs", resource("line/line.vs"));
-    try {
-      lineShader1.geometryShader("line/line.gs",
-                                 stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"),
-                                 resource("line/line.gs"));
-    } catch (final FileNotFoundException e) {
-      System.err.println("error loading geometry shader: " + e.toString());
-    }
+    lineShader1.geometryShader("line/line.gs",
+                               stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"),
+                               resource("line/line.gs"));
     lineShader1.fragmentShader("line/line.fs",
                                stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"),
                                resource("line/line.fs"));
@@ -96,13 +91,9 @@ public class LineMain implements CoreExampleRenderLoop {
 
     lineShader2 = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
     lineShader2.vertexShader("line/line.vs", resource("line/line.vs"));
-    try {
-      lineShader2.geometryShader("line/line.gs",
-                                 stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"),
-                                 resource("line/line.gs"));
-    } catch (final FileNotFoundException e) {
-      System.err.println("error loading geometry shader: " + e.toString());
-    }
+    lineShader2.geometryShader("line/line.gs",
+                               stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"),
+                               resource("line/line.gs"));
     lineShader2.fragmentShader("line/line.fs",
                                stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"),
                                resource("line/line.fs"));
