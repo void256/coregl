@@ -94,20 +94,17 @@ public class CoreShader {
     gl.checkGLError("glCreateProgram");
   }
 
-  public int vertexShader(final String filename) {
-    return vertexShader(filename, getStream(filename));
-  }
-
   public int vertexShader(final File file) throws FileNotFoundException {
     return vertexShader(file.getName(), getStream(file));
   }
 
-  public int vertexShader(final String streamName, final InputStream... sources) {
-    return vertexShaderFromStream(streamName, sources);
-  }
-
-  public void vertexShader(final int shaderId, final String filename) {
-    vertexShader(shaderId, filename, getStream(filename));
+  public int vertexShader(final String streamName, final InputStream first, final InputStream... sources) {
+    InputStream[] s = new InputStream[1 + sources.length];
+    s[0] = first;
+    if (sources.length > 0) {
+      System.arraycopy(sources, 0, s, 1, sources.length);
+    }
+    return vertexShaderFromStream(streamName, s);
   }
 
   public void vertexShader(final int shaderId, final File file) throws FileNotFoundException {
@@ -115,15 +112,7 @@ public class CoreShader {
   }
 
   public void vertexShader(final int shaderId, final String streamName, final InputStream source) {
-    prepareShader(shaderId, streamName, source);
-  }
-
-  public void geometryShader(final int shaderId, final String filename) {
-    geometryShader(shaderId, filename, getStream(filename));
-  }
-
-  public int geometryShader(final String filename) {
-    return geometryShaderFromStream(filename, getStream(filename));
+    prepareShader(shaderId, streamName, toArray(source));
   }
 
   public int geometryShader(final File file) throws FileNotFoundException {
@@ -134,35 +123,37 @@ public class CoreShader {
     final InputStream[] sources = new InputStream[inputStreams.length + 1];
     System.arraycopy(inputStreams, 0, sources, 0, inputStreams.length);
     sources[sources.length - 1] = getStream(file);
-    return geometryShader(file.getName(), sources);
+    if (sources.length == 1) {
+      return geometryShader(file.getName(), sources[0]);
+    }
+    final InputStream[] sources2 = new InputStream[sources.length - 1];
+    System.arraycopy(sources, 1, sources2, 0, sources2.length);
+    return geometryShader(file.getName(), sources[0], sources2);
   }
 
-  public int geometryShader(final String streamName, final InputStream... inputStreams) throws FileNotFoundException {
-    return geometryShaderFromStream(streamName, inputStreams);
+  public int geometryShader(final String streamName, final InputStream first, final InputStream... inputStreams) throws FileNotFoundException {
+    InputStream[] s = new InputStream[1 + inputStreams.length];
+    s[0] = first;
+    if (inputStreams.length > 0) {
+      System.arraycopy(inputStreams, 0, s, 1, inputStreams.length);
+    }
+    return geometryShaderFromStream(streamName, s);
   }
 
   public void geometryShader(final int shaderId, final String streamName, final InputStream source) {
-    prepareShader(shaderId, streamName, source);
+    prepareShader(shaderId, streamName, toArray(source));
   }
 
   public void geometryShader(final int shaderId, final File file) throws FileNotFoundException {
     geometryShader(shaderId, file.getName(), getStream(file));
   }
 
-  public int fragmentShader(final String filename) {
-    return fragmentShader(filename, getStream(filename));
-  }
-
   public int fragmentShader(final File file) throws FileNotFoundException {
     return fragmentShaderFromStream(file.getName(), getStream(file));
   }
 
-  public int fragmentShader(final String streamName, final InputStream... inputStreams) {
-    return fragmentShaderFromStream(streamName, inputStreams);
-  }
-
-  public void fragmentShader(final int shaderId, final String filename) {
-    fragmentShader(shaderId, filename, getStream(filename));
+  public int fragmentShader(final String streamName, final InputStream first, final InputStream... inputStreams) {
+    return fragmentShaderFromStream(streamName, toArray(first, inputStreams));
   }
 
   public void fragmentShader(final int shaderId, final File file) throws FileNotFoundException {
@@ -170,10 +161,10 @@ public class CoreShader {
   }
 
   public void fragmentShader(final int shaderId, final String streamName, final InputStream source) {
-    prepareShader(shaderId, streamName, source);
+    prepareShader(shaderId, streamName, toArray(source));
   }
 
-  private int vertexShaderFromStream(final String streamName, final InputStream... sources) {
+  private int vertexShaderFromStream(final String streamName, final InputStream[] sources) {
     final int shaderId = gl.glCreateShader(gl.GL_VERTEX_SHADER());
     gl.checkGLError("glCreateShader(GL_VERTEX_SHADER)");
     prepareShader(shaderId, streamName, sources);
@@ -480,7 +471,7 @@ public class CoreShader {
     return result;
   }
 
-  private void prepareShader(final int shaderId, final String name, final InputStream... sources) {
+  private void prepareShader(final int shaderId, final String name, final InputStream[] sources) {
     try {
       gl.glShaderSource(shaderId, loadShader(sources));
       gl.checkGLError("glShaderSource");
@@ -501,7 +492,7 @@ public class CoreShader {
     gl.checkGLError(String.valueOf(shaderId));
   }
 
-  private String loadShader(final InputStream... sources) throws IOException {
+  private String loadShader(final InputStream[] sources) throws IOException {
     final StringBuilder srcbuff = new StringBuilder();
     for (final InputStream source : sources) {
       final InputStreamReader streamReader = new InputStreamReader(source);
@@ -528,13 +519,6 @@ public class CoreShader {
   private InputStream getStream(final File file) throws FileNotFoundException {
     log.fine("loading shader file [{}]", file);
     return new FileInputStream(file);
-  }
-
-  private InputStream getStream(final String filename) {
-    Thread thread = Thread.currentThread();
-    ClassLoader contextClassLoader = thread.getContextClassLoader();
-    InputStream resourceAsStream = contextClassLoader.getResourceAsStream(filename);
-    return resourceAsStream;
   }
 
   /**
@@ -587,4 +571,14 @@ public class CoreShader {
       return (n - 2) * 3 + (m - 2);
     }
   }
+
+  private InputStream[] toArray(final InputStream first, final InputStream... inputStreams) {
+    InputStream[] result = new InputStream[1 + inputStreams.length];
+    result[0] = first;
+    if (inputStreams.length > 0) {
+      System.arraycopy(inputStreams, 0, result, 1, inputStreams.length);
+    }
+    return result;
+  }
+
 }

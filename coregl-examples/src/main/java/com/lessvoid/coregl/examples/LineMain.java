@@ -76,12 +76,12 @@ public class LineMain implements CoreExampleRenderLoop {
     coreRender = CoreRender.createCoreRender(gl);
 
     texture = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aUV");
-    texture.vertexShader("line/line-pass2.vs");
-    texture.fragmentShader("line/line-pass2.fs");
+    texture.vertexShader("line/line-pass2.vs", resource("line/line-pass2.vs"));
+    texture.fragmentShader("line/line-pass2.fs", resource("line/line-pass2.fs"));
     texture.link();
 
     lineShader1 = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
-    lineShader1.vertexShader("line/line.vs");
+    lineShader1.vertexShader("line/line.vs", resource("line/line.vs"));
     try {
       lineShader1.geometryShader("line/line.gs",
                                  stream("#version 150 core\n#define CAP_ROUND\n#define JOIN_NONE\n"),
@@ -95,7 +95,7 @@ public class LineMain implements CoreExampleRenderLoop {
     lineShader1.link();
 
     lineShader2 = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
-    lineShader2.vertexShader("line/line.vs");
+    lineShader2.vertexShader("line/line.vs", resource("line/line.vs"));
     try {
       lineShader2.geometryShader("line/line.gs",
                                  stream("#version 150 core\n#define CAP_BUTT\n#define JOIN_NONE\n"),
@@ -128,8 +128,8 @@ public class LineMain implements CoreExampleRenderLoop {
     fbo.attachTexture(fboTexture.getTextureId(), 0);
 
     backgroundShader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aColor");
-    backgroundShader.vertexShader("background-gradient.vs");
-    backgroundShader.fragmentShader("background-gradient.fs");
+    backgroundShader.vertexShader("background-gradient.vs", resource("background-gradient.vs"));
+    backgroundShader.fragmentShader("background-gradient.fs", resource("background-gradient.fs"));
     backgroundShader.link();
   }
 
@@ -277,7 +277,7 @@ public class LineMain implements CoreExampleRenderLoop {
   }
 
   private InputStream resource(final String name) {
-    return Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
+    return LineMain.class.getResourceAsStream(name);
   }
 
   private InputStream stream(final String data) {

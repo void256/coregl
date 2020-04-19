@@ -48,8 +48,8 @@ public class CurveExampleMain implements CoreExampleRenderLoop {
   public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vTexture");
-    shader.vertexShader("vertex", CurveExampleMain.class.getResourceAsStream("/curve/curve.vs"));
-    shader.fragmentShader("fragmen", CurveExampleMain.class.getResourceAsStream("/curve/curve.fs"));
+    shader.vertexShader("vertex", CurveExampleMain.class.getResourceAsStream("curve/curve.vs"));
+    shader.fragmentShader("fragmen", CurveExampleMain.class.getResourceAsStream("curve/curve.fs"));
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);

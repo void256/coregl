@@ -57,8 +57,8 @@ public class StarfieldMain implements CoreExampleRenderLoop {
     coreRender = CoreRender.createCoreRender(gl);
 
     shader = CoreShader.createShader(gl);
-    shader.vertexShader("starfield/star.vs");
-    shader.fragmentShader("starfield/star.fs");
+    shader.vertexShader("starfield/star.vs", StarfieldMain.class.getResourceAsStream("starfield/star.vs"));
+    shader.fragmentShader("starfield/star.fs", StarfieldMain.class.getResourceAsStream("starfield/star.fs"));
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);

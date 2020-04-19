@@ -48,8 +48,8 @@ public class BackgroundMain implements CoreExampleRenderLoop {
   public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex");
-    shader.vertexShader("background/background.vs");
-    shader.fragmentShader("background/background.fs");
+    shader.vertexShader("background/background.vs", BackgroundMain.class.getResourceAsStream("background/background.vs"));
+    shader.fragmentShader("background/background.fs", BackgroundMain.class.getResourceAsStream("background/background.fs"));
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);

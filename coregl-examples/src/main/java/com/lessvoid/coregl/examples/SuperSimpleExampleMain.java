@@ -73,8 +73,8 @@ public class SuperSimpleExampleMain implements CoreExampleRenderLoop {
     coreRender = CoreRender.createCoreRender(gl);
 
     final CoreShader shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");
-    shader.vertexShader("super-simple/super-simple.vs");
-    shader.fragmentShader("super-simple/super-simple.fs");
+    shader.vertexShader("super-simple.vs", SuperSimpleExampleMain.class.getResourceAsStream("super-simple/super-simple.vs"));
+    shader.fragmentShader("super-simple.fs", SuperSimpleExampleMain.class.getResourceAsStream("super-simple/super-simple.fs"));
     shader.link();
 
     final CoreVAO vao = CoreVAO.createCoreVAO(gl);

@@ -50,8 +50,8 @@ public class LinearGradientMain implements CoreExampleRenderLoop {
     coreRender = CoreRender.createCoreRender(gl);
 
     shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex");
-    shader.vertexShader("linear-gradient/linear-gradient.vs");
-    shader.fragmentShader("linear-gradient/linear-gradient.fs");
+    shader.vertexShader("linear-gradient/linear-gradient.vs", LinearGradientMain.class.getResourceAsStream("linear-gradient/linear-gradient.vs"));
+    shader.fragmentShader("linear-gradient/linear-gradient.fs", LinearGradientMain.class.getResourceAsStream("linear-gradient/linear-gradient.fs"));
     shader.link();
     shader.activate();
     shader.setUniformMatrix("uMvp", 4, MatrixFactory.createOrtho(0, 1024.f, 768.f, 0).toBuffer());

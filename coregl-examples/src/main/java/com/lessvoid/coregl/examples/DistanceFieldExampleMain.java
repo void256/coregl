@@ -88,7 +88,7 @@ public class DistanceFieldExampleMain implements CoreExampleRenderLoop {
   @Override
   public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     try {
-      ByteBuffer data = loader.loadAsByteBufferRGBA(gl, DistanceFieldExampleMain.class.getResourceAsStream("/logo.png"));
+      ByteBuffer data = loader.loadAsByteBufferRGBA(gl, DistanceFieldExampleMain.class.getResourceAsStream("nifty-logo-150x150.png"));
       texture = CoreTexture2D.createCoreTexture(
               gl,
               ColorFormat.RGBA,
@@ -104,15 +104,15 @@ public class DistanceFieldExampleMain implements CoreExampleRenderLoop {
     coreRender = CoreRender.createCoreRender(gl);
 
     final CoreShader edtShader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vUV");
-    edtShader.vertexShader("distancefield/edt.vs");
-    edtShader.fragmentShader("distancefield/edt.fs");
+    edtShader.vertexShader("distancefield/edt.vs", DistanceFieldExampleMain.class.getResourceAsStream("distancefield/edt.vs"));
+    edtShader.fragmentShader("distancefield/edt.fs", DistanceFieldExampleMain.class.getResourceAsStream("distancefield/edt.fs"));
     edtShader.link();
     edtShader.activate();
     edtShader.setUniformi("uTexture", 0);
 
     textureShader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vUV");
-    textureShader.vertexShader("distancefield/texture.vs");
-    textureShader.fragmentShader("distancefield/texture.fs");
+    textureShader.vertexShader("distancefield/texture.vs", DistanceFieldExampleMain.class.getResourceAsStream("distancefield/texture.vs"));
+    textureShader.fragmentShader("distancefield/texture.fs", DistanceFieldExampleMain.class.getResourceAsStream("distancefield/texture.fs"));
     textureShader.link();
     textureShader.activate();
     textureShader.setUniformi("uTexture", 0);

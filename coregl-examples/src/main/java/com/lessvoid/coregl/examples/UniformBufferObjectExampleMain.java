@@ -54,8 +54,8 @@ public class UniformBufferObjectExampleMain implements CoreExampleRenderLoop {
     coreRender = CoreRender.createCoreRender(gl);
 
     shader = CoreShader.createShaderWithVertexAttributes(gl, "vVertex", "vColor");
-    shader.vertexShader("ubo/ubo.vs");
-    shader.fragmentShader("ubo/ubo.fs");
+    shader.vertexShader("ubo/ubo.vs", UniformBufferObjectExampleMain.class.getResourceAsStream("ubo/ubo.vs"));
+    shader.fragmentShader("ubo/ubo.fs", UniformBufferObjectExampleMain.class.getResourceAsStream("ubo/ubo.fs"));
     shader.link();
 
     vao = CoreVAO.createCoreVAO(gl);

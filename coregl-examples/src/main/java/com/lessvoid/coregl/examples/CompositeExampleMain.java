@@ -51,8 +51,8 @@ public class CompositeExampleMain implements CoreExampleRenderLoop {
   public void init(final CoreGL gl, final int framebufferWidth, final int framebufferHeight) {
     coreRender = CoreRender.createCoreRender(gl);
     shader = CoreShader.createShaderWithVertexAttributes(gl, "aVertex", "aColor");
-    shader.vertexShader("plain-color.vs");
-    shader.fragmentShader("plain-color.fs");
+    shader.vertexShader("plain-color.vs", CompositeExampleMain.class.getResourceAsStream("plain-color.vs"));
+    shader.fragmentShader("plain-color.fs", CompositeExampleMain.class.getResourceAsStream("plain-color.fs"));
     shader.link();
 
     src = CoreVAO.createCoreVAO(gl);
