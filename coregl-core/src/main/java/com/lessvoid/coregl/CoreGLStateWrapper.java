@@ -1488,6 +1488,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public void glDrawElementsInstanced(final int mode, final int count, final int type, final int indices, final int primcount) {
+        gl.glDrawElementsInstanced(mode, count, type, indices, primcount);
+    }
+
+    @Override
     public void glDrawRangeElements(final int mode, final int start, final int end, final int count, final int type, final int indices) {
         gl.glDrawRangeElements(mode, start, end, count, type, indices);
     }

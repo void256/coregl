@@ -1414,6 +1414,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   }
 
   @Override
+  public void glDrawElementsInstanced(final int mode, final int count, final int type, final int indices, final int primcount) {
+    GL31.glDrawElementsInstanced(mode, count, type, indices, primcount);
+  }
+
+  @Override
   public void glDrawRangeElements(final int mode, final int start, final int end, final int count, final int type, final int indices) {
     GL12.glDrawRangeElements(mode, start, end, count, type, indices);
   }

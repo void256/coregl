@@ -1275,6 +1275,11 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public void glDrawElementsInstanced(final int mode, final int count, final int type, final int indices, final int primcount) {
+    GLContext.getCurrentGL().glDrawElements(mode, count, type, indices);
+  }
+
+  @Override
   public void glDrawRangeElements(final int mode, final int start, final int end, final int count, final int type, final int indices) {
     GLContext.getCurrentGL().getGL2().glDrawRangeElements(mode, start, end, count, type, indices);
   }

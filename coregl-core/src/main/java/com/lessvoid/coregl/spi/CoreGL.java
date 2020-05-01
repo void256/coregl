@@ -327,6 +327,8 @@ public interface CoreGL {
 
   void glDrawElements(int mode, int count, int type, int indices);
 
+  void glDrawElementsInstanced(int mode, int count, int type, int indices, int primcount);
+
   void glDrawRangeElements(int mode, int start, int end, int count, int type, int indices);
 
   void glEnable(int cap);
