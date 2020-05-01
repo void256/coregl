@@ -881,6 +881,11 @@ public class CoreGLLwjgl3 implements CoreGL {
   }
 
   @Override
+  public int GL_SRC_COLOR() {
+    return GL11.GL_SRC_COLOR;
+  }
+
+  @Override
   public int GL_STACK_OVERFLOW() {
     return GL11.GL_STACK_OVERFLOW;
   }

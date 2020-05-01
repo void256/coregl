@@ -187,6 +187,7 @@ public interface CoreGL {
   int GL_SHADING_LANGUAGE_VERSION();
   int GL_SHORT();
   int GL_SRC_ALPHA();
+  int GL_SRC_COLOR();
   int GL_STACK_OVERFLOW();
   int GL_STACK_UNDERFLOW();
   int GL_STATIC_COPY();

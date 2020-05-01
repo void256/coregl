@@ -405,6 +405,11 @@ public class CoreGLJogl implements CoreGL {
   }
 
   @Override
+  public int GL_SRC_COLOR() {
+    return GL.GL_SRC_COLOR;
+  }
+
+  @Override
   public int GL_STACK_OVERFLOW() {
     return GL2ES2.GL_STACK_OVERFLOW;
   }

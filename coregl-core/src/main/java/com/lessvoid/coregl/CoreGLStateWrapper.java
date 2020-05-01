@@ -846,6 +846,11 @@ public class CoreGLStateWrapper implements CoreGL {
     }
 
     @Override
+    public int GL_SRC_COLOR() {
+        return gl.GL_SRC_COLOR();
+    }
+
+    @Override
     public int GL_STACK_OVERFLOW() {
         return gl.GL_STACK_OVERFLOW();
     }
